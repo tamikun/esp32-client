@@ -107,6 +107,8 @@ iframe {
 
 .alert {
   margin-bottom: 0;
+  position: absolute;
+  right: 0;
 }
 
 .reload-list-server {
