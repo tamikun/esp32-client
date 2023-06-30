@@ -114,3 +114,9 @@ iframe {
   padding-bottom: 10px;
   padding-right: 10px;
 }
+
+.header-img {
+  position: relative;
+  height: 200px;
+  width: -webkit-fill-available;
+}
