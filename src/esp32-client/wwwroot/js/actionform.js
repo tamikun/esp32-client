@@ -52,13 +52,11 @@ function postFile(ipAddress) {
             console.log(response);
 
             if (response.statusCode === 200) {
-                alert('Request successful!');
-                // Reload the page
-                location.reload();
+                handleEvent('success', 'Request successful!')
             } else if (response.statusCode === 404) {
-                alert('Not Found ' + response.statusCode);
+                handleEvent('error', 'Not Found ' + response.statusCode)
             } else {
-                alert('Unexpected status code: ' + response.statusCode);
+                handleEvent('error', 'Unexpected status code: ' + response.statusCode)
             }
 
         },
@@ -68,7 +66,36 @@ function postFile(ipAddress) {
             console.log(xhr);
             console.log(status);
             console.log(error.toString());
-            alert('Request failed ' + xhr);
+
+            handleEvent('error', 'Request failed!')
         }
     });
+}
+
+function handleEvent(type, message) {
+    const content = document.querySelector(`.tab-content`);
+    let html = "";
+    switch (type) {
+        case 'success':
+            html = "<div class=\"alert alert-success alert-dismissible\"><strong>Success: </strong>" + message + "</div>";
+            content.insertAdjacentHTML("beforebegin", html);
+
+            setTimeout(function () {
+                location.reload();
+            }, 1000);
+
+            break;
+        case 'error':
+            html = "<div class=\"alert alert-danger alert-dismissible\"><strong>Error: </strong>" + message + "</div>";
+            content.insertAdjacentHTML("beforebegin", html);
+            $(".alert").each(function () {
+                var alertElement = $(this);
+                setTimeout(function () {
+                    alertElement.fadeOut("slow");
+                }, 2000);
+            });
+            break;
+        default:
+    }
+
 }

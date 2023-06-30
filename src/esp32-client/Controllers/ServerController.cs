@@ -23,16 +23,15 @@ public class ServerController : Controller
         return View(itemList);
     }
 
-    public IActionResult Detail(string ipAddress, string subDirectory, string? alertMessage = null)
+    public IActionResult Detail(string ipAddress, string subDirectory)
     {
-
-        System.Console.WriteLine("==== alertModel: " + alertMessage);
 
         var serverModelDetail = new ServerModelDetail()
         {
             IpAddress = ipAddress,
             SubDirectory = subDirectory,
-            AlertMessage = alertMessage
+            // AlertMessage = alertMessage
+            AlertMessage = TempData["AlertMessage"]?.ToString()
         };
         System.Console.WriteLine("==== detail: " + Newtonsoft.Json.JsonConvert.SerializeObject(serverModelDetail));
 
@@ -72,8 +71,11 @@ public class ServerController : Controller
 
         var alertString = JsonConvert.SerializeObject(alertModel);
 
+        TempData["AlertMessage"] = alertString;
+
         // Pass the selected item to the view
-        return RedirectToAction("Detail", new { ipAddress = ipAddress, subDirectory = subDirectory, alertMessage = alertString });
+        // return RedirectToAction("Detail", new { ipAddress = ipAddress, subDirectory = subDirectory, alertMessage = alertString });
+        return RedirectToAction("Detail", new { ipAddress = ipAddress, subDirectory = subDirectory });
     }
 
     public async Task<IActionResult> Reload()
