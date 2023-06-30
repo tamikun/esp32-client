@@ -1,0 +1,25 @@
+@model AlertModel?
+
+@if (Model is not null)
+{
+    @switch (Model?.AlertType)
+    {
+        case Alert.Success:
+            <div class="alert alert-success alert-dismissible">
+                <strong>Success: </strong> @Model.AlertMessage
+            </div>
+            break;
+        case Alert.Info:
+            <div class="alert alert-info alert-dismissible">
+                <strong>Info: </strong> @Model.AlertMessage
+            </div>
+            break;
+        case Alert.Danger:
+            <div class="alert alert-danger alert-dismissible">
+                <strong>Error: </strong> @Model.AlertMessage
+            </div>
+            break;
+        default:
+            break;
+    }
+}

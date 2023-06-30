@@ -1,0 +1,31 @@
+version: "3.4"
+
+services:
+
+  esp32client.api:
+    image: ${DOCKER_REGISTRY-}esp32clientapi
+    build:
+      context: .
+      dockerfile: esp32-client/Dockerfile
+    container_name: esp32client.api
+    ports:
+      - "8051:443"
+      - "5051:5000"
+    environment:
+      - Settings:Subnet=192.168.101.
+      - Settings:Port=80
+      - Settings:ConnectionTimeOut=300
+  
+  portainer:
+    image: portainer/portainer-ce
+    container_name: portainer
+    restart: always
+    ports:
+      - "8040:8000"
+      - "9040:9000"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer_data:/data
+
+volumes:
+  portainer_data:

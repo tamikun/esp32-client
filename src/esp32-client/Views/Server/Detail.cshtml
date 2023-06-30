@@ -1,0 +1,161 @@
+﻿@using esp32_client.Controllers;
+@using Newtonsoft.Json;
+@model ServerModelDetail
+
+@{
+    @* @await Html.PartialAsync("Index",@ListServer.GetInstance(_clientService).GetItemList()) *@
+
+    @await Html.PartialAsync("~/Views/Components/ListServer.cshtml", @ListServer.GetInstance(_clientService).GetItemList())
+
+    if (Model.AlertMessage is not null)
+    {
+        var alertModel = JsonConvert.DeserializeObject<AlertModel>(Model.AlertMessage);
+        @await Html.PartialAsync("~/Views/Components/Alert.cshtml", alertModel)
+    }
+
+    <div class="tab-content">
+        <div id=@Model.IpAddress style="display: block;">
+            <h2>Server @Model.IpAddress</h2>
+
+            <table border="0">
+                <tr>
+                    <td>
+                        <label for="newFile">Upload a file</label>
+                    </td>
+                    <td colspan="2">
+                        <input id="newFile" type="file" onchange="setPath('@Model.IpAddress')" style="width:100%;">
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label for="filePath">Set path on server</label>
+                    </td>
+                    <td>
+                        <input id="filePath" type="text" style="width:100%;">
+                    </td>
+                    <td>
+
+                        <button id="upload" type="button" onclick="postFile('@Model.IpAddress')">Upload</button>
+                        @* @{
+                    var actionUpload = nameof(@ServerController.Upload);
+                    }
+                    <a class="button-link"
+                    href="@Url.Action(@actionUpload, new { newFile = , filePath = , ipAddress =
+                    @Model.IpAddress})">Upload2</a> *@
+                    </td>
+                </tr>
+
+            </table>
+            <br>
+
+
+            @{
+                var getUrl = $"http://{@Model.IpAddress}/";
+                if (!string.IsNullOrEmpty(Model.SubDirectory))
+                {
+                    getUrl = $"http://{@Model.IpAddress}/{@Model.SubDirectory}/";
+                }
+
+                var listFile = await _clientService.GetListEspFile(getUrl);
+
+                if (listFile.Count > 0)
+                {
+                    <table class="fixed" border="1">
+                        <col width="800px" />
+                        <col width="300px" />
+                        <col width="300px" />
+                        <col width="100px" />
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Type</th>
+                                <th>Size (Bytes)</th>
+                                <th>Delete</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                            @{
+                                var actionDetail = nameof(@ServerController.Detail);
+                                var actionDelete = nameof(@ServerController.Delete);
+                            }
+
+                            @if (!string.IsNullOrEmpty(Model.SubDirectory))
+                            {
+                                string backDirString = "";
+                                var backDir = Model.SubDirectory.Split('/').ToList();
+                                if (backDir.Count > 1)
+                                {
+                                    backDirString = string.Join('/', backDir.Take(backDir.Count - 1));
+                                }
+
+                                <td colspan="4"><a
+                                        href="@Url.Action(@actionDetail, new { ipAddress =  @Model.IpAddress, subDirectory =  @backDirString})">...</a>
+                                </td>
+                            }
+
+                            @foreach (var file in listFile)
+                            {
+
+                                @* var newUrl = Model.IpAddress + "/" + file.FileName; *@
+
+                                var subDir = "";
+                                if (!string.IsNullOrEmpty(Model.SubDirectory))
+                                {
+                                    subDir = Model.SubDirectory + "/" + file.FileName;
+                                }
+                                else
+                                {
+                                    subDir = file.FileName;
+                                }
+
+                                if (file.FileType == "directory")
+                                {
+                                    <tr>
+                                        <td><a
+                                                href="@Url.Action(@actionDetail, new { ipAddress =  @Model.IpAddress, subDirectory =  @subDir})">
+                                                @file.FileName
+                                            </a>
+                                        </td>
+                                        <td>@file.FileType</td>
+                                        <td>@file.FileSize</td>
+                                        <td>
+                                            <a class="button-link"
+                                                href="@Url.Action(@actionDelete, new { ipAddress =  @Model.IpAddress, subDirectory =  @Model.SubDirectory, fileName = @file.FileName})">Delete</a>
+                                        </td>
+                                    </tr>
+                                }
+                                else
+                                {
+                                    var newUrl = "http://" + @Model.IpAddress + "/" + file.FileName;
+
+                                    if (!string.IsNullOrEmpty(Model.SubDirectory))
+                                    {
+                                        newUrl = "http://" + @Model.IpAddress + "/" + Model.SubDirectory + "/" + file.FileName;
+                                    }
+
+                                    <tr>
+                                        <td><a href='@newUrl'>@file.FileName</a>
+                                        </td>
+                                        <td>@file.FileType</td>
+                                        <td>@file.FileSize</td>
+                                        <td>
+                                            <a class="button-link"
+                                                href="@Url.Action(@actionDelete, new { ipAddress =  @Model.IpAddress, subDirectory =  @Model.SubDirectory, fileName = @file.FileName})">Delete</a>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                }
+                else
+                {
+                    var serverPageSource = await _clientService.GetAsyncApi(getUrl, false);
+
+                    <div id="server-content">@serverPageSource</div>
+                }
+            }
+        </div>
+    </div>
+}

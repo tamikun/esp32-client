@@ -1,0 +1,1 @@
+exec dotnet esp32-client.dll
