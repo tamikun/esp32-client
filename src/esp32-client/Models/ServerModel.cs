@@ -17,7 +17,6 @@ public class ServerModelDetail
 {
     public string? IpAddress { get; set; }
     public string? SubDirectory { get; set; }
-    public string? AlertMessage { get; set; }
 }
 
 public class ListServer

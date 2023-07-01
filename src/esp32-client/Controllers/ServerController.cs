@@ -40,8 +40,6 @@ public class ServerController : Controller
         {
             IpAddress = ipAddress,
             SubDirectory = subDirectory,
-            // AlertMessage = alertMessage
-            AlertMessage = TempData["AlertMessage"]?.ToString()
         };
         System.Console.WriteLine("==== detail: " + Newtonsoft.Json.JsonConvert.SerializeObject(serverModelDetail));
 
