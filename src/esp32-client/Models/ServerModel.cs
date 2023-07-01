@@ -7,6 +7,12 @@ public class ServerModel
     public string? IpAddress { get; set; }
 }
 
+public class SelectedServerModel
+{
+    public string? IpAddress { get; set; }
+    public bool IsSelected { get; set; } = false;
+}
+
 public class ServerModelDetail
 {
     public string? IpAddress { get; set; }

@@ -36,6 +36,7 @@ builder.WebHost.ConfigureKestrel(serverOptions =>
 });
 
 builder.Services.AddScoped<IClientService, ClientService>();
+builder.Services.AddScoped<IFileService, FileService>();
 
 var app = builder.Build();
 

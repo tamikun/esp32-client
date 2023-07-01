@@ -10,6 +10,8 @@ ENV ASPNETCORE_HTTPS_PORT=443
 ENV ASPNETCORE_Kestrel__Certificates__Default__Path=/app/esp32.pfx
 ENV ASPNETCORE_Kestrel__Certificates__Default__Password=esp32
 
+RUN mkdir  FileData
+
 FROM base AS final
 
 # add globalization support

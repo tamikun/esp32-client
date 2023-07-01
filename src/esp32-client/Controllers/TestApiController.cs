@@ -12,11 +12,13 @@ public class TestApiController : ControllerBase
 {
     private readonly ILogger<HomeController> _logger;
     private readonly IClientService _clientService;
+    private readonly IFileService _fileService;
 
-    public TestApiController(ILogger<HomeController> logger, IClientService clientService)
+    public TestApiController(ILogger<HomeController> logger, IClientService clientService, IFileService fileService)
     {
         _logger = logger;
         _clientService = clientService;
+        _fileService = fileService;
     }
 
     [HttpPost]
@@ -102,6 +104,15 @@ public class TestApiController : ControllerBase
     {
         var result = await _clientService.GetListEspFile(apiUrl, node);
         return Ok(result);
+    }
+
+    [HttpGet]
+    [ProducesResponseType(StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> GetFolder(string directoryPath = "/app/")
+    {
+        var rs = await _fileService.GetAll(directoryPath);
+        return Ok(rs);
     }
 
 }

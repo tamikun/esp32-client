@@ -1,0 +1,114 @@
+﻿@model MultipleUploadFileModel
+@using esp32_client.Controllers
+@using esp32_client.Utils
+@{
+    ViewData["Title"] = "Upload Multiple Files";
+    var listFile = await _fileService.GetAll(null);
+}
+
+@using (Html.BeginForm("Index", "MultipleUploadFile", FormMethod.Post, new { @enctype = "multipart/form-data" }))
+{
+    <div class="row">
+        <div class="col-sm-6 p-3">
+            <table class="fixed" border="1">
+                <col width="800px" />
+                <col width="300px" />
+                <col width="300px" />
+                <col width="100px" />
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Size (Bytes)</th>
+                        <th>Checked</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    @{
+                        var actionReload = nameof(@MultipleUploadFileController.Index);
+                    }
+                    @if (Model.DataFileDirectory is not null)
+                    {
+                        string backDir = @Utils.GetBackDirectory(Model.DataFileDirectory);
+
+                        <td colspan="4"><a href="@Url.Action(@actionReload, new {directory = @backDir })">...</a>
+                        </td>
+                    }
+
+                    @for (var i = 0; i < Model.ListSelectedDataFile.Count; i++)
+                    {
+                        var fileName = Model.ListSelectedDataFile[i]?.FilePath?.Split('/').LastOrDefault();
+
+                        if (Model.ListSelectedDataFile[i]?.FileType == "directory")
+                        {
+                            <tr>
+                                <td><a href="@Url.Action(@actionReload, new { directory = @Model.ListSelectedDataFile[i].FilePath})">
+                                        @fileName
+                                    </a>
+                                    @Html.HiddenFor(model => model.ListSelectedDataFile[i].FilePath)
+                                </td>
+                                <td>@Model.ListSelectedDataFile[i].FileType
+                                    @Html.HiddenFor(model => model.ListSelectedDataFile[i].FileType)
+                                </td>
+                                <td>@Model.ListSelectedDataFile[i].FileSize
+                                    @Html.HiddenFor(model => model.ListSelectedDataFile[i].FileSize)
+                                </td>
+                                <td>
+                                    @Html.HiddenFor(model => model.ListSelectedDataFile[i].IsSelected)
+                                </td>
+                            </tr>
+                        }
+                        else
+                        {
+                            <tr>
+                                <td>@fileName
+                                    @Html.HiddenFor(model => model.ListSelectedDataFile[i].FilePath)
+                                </td>
+                                <td>@Model.ListSelectedDataFile[i].FileType
+                                    @Html.HiddenFor(model => model.ListSelectedDataFile[i].FileType)
+                                </td>
+                                <td>@Model.ListSelectedDataFile[i].FileSize
+                                    @Html.HiddenFor(model => model.ListSelectedDataFile[i].FileSize)
+                                </td>
+                                <td>
+                                    @Html.CheckBoxFor(model => model.ListSelectedDataFile[i].IsSelected)
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+        <div class="col-sm-6 p-3">
+            <table class="fixed" border="1">
+                <col width="800px" />
+                <col width="300px" />
+                <col width="300px" />
+                <col width="100px" />
+                <thead>
+                    <tr>
+                        <th>IP Address</th>
+                        <th>Checked</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    @for (var i = 0; i < Model.ListSelectedServer.Count; i++)
+                    {
+                        <tr>
+                            <td>@Model.ListSelectedServer[i].IpAddress
+                                @Html.HiddenFor(model => model.ListSelectedServer[i].IpAddress)
+                            </td>
+                            <td>
+                                @Html.CheckBoxFor(model => model.ListSelectedServer[i].IsSelected)
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <input type="submit" value="Save" />
+}
