@@ -9,3 +9,16 @@ public class EspFileModel
 
     public long? FileSize { get; set; }
 }
+
+public class RequestFileModel
+{
+    public RequestFileModel()
+    {
+
+    }
+
+    public IFormFile? File { get; set; }
+
+    public string? FilePath { get; set; }
+
+}

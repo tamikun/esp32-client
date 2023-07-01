@@ -19,8 +19,18 @@ public class ServerController : Controller
 
     public IActionResult Index()
     {
-        var itemList = ListServer.GetInstance(_clientService).GetItemList();
-        return View(itemList);
+        return View();
+    }
+
+    [HttpPost]
+    public IActionResult Index(RequestFileModel? fileModel)
+    // public IActionResult Index(IFormFile? File)
+    {
+        System.Console.WriteLine("Call Server-Index-Post");
+        System.Console.WriteLine("==== file: " + JsonConvert.SerializeObject(fileModel.File));
+        System.Console.WriteLine("==== file: " + JsonConvert.SerializeObject(fileModel.FilePath));
+
+        return View();
     }
 
     public IActionResult Detail(string ipAddress, string subDirectory)
