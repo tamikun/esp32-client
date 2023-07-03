@@ -122,9 +122,7 @@ public partial class ClientService : IClientService
         System.Console.WriteLine(filePath);
         System.Console.WriteLine(ipAddress);
 
-        // ipAddress += $"/{filePath}";
-
-        var url = $"http://{ipAddress}/upload/{filePath}";
+        var url = $"{ipAddress}upload/{filePath}";
 
         using (var httpClient = new HttpClient())
         {
@@ -148,7 +146,7 @@ public partial class ClientService : IClientService
 
     public virtual async Task<HttpResponseMessage> PostAsyncFile(byte[] byteContent, string filePath, string ipAddress)
     {
-        var url = $"http://{ipAddress}/upload/{filePath}";
+        var url = $"{ipAddress}upload/{filePath}";
 
         System.Console.WriteLine("==== url: " + Newtonsoft.Json.JsonConvert.SerializeObject(url));
 
@@ -285,9 +283,23 @@ public partial class ClientService : IClientService
         return dict;
     }
 
-    public virtual async Task<List<SelectedServerModel>> GetListSelectedServer(string ipAddress = "http://192.168.101.84/", string node = "//table[@class='fixed']/tbody/tr")
+    public virtual async Task<List<SelectedServerModel>> GetListSelectedServer(string ipAddress = "http://192.168.101.84/", string folder = "", string node = "//table[@class='fixed']/tbody/tr")
     {
         List<SelectedServerModel> response = new List<SelectedServerModel>();
+
+        if (!string.IsNullOrEmpty(folder))
+        {
+            ipAddress += $"{folder}/";
+        }
+        else
+        {
+            response.Add(new SelectedServerModel
+            {
+                IpAddress = ipAddress,
+                Folder = "",
+                IsSelected = false
+            });
+        }
 
         var pageData = await GetAsyncApi(ipAddress, false);
 
@@ -315,10 +327,9 @@ public partial class ClientService : IClientService
                             Folder = fileName,
                             IsSelected = false
                         });
-                        var newIp = $"{ipAddress}{fileName}/";
-                        response.AddRange(await GetListSelectedServer(newIp));
+                        folder += $"/{fileName}";
+                        response.AddRange(await GetListSelectedServer(ipAddress, folder));
                     }
-
                 }
             }
         }

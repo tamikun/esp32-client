@@ -37,8 +37,7 @@
         else
         {
             <span>@key</span>
-            <span>: @value</span>
-
+            @* <span>: @value</span> *@
             var getIndex = Model.ListSelectedDataFile.FindIndex(s => s.FilePath == value.ToString());
             @Html.CheckBoxFor(model => model.ListSelectedDataFile[getIndex].IsSelected)
             @Html.HiddenFor(model => model.ListSelectedDataFile[getIndex].FilePath)

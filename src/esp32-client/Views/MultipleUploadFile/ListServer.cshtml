@@ -10,6 +10,9 @@
         listServerDict.Add($"http://{server.IpAddress}/", await
         _clientService.GetDictionaryFile($"http://{server.IpAddress}/"));
     }
+
+    System.Console.WriteLine("==== model: " + Newtonsoft.Json.JsonConvert.SerializeObject(Model));
+    System.Console.WriteLine("==== listServerDict: " + Newtonsoft.Json.JsonConvert.SerializeObject(listServerDict));
 }
 <div class="col-sm-6 p-3">
     <ul>
@@ -30,7 +33,7 @@
         {
             <span>@key</span>
             <span>+</span>
-            var getIndex = Model.ListSelectedServer.FindIndex(s => s.IpAddress + s.Folder == key);
+            var getIndex = Model.ListSelectedServer.FindIndex(s => key.Contains($"{s.IpAddress}{s.Folder}"));
             if (getIndex >= 0)
             {
                 @Html.CheckBoxFor(model => model.ListSelectedServer[getIndex].IsSelected)

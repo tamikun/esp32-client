@@ -50,7 +50,7 @@ public class OpenApiController : ControllerBase
         var filePath = Request.Form["filePath"].FirstOrDefault();
         var ipAddress = Request.Form["ipAddress"].FirstOrDefault();
 
-        var result = await _clientService.PostAsyncFile(newFile, filePath, ipAddress);
+        var result = await _clientService.PostAsyncFile(newFile, filePath, $"http://{ipAddress}/");
 
         return Ok(result);
     }

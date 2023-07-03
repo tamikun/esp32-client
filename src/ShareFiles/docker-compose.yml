@@ -14,7 +14,7 @@ services:
     volumes:
       - D:/MiQ/MiQ_NT/ESP32Client/FileData:/app/FileData
     environment:
-      - Settings:Subnet=192.168.101.
+      - Settings:Subnet=192.168.1.
       - Settings:Port=80
       - Settings:ConnectionTimeOut=300
       - Settings:FileDataDirectory=/app/FileData

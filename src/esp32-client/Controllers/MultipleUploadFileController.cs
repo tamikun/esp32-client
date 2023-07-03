@@ -26,19 +26,8 @@ public class MultipleUploadFileController : Controller
 
         foreach (var item in ListServer.GetInstance(_clientService).GetItemList())
         {
-            model.ListSelectedServer.Add(new SelectedServerModel
-            {
-                IpAddress = item.IpAddress,
-                Folder = "",
-                IsSelected = false,
-            });
+            model.ListSelectedServer.AddRange(await _clientService.GetListSelectedServer($"http://{item.IpAddress}/"));
         }
-
-        model.ListSelectedServer.AddRange(await _clientService.GetListSelectedServer($"https://192.168.101.84/"));
-        // foreach (var item in ListServer.GetInstance(_clientService).GetItemList())
-        // {
-        //     model.ListSelectedServer.AddRange(await _clientService.GetListSelectedServer($"https://{item.IpAddress}/"));
-        // }
 
         return View(model);
     }
@@ -53,21 +42,26 @@ public class MultipleUploadFileController : Controller
 
         foreach (var file in selectedFile)
         {
+            var fileName = file.FilePath.Split('/').LastOrDefault();
             byte[] fileBytes = { };
 
             if (System.IO.File.Exists(file.FilePath))
             {
                 // Read file content as byte array
                 fileBytes = System.IO.File.ReadAllBytes(file.FilePath);
-
             }
 
-            var result = await _clientService.PostAsyncFile(fileBytes, file.FilePath.Split('/').LastOrDefault(), "192.168.101.84");
-
-            System.Console.WriteLine("==== resutl: " + Newtonsoft.Json.JsonConvert.SerializeObject(result));
+            foreach (var server in selectedServer)
+            {
+                var filePath = server.Folder + "/" + fileName;
+                if (string.IsNullOrEmpty(server.Folder))
+                {
+                    filePath = fileName;
+                }
+                var result = await _clientService.PostAsyncFile(fileBytes, filePath, server.IpAddress);
+                System.Console.WriteLine("==== resutl: " + Newtonsoft.Json.JsonConvert.SerializeObject(result));
+            }
         }
-
-        await Task.CompletedTask;
 
         return RedirectToAction("Index");
     }
