@@ -21,8 +21,8 @@
     {
         @if (value is Dictionary<string, object> nestedDictionary)
         {
+            <span class="toggle">+</span>
             <span>@key</span>
-            <span>+</span>
             <ul>
                 @foreach (var nestedItem in nestedDictionary)
                 {
