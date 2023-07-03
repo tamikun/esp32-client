@@ -19,10 +19,8 @@ public class MultipleUploadFileController : Controller
         _clientService = clientService;
     }
 
-    public async Task<IActionResult> Index(string? directory = null)
+    public async Task<IActionResult> Index()
     {
-        var listDataFile = await _fileService.GetAll(directory);
-
         var model = new MultipleUploadFileModel();
         model.ListSelectedDataFile = await _fileService.GetAllFiles(null);
 
@@ -49,15 +47,6 @@ public class MultipleUploadFileController : Controller
 
         return RedirectToAction("Index");
     }
-
-    public IActionResult ReloadListFile(MultipleUploadFileModel? fileModel)
-    {
-        // Perform any necessary logic
-
-        return PartialView("~/Views/MultipleUploadFile/ListFile.cshtml", fileModel);
-    }
-
-
 
     public IActionResult Privacy()
     {

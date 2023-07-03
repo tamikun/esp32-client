@@ -9,11 +9,9 @@ public class MultipleUploadFileModel
         ListSelectedServer = new List<SelectedServerModel>();
     }
 
-    public List<SelectedDataFileModel> ListFolders { get; set; }
     public List<SelectedDataFileModel> ListSelectedDataFile { get; set; }
 
     public List<SelectedServerModel> ListSelectedServer { get; set; }
 
-    public string? DataFileDirectory { get; set; }
 }
 
