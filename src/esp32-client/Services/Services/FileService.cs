@@ -29,18 +29,6 @@ public partial class FileService : IFileService
             var files = (await GetFiles(directoryPath)).ToList();
             response.AddRange(files);
 
-
-            // var files = Directory.GetFiles(directoryPath).OrderBy(q => q).ToList();
-
-            // foreach (var item in files)
-            // {
-            //     response.Add(new DataFileModel()
-            //     {
-            //         FilePath = item,
-            //         FileType = "file",
-            //         FileSize = new FileInfo(item).Length
-            //     });
-            // }
             return response;
         }
         catch (Exception ex)

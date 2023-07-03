@@ -146,6 +146,29 @@ public partial class ClientService : IClientService
         }
     }
 
+    public virtual async Task<HttpResponseMessage> PostAsyncFile(byte[] byteContent, string filePath, string ipAddress)
+    {
+        var url = $"http://{ipAddress}/upload/{filePath}";
+
+        System.Console.WriteLine("==== url: " + Newtonsoft.Json.JsonConvert.SerializeObject(url));
+
+        using (var httpClient = new HttpClient())
+        {
+            using (var content = new MultipartFormDataContent())
+            {
+
+                // Add file content
+                var fileContent = new ByteArrayContent(byteContent);
+                content.Add(fileContent);
+
+                // Send the request
+                var response = await httpClient.PostAsync(url, content);
+
+                return response;
+            }
+        }
+    }
+
     private async Task<byte[]> GetBytesFromFormFile(IFormFile file)
     {
         using (var memoryStream = new MemoryStream())
@@ -250,15 +273,55 @@ public partial class ClientService : IClientService
                     if (fileType == "directory")
                     {
                         var newAddress = $"{ipAddress}{fileName}/";
-                        dict.Add(fileName, await GetDictionaryFile(ipAddress: newAddress));
+                        dict.Add($"{ipAddress}{fileName}/", await GetDictionaryFile(ipAddress: newAddress));
                     }
                     else
                     {
-                        dict.Add(fileName, $"{ipAddress}{fileName}/");
+                        dict.Add($"{ipAddress}{fileName}/", $"{ipAddress}{fileName}/");
                     }
                 }
             }
         }
         return dict;
+    }
+
+    public virtual async Task<List<SelectedServerModel>> GetListSelectedServer(string ipAddress = "http://192.168.101.84/", string node = "//table[@class='fixed']/tbody/tr")
+    {
+        List<SelectedServerModel> response = new List<SelectedServerModel>();
+
+        var pageData = await GetAsyncApi(ipAddress, false);
+
+        string html = pageData;
+        HtmlDocument htmlDoc = new HtmlDocument();
+        htmlDoc.LoadHtml(html);
+
+        HtmlNodeCollection tableRows = htmlDoc.DocumentNode.SelectNodes(node);
+        if (tableRows != null && tableRows.Count > 0)
+        {
+            foreach (HtmlNode row in tableRows)
+            {
+                HtmlNodeCollection tableCells = row.SelectNodes("td");
+                if (tableCells != null && tableCells.Count >= 4)
+                {
+                    var fileName = tableCells[0].InnerText;
+                    var fileType = tableCells[1].InnerText;
+                    var fileSize = long.Parse(tableCells[2].InnerText.Trim());
+
+                    if (fileType == "directory")
+                    {
+                        response.Add(new SelectedServerModel
+                        {
+                            IpAddress = ipAddress,
+                            Folder = fileName,
+                            IsSelected = false
+                        });
+                        var newIp = $"{ipAddress}{fileName}/";
+                        response.AddRange(await GetListSelectedServer(newIp));
+                    }
+
+                }
+            }
+        }
+        return response;
     }
 }

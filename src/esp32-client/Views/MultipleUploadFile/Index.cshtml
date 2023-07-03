@@ -3,7 +3,6 @@
 @using esp32_client.Utils
 @{
     ViewData["Title"] = "Upload Multiple Files";
-    var listFile = await _fileService.GetAll(null);
 }
 
 @using (Html.BeginForm("Index", "MultipleUploadFile", FormMethod.Post, new { @enctype = "multipart/form-data" }))

@@ -10,6 +10,7 @@ public class ServerModel
 public class SelectedServerModel
 {
     public string? IpAddress { get; set; }
+    public string? Folder { get; set; }
     public bool IsSelected { get; set; } = false;
 }
 

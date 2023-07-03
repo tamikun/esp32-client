@@ -1,35 +1,58 @@
 ﻿@model MultipleUploadFileModel
-@using esp32_client.Controllers
-@using esp32_client.Utils
+
 @{
     ViewData["Title"] = "Upload Multiple Files";
+
+    var listServer = ListServer.GetInstance(_clientService).GetItemList();
+    Dictionary<string, object> listServerDict = new Dictionary<string, object>();
+    foreach (var server in listServer)
+    {
+        listServerDict.Add($"http://{server.IpAddress}/", await
+        _clientService.GetDictionaryFile($"http://{server.IpAddress}/"));
+    }
+}
+<div class="col-sm-6 p-3">
+    <ul>
+        @foreach (var item in listServerDict)
+        {
+            <li>
+                @{
+                    RenderDictionaryItem(item.Key, item.Value);
+                }
+            </li>
+        }
+    </ul>
+</div>
+@functions {
+    void RenderDictionaryItem(string key, object value)
+    {
+        @if (value is Dictionary<string, object> nestedDictionary)
+        {
+            <span>@key</span>
+            <span>+</span>
+            var getIndex = Model.ListSelectedServer.FindIndex(s => s.IpAddress + s.Folder == key);
+            if (getIndex >= 0)
+            {
+                @Html.CheckBoxFor(model => model.ListSelectedServer[getIndex].IsSelected)
+                @Html.HiddenFor(model => model.ListSelectedServer[getIndex].Folder)
+                @Html.HiddenFor(model => model.ListSelectedServer[getIndex].IpAddress)
+            }
+            <ul>
+                @foreach (var nestedItem in nestedDictionary)
+                {
+                    <li>
+                        @{
+                            RenderDictionaryItem(nestedItem.Key, nestedItem.Value);
+                        }
+                    </li>
+                }
+            </ul>
+        }
+        else
+        {
+            <span>@key</span>
+            @* <span>: @value</span> *@
+        }
+    }
 }
 
-<div class="col-sm-6 p-3">
-    <table class="fixed" border="1">
-        <col width="800px" />
-        <col width="300px" />
-        <col width="300px" />
-        <col width="100px" />
-        <thead>
-            <tr>
-                <th>IP Address</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-
-            @for (var i = 0; i < Model.ListSelectedServer.Count; i++)
-            {
-                <tr>
-                    <td>@Model.ListSelectedServer[i].IpAddress
-                        @Html.HiddenFor(model => model.ListSelectedServer[i].IpAddress)
-                    </td>
-                    <td>
-                        @Html.CheckBoxFor(model => model.ListSelectedServer[i].IsSelected)
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
-</div>
