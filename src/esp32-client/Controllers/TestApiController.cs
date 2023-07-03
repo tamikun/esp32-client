@@ -109,9 +109,10 @@ public class TestApiController : ControllerBase
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> GetFolder(string directoryPath = "/app/")
+    public async Task<IActionResult> GetDictionaryFile(string? directoryPath = null)
     {
-        var rs = await _fileService.GetAll(directoryPath);
+        var rs = await _fileService.GetDictionaryFile(directoryPath);
+
         return Ok(rs);
     }
 

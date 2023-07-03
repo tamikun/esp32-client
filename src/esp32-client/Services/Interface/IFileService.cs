@@ -6,5 +6,13 @@ namespace esp32_client.Services
     {
         Task<List<DataFileModel>> GetAll(string? directoryPath);
 
+        Task<List<DataFileModel>> GetFolders(string? directoryPath);
+
+        Task<List<DataFileModel>> GetFiles(string? directoryPath);
+
+        Task<Dictionary<string, object>> GetDictionaryFile(string? directoryPath);
+
+        Task<List<SelectedDataFileModel>> GetAllFiles(string? directoryPath);
+
     }
 }

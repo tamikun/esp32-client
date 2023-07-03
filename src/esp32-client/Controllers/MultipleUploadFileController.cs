@@ -23,21 +23,8 @@ public class MultipleUploadFileController : Controller
     {
         var listDataFile = await _fileService.GetAll(directory);
 
-        var model = new MultipleUploadFileModel()
-        {
-            DataFileDirectory = directory
-        };
-
-        foreach (var item in listDataFile)
-        {
-            model.ListSelectedDataFile.Add(new SelectedDataFileModel
-            {
-                FilePath = item.FilePath,
-                FileType = item.FileType,
-                FileSize = item.FileSize,
-                IsSelected = false,
-            });
-        }
+        var model = new MultipleUploadFileModel();
+        model.ListSelectedDataFile = await _fileService.GetAllFiles(null);
 
         foreach (var item in ListServer.GetInstance(_clientService).GetItemList())
         {
@@ -58,31 +45,16 @@ public class MultipleUploadFileController : Controller
 
         System.Console.WriteLine("==== fileModel: " + JsonConvert.SerializeObject(fileModel));
 
-        var listDataFile = await _fileService.GetAll(null);
+        await Task.CompletedTask;
 
-        var model = new MultipleUploadFileModel();
+        return RedirectToAction("Index");
+    }
 
-        foreach (var item in listDataFile)
-        {
-            model.ListSelectedDataFile.Add(new SelectedDataFileModel
-            {
-                FilePath = item.FilePath,
-                FileType = item.FileType,
-                FileSize = item.FileSize,
-                IsSelected = false,
-            });
-        }
+    public IActionResult ReloadListFile(MultipleUploadFileModel? fileModel)
+    {
+        // Perform any necessary logic
 
-        foreach (var item in ListServer.GetInstance(_clientService).GetItemList())
-        {
-            model.ListSelectedServer.Add(new SelectedServerModel
-            {
-                IpAddress = item.IpAddress,
-                IsSelected = false,
-            });
-        }
-
-        return View(model);
+        return PartialView("~/Views/MultipleUploadFile/ListFile.cshtml", fileModel);
     }
 
 

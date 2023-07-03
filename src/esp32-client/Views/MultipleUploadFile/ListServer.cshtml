@@ -1,0 +1,35 @@
+﻿@model MultipleUploadFileModel
+@using esp32_client.Controllers
+@using esp32_client.Utils
+@{
+    ViewData["Title"] = "Upload Multiple Files";
+}
+
+<div class="col-sm-6 p-3">
+    <table class="fixed" border="1">
+        <col width="800px" />
+        <col width="300px" />
+        <col width="300px" />
+        <col width="100px" />
+        <thead>
+            <tr>
+                <th>IP Address</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+
+            @for (var i = 0; i < Model.ListSelectedServer.Count; i++)
+            {
+                <tr>
+                    <td>@Model.ListSelectedServer[i].IpAddress
+                        @Html.HiddenFor(model => model.ListSelectedServer[i].IpAddress)
+                    </td>
+                    <td>
+                        @Html.CheckBoxFor(model => model.ListSelectedServer[i].IsSelected)
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

@@ -1,0 +1,50 @@
+﻿@model MultipleUploadFileModel
+
+@{
+    ViewData["Title"] = "Upload Multiple Files";
+    Dictionary<string, object> fileDict = await _fileService.GetDictionaryFile(null);
+}
+
+<ul>
+    @foreach (var item in fileDict)
+    {
+        <li>
+            @{
+                RenderDictionaryItem(item.Key, item.Value);
+            }
+        </li>
+    }
+</ul>
+
+@functions {
+    void RenderDictionaryItem(string key, object value)
+    {
+        @if (value is Dictionary<string, object> nestedDictionary)
+        {
+            <span>@key</span>
+            <span>+</span>
+            <ul>
+                @foreach (var nestedItem in nestedDictionary)
+                {
+                    <li>
+                        @{
+                            RenderDictionaryItem(nestedItem.Key, nestedItem.Value);
+                        }
+                    </li>
+                }
+            </ul>
+        }
+        else
+        {
+            <span>@key</span>
+            <span>: @value</span>
+
+            var getIndex = Model.ListSelectedDataFile.FindIndex(s => s.FilePath == value.ToString());
+            @Html.CheckBoxFor(model => model.ListSelectedDataFile[getIndex].IsSelected)
+            @Html.HiddenFor(model => model.ListSelectedDataFile[getIndex].FilePath)
+            @Html.HiddenFor(model => model.ListSelectedDataFile[getIndex].FileSize)
+            @Html.HiddenFor(model => model.ListSelectedDataFile[getIndex].FileType)
+        }
+    }
+}
+

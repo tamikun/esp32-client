@@ -18,36 +18,29 @@ public partial class FileService : IFileService
     {
         try
         {
-
             var response = new List<DataFileModel>();
 
             directoryPath = directoryPath ?? _configuration["Settings:FileDataDirectory"].ToString();
 
-            var folders = Directory.GetDirectories(directoryPath).OrderBy(q => q).ToList();
-
-            foreach (var item in folders)
-            {
-                response.Add(new DataFileModel()
-                {
-                    FilePath = item,
-                    FileType = "directory"
-                });
-            }
-
-            var files = Directory.GetFiles(directoryPath).OrderBy(q => q).ToList();
-
-            foreach (var item in files)
-            {
-                response.Add(new DataFileModel()
-                {
-                    FilePath = item,
-                    FileType = "file",
-                    FileSize = new FileInfo(item).Length
-                });
-            }
+            var folders = (await GetFolders(directoryPath)).ToList();
+            response.AddRange(folders);
 
 
-            await Task.CompletedTask;
+            var files = (await GetFiles(directoryPath)).ToList();
+            response.AddRange(files);
+
+
+            // var files = Directory.GetFiles(directoryPath).OrderBy(q => q).ToList();
+
+            // foreach (var item in files)
+            // {
+            //     response.Add(new DataFileModel()
+            //     {
+            //         FilePath = item,
+            //         FileType = "file",
+            //         FileSize = new FileInfo(item).Length
+            //     });
+            // }
             return response;
         }
         catch (Exception ex)
@@ -56,4 +49,95 @@ public partial class FileService : IFileService
             throw;
         }
     }
+
+    public virtual async Task<List<DataFileModel>> GetFolders(string? directoryPath)
+    {
+        var response = new List<DataFileModel>();
+        directoryPath = directoryPath ?? _configuration["Settings:FileDataDirectory"].ToString();
+        var folders = Directory.GetDirectories(directoryPath).OrderBy(q => q).ToList();
+
+        foreach (var item in folders)
+        {
+            response.Add(new DataFileModel()
+            {
+                FilePath = item,
+                FileType = "directory",
+            });
+        }
+        await Task.CompletedTask;
+
+        return response;
+    }
+
+    public async Task<List<DataFileModel>> GetFiles(string? directoryPath)
+    {
+        var response = new List<DataFileModel>();
+
+        directoryPath = directoryPath ?? _configuration["Settings:FileDataDirectory"].ToString();
+
+        var files = Directory.GetFiles(directoryPath).OrderBy(q => q).ToList();
+
+        foreach (var item in files)
+        {
+            response.Add(new DataFileModel()
+            {
+                FilePath = item,
+                FileType = "file",
+                FileSize = new FileInfo(item).Length
+            });
+        }
+        await Task.CompletedTask;
+        return response;
+    }
+
+    public async Task<List<SelectedDataFileModel>> GetAllFiles(string? directoryPath)
+    {
+        var response = new List<SelectedDataFileModel>();
+
+        directoryPath = directoryPath ?? _configuration["Settings:FileDataDirectory"].ToString();
+
+        var files = await GetFiles(directoryPath);
+
+        foreach (var item in files)
+        {
+            response.Add(new SelectedDataFileModel()
+            {
+                FilePath = item.FilePath,
+                FileType = "file",
+                FileSize = item.FileSize,
+                IsSelected = false
+            });
+        }
+
+        var folder = await GetFolders(directoryPath);
+
+        foreach (var item in folder)
+        {
+            response.AddRange(await GetAllFiles(item.FilePath));
+        }
+
+        await Task.CompletedTask;
+        return response;
+    }
+
+    public async Task<Dictionary<string, object>> GetDictionaryFile(string? directoryPath)
+    {
+        var rs = await GetAll(directoryPath);
+
+        Dictionary<string, object> dict = new Dictionary<string, object>();
+
+        foreach (var item in rs.Where(s => s.FileType == "file"))
+        {
+            dict.TryAdd(item.FilePath.Split('/').LastOrDefault(), item.FilePath);
+        }
+
+        foreach (var item in rs.Where(s => s.FileType == "directory"))
+        {
+            dict.TryAdd(item.FilePath.Split('/').LastOrDefault(), await GetDictionaryFile(item.FilePath));
+        }
+
+        return dict;
+    }
+
+
 }

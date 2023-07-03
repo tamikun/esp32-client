@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using esp32_client.Models;
 using Microsoft.AspNetCore.Cors;
+using Newtonsoft.Json;
 
 namespace esp32_client.Controllers;
 
@@ -17,6 +18,18 @@ public class HomeController : Controller
     public IActionResult Index()
     {
         return View();
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> Index(MultipleUploadFileModel? fileModel)
+    {
+        System.Console.WriteLine("Call Home-Index-Post");
+
+        System.Console.WriteLine("==== fileModel: " + JsonConvert.SerializeObject(fileModel));
+
+        await Task.CompletedTask;
+
+        return RedirectToAction("Index");
     }
 
     public IActionResult Privacy()

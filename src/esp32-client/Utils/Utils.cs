@@ -1,3 +1,5 @@
+using Newtonsoft.Json;
+
 namespace esp32_client.Utils
 {
     public static class Utils
@@ -14,6 +16,20 @@ namespace esp32_client.Utils
                 backDirString = string.Join('/', backDir.Take(backDir.Count - 1));
             }
             return backDirString;
+        }
+
+        public static bool TryParseObjectToDictionary(object obj, out Dictionary<string, object> dict)
+        {
+            dict = new Dictionary<string, object>();
+            try
+            {
+                dict = JsonConvert.DeserializeObject<Dictionary<string, object>>(JsonConvert.SerializeObject(obj));
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+            return true;
         }
     }
 }

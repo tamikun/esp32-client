@@ -6,3 +6,87 @@
     <h1 class="display-4">Welcome</h1>
 </div>
 
+
+<div id="fileExplorer">
+    <ul id="fileList"></ul>
+</div>
+
+@* @{
+var data = new MultipleUploadFileModel();
+data.ListSelectedDataFile = await _fileService.GetAllFiles(null);
+}
+
+@await Html.PartialAsync("~/Views/MultipleUploadFile/ListFile2.cshtml",data) *@
+
+@*
+@section Scripts{
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+$(document).ready(function () {
+// File list data
+var fileList = [
+{
+"filePath": "/app/FileData/New folder/appsettings.json",
+"fileType": "file",
+"fileSize": 151
+},
+{
+"filePath": "/app/FileData/New folder/NewTextDocument.txt",
+"fileType": "file",
+"fileSize": 0
+},
+{
+"filePath": "/app/FileData/appsettings.json",
+"fileType": "file",
+"fileSize": 151
+},
+{
+"filePath": "/app/FileData/NewTextDocument.txt",
+"fileType": "file",
+"fileSize": 0
+},
+{
+"filePath": "/app/FileData/NewTextDocument2.txt",
+"fileType": "file",
+"fileSize": 0
+}
+];
+
+// Group files by folders
+var folders = {};
+fileList.forEach(function (file) {
+var folderPath = file.filePath.substring(0, file.filePath.lastIndexOf("/"));
+if (!folders.hasOwnProperty(folderPath)) {
+folders[folderPath] = [];
+}
+folders[folderPath].push(file);
+});
+
+// Generate HTML structure
+var $fileList = $('#fileList');
+for (var folderPath in folders) {
+var $folderLi = $('<li class="folder"></li>');
+var $folderToggle = $('<span class="folder-toggle">+</span>');
+var $folderName = $('<span class="folder-name"></span>').text(folderPath.substring(folderPath.lastIndexOf("/") + 1));
+
+$folderToggle.click(function () {
+$(this).toggleClass('expanded');
+$(this).siblings('ul').toggle();
+});
+
+$folderLi.append($folderToggle);
+$folderLi.append($folderName);
+
+var $folderUl = $('<ul></ul>');
+folders[folderPath].forEach(function (file) {
+var $fileLi = $('<li class="file"></li>').text(file.filePath.substring(file.filePath.lastIndexOf("/") + 1));
+$folderUl.append($fileLi);
+});
+
+$folderLi.append($folderUl);
+$fileList.append($folderLi);
+}
+});
+</script>
+} *@
