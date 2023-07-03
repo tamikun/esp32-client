@@ -208,11 +208,57 @@ public partial class ClientService : IClientService
                     fileData.FileName = tableCells[0].InnerText.Trim();
                     fileData.FileType = tableCells[1].InnerText.Trim();
                     fileData.FileSize = long.Parse(tableCells[2].InnerText.Trim());
-                    // fileData.DeleteActionUrl = tableCells[3].SelectSingleNode("form/@action").GetAttributeValue("value", "");
                     fileDataList.Add(fileData);
                 }
             }
         }
         return fileDataList;
+    }
+
+    public virtual async Task<Dictionary<string, object>> GetDictionaryFileWithNode(string ipAddress = "http://192.168.101.84/", string node = "//table[@class='fixed']/tbody/tr")
+    {
+        Dictionary<string, object> dict = new Dictionary<string, object>();
+        dict.Add(ipAddress, await GetDictionaryFile(ipAddress, node));
+        return dict;
+    }
+
+    public virtual async Task<Dictionary<string, object>> GetDictionaryFile(string ipAddress = "http://192.168.101.84/", string node = "//table[@class='fixed']/tbody/tr")
+    {
+        Dictionary<string, object> dict = new Dictionary<string, object>();
+
+        var pageData = await GetAsyncApi(ipAddress, false);
+
+        string html = pageData;
+
+        List<EspFileModel> fileDataList = new List<EspFileModel>();
+
+        HtmlDocument htmlDoc = new HtmlDocument();
+        htmlDoc.LoadHtml(html);
+
+        HtmlNodeCollection tableRows = htmlDoc.DocumentNode.SelectNodes(node);
+        if (tableRows != null && tableRows.Count > 0)
+        {
+            foreach (HtmlNode row in tableRows)
+            {
+                HtmlNodeCollection tableCells = row.SelectNodes("td");
+                if (tableCells != null && tableCells.Count >= 4)
+                {
+                    var fileName = tableCells[0].InnerText;
+                    var fileType = tableCells[1].InnerText;
+                    var fileSize = long.Parse(tableCells[2].InnerText.Trim());
+
+                    if (fileType == "directory")
+                    {
+                        var newAddress = $"{ipAddress}{fileName}/";
+                        dict.Add(fileName, await GetDictionaryFile(ipAddress: newAddress));
+                    }
+                    else
+                    {
+                        dict.Add(fileName, $"{ipAddress}{fileName}/");
+                    }
+                }
+            }
+        }
+        return dict;
     }
 }

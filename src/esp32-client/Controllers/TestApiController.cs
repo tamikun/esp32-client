@@ -69,38 +69,7 @@ public class TestApiController : ControllerBase
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> GetListEspFile(string html, string node = "//table[@class='fixed']/tbody/tr")
-    {
-        List<EspFileModel> fileDataList = new List<EspFileModel>();
-
-        HtmlDocument htmlDoc = new HtmlDocument();
-        htmlDoc.LoadHtml(html);
-
-        HtmlNodeCollection tableRows = htmlDoc.DocumentNode.SelectNodes(node);
-        if (tableRows != null && tableRows.Count > 0)
-        {
-            foreach (HtmlNode row in tableRows)
-            {
-                HtmlNodeCollection tableCells = row.SelectNodes("td");
-                if (tableCells != null && tableCells.Count >= 4)
-                {
-                    EspFileModel fileData = new EspFileModel();
-                    fileData.FileName = tableCells[0].InnerText.Trim();
-                    fileData.FileType = tableCells[1].InnerText.Trim();
-                    fileData.FileSize = long.Parse(tableCells[2].InnerText.Trim());
-                    // fileData.DeleteActionUrl = tableCells[3].SelectSingleNode("form/@action").GetAttributeValue("value", "");
-                    fileDataList.Add(fileData);
-                }
-            }
-        }
-        await Task.CompletedTask;
-        return Ok(fileDataList);
-    }
-
-    [HttpGet]
-    [ProducesResponseType(StatusCodes.Status201Created)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> GetListEspFile2(string apiUrl, string node = "//table[@class='fixed']/tbody/tr")
+    public async Task<IActionResult> GetListEspFile(string apiUrl, string node = "//table[@class='fixed']/tbody/tr")
     {
         var result = await _clientService.GetListEspFile(apiUrl, node);
         return Ok(result);
@@ -112,6 +81,16 @@ public class TestApiController : ControllerBase
     public async Task<IActionResult> GetDictionaryFile(string? directoryPath = null)
     {
         var rs = await _fileService.GetDictionaryFile(directoryPath);
+
+        return Ok(rs);
+    }
+
+    [HttpGet]
+    [ProducesResponseType(StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> GetDictionaryFileWithNode(string ipAddress)
+    {
+        var rs = await _clientService.GetDictionaryFileWithNode(ipAddress);
 
         return Ok(rs);
     }

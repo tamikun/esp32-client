@@ -13,5 +13,8 @@ namespace esp32_client.Services
         Task<string> GetAsyncApi(string apiUrl, bool throwException = true);
 
         Task<List<EspFileModel>> GetListEspFile(string apiUrl, string node = "//table[@class='fixed']/tbody/tr");
+
+        Task<Dictionary<string, object>> GetDictionaryFileWithNode(string ipAddress = "http://192.168.101.84/", string node = "//table[@class='fixed']/tbody/tr");
+        Task<Dictionary<string, object>> GetDictionaryFile(string ipAddress = "http://192.168.101.84/", string node = "//table[@class='fixed']/tbody/tr");
     }
 }
