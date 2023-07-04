@@ -19,22 +19,8 @@
 
 @section Scripts{
     <script>
-        @* $(document).ready(function () {
-
-        // Bind click event to toggle spans
-        $('.toggle').click(function () {
-        // Find the next sibling element (the <ul> in this case)
-        var ul = $(this).next();
-
-        // Toggle the display of the next sibling element
-        ul.slideToggle();
-
-        // Change the text of the toggle span based on the visibility of the next sibling element
-        $(this).text(ul.is(':visible') ? '-' : '+');
-        });
-        }); *@
-
-    var toggles = document.querySelectorAll('.toggle');
+      
+        var toggles = document.querySelectorAll('.toggle');
 
         toggles.forEach(function (toggle) {
             toggle.addEventListener('click', function () {
@@ -43,10 +29,10 @@
 
                 if (nestedUl.style.display === 'none') {
                     nestedUl.style.display = 'block';
-                    toggle.textContent = '-';
+                    toggle.textContent = '[-]';
                 } else {
                     nestedUl.style.display = 'none';
-                    toggle.textContent = '+';
+                    toggle.textContent = '[+]';
                 }
             });
         });
