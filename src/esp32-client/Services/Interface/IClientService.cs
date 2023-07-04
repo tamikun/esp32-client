@@ -5,6 +5,7 @@ namespace esp32_client.Services
     public interface IClientService
     {
         List<ServerModel> GetAvailableIpAddress();
+        Task<List<ServerModel>> GetStaticIpAddress();
 
         Task<HttpResponseMessage> PostAsyncApi(string? requestBody, string apiUrl);
 

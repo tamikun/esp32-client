@@ -5,7 +5,8 @@ namespace esp32_client.Services
     public class ListServer
     {
         private static ListServer? instance;
-        private List<ServerModel> itemList;
+        private List<ServerModel> dynamicList;
+        private List<ServerModel> staticList;
         private readonly IClientService _clientService;
 
         // Private constructor to prevent direct instantiation
@@ -13,8 +14,8 @@ namespace esp32_client.Services
         {
             _clientService = clientService;
 
-            // Initialize the list of items
-            itemList = CreateItemList();
+            dynamicList = new List<ServerModel>();
+            staticList = new List<ServerModel>();
         }
 
         // Public method to get the instance of the singleton class
@@ -32,28 +33,29 @@ namespace esp32_client.Services
         // Method to retrieve the list of items
         public List<ServerModel> GetItemList()
         {
-            return itemList;
+            if (dynamicList.Count == 0)
+                CreateDynamicList();
+            return dynamicList;
         }
 
-        // Your method to create the list of items
-        private List<ServerModel> CreateItemList()
+        private void CreateDynamicList()
         {
             // Implementation to create and return the list of items
-            var response = _clientService.GetAvailableIpAddress();
-
-            return response;
+            dynamicList = _clientService.GetAvailableIpAddress();
         }
 
         // Reload
-        public void ReloadItemList()
+        public void ReloadDynamicList()
         {
             // Implementation to create and return the list of items
-            itemList = _clientService.GetAvailableIpAddress();
+            dynamicList = _clientService.GetAvailableIpAddress();
         }
 
-        public List<ServerModel> GetStaticList()
+        public async Task<List<ServerModel>> GetStaticList()
         {
-            return itemList;
+            if (staticList.Count == 0)
+                staticList = await _clientService.GetStaticIpAddress();
+            return staticList;
         }
     }
 }

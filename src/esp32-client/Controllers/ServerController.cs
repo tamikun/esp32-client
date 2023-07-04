@@ -89,7 +89,7 @@ public class ServerController : Controller
     public async Task<IActionResult> Reload()
     {
 
-        ListServer.GetInstance(_clientService).ReloadItemList();
+        ListServer.GetInstance(_clientService).ReloadDynamicList();
         await Task.CompletedTask;
 
         return RedirectToAction("Index");
