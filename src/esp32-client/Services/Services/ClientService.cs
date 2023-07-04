@@ -251,8 +251,11 @@ public partial class ClientService : IClientService
         try
         {
             System.Console.WriteLine("==== GetAsyncApi: " + apiUrl);
+            long timeout = long.Parse(_configuration["Settings:GetDataTimeOut"].ToString());
             using (HttpClient client = new HttpClient())
             {
+                client.Timeout = TimeSpan.FromMilliseconds(timeout);
+
                 HttpResponseMessage response = await client.GetAsync(apiUrl);
 
                 if (response.IsSuccessStatusCode)
