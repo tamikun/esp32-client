@@ -29,33 +29,35 @@
 @functions {
     async Task RenderDictionaryItem(string key, object value)
     {
+        var displayName = "";
+
+        // get: {ip}/{path}
+        var getPath = key.Split("//").Skip(1).FirstOrDefault().Split('/').Where(s => !string.IsNullOrEmpty(s)).ToList();
+
+        System.Console.WriteLine("==== getPath: " + Newtonsoft.Json.JsonConvert.SerializeObject(getPath));
+
+        if (getPath.Count > 1)
+        {
+            //Exist path
+            //Get the folder
+            displayName = getPath.LastOrDefault();
+        }
+        else
+        {
+            //just IP
+            //Get ServerName
+            var serverInfo = (await ListServer.GetInstance(_clientService).GetStaticList())
+            .Where(s => s.IpAddress == getPath.FirstOrDefault()).FirstOrDefault();
+
+            displayName = string.IsNullOrEmpty(serverInfo?.ServerName) ? $"{serverInfo?.IpAddress} {{undefined}}" :
+            serverInfo.ServerName;
+        }
+
         @if (value is Dictionary<string, object> nestedDictionary)
         {
-            var displayName = "";
-
-            // get: {ip}/{path}
-            var getPath = key.Split("//").Skip(1).FirstOrDefault().Split('/').Where(s => !string.IsNullOrEmpty(s)).ToList();
-
-            System.Console.WriteLine("==== getPath: " + Newtonsoft.Json.JsonConvert.SerializeObject(getPath));
-
-            if (getPath.Count > 1)
-            {
-                //Exist path
-                //Get the folder
-                displayName = getPath.LastOrDefault();
-            }
-            else
-            {
-                //just IP
-                //Get ServerName
-                var serverInfo = (await ListServer.GetInstance(_clientService).GetStaticList())
-                .Where(s => s.IpAddress == getPath.FirstOrDefault()).FirstOrDefault();
-
-                displayName = string.IsNullOrEmpty(serverInfo?.ServerName) ? "undefined" : serverInfo.ServerName;
-            }
 
             <span class="toggle">[+]</span>
-            <span>@key {@displayName}</span>
+            <span>@displayName</span>
             var getIndex = Model.ListSelectedServer.FindIndex(s => key.Contains($"{s.IpAddress}{s.Folder}"));
             if (getIndex >= 0)
             {
@@ -76,7 +78,7 @@
         }
         else
         {
-            <span>@key</span>
+            <span>@displayName</span>
             @* <span>: @value</span> *@
         }
     }
