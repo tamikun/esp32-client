@@ -359,6 +359,7 @@ public partial class ClientService : IClientService
         return dict;
     }
 
+    // Get all directory of server in order to select folder to save files
     public virtual async Task<List<SelectedServerModel>> GetListSelectedServer(string ipAddress = "http://192.168.101.84/", string folder = "")
     {
         string node = _configuration["Settings:NodeListEspFile"].ToString();

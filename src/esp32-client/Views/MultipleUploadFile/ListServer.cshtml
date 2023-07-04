@@ -3,7 +3,7 @@
 @{
     ViewData["Title"] = "Upload Multiple Files";
 
-    var listServer = ListServer.GetInstance(_clientService).GetDynamicList();
+    var listServer = await ListServer.GetInstance(_clientService).GetStaticList();
     Dictionary<string, object> listServerDict = new Dictionary<string, object>();
     foreach (var server in listServer)
     {

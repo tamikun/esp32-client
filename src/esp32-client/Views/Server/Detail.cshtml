@@ -4,7 +4,7 @@
 
 @{
 
-    @await Html.PartialAsync("~/Views/Components/ListServer.cshtml", @ListServer.GetInstance(_clientService).GetDynamicList())
+    @await Html.PartialAsync("~/Views/Components/ListServer.cshtml", await ListServer.GetInstance(_clientService).GetStaticList())
 
     if (TempData["AlertMessage"] is not null)
     {
