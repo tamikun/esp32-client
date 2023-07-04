@@ -4,7 +4,7 @@
         var alertElement = $(this);
         setTimeout(function () {
             alertElement.fadeOut("slow");
-        }, 2000);
+        }, 5000);
     });
 
 });

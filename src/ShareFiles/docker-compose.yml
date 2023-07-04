@@ -18,6 +18,7 @@ services:
       - Settings:Port=80
       - Settings:ConnectionTimeOut=300
       - Settings:GetDataTimeOut=300
+      - Settings:PostFileTimeOut=500
       - Settings:FileDataDirectory=/app/FileData
       - Settings:ListServer=192.168.101.60;192.168.101.84;192.168.101.74
       - Settings:NodeServerName=//h3

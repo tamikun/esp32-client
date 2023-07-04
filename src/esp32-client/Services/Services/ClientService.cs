@@ -216,12 +216,17 @@ public partial class ClientService : IClientService
 
     public virtual async Task<HttpResponseMessage> PostAsyncFile(byte[] byteContent, string filePath, string ipAddress)
     {
+        Stopwatch sw = new Stopwatch();
+        sw.Start();
+
         var url = $"{ipAddress}upload/{filePath}";
 
-        System.Console.WriteLine("==== url: " + Newtonsoft.Json.JsonConvert.SerializeObject(url));
+        System.Console.WriteLine("==== PostAsyncFile url: " + Newtonsoft.Json.JsonConvert.SerializeObject(url));
 
         using (var httpClient = new HttpClient())
         {
+            httpClient.Timeout = TimeSpan.FromMilliseconds(long.Parse(_configuration["Settings:PostFileTimeOut"].ToString()));
+
             using (var content = new MultipartFormDataContent())
             {
 
@@ -231,6 +236,10 @@ public partial class ClientService : IClientService
 
                 // Send the request
                 var response = await httpClient.PostAsync(url, content);
+
+                sw.Stop();
+
+                System.Console.WriteLine("==== PostAsyncFile ElapsedMilliseconds: " + Newtonsoft.Json.JsonConvert.SerializeObject(sw.ElapsedMilliseconds));
 
                 return response;
             }

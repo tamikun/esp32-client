@@ -1,9 +1,23 @@
 ﻿@model MultipleUploadFileModel
-@using esp32_client.Controllers
+@using Newtonsoft.Json
 @using esp32_client.Utils
 @{
     ViewData["Title"] = "Upload Multiple Files";
 }
+
+<div class="alert-message">
+
+    @if (TempData["AlertMessage"] is not null)
+    {
+        var alertModel = JsonConvert.DeserializeObject<List<AlertModel>>(TempData["AlertMessage"].ToString());
+
+        foreach (var alert in alertModel)
+        {
+            @await Html.PartialAsync("~/Views/Components/Alert.cshtml", alert)
+        }
+    }
+
+</div>
 
 @using (Html.BeginForm("Index", "MultipleUploadFile", FormMethod.Post, new { @enctype = "multipart/form-data" }))
 {
@@ -19,7 +33,7 @@
 
 @section Scripts{
     <script>
-      
+
         var toggles = document.querySelectorAll('.toggle');
 
         toggles.forEach(function (toggle) {

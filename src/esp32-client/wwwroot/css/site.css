@@ -107,6 +107,12 @@ iframe {
 
 .alert {
   margin-bottom: 0;
+  position: relative;
+  right: 0;
+}
+
+.alert-message {
+  margin-bottom: 0;
   position: absolute;
   right: 0;
 }

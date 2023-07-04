@@ -41,6 +41,8 @@ public class MultipleUploadFileController : Controller
         var selectedFile = fileModel.ListSelectedDataFile.Where(s => s.IsSelected).ToList();
         var selectedServer = fileModel.ListSelectedServer.Where(s => s.IsSelected).ToList();
 
+        var listAlert = new List<AlertModel>();
+
         foreach (var file in selectedFile)
         {
             var fileName = file.FilePath.Split('/').LastOrDefault();
@@ -59,10 +61,36 @@ public class MultipleUploadFileController : Controller
                 {
                     filePath = fileName;
                 }
-                var result = await _clientService.PostAsyncFile(fileBytes, filePath, server.IpAddress);
-                System.Console.WriteLine("==== resutl: " + Newtonsoft.Json.JsonConvert.SerializeObject(result));
+
+                string message = $"Upload file {file.FilePath} to {server.IpAddress}{filePath}: ";
+
+                Stopwatch sw = new Stopwatch();
+                sw.Start();
+                try
+                {
+
+                    var result = await _clientService.PostAsyncFile(fileBytes, filePath, server.IpAddress);
+
+                    if (!result.IsSuccessStatusCode)
+                    {
+                        listAlert.Add(new AlertModel { AlertType = Alert.Danger, AlertMessage = message + result.StatusCode.ToString() });
+                    }
+                    else
+                    {
+                        listAlert.Add(new AlertModel { AlertType = Alert.Success, AlertMessage = message + "Success" });
+                    }
+                }
+                catch
+                {
+                    listAlert.Add(new AlertModel { AlertType = Alert.Danger, AlertMessage = message + "Connection time out" });
+                }
+                sw.Stop();
+                System.Console.WriteLine("==== Multi ElapsedMilliseconds: " + Newtonsoft.Json.JsonConvert.SerializeObject(sw.ElapsedMilliseconds));
+
             }
         }
+
+        TempData["AlertMessage"] = JsonConvert.SerializeObject(listAlert);
 
         return RedirectToAction("Index");
     }
