@@ -31,8 +31,8 @@
     {
         @if (value is Dictionary<string, object> nestedDictionary)
         {
+            <span>[+]</span>
             <span>@key</span>
-            <span>+</span>
             var getIndex = Model.ListSelectedServer.FindIndex(s => key.Contains($"{s.IpAddress}{s.Folder}"));
             if (getIndex >= 0)
             {
@@ -40,7 +40,7 @@
                 @Html.HiddenFor(model => model.ListSelectedServer[getIndex].Folder)
                 @Html.HiddenFor(model => model.ListSelectedServer[getIndex].IpAddress)
             }
-            <ul>
+            <ul style="display: none;">
                 @foreach (var nestedItem in nestedDictionary)
                 {
                     <li>

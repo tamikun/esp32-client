@@ -123,9 +123,9 @@ iframe {
   width: -webkit-fill-available;
 }
 
-ul ul {
+/* ul ul {
   display: none;
-}
+} */
 
 .toggle {
   cursor: pointer;
