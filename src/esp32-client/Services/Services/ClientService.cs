@@ -82,25 +82,67 @@ public partial class ClientService : IClientService
         return resultList;
     }
 
-    public virtual async Task<List<ServerModel>> GetStaticIpAddress()
+    // public virtual async Task<List<ServerModel>> GetStaticIpAddress()
+    // {
+    //     var listIp = _configuration["Settings:ListServer"].ToString().Split(';').ToList();
+
+    //     var response = (from ip in listIp
+    //                     where !string.IsNullOrEmpty(ip)
+    //                     select new ServerModel()
+    //                     {
+    //                         IpAddress = ip,
+    //                     }).ToList();
+    //     await Task.CompletedTask;
+    //     // Get name
+    //     var nodeName = _configuration["Settings:NodeServerName"].ToString();
+    //     foreach (var ip in response)
+    //     {
+    //         ip.ServerName = await GetServerName($"http://{ip.IpAddress}/", nodeName);
+    //     }
+
+    //     return response;
+    // }
+
+    public async Task<List<ServerModel>> GetStaticIpAddress()
     {
+        Stopwatch sw = new Stopwatch();
+        sw.Start();
+
         var listIp = _configuration["Settings:ListServer"].ToString().Split(';').ToList();
+        string nodeServerName = _configuration["Settings:NodeServerName"].ToString();
+        int timeout = int.Parse(_configuration["Settings:GetDataTimeOut"].ToString());
 
-        var response = (from ip in listIp
-                        where !string.IsNullOrEmpty(ip)
-                        select new ServerModel()
-                        {
-                            IpAddress = ip,
-                        }).ToList();
-        await Task.CompletedTask;
-        // Get name
-        var nodeName = _configuration["Settings:NodeServerName"].ToString();
-        foreach (var ip in response)
-        {
-            ip.ServerName = await GetServerName($"http://{ip.IpAddress}/", nodeName);
-        }
+        var responseTasks = listIp
+            .Where(ip => !string.IsNullOrEmpty(ip))
+            .Select(async ip =>
+            {
+                var serverModel = new ServerModel()
+                {
+                    IpAddress = ip
+                };
 
-        return response;
+                var getServerNameTask = GetServerName($"http://{ip}/", nodeServerName);
+
+                var completedTask = await Task.WhenAny(getServerNameTask, Task.Delay(timeout)); // Set timeout of 300 miliseconds
+
+                if (completedTask == getServerNameTask && getServerNameTask.Status == TaskStatus.RanToCompletion)
+                {
+                    serverModel.ServerName = getServerNameTask.Result;
+                }
+                else
+                {
+                    serverModel.ServerName = "";
+                }
+
+                return serverModel;
+            });
+
+        var response = await Task.WhenAll(responseTasks);
+
+        sw.Stop();
+        System.Console.WriteLine($"==== GetStaticIpAddress completed in {sw.ElapsedMilliseconds} ms");
+
+        return response.ToList();
     }
 
     public virtual async Task<string> GetServerName(string url, string node)
@@ -141,26 +183,16 @@ public partial class ClientService : IClientService
                 response = await client.PostAsync(apiUrl, content);
             }
 
-            // if (response.IsSuccessStatusCode)
-            // {
-            //     string responseBody = await response.Content.ReadAsStringAsync();
-            //     return responseBody;
-            // }
-            // else
-            // {
-            // }
             return response;
         }
     }
 
     public virtual async Task<HttpResponseMessage> PostAsyncFile(IFormFile newFile, string filePath, string ipAddress)
     {
-        System.Console.WriteLine(newFile.FileName);
-        System.Console.WriteLine(newFile.ContentType);
-        System.Console.WriteLine(filePath);
-        System.Console.WriteLine(ipAddress);
 
         var url = $"{ipAddress}upload/{filePath}";
+
+        System.Console.WriteLine("==== PostAsyncFile: " + Newtonsoft.Json.JsonConvert.SerializeObject(url));
 
         using (var httpClient = new HttpClient())
         {

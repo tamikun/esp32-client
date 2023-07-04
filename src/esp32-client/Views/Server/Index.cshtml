@@ -1,7 +1,8 @@
 ﻿@model RequestFileModel
 @{
     ViewData["Title"] = "Server";
-    var listServer = @ListServer.GetInstance(_clientService).GetItemList();
+    @* var listServer = @ListServer.GetInstance(_clientService).GetDynamicList(); *@
+    var listServer = await ListServer.GetInstance(_clientService).GetStaticList();
 }
 
 @await Html.PartialAsync("~/Views/Components/ListServer.cshtml", listServer)

@@ -31,7 +31,7 @@ namespace esp32_client.Services
         }
 
         // Method to retrieve the list of items
-        public List<ServerModel> GetItemList()
+        public List<ServerModel> GetDynamicList()
         {
             if (dynamicList.Count == 0)
                 CreateDynamicList();
@@ -45,10 +45,15 @@ namespace esp32_client.Services
         }
 
         // Reload
-        public void ReloadDynamicList()
+        public async Task ReloadDynamicList()
         {
             // Implementation to create and return the list of items
             dynamicList = _clientService.GetAvailableIpAddress();
+            await Task.CompletedTask;
+        }
+        public async Task ReloadStaticList()
+        {
+            staticList = await _clientService.GetStaticIpAddress();
         }
 
         public async Task<List<ServerModel>> GetStaticList()

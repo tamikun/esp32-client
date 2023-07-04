@@ -24,11 +24,12 @@
                     {
                         var actionName = nameof(@ServerController.Detail);
                         var subDir = "";
+                        var serverName = string.IsNullOrEmpty(item.ServerName) ? "undefined" : item.ServerName;
 
                         <li>
                             <a href="@Url.Action(@actionName, new { ipAddress = item.IpAddress, subDirectory = @subDir})"
                                 class="list-server-detail">
-                                @item.IpAddress
+                                @item.IpAddress {@serverName}
                             </a>
                         </li>
                     }

@@ -24,7 +24,6 @@ public class ServerController : Controller
 
     [HttpPost]
     public IActionResult Index(RequestFileModel? fileModel)
-    // public IActionResult Index(IFormFile? File)
     {
         System.Console.WriteLine("Call Server-Index-Post");
         System.Console.WriteLine("==== file: " + JsonConvert.SerializeObject(fileModel.File));
@@ -89,8 +88,8 @@ public class ServerController : Controller
     public async Task<IActionResult> Reload()
     {
 
-        ListServer.GetInstance(_clientService).ReloadDynamicList();
-        await Task.CompletedTask;
+        await ListServer.GetInstance(_clientService).ReloadDynamicList();
+        await ListServer.GetInstance(_clientService).ReloadStaticList();
 
         return RedirectToAction("Index");
     }
