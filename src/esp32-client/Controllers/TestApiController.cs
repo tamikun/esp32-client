@@ -13,12 +13,14 @@ public class TestApiController : ControllerBase
     private readonly ILogger<HomeController> _logger;
     private readonly IClientService _clientService;
     private readonly IFileService _fileService;
+    private readonly IConfiguration _configuration;
 
-    public TestApiController(ILogger<HomeController> logger, IClientService clientService, IFileService fileService)
+    public TestApiController(ILogger<HomeController> logger, IClientService clientService, IFileService fileService, IConfiguration configuration)
     {
         _logger = logger;
         _clientService = clientService;
         _fileService = fileService;
+        _configuration = configuration;
     }
 
     [HttpPost]
@@ -69,10 +71,42 @@ public class TestApiController : ControllerBase
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> GetListEspFile(string apiUrl, string node = "//table[@class='fixed']/tbody/tr")
+    public async Task<IActionResult> GetListEspFile(string apiUrl)
     {
-        var result = await _clientService.GetListEspFile(apiUrl, node);
+        var result = await _clientService.GetListEspFile(apiUrl);
         return Ok(result);
+    }
+
+    [HttpPost]
+    [ProducesResponseType(StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> TestGetDataFromHtmlString(string apiUrl, string node = "//h3")
+    {
+        var pageData = await _clientService.GetAsyncApi(apiUrl, false);
+
+        string html = pageData;
+
+        HtmlDocument htmlDoc = new HtmlDocument();
+        htmlDoc.LoadHtml(html);
+        HtmlNodeCollection selectedNodes = htmlDoc.DocumentNode.SelectNodes(node);
+        if (selectedNodes != null && selectedNodes.Count > 0)
+        {
+            foreach (var select in selectedNodes)
+            {
+                System.Console.WriteLine("==== InnerHtml: " + Newtonsoft.Json.JsonConvert.SerializeObject(select.InnerHtml));
+                System.Console.WriteLine("==== InnerText: " + Newtonsoft.Json.JsonConvert.SerializeObject(select.InnerText));
+            }
+        }
+        return Ok(selectedNodes.Count);
+    }
+
+    [HttpPost]
+    [ProducesResponseType(StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> GetSetting(string setting)
+    {
+
+        return Ok(_configuration[setting]);
     }
 
     [HttpGet]

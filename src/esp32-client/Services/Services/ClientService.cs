@@ -5,6 +5,7 @@ using System.Net.Sockets;
 using System.Text;
 using esp32_client.Models;
 using HtmlAgilityPack;
+using System.Linq;
 
 namespace esp32_client.Services;
 
@@ -56,9 +57,6 @@ public partial class ClientService : IClientService
 
                             if (await Task.WhenAny(connectTask, Task.Delay(configConnectionTimeOut)) != connectTask || !client.Connected)
                             {
-                                // Connection attempt timed out or failed
-                                // Console.ForegroundColor = ConsoleColor.Red;
-                                // Console.WriteLine($"Failed @{address}");
                                 return;
                             }
 
@@ -69,23 +67,63 @@ public partial class ClientService : IClientService
                             client.Close();
                         }
                         catch//(SocketException ex)
-                        {
-                            // Console.ForegroundColor = ConsoleColor.Red;
-                            // Console.WriteLine($"Failed @{address} Error code: {ex.ErrorCode}");
-                        }
+                        { }
                     }
                 }).Wait();
             }
         });
 
         // Access the response list outside the parallel loop
-        // var resultList = response.OrderBy(s => s.IpAddress).ToList();
         var resultList = response.OrderBy(s => int.Parse(s?.IpAddress?.Split('.').LastOrDefault() ?? Int32.MaxValue.ToString())).ToList();
 
         sw.Stop();
         System.Console.WriteLine("==== sw: " + Newtonsoft.Json.JsonConvert.SerializeObject(sw.ElapsedMilliseconds));
 
         return resultList;
+    }
+
+    public virtual async Task<List<ServerModel>> GetStaticIpAddress()
+    {
+        var listIp = _configuration["Settings:ListServer"].ToString().Split(';').ToList();
+
+        var response = (from ip in listIp
+                        where !string.IsNullOrEmpty(ip)
+                        select new ServerModel()
+                        {
+                            IpAddress = ip,
+                        }).ToList();
+        await Task.CompletedTask;
+        // Get name
+        var nodeName = _configuration["Settings:NodeServerName"].ToString();
+        foreach (var ip in response)
+        {
+            ip.ServerName = await GetServerName($"http://{ip.IpAddress}/", nodeName);
+        }
+
+        return response;
+    }
+
+    public virtual async Task<string> GetServerName(string url, string node)
+    {
+        try
+        {
+            var pageData = await GetAsyncApi(url, true);
+
+            string html = pageData;
+
+            HtmlDocument htmlDoc = new HtmlDocument();
+            htmlDoc.LoadHtml(html);
+            HtmlNodeCollection selectedNodes = htmlDoc.DocumentNode.SelectNodes(node);
+            if (selectedNodes != null && selectedNodes.Count > 0)
+            {
+                return selectedNodes[0].InnerText;
+            }
+            return "";
+        }
+        catch
+        {
+            return "";
+        }
     }
 
     public virtual async Task<HttpResponseMessage> PostAsyncApi(string? requestBody, string apiUrl)
@@ -206,8 +244,9 @@ public partial class ClientService : IClientService
         }
     }
 
-    public virtual async Task<List<EspFileModel>> GetListEspFile(string apiUrl, string node = "//table[@class='fixed']/tbody/tr")
+    public virtual async Task<List<EspFileModel>> GetListEspFile(string apiUrl)
     {
+        string node = _configuration["Settings:NodeListEspFile"].ToString();
         var pageData = await GetAsyncApi(apiUrl, false);
 
         string html = pageData;
@@ -236,15 +275,17 @@ public partial class ClientService : IClientService
         return fileDataList;
     }
 
-    public virtual async Task<Dictionary<string, object>> GetDictionaryFileWithNode(string ipAddress = "http://192.168.101.84/", string node = "//table[@class='fixed']/tbody/tr")
+    public virtual async Task<Dictionary<string, object>> GetDictionaryFileWithNode(string ipAddress = "http://192.168.101.84/")
     {
         Dictionary<string, object> dict = new Dictionary<string, object>();
-        dict.Add(ipAddress, await GetDictionaryFile(ipAddress, node));
+        dict.Add(ipAddress, await GetDictionaryFile(ipAddress));
         return dict;
     }
 
-    public virtual async Task<Dictionary<string, object>> GetDictionaryFile(string ipAddress = "http://192.168.101.84/", string node = "//table[@class='fixed']/tbody/tr")
+    public virtual async Task<Dictionary<string, object>> GetDictionaryFile(string ipAddress = "http://192.168.101.84/")
     {
+        string node = _configuration["Settings:NodeListEspFile"].ToString();
+
         Dictionary<string, object> dict = new Dictionary<string, object>();
 
         var pageData = await GetAsyncApi(ipAddress, false);
@@ -283,8 +324,10 @@ public partial class ClientService : IClientService
         return dict;
     }
 
-    public virtual async Task<List<SelectedServerModel>> GetListSelectedServer(string ipAddress = "http://192.168.101.84/", string folder = "", string node = "//table[@class='fixed']/tbody/tr")
+    public virtual async Task<List<SelectedServerModel>> GetListSelectedServer(string ipAddress = "http://192.168.101.84/", string folder = "")
     {
+        string node = _configuration["Settings:NodeListEspFile"].ToString();
+
         List<SelectedServerModel> response = new List<SelectedServerModel>();
 
         if (!string.IsNullOrEmpty(folder))

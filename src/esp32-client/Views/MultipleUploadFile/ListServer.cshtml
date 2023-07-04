@@ -31,7 +31,7 @@
     {
         @if (value is Dictionary<string, object> nestedDictionary)
         {
-            <span>[+]</span>
+            <span class="toggle">[+]</span>
             <span>@key</span>
             var getIndex = Model.ListSelectedServer.FindIndex(s => key.Contains($"{s.IpAddress}{s.Folder}"));
             if (getIndex >= 0)

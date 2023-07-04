@@ -50,5 +50,10 @@ namespace esp32_client.Services
             // Implementation to create and return the list of items
             itemList = _clientService.GetAvailableIpAddress();
         }
+
+        public List<ServerModel> GetStaticList()
+        {
+            return itemList;
+        }
     }
 }

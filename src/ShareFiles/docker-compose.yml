@@ -19,6 +19,8 @@ services:
       - Settings:ConnectionTimeOut=300
       - Settings:FileDataDirectory=/app/FileData
       - Settings:ListServer=192.168.101.60;192.168.101.84;192.168.101.74
+      - Settings:NodeServerName=//h3
+      - Settings:NodeListEspFile=//table[@class='fixed']/tbody/tr
   
   portainer:
     image: portainer/portainer-ce

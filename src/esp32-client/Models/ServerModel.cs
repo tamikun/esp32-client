@@ -5,6 +5,7 @@ namespace esp32_client.Models;
 public class ServerModel
 {
     public string? IpAddress { get; set; }
+    public string? ServerName { get; set; }
 }
 
 public class SelectedServerModel
