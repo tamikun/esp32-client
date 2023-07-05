@@ -34,8 +34,6 @@
         // get: {ip}/{path}
         var getPath = key.Split("//").Skip(1).FirstOrDefault().Split('/').Where(s => !string.IsNullOrEmpty(s)).ToList();
 
-        System.Console.WriteLine("==== getPath: " + Newtonsoft.Json.JsonConvert.SerializeObject(getPath));
-
         if (getPath.Count > 1)
         {
             //Exist path
