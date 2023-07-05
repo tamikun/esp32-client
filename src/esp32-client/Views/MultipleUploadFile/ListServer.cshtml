@@ -71,9 +71,12 @@
 
             if (getIndex >= 0)
             {
-                @Html.CheckBoxFor(model => model.ListSelectedServer[getIndex].IsSelected)
-                @Html.HiddenFor(model => model.ListSelectedServer[getIndex].Folder)
-                @Html.HiddenFor(model => model.ListSelectedServer[getIndex].IpAddress)
+                if (Model.ListSelectedServer[getIndex].Folder == "VDATA")
+                {
+                    @Html.CheckBoxFor(model => model.ListSelectedServer[getIndex].IsSelected)
+                    @Html.HiddenFor(model => model.ListSelectedServer[getIndex].Folder)
+                    @Html.HiddenFor(model => model.ListSelectedServer[getIndex].IpAddress)
+                }
             }
             <ul style="display: none;">
                 @foreach (var nestedItem in nestedDictionary)

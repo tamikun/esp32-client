@@ -38,11 +38,20 @@
         {
             <span>@key</span>
             @* <span>: @value</span> *@
+
             var getIndex = Model.ListSelectedDataFile.FindIndex(s => s.FilePath == value.ToString());
-            @Html.CheckBoxFor(model => model.ListSelectedDataFile[getIndex].IsSelected)
-            @Html.HiddenFor(model => model.ListSelectedDataFile[getIndex].FilePath)
-            @Html.HiddenFor(model => model.ListSelectedDataFile[getIndex].FileSize)
-            @Html.HiddenFor(model => model.ListSelectedDataFile[getIndex].FileType)
+            if (getIndex >= 0)
+            {
+                if (Model.ListSelectedDataFile[getIndex].FilePath.Contains(
+                _configuration["Settings:FileDataDirectory"].ToString() + "/VDATA"))
+                {
+                    @Html.CheckBoxFor(model => model.ListSelectedDataFile[getIndex].IsSelected)
+                    @Html.HiddenFor(model => model.ListSelectedDataFile[getIndex].FilePath)
+                    @Html.HiddenFor(model => model.ListSelectedDataFile[getIndex].FileSize)
+                    @Html.HiddenFor(model => model.ListSelectedDataFile[getIndex].FileType)
+                }
+            }
+
         }
     }
 }
