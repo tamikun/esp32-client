@@ -25,9 +25,11 @@ public class MultipleUploadFileController : Controller
         model.ListSelectedDataFile = await _fileService.GetAllFiles(null);
 
         // foreach (var item in ListServer.GetInstance(_clientService).GetDynamicList())
-        foreach (var item in await ListServer.GetInstance(_clientService).GetStaticList())
+        var staticList = await ListServer.GetInstance(_clientService).GetStaticList();
+        foreach (var item in staticList)
         {
-            model.ListSelectedServer.AddRange(await _clientService.GetListSelectedServer($"http://{item.IpAddress}/"));
+            var getListSelected = await _clientService.GetListSelectedServer($"http://{item.IpAddress}/");
+            model.ListSelectedServer.AddRange(getListSelected);
         }
 
         return View(model);
