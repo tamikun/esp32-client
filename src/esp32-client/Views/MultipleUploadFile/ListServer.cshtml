@@ -1,18 +1,49 @@
 ﻿@model MultipleUploadFileModel
-
+@using System.Diagnostics
 @{
     ViewData["Title"] = "Upload Multiple Files";
 
     var listServer = await ListServer.GetInstance(_clientService).GetStaticList();
     Dictionary<string, object> listServerDict = new Dictionary<string, object>();
-    foreach (var server in listServer)
-    {
-        listServerDict.Add($"http://{server.IpAddress}/", await
-        _clientService.GetDictionaryFile($"http://{server.IpAddress}/"));
-    }
 
-    System.Console.WriteLine("==== model: " + Newtonsoft.Json.JsonConvert.SerializeObject(Model));
-    System.Console.WriteLine("==== listServerDict: " + Newtonsoft.Json.JsonConvert.SerializeObject(listServerDict));
+    @* Stopwatch sw = new Stopwatch();
+
+sw.Start();
+
+foreach (var server in listServer)
+{
+listServerDict.Add($"http://{server.IpAddress}/", await
+_clientService.GetDictionaryFile($"http://{server.IpAddress}/"));
+}
+
+sw.Stop();
+
+System.Console.WriteLine("==== Test sw: " + Newtonsoft.Json.JsonConvert.SerializeObject(sw.ElapsedMilliseconds)); //2686
+*@
+
+    Stopwatch sw = new Stopwatch();
+
+    sw.Start();
+
+    var tasks = listServer.Select(async item =>
+    {
+        var url = $"http://{item.IpAddress}/";
+        var taskGetDict = _clientService.GetDictionaryFile(url);
+
+        var getDict = await taskGetDict;
+
+        listServerDict.Add(url, getDict);
+
+    });
+
+    await Task.WhenAll(tasks);
+
+    sw.Stop();
+
+    System.Console.WriteLine("==== Test sw: " + Newtonsoft.Json.JsonConvert.SerializeObject(sw.ElapsedMilliseconds)); //1011
+
+    @* System.Console.WriteLine("==== model: " + Newtonsoft.Json.JsonConvert.SerializeObject(Model));
+System.Console.WriteLine("==== listServerDict: " + Newtonsoft.Json.JsonConvert.SerializeObject(listServerDict)); *@
 }
 <div class="col-sm-6 p-3">
     <ul>

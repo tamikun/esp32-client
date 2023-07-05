@@ -286,7 +286,7 @@ public partial class ClientService : IClientService
             }
         }
     }
-    
+
     public virtual async Task<List<EspFileModel>> GetListEspFile(string apiUrl)
     {
         string node = _configuration["Settings:NodeListEspFile"].ToString();
@@ -331,38 +331,45 @@ public partial class ClientService : IClientService
 
         Dictionary<string, object> dict = new Dictionary<string, object>();
 
-        var pageData = await GetAsyncApi(ipAddress, false);
-
-        string html = pageData;
-
-        List<EspFileModel> fileDataList = new List<EspFileModel>();
-
-        HtmlDocument htmlDoc = new HtmlDocument();
-        htmlDoc.LoadHtml(html);
-
-        HtmlNodeCollection tableRows = htmlDoc.DocumentNode.SelectNodes(node);
-        if (tableRows != null && tableRows.Count > 0)
+        try
         {
-            foreach (HtmlNode row in tableRows)
-            {
-                HtmlNodeCollection tableCells = row.SelectNodes("td");
-                if (tableCells != null && tableCells.Count >= 4)
-                {
-                    var fileName = tableCells[0].InnerText;
-                    var fileType = tableCells[1].InnerText;
-                    var fileSize = long.Parse(tableCells[2].InnerText.Trim());
+            var pageData = await GetAsyncApi(ipAddress, true);
 
-                    if (fileType == "directory")
+            string html = pageData;
+
+            List<EspFileModel> fileDataList = new List<EspFileModel>();
+
+            HtmlDocument htmlDoc = new HtmlDocument();
+            htmlDoc.LoadHtml(html);
+
+            HtmlNodeCollection tableRows = htmlDoc.DocumentNode.SelectNodes(node);
+            if (tableRows != null && tableRows.Count > 0)
+            {
+                foreach (HtmlNode row in tableRows)
+                {
+                    HtmlNodeCollection tableCells = row.SelectNodes("td");
+                    if (tableCells != null && tableCells.Count >= 4)
                     {
-                        var newAddress = $"{ipAddress}{fileName}/";
-                        dict.Add($"{ipAddress}{fileName}/", await GetDictionaryFile(ipAddress: newAddress));
-                    }
-                    else
-                    {
-                        dict.Add($"{ipAddress}{fileName}/", $"{ipAddress}{fileName}/");
+                        var fileName = tableCells[0].InnerText;
+                        var fileType = tableCells[1].InnerText;
+                        var fileSize = long.Parse(tableCells[2].InnerText.Trim());
+
+                        if (fileType == "directory")
+                        {
+                            var newAddress = $"{ipAddress}{fileName}/";
+                            dict.Add($"{ipAddress}{fileName}/", await GetDictionaryFile(ipAddress: newAddress));
+                        }
+                        else
+                        {
+                            dict.Add($"{ipAddress}{fileName}/", $"{ipAddress}{fileName}/");
+                        }
                     }
                 }
             }
+        }
+        catch
+        {
+
         }
         return dict;
     }
@@ -388,37 +395,44 @@ public partial class ClientService : IClientService
             });
         }
 
-        var pageData = await GetAsyncApi(ipAddress, false);
-
-        string html = pageData;
-        HtmlDocument htmlDoc = new HtmlDocument();
-        htmlDoc.LoadHtml(html);
-
-        HtmlNodeCollection tableRows = htmlDoc.DocumentNode.SelectNodes(node);
-        if (tableRows != null && tableRows.Count > 0)
+        try
         {
-            foreach (HtmlNode row in tableRows)
-            {
-                HtmlNodeCollection tableCells = row.SelectNodes("td");
-                if (tableCells != null && tableCells.Count >= 4)
-                {
-                    var fileName = tableCells[0].InnerText;
-                    var fileType = tableCells[1].InnerText;
-                    var fileSize = long.Parse(tableCells[2].InnerText.Trim());
+            var pageData = await GetAsyncApi(ipAddress, true);
 
-                    if (fileType == "directory")
+            string html = pageData;
+            HtmlDocument htmlDoc = new HtmlDocument();
+            htmlDoc.LoadHtml(html);
+
+            HtmlNodeCollection tableRows = htmlDoc.DocumentNode.SelectNodes(node);
+            if (tableRows != null && tableRows.Count > 0)
+            {
+                foreach (HtmlNode row in tableRows)
+                {
+                    HtmlNodeCollection tableCells = row.SelectNodes("td");
+                    if (tableCells != null && tableCells.Count >= 4)
                     {
-                        response.Add(new SelectedServerModel
+                        var fileName = tableCells[0].InnerText;
+                        var fileType = tableCells[1].InnerText;
+                        var fileSize = long.Parse(tableCells[2].InnerText.Trim());
+
+                        if (fileType == "directory")
                         {
-                            IpAddress = ipAddress,
-                            Folder = fileName,
-                            IsSelected = false
-                        });
-                        folder += $"/{fileName}";
-                        response.AddRange(await GetListSelectedServer(ipAddress, folder));
+                            response.Add(new SelectedServerModel
+                            {
+                                IpAddress = ipAddress,
+                                Folder = fileName,
+                                IsSelected = false
+                            });
+                            folder += $"/{fileName}";
+                            response.AddRange(await GetListSelectedServer(ipAddress, folder));
+                        }
                     }
                 }
             }
+        }
+        catch
+        {
+
         }
         return response;
     }
