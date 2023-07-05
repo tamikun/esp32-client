@@ -124,14 +124,13 @@ ListServer.GetInstance(_clientService).GetStaticList())
                                 else
                                 {
                                     var newUrl = "http://" + @Model.IpAddress + "/" + file.FileName;
-
                                     if (!string.IsNullOrEmpty(Model.SubDirectory))
                                     {
                                         newUrl = "http://" + @Model.IpAddress + "/" + Model.SubDirectory + "/" + file.FileName;
                                     }
 
                                     <tr>
-                                        <td><a href='@newUrl'>@file.FileName</a>
+                                        <td><a href='@Url.Action("DownloadFile", "OpenApi", new {url = @newUrl})'>@file.FileName</a>
                                         </td>
                                         <td>@file.FileType</td>
                                         <td>@file.FileSize</td>
@@ -154,4 +153,68 @@ ListServer.GetInstance(_clientService).GetStaticList())
             }
         </div>
     </div>
+}
+
+@section Scripts{
+    <script>
+
+        var toggles = document.querySelectorAll('.toggle');
+
+        toggles.forEach(function (toggle) {
+            toggle.addEventListener('click', function () {
+                var parentLi = toggle.parentNode;
+                var nestedUl = parentLi.querySelector('ul');
+
+                if (nestedUl.style.display === 'none') {
+                    nestedUl.style.display = 'block';
+                    toggle.textContent = '[-]';
+                } else {
+                    nestedUl.style.display = 'none';
+                    toggle.textContent = '[+]';
+                }
+            });
+        });
+
+        function setPath(ipAddress) {
+
+            var default_path = document.querySelector(`.tab-content [id="${ipAddress}"] [id="newFile"]`).files[0].name;
+
+            document.querySelector(`.tab-content [id="${ipAddress}"] [id="filePath"]`).value = default_path;
+        }
+
+        function postFile(ipAddress) {
+            var fileInput = document.getElementById('newFile');
+            var filePath = document.getElementById('filePath');
+
+            var formData = new FormData();
+            formData.append('newFile', fileInput.files[0]);
+            formData.append('filePath', filePath.value);
+            formData.append('ipAddress', ipAddress);
+
+            $.ajax({
+                type: 'POST',
+                url: '/api/OpenApi/PostAsyncFile', //client side cannot request http (just https)
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (response) {
+                    console.log('POST request successful');
+                    console.log(response);
+
+                    if (response.statusCode === 200) {
+                        handleEvent('success', 'Request successful!')
+                    } else if (response.statusCode === 404) {
+                        handleEvent('error', 'Not Found ' + response.statusCode)
+                    } else {
+                        handleEvent('error', 'Unexpected status code: ' + response.statusCode)
+                    }
+
+                },
+                error: function (xhr, status, error) {
+                    console.log(xhr);
+                    handleEvent('error', 'Request failed!')
+                }
+            });
+        }
+    </script>
 }

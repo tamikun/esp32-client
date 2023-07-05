@@ -91,7 +91,15 @@
         }
         else
         {
-            <span>@displayName</span>
+
+            var downloadFileUrl = value.ToString();
+
+            if (downloadFileUrl.EndsWith('/'))
+            {
+                downloadFileUrl = downloadFileUrl.Remove(downloadFileUrl.LastIndexOf('/'));
+            }
+
+            <span><a href='@Url.Action("DownloadFile", "OpenApi", new {url = @downloadFileUrl})'>@displayName</a></span>
             @* <span>: @value</span> *@
         }
     }

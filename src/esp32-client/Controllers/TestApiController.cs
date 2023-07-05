@@ -139,4 +139,12 @@ public class TestApiController : ControllerBase
         return Ok(rs);
     }
 
+    [HttpPost]
+    [ProducesResponseType(StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> GetFileContentType(IFormFile file)
+    {
+        return Ok(file.ContentType);
+    }
+
 }
