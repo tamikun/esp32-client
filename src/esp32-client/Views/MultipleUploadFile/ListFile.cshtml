@@ -50,6 +50,13 @@
                     @Html.HiddenFor(model => model.ListSelectedDataFile[getIndex].FileSize)
                     @Html.HiddenFor(model => model.ListSelectedDataFile[getIndex].FileType)
                 }
+                else
+                {
+                    @Html.HiddenFor(model => model.ListSelectedDataFile[getIndex].IsSelected)
+                    @Html.HiddenFor(model => model.ListSelectedDataFile[getIndex].FilePath)
+                    @Html.HiddenFor(model => model.ListSelectedDataFile[getIndex].FileSize)
+                    @Html.HiddenFor(model => model.ListSelectedDataFile[getIndex].FileType)
+                }
             }
 
         }

@@ -77,6 +77,12 @@
                     @Html.HiddenFor(model => model.ListSelectedServer[getIndex].Folder)
                     @Html.HiddenFor(model => model.ListSelectedServer[getIndex].IpAddress)
                 }
+                else
+                {
+                    @Html.HiddenFor(model => model.ListSelectedServer[getIndex].IsSelected)
+                    @Html.HiddenFor(model => model.ListSelectedServer[getIndex].Folder)
+                    @Html.HiddenFor(model => model.ListSelectedServer[getIndex].IpAddress)
+                }
             }
             <ul style="display: none;">
                 @foreach (var nestedItem in nestedDictionary)
