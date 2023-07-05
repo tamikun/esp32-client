@@ -141,7 +141,6 @@ public partial class ClientService : IClientService
 
         sw.Stop();
         System.Console.WriteLine($"==== GetStaticIpAddress completed in {sw.ElapsedMilliseconds} ms");
-
         return response.ToList();
     }
 

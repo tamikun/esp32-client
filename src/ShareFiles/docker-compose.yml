@@ -17,11 +17,11 @@ services:
       - Settings:Subnet=192.168.1.
       - Settings:Port=80
       - Settings:ConnectionTimeOut=300
-      - Settings:GetDataTimeOut=300
+      - Settings:GetDataTimeOut=500
       - Settings:PostFileTimeOut=500
       - Settings:FileDataDirectory=/app/FileData
       - Settings:ListServer=192.168.101.60;192.168.101.84;192.168.101.74
-      - Settings:NodeServerName=//h3
+      - Settings:NodeServerName=//h2
       - Settings:NodeListEspFile=//table[@class='fixed']/tbody/tr
   
   portainer:
