@@ -58,7 +58,19 @@
 
             <span class="toggle">[+]</span>
             <span>@displayName</span>
-            var getIndex = Model.ListSelectedServer.FindIndex(s => key.Contains($"{s.IpAddress}{s.Folder}"));
+
+            var getIndex = Model.ListSelectedServer.FindIndex(s =>
+            {
+                if (string.IsNullOrEmpty(s.Folder))
+                {
+                    return key == s.IpAddress;
+                }
+                else
+                {
+                    return key == s.IpAddress + s.Folder + "/";
+                }
+            });
+
             if (getIndex >= 0)
             {
                 @Html.CheckBoxFor(model => model.ListSelectedServer[getIndex].IsSelected)
