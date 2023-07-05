@@ -3,9 +3,13 @@
 @model ServerModelDetail
 
 @{
+    var listStaticIp = await ListServer.GetInstance(_clientService).GetStaticList();
 
-    @await Html.PartialAsync("~/Views/Components/ListServer.cshtml", await
-ListServer.GetInstance(_clientService).GetStaticList())
+    @await Html.PartialAsync("~/Views/Components/ListServer.cshtml",listStaticIp)
+
+    var serverName = listStaticIp.Where(s => s.IpAddress == Model.IpAddress).Select(s => s.ServerName).FirstOrDefault();
+
+    serverName = string.IsNullOrEmpty(serverName) ? "undefined" : serverName;
 
     <div class="alert-message">
         @if (TempData["AlertMessage"] is not null)
@@ -17,7 +21,7 @@ ListServer.GetInstance(_clientService).GetStaticList())
 
     <div class="tab-content">
         <div id=@Model.IpAddress style="display: block;">
-            <h2>Server @Model.IpAddress</h2>
+            <h2>Server @Model.IpAddress {@serverName}</h2>
 
             <table border="0">
                 <tr>
