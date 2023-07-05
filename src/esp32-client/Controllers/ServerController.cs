@@ -63,32 +63,34 @@ public class ServerController : Controller
 
         var response = await _clientService.PostAsyncApi(requestBody: null, apiUrl: url);
 
-        AlertModel alertModel = new AlertModel();
+        List<AlertModel> alertModel = new List<AlertModel>();
 
         if (!response.IsSuccessStatusCode)
         {
-            alertModel.AlertType = Alert.Danger;
-            alertModel.AlertMessage = response.StatusCode.ToString();
+            alertModel.Add(new AlertModel
+            {
+                AlertType = Alert.Danger,
+                AlertMessage = response.StatusCode.ToString(),
+            });
+
         }
         else
         {
-            alertModel.AlertType = Alert.Success;
-            alertModel.AlertMessage = "Delete successful.";
+            alertModel.Add(new AlertModel
+            {
+                AlertType = Alert.Success,
+                AlertMessage = "Delete successful.",
+            });
+
         }
-
-        var alertString = JsonConvert.SerializeObject(alertModel);
-
-        TempData["AlertMessage"] = alertString;
-
-        // Pass the selected item to the view
-        // return RedirectToAction("Detail", new { ipAddress = ipAddress, subDirectory = subDirectory, alertMessage = alertString });
+        TempData["AlertMessage"] = alertModel;
         return RedirectToAction("Detail", new { ipAddress = ipAddress, subDirectory = subDirectory });
     }
 
     public async Task<IActionResult> Reload()
     {
 
-        await ListServer.GetInstance(_clientService).ReloadDynamicList();
+        // await ListServer.GetInstance(_clientService).ReloadDynamicList();
         await ListServer.GetInstance(_clientService).ReloadStaticList();
 
         return RedirectToAction("Index");
