@@ -9,8 +9,6 @@ namespace esp32_client.Services
 
         Task<HttpResponseMessage> PostAsyncApi(string? requestBody, string apiUrl);
 
-        // Task<HttpResponseMessage> PostAsyncFile(IFormFile newFile, string filePath, string ipAddress);
-
         Task<HttpResponseMessage> PostAsyncFile(byte[] byteContent, string filePath, string ipAddress);
 
         Task<string> GetAsyncApi(string apiUrl, bool throwException = true);

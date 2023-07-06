@@ -164,34 +164,6 @@ public partial class ClientService : IClientService
             return response;
         }
     }
-
-    // public virtual async Task<HttpResponseMessage> PostAsyncFile(IFormFile newFile, string filePath, string ipAddress)
-    // {
-
-    //     var url = $"{ipAddress}upload/{filePath}";
-
-    //     System.Console.WriteLine("==== PostAsyncFile: " + Newtonsoft.Json.JsonConvert.SerializeObject(url));
-
-    //     using (var httpClient = new HttpClient())
-    //     {
-    //         using (var content = new MultipartFormDataContent())
-    //         {
-    //             // Add other form data keys
-    //             // No need (filepath in request url)
-    //             // content.Add(new StringContent(filePath), nameof(filePath));
-
-    //             // Add file content
-    //             var fileContent = new ByteArrayContent(await GetBytesFromFormFile(newFile));
-    //             content.Add(fileContent, nameof(newFile), newFile.FileName);
-
-    //             // Send the request
-    //             var response = await httpClient.PostAsync(url, content);
-
-    //             return response;
-    //         }
-    //     }
-    // }
-
     
     public virtual async Task<HttpResponseMessage> PostAsyncFile(byte[] byteContent, string filePath, string ipAddress)
     {
@@ -224,15 +196,6 @@ public partial class ClientService : IClientService
             return response;
         }
     }
-
-    // private async Task<byte[]> GetBytesFromFormFile(IFormFile file)
-    // {
-    //     using (var memoryStream = new MemoryStream())
-    //     {
-    //         await file.CopyToAsync(memoryStream);
-    //         return memoryStream.ToArray();
-    //     }
-    // }
 
     public virtual async Task<string> GetAsyncApi(string apiUrl, bool throwException = true)
     {
