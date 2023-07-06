@@ -3,6 +3,8 @@
 @{
     ViewData["Title"] = "Upload Multiple Files";
     Dictionary<string, object> fileDict = await _fileService.GetDictionaryFile(null);
+
+    Model.ListSelectedDataFile = new List<SelectedDataFileModel>();
 }
 <div class="col-sm-6 p-3">
     <ul>
@@ -39,24 +41,17 @@
             <span>@key</span>
             @* <span>: @value</span> *@
 
-            var getIndex = Model.ListSelectedDataFile.FindIndex(s => s.FilePath == value.ToString());
-            if (getIndex >= 0)
+            if (value.ToString().Contains(_configuration["Settings:FileDataDirectory"].ToString() + "/VDATA"))
             {
-                if (Model.ListSelectedDataFile[getIndex].FilePath.Contains(
-                _configuration["Settings:FileDataDirectory"].ToString() + "/VDATA"))
-                {
-                    @Html.CheckBoxFor(model => model.ListSelectedDataFile[getIndex].IsSelected)
-                    @Html.HiddenFor(model => model.ListSelectedDataFile[getIndex].FilePath)
-                    @Html.HiddenFor(model => model.ListSelectedDataFile[getIndex].FileSize)
-                    @Html.HiddenFor(model => model.ListSelectedDataFile[getIndex].FileType)
-                }
-                else
-                {
-                    @Html.HiddenFor(model => model.ListSelectedDataFile[getIndex].IsSelected)
-                    @Html.HiddenFor(model => model.ListSelectedDataFile[getIndex].FilePath)
-                    @Html.HiddenFor(model => model.ListSelectedDataFile[getIndex].FileSize)
-                    @Html.HiddenFor(model => model.ListSelectedDataFile[getIndex].FileType)
-                }
+                Model.ListSelectedDataFile.Add(new SelectedDataFileModel
+                    {
+                        FilePath = value.ToString(),
+                        IsSelected = false
+                    });
+
+                var getIndex = Model.ListSelectedDataFile.Count - 1;
+                @Html.CheckBoxFor(model => model.ListSelectedDataFile[getIndex].IsSelected)
+                @Html.HiddenFor(model => model.ListSelectedDataFile[getIndex].FilePath)
             }
 
         }

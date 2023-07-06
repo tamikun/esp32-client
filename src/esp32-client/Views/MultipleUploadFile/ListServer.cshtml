@@ -6,21 +6,6 @@
     var listServer = await ListServer.GetInstance(_clientService).GetStaticList();
     Dictionary<string, object> listServerDict = new Dictionary<string, object>();
 
-    @* Stopwatch sw = new Stopwatch();
-
-sw.Start();
-
-foreach (var server in listServer)
-{
-listServerDict.Add($"http://{server.IpAddress}/", await
-_clientService.GetDictionaryFile($"http://{server.IpAddress}/"));
-}
-
-sw.Stop();
-
-System.Console.WriteLine("==== Test sw: " + Newtonsoft.Json.JsonConvert.SerializeObject(sw.ElapsedMilliseconds)); //2686
-*@
-
     Stopwatch sw = new Stopwatch();
 
     sw.Start();
@@ -41,9 +26,6 @@ System.Console.WriteLine("==== Test sw: " + Newtonsoft.Json.JsonConvert.Serializ
     sw.Stop();
 
     System.Console.WriteLine("==== Test sw: " + Newtonsoft.Json.JsonConvert.SerializeObject(sw.ElapsedMilliseconds)); //1011
-
-    @* System.Console.WriteLine("==== model: " + Newtonsoft.Json.JsonConvert.SerializeObject(Model));
-System.Console.WriteLine("==== listServerDict: " + Newtonsoft.Json.JsonConvert.SerializeObject(listServerDict)); *@
 }
 <div class="col-sm-6 p-3">
     <ul>
@@ -88,33 +70,33 @@ System.Console.WriteLine("==== listServerDict: " + Newtonsoft.Json.JsonConvert.S
             <span class="toggle">[+]</span>
             <span>@displayName</span>
 
-            var getIndex = Model.ListSelectedServer.FindIndex(s =>
-            {
-                if (string.IsNullOrEmpty(s.Folder))
-                {
-                    return key == s.IpAddress;
-                }
-                else
-                {
-                    return key == s.IpAddress + s.Folder + "/";
-                }
-            });
+            var rmHttp = key.Split("//").LastOrDefault();
+            string ipAddress;
+            string folder = "";
+            var split = rmHttp.Split('/').Where(s => !string.IsNullOrEmpty(s)).ToList();
 
-            if (getIndex >= 0)
+            ipAddress = split.FirstOrDefault();
+
+            if (split.Count > 1)
             {
-                if (Model.ListSelectedServer[getIndex].Folder == "VDATA")
-                {
-                    @Html.CheckBoxFor(model => model.ListSelectedServer[getIndex].IsSelected)
-                    @Html.HiddenFor(model => model.ListSelectedServer[getIndex].Folder)
-                    @Html.HiddenFor(model => model.ListSelectedServer[getIndex].IpAddress)
-                }
-                else
-                {
-                    @Html.HiddenFor(model => model.ListSelectedServer[getIndex].IsSelected)
-                    @Html.HiddenFor(model => model.ListSelectedServer[getIndex].Folder)
-                    @Html.HiddenFor(model => model.ListSelectedServer[getIndex].IpAddress)
-                }
+                folder = string.Join('/', split.Skip(1));
             }
+
+            if (folder == "VDATA")
+            {
+                Model.ListSelectedServer.Add(new SelectedServerModel
+                    {
+                        IpAddress = $"http://{ipAddress}/",
+                        Folder = folder,
+                        IsSelected = false
+                    });
+                var getIndex = Model.ListSelectedServer.Count - 1;
+
+                @Html.CheckBoxFor(model => model.ListSelectedServer[getIndex].IsSelected)
+                @Html.HiddenFor(model => model.ListSelectedServer[getIndex].Folder)
+                @Html.HiddenFor(model => model.ListSelectedServer[getIndex].IpAddress)
+            }
+
             <ul style="display: none;">
                 @foreach (var nestedItem in nestedDictionary)
                 {
@@ -137,7 +119,6 @@ System.Console.WriteLine("==== listServerDict: " + Newtonsoft.Json.JsonConvert.S
             }
 
             <span><a href='@Url.Action("DownloadFile", "OpenApi", new {url = @downloadFileUrl})'>@displayName</a></span>
-            @* <span>: @value</span> *@
         }
     }
 }

@@ -22,36 +22,6 @@ public class MultipleUploadFileController : Controller
     public async Task<IActionResult> Index()
     {
         var model = new MultipleUploadFileModel();
-        model.ListSelectedDataFile = await _fileService.GetAllFiles(null);
-
-        // foreach (var item in ListServer.GetInstance(_clientService).GetDynamicList())
-        var staticList = await ListServer.GetInstance(_clientService).GetStaticList();
-
-        // Stopwatch sw = new Stopwatch();
-        // sw.Start();
-        // foreach (var item in staticList)
-        // {
-        //     var getListSelected = await _clientService.GetListSelectedServer($"http://{item.IpAddress}/");
-        //     model.ListSelectedServer.AddRange(getListSelected);
-        // }
-        // sw.Stop();
-        // System.Console.WriteLine("==== Test sw: " + Newtonsoft.Json.JsonConvert.SerializeObject(sw.ElapsedMilliseconds)); //2500
-
-        // Stopwatch sw = new Stopwatch();
-        // sw.Start();
-        var tasks = staticList.Select(async item =>
-        {
-            var serverUrl = $"http://{item.IpAddress}/";
-            var getListSelectedTask = _clientService.GetListSelectedServer(serverUrl);
-
-            var getListSelected = await getListSelectedTask;
-            model.ListSelectedServer.AddRange(getListSelected);
-
-        });
-
-        await Task.WhenAll(tasks);
-        // sw.Stop();
-        // System.Console.WriteLine("==== Test sw: " + Newtonsoft.Json.JsonConvert.SerializeObject(sw.ElapsedMilliseconds));  //1000
 
         return View(model);
     }
