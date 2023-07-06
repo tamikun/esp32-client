@@ -14,9 +14,5 @@ public class SelectedDataFileModel
 {
     public string? FilePath { get; set; }
 
-    public string? FileType { get; set; }
-
-    public long? FileSize { get; set; }
-
     public bool IsSelected { get; set; } = false;
 }

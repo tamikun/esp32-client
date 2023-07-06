@@ -12,7 +12,5 @@ namespace esp32_client.Services
 
         Task<Dictionary<string, object>> GetDictionaryFile(string? directoryPath);
 
-        Task<List<SelectedDataFileModel>> GetAllFiles(string? directoryPath);
-
     }
 }

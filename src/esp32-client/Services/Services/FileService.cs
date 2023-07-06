@@ -78,36 +78,6 @@ public partial class FileService : IFileService
         return response;
     }
 
-    public async Task<List<SelectedDataFileModel>> GetAllFiles(string? directoryPath)
-    {
-        var response = new List<SelectedDataFileModel>();
-
-        directoryPath = directoryPath ?? _configuration["Settings:FileDataDirectory"].ToString();
-
-        var files = await GetFiles(directoryPath);
-
-        foreach (var item in files)
-        {
-            response.Add(new SelectedDataFileModel()
-            {
-                FilePath = item.FilePath,
-                FileType = "file",
-                FileSize = item.FileSize,
-                IsSelected = false
-            });
-        }
-
-        var folder = await GetFolders(directoryPath);
-
-        foreach (var item in folder)
-        {
-            response.AddRange(await GetAllFiles(item.FilePath));
-        }
-
-        await Task.CompletedTask;
-        return response;
-    }
-
     public async Task<Dictionary<string, object>> GetDictionaryFile(string? directoryPath)
     {
         var rs = await GetAll(directoryPath);
