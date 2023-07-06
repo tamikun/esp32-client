@@ -42,20 +42,20 @@ public class OpenApiController : ControllerBase
         return Ok(result);
     }
 
-    [HttpPost]
-    [ProducesResponseType(StatusCodes.Status201Created)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> PostAsyncFile()
-    {
-        System.Console.WriteLine("==== here PostAsyncFile");
-        var newFile = Request.Form.Files.FirstOrDefault();
-        var filePath = Request.Form["filePath"].FirstOrDefault();
-        var ipAddress = Request.Form["ipAddress"].FirstOrDefault();
+    // [HttpPost]
+    // [ProducesResponseType(StatusCodes.Status201Created)]
+    // [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    // public async Task<IActionResult> PostAsyncFile()
+    // {
+    //     System.Console.WriteLine("==== here PostAsyncFile");
+    //     var newFile = Request.Form.Files.FirstOrDefault();
+    //     var filePath = Request.Form["filePath"].FirstOrDefault();
+    //     var ipAddress = Request.Form["ipAddress"].FirstOrDefault();
 
-        var result = await _clientService.PostAsyncFile(newFile, filePath, $"http://{ipAddress}/");
+    //     var result = await _clientService.PostAsyncFile(newFile, filePath, $"http://{ipAddress}/");
 
-        return Ok(result);
-    }
+    //     return Ok(result);
+    // }
 
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status201Created)]

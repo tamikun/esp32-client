@@ -1,4 +1,5 @@
-﻿using esp32_client.Models;
+﻿using System.Text;
+using esp32_client.Models;
 using esp32_client.Services;
 using HtmlAgilityPack;
 using Microsoft.AspNetCore.Cors;
@@ -132,9 +133,20 @@ public class TestApiController : ControllerBase
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> GetFileContentType(IFormFile file)
+    public async Task<IActionResult> GetFileContent(IFormFile file)
     {
-        return Ok(file.ContentType);
+        byte[] fileBytes;
+        string fileContent;
+
+        using (var ms = new MemoryStream())
+        {
+            file.CopyTo(ms);
+            fileBytes = ms.ToArray();
+        }
+
+        fileContent = Encoding.UTF8.GetString(fileBytes, 0, fileBytes.Length);
+
+        return Ok(fileContent);
     }
 
 }

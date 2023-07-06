@@ -165,33 +165,34 @@ public partial class ClientService : IClientService
         }
     }
 
-    public virtual async Task<HttpResponseMessage> PostAsyncFile(IFormFile newFile, string filePath, string ipAddress)
-    {
+    // public virtual async Task<HttpResponseMessage> PostAsyncFile(IFormFile newFile, string filePath, string ipAddress)
+    // {
 
-        var url = $"{ipAddress}upload/{filePath}";
+    //     var url = $"{ipAddress}upload/{filePath}";
 
-        System.Console.WriteLine("==== PostAsyncFile: " + Newtonsoft.Json.JsonConvert.SerializeObject(url));
+    //     System.Console.WriteLine("==== PostAsyncFile: " + Newtonsoft.Json.JsonConvert.SerializeObject(url));
 
-        using (var httpClient = new HttpClient())
-        {
-            using (var content = new MultipartFormDataContent())
-            {
-                // Add other form data keys
-                // No need (filepath in request url)
-                // content.Add(new StringContent(filePath), nameof(filePath));
+    //     using (var httpClient = new HttpClient())
+    //     {
+    //         using (var content = new MultipartFormDataContent())
+    //         {
+    //             // Add other form data keys
+    //             // No need (filepath in request url)
+    //             // content.Add(new StringContent(filePath), nameof(filePath));
 
-                // Add file content
-                var fileContent = new ByteArrayContent(await GetBytesFromFormFile(newFile));
-                content.Add(fileContent, nameof(newFile), newFile.FileName);
+    //             // Add file content
+    //             var fileContent = new ByteArrayContent(await GetBytesFromFormFile(newFile));
+    //             content.Add(fileContent, nameof(newFile), newFile.FileName);
 
-                // Send the request
-                var response = await httpClient.PostAsync(url, content);
+    //             // Send the request
+    //             var response = await httpClient.PostAsync(url, content);
 
-                return response;
-            }
-        }
-    }
+    //             return response;
+    //         }
+    //     }
+    // }
 
+    
     public virtual async Task<HttpResponseMessage> PostAsyncFile(byte[] byteContent, string filePath, string ipAddress)
     {
         Stopwatch sw = new Stopwatch();
@@ -205,33 +206,33 @@ public partial class ClientService : IClientService
         {
             httpClient.Timeout = TimeSpan.FromMilliseconds(long.Parse(_configuration["Settings:PostFileTimeOut"].ToString()));
 
-            using (var content = new MultipartFormDataContent())
-            {
+            var fileContent = new ByteArrayContent(byteContent);
+            var response = await httpClient.PostAsync(url, fileContent);
+            // using (var content = new MultipartFormDataContent())
+            // {
 
-                // Add file content
-                var fileContent = new ByteArrayContent(byteContent);
-                content.Add(fileContent);
+            //     // Add file content
+            //     content.Add(fileContent);
 
-                // Send the request
-                var response = await httpClient.PostAsync(url, content);
+            //     // Send the request
 
-                sw.Stop();
+            //     sw.Stop();
 
-                System.Console.WriteLine("==== PostAsyncFile ElapsedMilliseconds: " + Newtonsoft.Json.JsonConvert.SerializeObject(sw.ElapsedMilliseconds));
+            //     System.Console.WriteLine("==== PostAsyncFile ElapsedMilliseconds: " + Newtonsoft.Json.JsonConvert.SerializeObject(sw.ElapsedMilliseconds));
 
-                return response;
-            }
+            // }
+            return response;
         }
     }
 
-    private async Task<byte[]> GetBytesFromFormFile(IFormFile file)
-    {
-        using (var memoryStream = new MemoryStream())
-        {
-            await file.CopyToAsync(memoryStream);
-            return memoryStream.ToArray();
-        }
-    }
+    // private async Task<byte[]> GetBytesFromFormFile(IFormFile file)
+    // {
+    //     using (var memoryStream = new MemoryStream())
+    //     {
+    //         await file.CopyToAsync(memoryStream);
+    //         return memoryStream.ToArray();
+    //     }
+    // }
 
     public virtual async Task<string> GetAsyncApi(string apiUrl, bool throwException = true)
     {
@@ -369,7 +370,7 @@ public partial class ClientService : IClientService
         System.Console.WriteLine("==== delete: " + url);
 
         var response = await PostAsyncApi(requestBody: null, apiUrl: url);
-       
-       return response;
+
+        return response;
     }
 }
