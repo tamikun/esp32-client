@@ -6,7 +6,7 @@
 
     Model.ListSelectedDataFile = new List<SelectedDataFileModel>();
 }
-<div class="col-sm-6 p-3">
+<div class="col-sm-6 p-3" style="border: groove;">
     <ul>
         @foreach (var item in fileDict)
         {
@@ -23,7 +23,8 @@
     {
         @if (value is Dictionary<string, object> nestedDictionary)
         {
-            <span class="toggle">[+]</span>
+            @* <span class="toggle">[+]</span> *@
+            <i class="fa fa-folder toggle-folder" style="font-size:18px;color:#fbcf4b;cursor:pointer;"></i>
             <span>@key</span>
             <ul style="display: none;">
                 @foreach (var nestedItem in nestedDictionary)
@@ -38,6 +39,7 @@
         }
         else
         {
+            <i class="fa fa-file" style="font-size:15px;color:#82a6c9;"></i>
             <span>@key</span>
             @* <span>: @value</span> *@
 

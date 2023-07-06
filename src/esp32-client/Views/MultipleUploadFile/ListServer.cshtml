@@ -28,7 +28,7 @@
     System.Console.WriteLine("==== ListServer.cshtml sw: " +
     Newtonsoft.Json.JsonConvert.SerializeObject(sw.ElapsedMilliseconds)); //1011
 }
-<div class="col-sm-6 p-3">
+<div class="col-sm-6 p-3" style="border: groove;">
     <ul>
         @foreach (var item in listServerDict)
         {
@@ -68,7 +68,8 @@
         @if (value is Dictionary<string, object> nestedDictionary)
         {
 
-            <span class="toggle">[+]</span>
+            @* <span class="toggle">[+]</span> *@
+            <i class="fa fa-folder toggle-folder" style="font-size:18px;color:#fbcf4b;cursor:pointer;"></i>
             <span>@displayName</span>
 
             var rmHttp = key.Split("//").LastOrDefault();
@@ -118,7 +119,7 @@
             {
                 downloadFileUrl = downloadFileUrl.Remove(downloadFileUrl.LastIndexOf('/'));
             }
-
+            <i class="fa fa-file" style="font-size:15px;color:#82a6c9;"></i>
             <span><a href='@Url.Action("DownloadFile", "OpenApi", new {url = @downloadFileUrl})'>@displayName</a></span>
         }
     }
