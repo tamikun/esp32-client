@@ -25,6 +25,7 @@
     <div class="tab-content">
         <div id=@Model.IpAddress style="display: block;">
             <h2>Server @Model.IpAddress {@serverName}</h2>
+            <br>
 
             @using (Html.BeginForm("Upload", "Server", FormMethod.Post, new { @enctype = "multipart/form-data" }))
             {
@@ -95,7 +96,7 @@
                                     <th>Name</th>
                                     <th>Type</th>
                                     <th>Size (Bytes)</th>
-                                    <th>Delete</th>
+                                    <th></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -225,7 +226,7 @@
     </script>
 
     <style>
-        .submit-delete{
+        .submit-delete {
             text-align: right;
             margin-top: 10px;
         }
