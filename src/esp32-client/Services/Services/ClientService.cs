@@ -82,27 +82,6 @@ public partial class ClientService : IClientService
         return resultList;
     }
 
-    // public virtual async Task<List<ServerModel>> GetStaticIpAddress()
-    // {
-    //     var listIp = _configuration["Settings:ListServer"].ToString().Split(';').ToList();
-
-    //     var response = (from ip in listIp
-    //                     where !string.IsNullOrEmpty(ip)
-    //                     select new ServerModel()
-    //                     {
-    //                         IpAddress = ip,
-    //                     }).ToList();
-    //     await Task.CompletedTask;
-    //     // Get name
-    //     var nodeName = _configuration["Settings:NodeServerName"].ToString();
-    //     foreach (var ip in response)
-    //     {
-    //         ip.ServerName = await GetServerName($"http://{ip.IpAddress}/", nodeName);
-    //     }
-
-    //     return response;
-    // }
-
     public async Task<List<ServerModel>> GetStaticIpAddress()
     {
         Stopwatch sw = new Stopwatch();
@@ -374,66 +353,23 @@ public partial class ClientService : IClientService
         return dict;
     }
 
-    // Get all directory of server in order to select folder to save files
-    public virtual async Task<List<SelectedServerModel>> GetListSelectedServer(string ipAddress = "http://192.168.101.84/", string folder = "")
+    public virtual async Task<HttpResponseMessage> DeleteFile(string ipAddress, string subDirectory, string fileName)
     {
-        string node = _configuration["Settings:NodeListEspFile"].ToString();
+        string url = "";
 
-        List<SelectedServerModel> response = new List<SelectedServerModel>();
-
-        if (!string.IsNullOrEmpty(folder))
+        if (string.IsNullOrEmpty(subDirectory))
         {
-            ipAddress += $"{folder}/";
+            url = $"{ipAddress}delete/{fileName}";
         }
         else
         {
-            response.Add(new SelectedServerModel
-            {
-                IpAddress = ipAddress,
-                Folder = "",
-                IsSelected = false
-            });
+            url = $"{ipAddress}delete/{subDirectory}/{fileName}";
         }
 
-        try
-        {
-            var pageData = await GetAsyncApi(ipAddress, true);
+        System.Console.WriteLine("==== delete: " + url);
 
-            string html = pageData;
-            HtmlDocument htmlDoc = new HtmlDocument();
-            htmlDoc.LoadHtml(html);
-
-            HtmlNodeCollection tableRows = htmlDoc.DocumentNode.SelectNodes(node);
-            if (tableRows != null && tableRows.Count > 0)
-            {
-                foreach (HtmlNode row in tableRows)
-                {
-                    HtmlNodeCollection tableCells = row.SelectNodes("td");
-                    if (tableCells != null && tableCells.Count >= 4)
-                    {
-                        var fileName = tableCells[0].InnerText;
-                        var fileType = tableCells[1].InnerText;
-                        var fileSize = long.Parse(tableCells[2].InnerText.Trim());
-
-                        if (fileType == "directory")
-                        {
-                            response.Add(new SelectedServerModel
-                            {
-                                IpAddress = ipAddress,
-                                Folder = fileName,
-                                IsSelected = false
-                            });
-                            folder += $"/{fileName}";
-                            response.AddRange(await GetListSelectedServer(ipAddress, folder));
-                        }
-                    }
-                }
-            }
-        }
-        catch
-        {
-
-        }
-        return response;
+        var response = await PostAsyncApi(requestBody: null, apiUrl: url);
+       
+       return response;
     }
 }

@@ -14,10 +14,10 @@
     <div class="alert-message">
         @if (TempData["AlertMessage"] is not null)
         {
-            var alertModel = TempData["AlertMessage"] as List<AlertModel>;
+            var alertModel = JsonConvert.DeserializeObject<List<AlertModel>>(TempData["AlertMessage"].ToString());
             foreach (var alert in alertModel)
             {
-                @await Html.PartialAsync("~/Views/Components/Alert.cshtml", alertModel)
+                @await Html.PartialAsync("~/Views/Components/Alert.cshtml", alert)
             }
         }
     </div>

@@ -20,6 +20,6 @@ namespace esp32_client.Services
 
         Task<Dictionary<string, object>> GetDictionaryFile(string ipAddress = "http://192.168.101.84/");
 
-        Task<List<SelectedServerModel>> GetListSelectedServer(string ipAddress = "http://192.168.101.84/", string folder = "");
+        Task<HttpResponseMessage> DeleteFile(string ipAddress, string subDirectory, string fileName);
     }
 }

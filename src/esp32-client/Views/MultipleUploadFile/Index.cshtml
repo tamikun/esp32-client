@@ -21,6 +21,10 @@
 
 @using (Html.BeginForm("Index", "MultipleUploadFile", FormMethod.Post, new { @enctype = "multipart/form-data" }))
 {
+    <div class="multi-upload-option">
+        <span>Replace if exists</span>
+        @Html.CheckBoxFor(s=> s.ReplaceIfExist)
+    </div>
     <div class="row">
         @{
             await Html.RenderPartialAsync("ListFile", Model);

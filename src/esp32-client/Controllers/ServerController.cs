@@ -48,20 +48,8 @@ public class ServerController : Controller
 
     public async Task<IActionResult> Delete(string ipAddress, string subDirectory, string fileName)
     {
-        string url = "";
 
-        if (string.IsNullOrEmpty(subDirectory))
-        {
-            url = $"http://{ipAddress}/delete/{fileName}";
-        }
-        else
-        {
-            url = $"http://{ipAddress}/delete/{subDirectory}/{fileName}";
-        }
-
-        System.Console.WriteLine("==== delete: " + url);
-
-        var response = await _clientService.PostAsyncApi(requestBody: null, apiUrl: url);
+        var response = await _clientService.DeleteFile($"http://{ipAddress}/", subDirectory, fileName);
 
         List<AlertModel> alertModel = new List<AlertModel>();
 
@@ -83,7 +71,7 @@ public class ServerController : Controller
             });
 
         }
-        TempData["AlertMessage"] = alertModel;
+        TempData["AlertMessage"] = JsonConvert.SerializeObject(alertModel);
         return RedirectToAction("Detail", new { ipAddress = ipAddress, subDirectory = subDirectory });
     }
 

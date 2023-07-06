@@ -59,6 +59,19 @@ public class MultipleUploadFileController : Controller
 
                 Stopwatch sw = new Stopwatch();
                 sw.Start();
+
+                if (fileModel.ReplaceIfExist)
+                {
+                    try
+                    {
+                        await _clientService.DeleteFile(server.IpAddress, "VDATA", fileName);
+                    }
+                    catch
+                    {
+                        //Do nothing
+                    }
+                }
+
                 try
                 {
 

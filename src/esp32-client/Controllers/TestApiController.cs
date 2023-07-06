@@ -129,16 +129,6 @@ public class TestApiController : ControllerBase
         return Ok(rs);
     }
 
-    [HttpGet]
-    [ProducesResponseType(StatusCodes.Status201Created)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> GetListSelectedServerModel(string ipAddress)
-    {
-        var rs = await _clientService.GetListSelectedServer(ipAddress);
-
-        return Ok(rs);
-    }
-
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
