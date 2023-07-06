@@ -22,7 +22,7 @@ public class MultipleUploadFileController : Controller
     public async Task<IActionResult> Index()
     {
         var model = new MultipleUploadFileModel();
-
+        await Task.CompletedTask;
         return View(model);
     }
 
@@ -31,8 +31,8 @@ public class MultipleUploadFileController : Controller
     {
         System.Console.WriteLine("==== fileModel: " + Newtonsoft.Json.JsonConvert.SerializeObject(fileModel));
 
-        var selectedFile = fileModel.ListSelectedDataFile.Where(s => s.IsSelected).ToList();
-        var selectedServer = fileModel.ListSelectedServer.Where(s => s.IsSelected).ToList();
+        var selectedFile = fileModel.ListSelectedDataFile.Where(s => s.IsSelected);
+        var selectedServer = fileModel.ListSelectedServer.Where(s => s.IsSelected);
 
         var listAlert = new List<AlertModel>();
 
@@ -47,53 +47,54 @@ public class MultipleUploadFileController : Controller
                 fileBytes = System.IO.File.ReadAllBytes(file.FilePath);
             }
 
-            foreach (var server in selectedServer)
-            {
-                var filePath = server.Folder + "/" + fileName;
-                if (string.IsNullOrEmpty(server.Folder))
-                {
-                    filePath = fileName;
-                }
+            Stopwatch sw = new Stopwatch();
+            sw.Start();
+            var tasks = selectedServer.Select(async server =>
+             {
+                 var filePath = server.Folder + "/" + fileName;
+                 if (string.IsNullOrEmpty(server.Folder))
+                 {
+                     filePath = fileName;
+                 }
 
-                string message = $"Upload file {file.FilePath} to {server.IpAddress}{filePath}: ";
+                 string message = $"Upload file {file.FilePath} to {server.IpAddress}{filePath}: ";
 
-                Stopwatch sw = new Stopwatch();
-                sw.Start();
-
-                if (fileModel.ReplaceIfExist)
-                {
-                    try
-                    {
+                 if (fileModel.ReplaceIfExist)
+                 {
+                     try
+                     {
                         await _clientService.DeleteFile(server.IpAddress, "VDATA", fileName);
-                    }
-                    catch
-                    {
-                        //Do nothing
-                    }
-                }
+                     }
+                     catch
+                     {
+                         //Do nothing
+                     }
+                 }
 
-                try
-                {
+                 try
+                 {
 
-                    var result = await _clientService.PostAsyncFile(fileBytes, filePath, server.IpAddress);
+                     var result = await _clientService.PostAsyncFile(fileBytes, filePath, server.IpAddress);
 
-                    if (!result.IsSuccessStatusCode)
-                    {
-                        listAlert.Add(new AlertModel { AlertType = Alert.Danger, AlertMessage = message + result.StatusCode.ToString() });
-                    }
-                    else
-                    {
-                        listAlert.Add(new AlertModel { AlertType = Alert.Success, AlertMessage = message + "Success" });
-                    }
-                }
-                catch
-                {
-                    listAlert.Add(new AlertModel { AlertType = Alert.Danger, AlertMessage = message + "Connection time out" });
-                }
-                sw.Stop();
-                System.Console.WriteLine("==== Multi ElapsedMilliseconds: " + Newtonsoft.Json.JsonConvert.SerializeObject(sw.ElapsedMilliseconds));
+                     if (!result.IsSuccessStatusCode)
+                     {
+                         listAlert.Add(new AlertModel { AlertType = Alert.Danger, AlertMessage = message + result.StatusCode.ToString() });
+                     }
+                     else
+                     {
+                         listAlert.Add(new AlertModel { AlertType = Alert.Success, AlertMessage = message + "Success" });
+                     }
+                 }
+                 catch
+                 {
+                     listAlert.Add(new AlertModel { AlertType = Alert.Danger, AlertMessage = message + "Connection time out" });
+                 }
 
-            }
+             });
+
+            await Task.WhenAll(tasks);
+            sw.Stop();
+            System.Console.WriteLine("==== Multi ElapsedMilliseconds: " + Newtonsoft.Json.JsonConvert.SerializeObject(sw.ElapsedMilliseconds));
         }
 
         TempData["AlertMessage"] = JsonConvert.SerializeObject(listAlert);
