@@ -19,4 +19,5 @@ public class ServerModelDetail
 {
     public string? IpAddress { get; set; }
     public string? SubDirectory { get; set; }
+    public RequestFileModel? RequestFileModel { get; set; }
 }

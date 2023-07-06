@@ -22,16 +22,6 @@ public class ServerController : Controller
         return View();
     }
 
-    [HttpPost]
-    public IActionResult Index(RequestFileModel? fileModel)
-    {
-        System.Console.WriteLine("Call Server-Index-Post");
-        System.Console.WriteLine("==== file: " + JsonConvert.SerializeObject(fileModel.File));
-        System.Console.WriteLine("==== file: " + JsonConvert.SerializeObject(fileModel.FilePath));
-
-        return View();
-    }
-
     public IActionResult Detail(string ipAddress, string subDirectory)
     {
 
@@ -44,6 +34,46 @@ public class ServerController : Controller
 
         // Pass the selected item to the view
         return View(serverModelDetail);
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> Detail(ServerModelDetail requestModel)
+    {
+        System.Console.WriteLine("==== detail requestModel: " + Newtonsoft.Json.JsonConvert.SerializeObject(requestModel));
+
+        if (requestModel?.RequestFileModel?.File is null)
+            return RedirectToAction("Detail", new { ipAddress = requestModel?.IpAddress, subDirectory = requestModel?.SubDirectory });
+
+        var listAlert = new List<AlertModel>();
+        try
+        {
+            byte[] fileBytes;
+
+            using (var ms = new MemoryStream())
+            {
+                requestModel.RequestFileModel.File.CopyTo(ms);
+                fileBytes = ms.ToArray();
+            }
+
+            var result = await _clientService.PostAsyncFile(fileBytes, requestModel.RequestFileModel.FilePath, $"http://{requestModel.IpAddress}/");
+
+            if (!result.IsSuccessStatusCode)
+            {
+                listAlert.Add(new AlertModel { AlertType = Alert.Danger, AlertMessage = "Error: " + result.StatusCode.ToString() });
+            }
+            else
+            {
+                listAlert.Add(new AlertModel { AlertType = Alert.Success, AlertMessage = "Success" });
+            }
+        }
+        catch
+        {
+            listAlert.Add(new AlertModel { AlertType = Alert.Danger, AlertMessage = "Time out" });
+        }
+        TempData["AlertMessage"] = JsonConvert.SerializeObject(listAlert);
+        requestModel.RequestFileModel = null;
+
+        return RedirectToAction("Detail", new { ipAddress = requestModel.IpAddress, subDirectory = requestModel.SubDirectory });
     }
 
     public async Task<IActionResult> Delete(string ipAddress, string subDirectory, string fileName)

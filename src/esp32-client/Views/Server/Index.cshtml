@@ -1,22 +1,6 @@
-﻿@model RequestFileModel
-@{
+﻿@{
     ViewData["Title"] = "Server";
-    @* var listServer = @ListServer.GetInstance(_clientService).GetDynamicList(); *@
     var listServer = await ListServer.GetInstance(_clientService).GetStaticList();
 }
 
 @await Html.PartialAsync("~/Views/Components/ListServer.cshtml", listServer)
-
-
-<div class="row" style="margin-left: 200px;">
-    <div class="col-md-10">
-        @using (Html.BeginForm("Index", "Server", FormMethod.Post, new { @enctype = "multipart/form-data" }))
-        {
-            <input type="file" name="File" />
-            <br>
-            @Html.EditorFor(s => s.FilePath)
-            <br>
-            <input type="submit" value="Save" />
-        }
-    </div>
-</div>
