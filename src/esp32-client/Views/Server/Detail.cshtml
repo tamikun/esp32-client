@@ -48,17 +48,15 @@
                             @* @Html.EditorFor(s => s.RequestFileModel.FilePath) *@
                             @Html.EditorFor(s => s.RequestFileModel.FilePath, new { htmlAttributes = new { id = "filePath",
                     style = "width:100%;" } })
-
                         </td>
                         <td>
-                            @* <button id="upload" type="button" onclick="postFile('@Model.IpAddress')">Upload</button> *@
+                            <input type="submit" value="Upload" />
                         </td>
                     </tr>
 
                 </table>
                 @Html.HiddenFor(s => s.IpAddress)
                 @Html.HiddenFor(s => s.SubDirectory)
-                <input type="submit" value="Upload" />
             }
 
             <br>
@@ -87,7 +85,7 @@
 
                     @using (Html.BeginForm("Delete", "Server", FormMethod.Post, new { @enctype = "multipart/form-data" }))
                     {
-                        <table class="fixed" border="1">
+                        <table class="normal">
                             <col width="800px" />
                             <col width="300px" />
                             <col width="300px" />
@@ -148,9 +146,6 @@
                                             <td>@listFile[i].FileType</td>
                                             <td>@listFile[i].FileSize</td>
                                             <td>
-                                                @* <a class="button-link"
-                        href="@Url.Action(@actionDelete, new { ipAddress = @Model.IpAddress, subDirectory =
-                        @Model.SubDirectory, fileName = @listFile[i].FileName})">Delete</a> *@
                                                 @Html.CheckBoxFor(s=> s.ListDeleteFile[i].IsSelected)
                                             </td>
                                         </tr>
@@ -184,7 +179,9 @@
                         </table>
                         @Html.HiddenFor(s => s.IpAddress)
                         @Html.HiddenFor(s => s.SubDirectory)
-                        <input type="submit" value="Delete" />
+                        <div class="submit-delete">
+                            <input type="submit" value="Delete" />
+                        </div>
                     }
                 }
                 else
@@ -226,4 +223,11 @@
         }
 
     </script>
+
+    <style>
+        .submit-delete{
+            text-align: right;
+            margin-top: 10px;
+        }
+    </style>
 }
