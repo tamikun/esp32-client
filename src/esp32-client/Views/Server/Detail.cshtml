@@ -26,7 +26,7 @@
         <div id=@Model.IpAddress style="display: block;">
             <h2>Server @Model.IpAddress {@serverName}</h2>
 
-            @using (Html.BeginForm("Detail", "Server", FormMethod.Post, new { @enctype = "multipart/form-data" }))
+            @using (Html.BeginForm("Upload", "Server", FormMethod.Post, new { @enctype = "multipart/form-data" }))
             {
 
                 <table border="0">
@@ -46,8 +46,9 @@
                         <td>
                             @* <input id="filePath" type="text" style="width:100%;"> *@
                             @* @Html.EditorFor(s => s.RequestFileModel.FilePath) *@
-                            @Html.EditorFor(s => s.RequestFileModel.FilePath, new { htmlAttributes = new { id = "filePath", style = "width:100%;" } })
-                          
+                            @Html.EditorFor(s => s.RequestFileModel.FilePath, new { htmlAttributes = new { id = "filePath",
+                    style = "width:100%;" } })
+
                         </td>
                         <td>
                             @* <button id="upload" type="button" onclick="postFile('@Model.IpAddress')">Upload</button> *@
@@ -74,93 +75,117 @@
 
                 if (listFile.Count > 0)
                 {
-                    <table class="fixed" border="1">
-                        <col width="800px" />
-                        <col width="300px" />
-                        <col width="300px" />
-                        <col width="100px" />
-                        <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>Type</th>
-                                <th>Size (Bytes)</th>
-                                <th>Delete</th>
-                            </tr>
-                        </thead>
-                        <tbody>
+                    @* Model.ListDeleteFile = new List<ServerModelDetail>(); *@
+                    Model.ListDeleteFile = listFile.Select(
+                    s => new SelectedDeleteFileServerModel()
+                {
+                    IpAddress = Model.IpAddress,
+                    Folder = Model.SubDirectory,
+                    FileName = s.FileName,
+                    IsSelected = false
+                }).ToList();
 
-                            @{
-                                var actionDetail = nameof(@ServerController.Detail);
-                                var actionDelete = nameof(@ServerController.Delete);
-                            }
+                    @using (Html.BeginForm("Delete", "Server", FormMethod.Post, new { @enctype = "multipart/form-data" }))
+                    {
+                        <table class="fixed" border="1">
+                            <col width="800px" />
+                            <col width="300px" />
+                            <col width="300px" />
+                            <col width="100px" />
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Type</th>
+                                    <th>Size (Bytes)</th>
+                                    <th>Delete</th>
+                                </tr>
+                            </thead>
+                            <tbody>
 
-                            @if (!string.IsNullOrEmpty(Model.SubDirectory))
-                            {
-                                string backDirString = "";
-                                var backDir = Model.SubDirectory.Split('/').ToList();
-                                if (backDir.Count > 1)
-                                {
-                                    backDirString = string.Join('/', backDir.Take(backDir.Count - 1));
+                                @{
+                                    var actionDetail = nameof(@ServerController.Detail);
+                                    var actionDelete = nameof(@ServerController.Delete);
                                 }
 
-                                <td colspan="4"><a
-                                        href="@Url.Action(@actionDetail, new { ipAddress =  @Model.IpAddress, subDirectory =  @backDirString})">...</a>
-                                </td>
-                            }
-
-                            @foreach (var file in listFile)
-                            {
-
-                                @* var newUrl = Model.IpAddress + "/" + file.FileName; *@
-
-                                var subDir = "";
-                                if (!string.IsNullOrEmpty(Model.SubDirectory))
+                                @if (!string.IsNullOrEmpty(Model.SubDirectory))
                                 {
-                                    subDir = Model.SubDirectory + "/" + file.FileName;
-                                }
-                                else
-                                {
-                                    subDir = file.FileName;
-                                }
-
-                                if (file.FileType == "directory")
-                                {
-                                    <tr>
-                                        <td><a
-                                                href="@Url.Action(@actionDetail, new { ipAddress =  @Model.IpAddress, subDirectory =  @subDir})">
-                                                @file.FileName
-                                            </a>
-                                        </td>
-                                        <td>@file.FileType</td>
-                                        <td>@file.FileSize</td>
-                                        <td>
-                                            <a class="button-link"
-                                                href="@Url.Action(@actionDelete, new { ipAddress =  @Model.IpAddress, subDirectory =  @Model.SubDirectory, fileName = @file.FileName})">Delete</a>
-                                        </td>
-                                    </tr>
-                                }
-                                else
-                                {
-                                    var newUrl = "http://" + @Model.IpAddress + "/" + file.FileName;
-                                    if (!string.IsNullOrEmpty(Model.SubDirectory))
+                                    string backDirString = "";
+                                    var backDir = Model.SubDirectory.Split('/').ToList();
+                                    if (backDir.Count > 1)
                                     {
-                                        newUrl = "http://" + @Model.IpAddress + "/" + Model.SubDirectory + "/" + file.FileName;
+                                        backDirString = string.Join('/', backDir.Take(backDir.Count - 1));
                                     }
 
-                                    <tr>
-                                        <td><a href='@Url.Action("DownloadFile", "OpenApi", new {url = @newUrl})'>@file.FileName</a>
-                                        </td>
-                                        <td>@file.FileType</td>
-                                        <td>@file.FileSize</td>
-                                        <td>
-                                            <a class="button-link"
-                                                href="@Url.Action(@actionDelete, new { ipAddress =  @Model.IpAddress, subDirectory =  @Model.SubDirectory, fileName = @file.FileName})">Delete</a>
-                                        </td>
-                                    </tr>
+                                    <td colspan="4"><a
+                                            href="@Url.Action(@actionDetail, new { ipAddress =  @Model.IpAddress, subDirectory =  @backDirString})">...</a>
+                                    </td>
                                 }
-                            }
-                        </tbody>
-                    </table>
+
+                                @* @foreach (var file in listFile) *@
+                                @for (int i = 0; i < listFile.Count; i++)
+                                {
+
+                                    @* var newUrl = Model.IpAddress + "/" + file.FileName; *@
+
+                                    var subDir = "";
+                                    if (!string.IsNullOrEmpty(Model.SubDirectory))
+                                    {
+                                        subDir = Model.SubDirectory + "/" + listFile[i].FileName;
+                                    }
+                                    else
+                                    {
+                                        subDir = listFile[i].FileName;
+                                    }
+
+                                    if (listFile[i].FileType == "directory")
+                                    {
+                                        <tr>
+                                            <td><a
+                                                    href="@Url.Action(@actionDetail, new { ipAddress =  @Model.IpAddress, subDirectory =  @subDir})">
+                                                    @listFile[i].FileName
+                                                </a>
+                                            </td>
+                                            <td>@listFile[i].FileType</td>
+                                            <td>@listFile[i].FileSize</td>
+                                            <td>
+                                                @* <a class="button-link"
+                        href="@Url.Action(@actionDelete, new { ipAddress = @Model.IpAddress, subDirectory =
+                        @Model.SubDirectory, fileName = @listFile[i].FileName})">Delete</a> *@
+                                                @Html.CheckBoxFor(s=> s.ListDeleteFile[i].IsSelected)
+                                            </td>
+                                        </tr>
+                                    }
+                                    else
+                                    {
+                                        var newUrl = "http://" + @Model.IpAddress + "/" + listFile[i].FileName;
+                                        if (!string.IsNullOrEmpty(Model.SubDirectory))
+                                        {
+                                            newUrl = "http://" + @Model.IpAddress + "/" + Model.SubDirectory + "/" + listFile[i].FileName;
+                                        }
+
+                                        <tr>
+                                            <td><a href='@Url.Action("DownloadFile", "OpenApi", new {url = @newUrl})'>@listFile[i].FileName</a>
+                                            </td>
+                                            <td>@listFile[i].FileType</td>
+                                            <td>@listFile[i].FileSize</td>
+                                            <td>
+                                                @* <a class="button-link"
+                        href="@Url.Action(@actionDelete, new { ipAddress = @Model.IpAddress, subDirectory =
+                        @Model.SubDirectory, fileName = @listFile[i].FileName})">Delete</a> *@
+                                                @Html.CheckBoxFor(s=> s.ListDeleteFile[i].IsSelected)
+                                            </td>
+                                        </tr>
+                                    }
+                                    @Html.HiddenFor(s=> s.ListDeleteFile[i].IpAddress)
+                                    @Html.HiddenFor(s=> s.ListDeleteFile[i].Folder)
+                                    @Html.HiddenFor(s=> s.ListDeleteFile[i].FileName)
+                                }
+                            </tbody>
+                        </table>
+                        @Html.HiddenFor(s => s.IpAddress)
+                        @Html.HiddenFor(s => s.SubDirectory)
+                        <input type="submit" value="Delete" />
+                    }
                 }
                 else
                 {

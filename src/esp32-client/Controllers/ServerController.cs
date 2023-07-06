@@ -37,7 +37,7 @@ public class ServerController : Controller
     }
 
     [HttpPost]
-    public async Task<IActionResult> Detail(ServerModelDetail requestModel)
+    public async Task<IActionResult> Upload(ServerModelDetail requestModel)
     {
         System.Console.WriteLine("==== detail requestModel: " + Newtonsoft.Json.JsonConvert.SerializeObject(requestModel));
 
@@ -76,33 +76,44 @@ public class ServerController : Controller
         return RedirectToAction("Detail", new { ipAddress = requestModel.IpAddress, subDirectory = requestModel.SubDirectory });
     }
 
-    public async Task<IActionResult> Delete(string ipAddress, string subDirectory, string fileName)
+    [HttpPost]
+    public async Task<IActionResult> Delete(ServerModelDetail requestModel)
     {
-
-        var response = await _clientService.DeleteFile($"http://{ipAddress}/", subDirectory, fileName);
+        System.Console.WriteLine("==== requestModel: " + Newtonsoft.Json.JsonConvert.SerializeObject(requestModel));
 
         List<AlertModel> alertModel = new List<AlertModel>();
 
-        if (!response.IsSuccessStatusCode)
+        var deleteTasks = requestModel.ListDeleteFile.Where(s => s.IsSelected).Select(async item =>
         {
-            alertModel.Add(new AlertModel
-            {
-                AlertType = Alert.Danger,
-                AlertMessage = response.StatusCode.ToString(),
-            });
+            var delete = _clientService.DeleteFile($"http://{requestModel.IpAddress}/", requestModel.SubDirectory, item.FileName);
+            var deleteResult = await delete;
 
-        }
-        else
-        {
-            alertModel.Add(new AlertModel
+            if (!deleteResult.IsSuccessStatusCode)
             {
-                AlertType = Alert.Success,
-                AlertMessage = "Delete successful.",
-            });
+                alertModel.Add(new AlertModel
+                {
+                    AlertType = Alert.Danger,
+                    AlertMessage = deleteResult.StatusCode.ToString(),
+                });
 
-        }
+            }
+            else
+            {
+                alertModel.Add(new AlertModel
+                {
+                    AlertType = Alert.Success,
+                    AlertMessage = "Delete successful.",
+                });
+
+            }
+        });
+
+        await Task.WhenAll(deleteTasks);
+
+        // var response = await _clientService.DeleteFile($"http://{ipAddress}/", subDirectory, fileName);
+
         TempData["AlertMessage"] = JsonConvert.SerializeObject(alertModel);
-        return RedirectToAction("Detail", new { ipAddress = ipAddress, subDirectory = subDirectory });
+        return RedirectToAction("Detail", new { ipAddress = requestModel.IpAddress, subDirectory = requestModel.SubDirectory });
     }
 
     public async Task<IActionResult> Reload()

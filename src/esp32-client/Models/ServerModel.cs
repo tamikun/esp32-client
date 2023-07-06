@@ -15,9 +15,18 @@ public class SelectedServerModel
     public bool IsSelected { get; set; } = false;
 }
 
+public class SelectedDeleteFileServerModel
+{
+    public string? IpAddress { get; set; }
+    public string? Folder { get; set; }
+    public string? FileName { get; set; }
+    public bool IsSelected { get; set; } = false;
+}
+
 public class ServerModelDetail
 {
     public string? IpAddress { get; set; }
     public string? SubDirectory { get; set; }
     public RequestFileModel? RequestFileModel { get; set; }
+    public List<SelectedDeleteFileServerModel>? ListDeleteFile { get; set; }
 }
