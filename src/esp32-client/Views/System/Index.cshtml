@@ -47,12 +47,16 @@
                     <th colspan="3">./</th>
                 }
                 <th colspan="1" style="text-align:center;">
-                    <div>
-                        <input type="text" id="addFolderInput" placeholder="NewFolder" style="display: block;"></input>
-                        <a @Url.Action("AddFolder", new { directory = @Model.Folder, folderName = "NewFolder" })
+                    <div style="display: flex;">
+                        <input type="text" id="addFolderInput" placeholder="NewFolder">
+
+                        <a href="@Url.Action("AddFolder", new { directory = @Model.Folder, folderName = "__FOLDERNAME__" })"
                             id="addFolderLink">
-                            <i class="fa fa-folder-plus" style="font-size:20px;color:#fbcf4b;cursor:pointer;"></i>
+
+                            <i class="fa fa-folder-plus"
+                                style="font-size:20px;color:#fbcf4b;cursor:pointer;margin-left:10px;align-self:center;"></i>
                         </a>
+
                     </div>
                 </th>
             </tr>
@@ -124,15 +128,20 @@
 
 @section Scripts{
     <script>
-        document.getElementById("addFolderLink").addEventListener("click", function (e) {
-            e.preventDefault(); // Prevent the default link behavior
+        // Get the elements by their IDs
+        const addFolderInput = document.getElementById('addFolderInput');
+        const addFolderLink = document.getElementById('addFolderLink');
 
-            var folderName = document.getElementById("folderNameInput").value;
-            var url = "@Url.Action("AddFolder", new { directory = @Model.Folder, folderName = "__FOLDERNAME__" })";
+        addFolderInput.addEventListener('input', function () {
+            const folderName = addFolderInput.value;
+
+            var url = "/System/AddFolder?directory=%2Fapp%2FFileData%2F&folderName=__FOLDERNAME__"
+
             url = url.replace("__FOLDERNAME__", encodeURIComponent(folderName));
 
-            window.location.href = url;
+            addFolderLink.setAttribute('href', url);
         });
+
     </script>
 
     <style>

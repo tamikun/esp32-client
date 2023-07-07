@@ -54,7 +54,6 @@ public class SystemController : Controller
         return RedirectToAction("Index", new { folder = request.Folder });
     }
 
-    [HttpPost]
     public async Task<IActionResult> AddFolder(string directory, string folderName)
     {
         if (Directory.Exists(directory + folderName))
