@@ -135,7 +135,7 @@ iframe {
 .normal table,
 .normal td,
 .normal th {
-  border: 1px solid #ddd;
+  border: 2px solid #565656;
   text-align: left;
 }
 
@@ -147,4 +147,21 @@ iframe {
 .normal th,
 .normal td {
   padding: 15px;
+}
+
+.upload-table table,
+.upload-table td,
+.upload-table th {
+  border: 0px solid #ddd;
+  text-align: left;
+}
+
+.upload-table table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.upload-table th,
+.upload-table td {
+  padding: 5px;
 }

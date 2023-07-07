@@ -1,8 +1,6 @@
 ﻿@model MultipleUploadFileModel
 @using System.Diagnostics
 @{
-    ViewData["Title"] = "Upload Multiple Files";
-
     var listServer = await ListServer.GetInstance(_clientService).GetStaticList();
     Dictionary<string, object> listServerDict = new Dictionary<string, object>();
 

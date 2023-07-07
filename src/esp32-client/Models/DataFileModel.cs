@@ -16,3 +16,15 @@ public class SelectedDataFileModel
 
     public bool IsSelected { get; set; } = false;
 }
+
+public class FileSystemRequestModel
+{
+    public FileSystemRequestModel()
+    {
+        ListDeleteFile = new List<SelectedDataFileModel>();
+    }
+
+    public IFormFileCollection? ListUploadFile { get; set; }
+    public string? Folder { get; set; }
+    public List<SelectedDataFileModel> ListDeleteFile { get; set; }
+}

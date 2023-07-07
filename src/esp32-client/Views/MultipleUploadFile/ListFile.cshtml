@@ -1,7 +1,6 @@
 ﻿@model MultipleUploadFileModel
 
 @{
-    ViewData["Title"] = "Upload Multiple Files";
     Dictionary<string, object> fileDict = await _fileService.GetDictionaryFile(null);
 
     Model.ListSelectedDataFile = new List<SelectedDataFileModel>();

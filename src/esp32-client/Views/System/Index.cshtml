@@ -1,0 +1,130 @@
+@model FileSystemRequestModel
+@{
+    ViewData["Title"] = "System";
+    var files = await _fileService.GetFiles(Model?.Folder);
+    var folders = await _fileService.GetFolders(Model?.Folder);
+    var listSplitFolder = Model?.Folder?.Split('/');
+
+    string temp1 = _configuration["Settings:FileDataDirectory"].ToString().Replace("/", string.Empty);
+    string temp2 = Model.Folder.Replace("/", string.Empty);
+    bool defaultPath = string.IsNullOrEmpty(Model.Folder) || (temp1 == temp2);
+
+}
+
+@using (Html.BeginForm("Upload", "System", FormMethod.Post, new { @enctype = "multipart/form-data" }))
+{
+    <div style="margin-bottom: 10px;">
+        <table class="upload-table">
+            <tr>
+                <td colspan="2">
+                    <input id="newFiles" type="file" name="ListUploadFile" style="width:100%;" multiple />
+                    @Html.HiddenFor(s=> s.Folder)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <input type="submit" value="Upload" />
+                </td>
+            </tr>
+        </table>
+    </div>
+}
+
+@using (Html.BeginForm("Delete", "System", FormMethod.Post, new { @enctype = "multipart/form-data" }))
+{
+    <table class="normal">
+        <col width="800px" />
+        <col width="300px" />
+        <col width="300px" />
+        <col width="100px" />
+        <thead>
+            <tr>
+                @if (!defaultPath)
+                {
+                    var displayPath = string.Join('/', listSplitFolder.Where(s => !string.IsNullOrEmpty(s)).Skip(2));
+                    <th colspan="4">./@displayPath/</th>
+                }
+                else
+                {
+                    <th colspan="4">./</th>
+                }
+            </tr>
+        </thead>
+        <tbody>
+
+            @if (!defaultPath)
+            {
+                var backPath = string.Join('/', listSplitFolder.Take(listSplitFolder.Count() - 1));
+                <tr>
+                    <td colspan="4">
+                        <a href="@Url.Action("Index", new { folder = @backPath})">
+                            <i class="fa fa-folder toggle-folder" style="font-size:18px;color:#fbcf4b;cursor:pointer;"></i>
+                            <span>...</span>
+                        </a>
+                    </td>
+                </tr>
+            }
+
+            @if (folders.Count > 0)
+            {
+                for (int i = 0; i < folders.Count; i++)
+                {
+                    Model.ListDeleteFile.Add(new SelectedDataFileModel { FilePath = folders[i].FilePath, IsSelected = false });
+
+                    var folderName = @folders[i]?.FilePath?.Split('/').LastOrDefault();
+                    <tr>
+                        <td colspan="3">
+                            <a href="@Url.Action("Index", new { folder = @folders[i]?.FilePath})">
+                                <i class="fa fa-folder toggle-folder" style="font-size:18px;color:#fbcf4b;cursor:pointer;"></i>
+                                <span>@folderName</span>
+                            </a>
+                        </td>
+                        <td>
+                            @Html.CheckBoxFor(s=> s.ListDeleteFile[i].IsSelected)
+                        </td>
+                    </tr>
+                }
+            }
+
+            @if (files.Count > 0)
+            {
+                for (int i = 0; i < files.Count; i++)
+                {
+                    Model.ListDeleteFile.Add(new SelectedDataFileModel { FilePath = files[i].FilePath, IsSelected = false });
+
+                    <tr>
+                        <td colspan="3">
+                            <i class="fa fa-file" style="font-size:15px;color:#82a6c9;"></i>
+                            <span>@files[i]?.FilePath?.Split('/').LastOrDefault()</span>
+                        </td>
+                        <td>
+                            @Html.CheckBoxFor(s=> s.ListDeleteFile[i + folders.Count].IsSelected)
+                        </td>
+                    </tr>
+                }
+            }
+
+        </tbody>
+    </table>
+
+    <div class="submit-delete">
+        <input type="submit" value="Delete" />
+    </div>
+}
+
+@section Scripts{
+    <style>
+        ul {
+            list-style-type: none;
+        }
+
+        li {
+            list-style-type: none;
+        }
+
+        .submit-delete {
+            text-align: right;
+            margin-top: 10px;
+        }
+    </style>
+}
