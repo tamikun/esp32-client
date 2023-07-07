@@ -13,5 +13,7 @@ namespace esp32_client.Services
         Task<Dictionary<string, object>> GetDictionaryFile(string? directoryPath);
 
         Task WriteFile(IFormFile file, string directoryPath);
+
+        Task DeleteFile(string directoryPath);
     }
 }

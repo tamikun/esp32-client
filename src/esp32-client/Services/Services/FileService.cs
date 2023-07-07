@@ -107,5 +107,25 @@ public partial class FileService : IFileService
         }
     }
 
+    public async Task DeleteFile(string directoryPath)
+    {
+        if (Directory.Exists(directoryPath))
+        {
+            var files = Directory.GetFileSystemEntries(directoryPath);
+            if (files.Any())
+            {
+                foreach (var file in files)
+                {
+                    await DeleteFile(file);
+                }
+            }
+            Directory.Delete(directoryPath);
+        }
+        else if (File.Exists(directoryPath))
+        {
+            File.Delete(directoryPath);
+        }
+        await Task.CompletedTask;
+    }
 
 }

@@ -29,11 +29,10 @@ public class SystemController : Controller
     [HttpPost]
     public async Task<IActionResult> Upload(FileSystemRequestModel request)
     {
-        System.Console.WriteLine("==== request: " + Newtonsoft.Json.JsonConvert.SerializeObject(request));
-
+        System.Console.WriteLine("==== Upload: " + Newtonsoft.Json.JsonConvert.SerializeObject(request));
         var tasks = request.ListUploadFile.Select(async file =>
         {
-            await _fileService.WriteFile(file, request.Folder);
+            await _fileService.WriteFile(file, $"{request.Folder}/");
         });
 
         await Task.WhenAll(tasks);
@@ -42,11 +41,32 @@ public class SystemController : Controller
     }
 
     [HttpPost]
-    public IActionResult Delete(FileSystemRequestModel request)
+    public async Task<IActionResult> Delete(FileSystemRequestModel request)
     {
-        System.Console.WriteLine("==== files: " + Newtonsoft.Json.JsonConvert.SerializeObject(request));
+
+        var tasks = request.ListDeleteFile.Where(s => s.IsSelected).Select(async file =>
+        {
+            await _fileService.DeleteFile(file.FilePath);
+        });
+
+        await Task.WhenAll(tasks);
 
         return RedirectToAction("Index", new { folder = request.Folder });
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> AddFolder(string directory, string folderName)
+    {
+        if (Directory.Exists(directory + folderName))
+        {
+
+        }
+        else
+        {
+            Directory.CreateDirectory(directory + folderName);
+        }
+        await Task.CompletedTask;
+        return RedirectToAction("Index", new { folder = directory });
     }
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
