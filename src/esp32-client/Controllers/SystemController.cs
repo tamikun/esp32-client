@@ -22,14 +22,21 @@ public class SystemController : Controller
     public IActionResult Index(string? folder = null)
     {
         var model = new FileSystemRequestModel();
-        model.Folder = folder ?? _configuration["Settings:FileDataDirectory"];
+        model.Folder = folder ?? _configuration["Settings:FileDataDirectory"].ToString();
         return View(model);
     }
 
     [HttpPost]
-    public IActionResult Upload(FileSystemRequestModel request)
+    public async Task<IActionResult> Upload(FileSystemRequestModel request)
     {
-        System.Console.WriteLine("==== files: " + Newtonsoft.Json.JsonConvert.SerializeObject(request));
+        System.Console.WriteLine("==== request: " + Newtonsoft.Json.JsonConvert.SerializeObject(request));
+
+        var tasks = request.ListUploadFile.Select(async file =>
+        {
+            await _fileService.WriteFile(file, request.Folder);
+        });
+
+        await Task.WhenAll(tasks);
 
         return RedirectToAction("Index", new { folder = request.Folder });
     }

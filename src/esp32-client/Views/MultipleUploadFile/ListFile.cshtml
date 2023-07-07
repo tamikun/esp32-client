@@ -42,7 +42,7 @@
             <span>@key</span>
             @* <span>: @value</span> *@
 
-            if (value.ToString().Contains(_configuration["Settings:FileDataDirectory"].ToString() + "/VDATA"))
+            if (value.ToString().Contains(_configuration["Settings:FileDataDirectory"].ToString() + "VDATA"))
             {
                 Model.ListSelectedDataFile.Add(new SelectedDataFileModel
                     {

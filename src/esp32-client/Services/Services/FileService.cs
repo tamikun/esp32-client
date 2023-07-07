@@ -97,5 +97,15 @@ public partial class FileService : IFileService
         return dict;
     }
 
+    public async Task WriteFile(IFormFile file, string directoryPath)
+    {
+        using (var ms = new MemoryStream())
+        {
+            file.CopyTo(ms);
+            var fileBytes = ms.ToArray();
+            await File.WriteAllBytesAsync(directoryPath + file.FileName, fileBytes);
+        }
+    }
+
 
 }
