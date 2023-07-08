@@ -149,4 +149,12 @@ public class TestApiController : ControllerBase
         return Ok(fileContent);
     }
 
+    [HttpPost]
+    [ProducesResponseType(StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> GetServerName(string url)
+    {
+        return Ok(await _clientService.GetServerName(url));
+    }
+
 }

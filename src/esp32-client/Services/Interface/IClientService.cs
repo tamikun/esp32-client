@@ -20,5 +20,7 @@ namespace esp32_client.Services
         Task<Dictionary<string, object>> GetDictionaryFile(string ipAddress = "http://192.168.101.84/");
 
         Task<HttpResponseMessage> DeleteFile(string ipAddress, string subDirectory, string fileName);
+
+        Task<string> GetServerName(string url);
     }
 }

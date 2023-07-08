@@ -88,8 +88,8 @@ public partial class ClientService : IClientService
         sw.Start();
 
         var listIp = _configuration["Settings:ListServer"].ToString().Split(';').ToList();
-        string nodeServerName = _configuration["Settings:NodeServerName"].ToString();
-        int timeout = int.Parse(_configuration["Settings:GetDataTimeOut"].ToString());
+        // string nodeServerName = _configuration["Settings:NodeServerName"].ToString();
+        // int timeout = int.Parse(_configuration["Settings:GetDataTimeOut"].ToString());
 
         var responseTasks = listIp
             .Where(ip => !string.IsNullOrEmpty(ip))
@@ -100,18 +100,19 @@ public partial class ClientService : IClientService
                     IpAddress = ip
                 };
 
-                var getServerNameTask = GetServerName($"http://{ip}/", nodeServerName);
+                // var getServerNameTask = GetServerName($"http://{ip}/", nodeServerName);
+                serverModel.ServerName = await GetServerName($"http://{ip}/");
 
-                var completedTask = await Task.WhenAny(getServerNameTask, Task.Delay(timeout)); // Set timeout of 300 miliseconds
+                // var completedTask = await Task.WhenAny(getServerNameTask, Task.Delay(timeout)); // Set timeout of 300 miliseconds
 
-                if (completedTask == getServerNameTask && getServerNameTask.Status == TaskStatus.RanToCompletion)
-                {
-                    serverModel.ServerName = getServerNameTask.Result;
-                }
-                else
-                {
-                    serverModel.ServerName = "";
-                }
+                // if (completedTask == getServerNameTask && getServerNameTask.Status == TaskStatus.RanToCompletion)
+                // {
+                //     serverModel.ServerName = getServerNameTask.Result;
+                // }
+                // else
+                // {
+                //     serverModel.ServerName = "";
+                // }
 
                 return serverModel;
             });
@@ -123,22 +124,38 @@ public partial class ClientService : IClientService
         return response.ToList();
     }
 
-    public virtual async Task<string> GetServerName(string url, string node)
+    // public virtual async Task<string> GetServerName(string url, string node)
+    // {
+    //     try
+    //     {
+    //         var pageData = await GetAsyncApi(url, true);
+
+    //         string html = pageData;
+
+    //         HtmlDocument htmlDoc = new HtmlDocument();
+    //         htmlDoc.LoadHtml(html);
+    //         HtmlNodeCollection selectedNodes = htmlDoc.DocumentNode.SelectNodes(node);
+    //         if (selectedNodes != null && selectedNodes.Count > 0)
+    //         {
+    //             return selectedNodes[0].InnerText;
+    //         }
+    //         return "";
+    //     }
+    //     catch
+    //     {
+    //         return "";
+    //     }
+    // }
+    public virtual async Task<string> GetServerName(string ip)
     {
         try
         {
-            var pageData = await GetAsyncApi(url, true);
-
-            string html = pageData;
-
-            HtmlDocument htmlDoc = new HtmlDocument();
-            htmlDoc.LoadHtml(html);
-            HtmlNodeCollection selectedNodes = htmlDoc.DocumentNode.SelectNodes(node);
-            if (selectedNodes != null && selectedNodes.Count > 0)
-            {
-                return selectedNodes[0].InnerText;
-            }
-            return "";
+            var config = _configuration["Settings:ServerNamePath"].ToString();
+            var newurl = $"{ip}{config}";
+            System.Console.WriteLine("==== get server name: " + newurl);
+            var pageData = await GetAsyncApi(newurl, true);
+            System.Console.WriteLine("==== get server name: " + pageData);
+            return pageData;
         }
         catch
         {
@@ -164,7 +181,7 @@ public partial class ClientService : IClientService
             return response;
         }
     }
-    
+
     public virtual async Task<HttpResponseMessage> PostAsyncFile(byte[] byteContent, string filePath, string ipAddress)
     {
         Stopwatch sw = new Stopwatch();
