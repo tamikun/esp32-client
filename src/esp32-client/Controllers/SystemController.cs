@@ -29,13 +29,14 @@ public class SystemController : Controller
     [HttpPost]
     public async Task<IActionResult> Upload(FileSystemRequestModel request)
     {
-        System.Console.WriteLine("==== Upload: " + Newtonsoft.Json.JsonConvert.SerializeObject(request));
+        var listAlert = new List<AlertModel>();
         var tasks = request.ListUploadFile.Select(async file =>
         {
             await _fileService.WriteFile(file, $"{request.Folder}/");
+            listAlert.Add(new AlertModel { AlertType = Alert.Success, AlertMessage = $"Upload {file.FileName}" });
         });
-
         await Task.WhenAll(tasks);
+        TempData["AlertMessage"] = JsonConvert.SerializeObject(listAlert);
 
         return RedirectToAction("Index", new { folder = request.Folder });
     }
@@ -43,30 +44,34 @@ public class SystemController : Controller
     [HttpPost]
     public async Task<IActionResult> Delete(FileSystemRequestModel request)
     {
+        var listAlert = new List<AlertModel>();
 
         var tasks = request.ListDeleteFile.Where(s => s.IsSelected).Select(async file =>
         {
             await _fileService.DeleteFile(file.FilePath);
+
+            var fileName = file.FilePath.Split('/').LastOrDefault();
+            listAlert.Add(new AlertModel { AlertType = Alert.Success, AlertMessage = $"Delete file {fileName}" });
         });
 
         await Task.WhenAll(tasks);
-
+        TempData["AlertMessage"] = JsonConvert.SerializeObject(listAlert);
         return RedirectToAction("Index", new { folder = request.Folder });
     }
 
     public async Task<IActionResult> AddFolder(string directory, string folderName)
     {
-        System.Console.WriteLine("Add folder");
-        System.Console.WriteLine(directory);
-        System.Console.WriteLine(folderName);
+        var listAlert = new List<AlertModel>();
         if (Directory.Exists(directory + folderName))
         {
-
+            listAlert.Add(new AlertModel { AlertType = Alert.Danger, AlertMessage = "Folder has already exited!" });
         }
         else
         {
             Directory.CreateDirectory($"{directory}/{folderName}");
+            listAlert.Add(new AlertModel { AlertType = Alert.Success, AlertMessage = $"Add {folderName}" });
         }
+        TempData["AlertMessage"] = JsonConvert.SerializeObject(listAlert);
         await Task.CompletedTask;
         return RedirectToAction("Index", new { folder = directory });
     }

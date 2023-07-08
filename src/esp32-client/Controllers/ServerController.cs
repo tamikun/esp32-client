@@ -59,11 +59,11 @@ public class ServerController : Controller
 
             if (!result.IsSuccessStatusCode)
             {
-                listAlert.Add(new AlertModel { AlertType = Alert.Danger, AlertMessage = "Error: " + result.StatusCode.ToString() });
+                listAlert.Add(new AlertModel { AlertType = Alert.Danger, AlertMessage = result.StatusCode.ToString() });
             }
             else
             {
-                listAlert.Add(new AlertModel { AlertType = Alert.Success, AlertMessage = "Success" });
+                listAlert.Add(new AlertModel { AlertType = Alert.Success, AlertMessage = "" });
             }
         }
         catch

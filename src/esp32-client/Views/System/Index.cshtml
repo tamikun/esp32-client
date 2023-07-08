@@ -1,4 +1,7 @@
 @model FileSystemRequestModel
+
+@using Newtonsoft.Json
+
 @{
     ViewData["Title"] = "System";
     var files = await _fileService.GetFiles(Model?.Folder);
@@ -8,6 +11,20 @@
     bool defaultPath = (Model.Folder == _configuration["Settings:FileDataDirectory"].ToString());
 
 }
+
+<div class="alert-message">
+
+    @if (TempData["AlertMessage"] is not null)
+    {
+        var alertModel = JsonConvert.DeserializeObject<List<AlertModel>>(TempData["AlertMessage"].ToString());
+
+        foreach (var alert in alertModel)
+        {
+            @await Html.PartialAsync("~/Views/Components/Alert.cshtml", alert)
+        }
+    }
+
+</div>
 
 @using (Html.BeginForm("Upload", "System", FormMethod.Post, new { @enctype = "multipart/form-data" }))
 {
