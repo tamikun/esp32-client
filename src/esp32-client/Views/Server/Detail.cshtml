@@ -6,8 +6,8 @@
     var listStaticIp = await ListServer.GetInstance(_clientService).GetStaticList();
 
     @await Html.PartialAsync("~/Views/Components/ListServer.cshtml",listStaticIp)
-
-    var serverName = listStaticIp.Where(s => s.IpAddress == Model.IpAddress).Select(s => s.ServerName).FirstOrDefault();
+    var serverModel = listStaticIp.Where(s => s.IpAddress == Model.IpAddress).FirstOrDefault();
+    var serverName = serverModel?.ServerName;
 
     serverName = string.IsNullOrEmpty(serverName) ? "undefined" : serverName;
 
@@ -24,7 +24,24 @@
 
     <div class="tab-content">
         <div id=@Model.IpAddress style="display: block;">
-            <h2>@serverName <i class="fa fa-toggle-on" style="font-size:25px;color:green;cursor:pointer;"></i></h2>
+
+            @{
+                switch (serverModel?.ServerState)
+                {
+                    case ServerState.Server:
+                        <h2>@serverName <a href="@Url.Action("ChangeState", new {ipAddress = @Model.IpAddress})"><i class="fa fa-toggle-on"
+                                    style="font-size:25px;color:green;cursor:pointer;"></i></a></h2>
+                        break;
+                    case ServerState.Machine:
+                        <h2>@serverName <a href="@Url.Action("ChangeState", new {ipAddress = @Model.IpAddress})"><i class="fa fa-toggle-off"
+                                    style="font-size:25px;color:green;cursor:pointer;"></i></a></h2>
+                        break;
+                    default:
+                        break;
+                }
+
+            }
+
             <h2><small><small>@Model.IpAddress</small></small></h2>
 
             <br>

@@ -125,6 +125,15 @@ public class ServerController : Controller
         return RedirectToAction("Index");
     }
 
+
+    public async Task<IActionResult> ChangeState(string ipAddress)
+    {
+        System.Console.WriteLine("Call change state");
+        await Task.CompletedTask;
+
+        return RedirectToAction("Detail", new { ipAddress = ipAddress, subDirectory = "" });
+    }
+
     public IActionResult Privacy()
     {
         return View();

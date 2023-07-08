@@ -6,6 +6,14 @@ public class ServerModel
 {
     public string? IpAddress { get; set; }
     public string? ServerName { get; set; }
+    public ServerState ServerState { get; set; } = ServerState.Unknown;
+}
+
+public enum ServerState
+{
+    Unknown = 0,
+    Server = 1,
+    Machine = 2
 }
 
 public class SelectedServerModel

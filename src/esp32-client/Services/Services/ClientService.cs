@@ -102,17 +102,7 @@ public partial class ClientService : IClientService
 
                 // var getServerNameTask = GetServerName($"http://{ip}/", nodeServerName);
                 serverModel.ServerName = await GetServerName($"http://{ip}/");
-
-                // var completedTask = await Task.WhenAny(getServerNameTask, Task.Delay(timeout)); // Set timeout of 300 miliseconds
-
-                // if (completedTask == getServerNameTask && getServerNameTask.Status == TaskStatus.RanToCompletion)
-                // {
-                //     serverModel.ServerName = getServerNameTask.Result;
-                // }
-                // else
-                // {
-                //     serverModel.ServerName = "";
-                // }
+                serverModel.ServerState = await GetServerState($"http://{ip}/");
 
                 return serverModel;
             });
@@ -152,15 +142,20 @@ public partial class ClientService : IClientService
         {
             var config = _configuration["Settings:ServerNamePath"].ToString();
             var newurl = $"{ip}{config}";
-            System.Console.WriteLine("==== get server name: " + newurl);
             var pageData = await GetAsyncApi(newurl, true);
-            System.Console.WriteLine("==== get server name: " + pageData);
+
             return pageData;
         }
         catch
         {
             return "";
         }
+    }
+
+    public virtual async Task<ServerState> GetServerState(string ip)
+    {
+        await Task.CompletedTask;
+        return ServerState.Server;
     }
 
     public virtual async Task<HttpResponseMessage> PostAsyncApi(string? requestBody, string apiUrl)
