@@ -134,7 +134,7 @@
         addFolderInput.addEventListener('input', function () {
             const folderName = addFolderInput.value;
 
-            var url = "/System/AddFolder?directory=%2Fapp%2FFileData%2F&folderName=__FOLDERNAME__"
+            var url = "@Html.Raw(Url.Action("AddFolder", new { directory =  @Model.Folder, folderName =  "__FOLDERNAME__"}))";
 
             url = url.replace("__FOLDERNAME__", encodeURIComponent(folderName));
 

@@ -56,13 +56,16 @@ public class SystemController : Controller
 
     public async Task<IActionResult> AddFolder(string directory, string folderName)
     {
+        System.Console.WriteLine("Add folder");
+        System.Console.WriteLine(directory);
+        System.Console.WriteLine(folderName);
         if (Directory.Exists(directory + folderName))
         {
 
         }
         else
         {
-            Directory.CreateDirectory(directory + folderName);
+            Directory.CreateDirectory($"{directory}/{folderName}");
         }
         await Task.CompletedTask;
         return RedirectToAction("Index", new { folder = directory });
