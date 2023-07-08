@@ -120,7 +120,7 @@ public class ServerController : Controller
     {
 
         // await ListServer.GetInstance(_clientService).ReloadDynamicList();
-        await ListServer.GetInstance(_clientService).ReloadStaticList();
+        var rs = await ListServer.GetInstance(_clientService).ReloadStaticList();
 
         return RedirectToAction("Index");
     }
@@ -128,8 +128,28 @@ public class ServerController : Controller
 
     public async Task<IActionResult> ChangeState(string ipAddress)
     {
-        System.Console.WriteLine("Call change state");
-        await Task.CompletedTask;
+        try
+        {
+            var requestUrl = $"http://{ipAddress}/";
+            System.Console.WriteLine("Call change state: " + requestUrl);
+
+            var currentState = await _clientService.GetServerState(requestUrl);
+
+            if (currentState == ServerState.Server)
+            {
+                await _clientService.GetAsyncApi($"{requestUrl}selectedMachine");
+                await ListServer.GetInstance(_clientService).UpdateStaticItemState(ipAddress, ServerState.Machine);
+            }
+            else if (currentState == ServerState.Machine)
+            {
+                await _clientService.GetAsyncApi($"{requestUrl}selectedServer");
+                await ListServer.GetInstance(_clientService).UpdateStaticItemState(ipAddress, ServerState.Server);
+            }
+        }
+        catch (Exception ex)
+        {
+            System.Console.WriteLine("==== ChangeState ex: " + Newtonsoft.Json.JsonConvert.SerializeObject(ex));
+        }
 
         return RedirectToAction("Detail", new { ipAddress = ipAddress, subDirectory = "" });
     }

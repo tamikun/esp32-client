@@ -24,6 +24,7 @@ services:
       - Settings:NodeServerName=//h2
       - Settings:ServerNamePath=SYSTEM~1/NAME.TXT
       - Settings:NodeListEspFile=//table[@class='fixed']/tbody/tr
+      - Settings:NodeServerState=//p[@id='result']
   
   portainer:
     image: portainer/portainer-ce

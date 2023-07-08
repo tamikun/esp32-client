@@ -144,6 +144,8 @@ public partial class ClientService : IClientService
             var newurl = $"{ip}{config}";
             var pageData = await GetAsyncApi(newurl, true);
 
+            string nodeServerName = _configuration["Settings:NodeServerName"].ToString();
+
             return pageData;
         }
         catch
@@ -154,8 +156,28 @@ public partial class ClientService : IClientService
 
     public virtual async Task<ServerState> GetServerState(string ip)
     {
-        await Task.CompletedTask;
-        return ServerState.Server;
+        try
+        {
+            var node = _configuration["Settings:NodeServerState"].ToString();
+            var html = await GetAsyncApi(ip, true);
+
+            HtmlDocument htmlDoc = new HtmlDocument();
+            htmlDoc.LoadHtml(html);
+            HtmlNodeCollection selectedNodes = htmlDoc.DocumentNode.SelectNodes(node);
+            if (selectedNodes != null && selectedNodes.Count > 0)
+            {
+                if (selectedNodes[0].InnerHtml == "Device is attached to: Server")
+                    return ServerState.Server;
+
+                return ServerState.Machine;
+            }
+
+            return ServerState.Unknown;
+        }
+        catch
+        {
+            return ServerState.Unknown;
+        }
     }
 
     public virtual async Task<HttpResponseMessage> PostAsyncApi(string? requestBody, string apiUrl)

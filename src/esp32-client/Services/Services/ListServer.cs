@@ -51,9 +51,11 @@ namespace esp32_client.Services
             dynamicList = _clientService.GetAvailableIpAddress();
             await Task.CompletedTask;
         }
-        public async Task ReloadStaticList()
+
+        public async Task<List<ServerModel>> ReloadStaticList()
         {
             staticList = await _clientService.GetStaticIpAddress();
+            return staticList;
         }
 
         public async Task<List<ServerModel>> GetStaticList()
@@ -61,6 +63,22 @@ namespace esp32_client.Services
             if (staticList.Count == 0)
                 staticList = await _clientService.GetStaticIpAddress();
             return staticList;
+        }
+
+        public async Task UpdateStaticItemState(string ipAddress, ServerState state)
+        {
+            if (staticList.Count == 0)
+                staticList = await _clientService.GetStaticIpAddress();
+            else
+            {
+                var currentItem = staticList.Where(s => s.IpAddress == ipAddress).FirstOrDefault();
+                if (currentItem is not null)
+                {
+                    staticList.Remove(currentItem);
+                    currentItem.ServerState = state;
+                    staticList.Add(currentItem);
+                }
+            }
         }
     }
 }

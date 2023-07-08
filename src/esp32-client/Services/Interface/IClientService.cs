@@ -22,5 +22,7 @@ namespace esp32_client.Services
         Task<HttpResponseMessage> DeleteFile(string ipAddress, string subDirectory, string fileName);
 
         Task<string> GetServerName(string url);
+
+        Task<ServerState> GetServerState(string ip);
     }
 }
