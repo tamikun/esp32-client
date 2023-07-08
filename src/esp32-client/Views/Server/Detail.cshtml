@@ -42,7 +42,7 @@
                     </tr>
                     <tr>
                         <td>
-                            <label for="filePath">Set path on server</label>
+                            <label for="filePath">Set file name on server</label>
                         </td>
                         <td>
                             @* <input id="filePath" type="text" style="width:100%;"> *@
@@ -113,11 +113,18 @@
                                     {
                                         backDirString = string.Join('/', backDir.Take(backDir.Count - 1));
                                     }
-
-                                    <td colspan="4"><a
-                                            href="@Url.Action(@actionDetail, new { ipAddress =  @Model.IpAddress, subDirectory =  @backDirString})">
-                                            <i class="fa fa-backward"></i></a>
-                                    </td>
+                                    <tr>
+                                        <td colspan="4">
+                                            <i class="fa fa-folder toggle-folder" style="font-size:18px;color:#fbcf4b;cursor:pointer;"></i>
+                                            <span><strong>./@Model.SubDirectory</strong></span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="4"><a
+                                                href="@Url.Action(@actionDetail, new { ipAddress =  @Model.IpAddress, subDirectory =  @backDirString})">
+                                                <i class="fa fa-backward"></i></a>
+                                        </td>
+                                    </tr>
                                 }
 
                                 @* @foreach (var file in listFile) *@

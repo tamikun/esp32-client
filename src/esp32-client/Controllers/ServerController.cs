@@ -55,7 +55,7 @@ public class ServerController : Controller
                 fileBytes = ms.ToArray();
             }
 
-            var result = await _clientService.PostAsyncFile(fileBytes, requestModel.RequestFileModel.FilePath, $"http://{requestModel.IpAddress}/");
+            var result = await _clientService.PostAsyncFile(fileBytes, $"{requestModel.SubDirectory}/{requestModel.RequestFileModel.FilePath}", $"http://{requestModel.IpAddress}/");
 
             if (!result.IsSuccessStatusCode)
             {
