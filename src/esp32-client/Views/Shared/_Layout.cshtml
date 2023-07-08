@@ -14,36 +14,42 @@
 
 <body>
     <header>
-        <img class="header-img"
-            src="https://th.bing.com/th/id/R.774a85764a00cfcdff42b807a141d388?rik=64Fj%2ftDwB6W9ew&amp;riu=http%3a%2f%2fwallpaperheart.com%2fwp-content%2fuploads%2f2018%2f04%2fdark-website-background-images-hd.jpg&amp;ehk=Dj5kxcR7fOeE3TYugNuXfbi%2fwl33Okw8U53NrPBjQxE%3d&amp;risl=&amp;pid=ImgRaw&amp;r=0"
-            alt="">
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-0">
+        <div class="header-container">
+            <div class="header-text">
+                <h1 class="h1-header-text">Program Data Transmission and Production Monitoring System for Pattern
+                    Stitching Machine</h1>
+                <p></p>
+            </div>
+            <div class="header-img">
+                <img src="~/picture/juki.jpg" alt="">
+            </div>
+        </div>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light juki-bg border-bottom box-shadow mb-0">
 
             <div class="container-fluid">
-
-
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
-                    <img src="https://placeholder.pics/svg/150x50/888888/EEE/Logo" alt="..." height="36">
-                </a>
+                @* <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
+                <img src="https://placeholder.pics/svg/150x50/888888/EEE/Logo" alt="..." height="36">
+                </a> *@
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse"
                     aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                    <ul class="juki-navbar-nav">
+                        <li>
+                            <a class="juki-list-menu-header" asp-area="" asp-controller="Home"
+                                asp-action="Index">Home</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Server"
+                        <li>
+                            <a class="juki-list-menu-header" asp-area="" asp-controller="Server"
                                 asp-action="Index">Servers</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="MultipleUploadFile"
+                        <li>
+                            <a class="juki-list-menu-header" asp-area="" asp-controller="MultipleUploadFile"
                                 asp-action="Index">Upload Files</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="System" asp-action="Index">File
+                        <li>
+                            <a class="juki-list-menu-header" asp-area="" asp-controller="System" asp-action="Index">File
                                 Server</a>
                         </li>
                     </ul>
@@ -54,8 +60,10 @@
 
     @RenderBody()
 
-    <footer class="border-top footer text-muted">
-
+    <footer class="footer text-muted">
+        <div class="footer-text">
+            &copy; 2023 by NhatTinh. All rights reserved
+        </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>

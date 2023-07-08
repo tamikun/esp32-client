@@ -16,6 +16,7 @@ html {
 body {
   margin-bottom: 60px;
   height: 100%;
+  font-family: "Hiragino Kaku Gothic ProN", "ヒラギノ角ゴシック Pro", 游ゴシック体, "Yu Gothic", YuGothic, "メイリオ", sans-serif;
 }
 
 .tabs-container {
@@ -122,10 +123,61 @@ iframe {
   padding-right: 10px;
 }
 
+.header-container {
+  display: flex;
+  align-items: center;
+}
+
 .header-img {
-  position: relative;
-  height: 200px;
+  flex: 1;
+  text-align: right;
+}
+
+.header-img img {
+  max-width: 90%;
+  height: auto;
+  margin: 10px 10px 10px 0px;
+}
+
+.header-text {
+  flex: 5;
+  text-align: center;
+}
+
+.h1-header-text {
+  font-size: 24px;
+  font-weight: 600;
+  color: #00a3ff;
+  margin-top: revert;
+  margin-bottom: revert;
+}
+
+.juki-navbar-nav {
+  display: flex;
+  justify-content: space-between;
+  list-style-type: none;
+  padding: 0;
   width: -webkit-fill-available;
+  margin: 0;
+}
+
+.juki-navbar-nav li {
+  flex: 1;
+  text-align: center;
+}
+
+.footer-text {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  /* height: 50px; */
+  /* Adjust the height of the footer as needed */
+  background-color: #f5f5f5;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .toggle {
@@ -164,4 +216,18 @@ iframe {
 .upload-table th,
 .upload-table td {
   padding: 5px;
+}
+
+.juki-bg {
+  --bs-bg-opacity: 1;
+  background-image: linear-gradient(30deg, rgba(39, 188, 255, 0.9), rgba(0, 157, 255, 0.9));
+}
+
+.juki-list-menu-header {
+  font-size: 18px;
+  font-weight: 600;
+  color: #fff;
+  padding: 20px 10px;
+  text-decoration: none;
+  font-family: "Hiragino Kaku Gothic ProN", "ヒラギノ角ゴシック Pro", 游ゴシック体, "Yu Gothic", YuGothic, "メイリオ", sans-serif;
 }
