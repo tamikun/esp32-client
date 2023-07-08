@@ -86,7 +86,7 @@
 
                     @using (Html.BeginForm("Delete", "Server", FormMethod.Post, new { @enctype = "multipart/form-data" }))
                     {
-                        <table class="normal">
+                        <table class="normal table-hover">
                             <col width="800px" />
                             <col width="300px" />
                             <col width="300px" />
@@ -115,7 +115,8 @@
                                     }
 
                                     <td colspan="4"><a
-                                            href="@Url.Action(@actionDetail, new { ipAddress =  @Model.IpAddress, subDirectory =  @backDirString})">...</a>
+                                            href="@Url.Action(@actionDetail, new { ipAddress =  @Model.IpAddress, subDirectory =  @backDirString})">
+                                            <i class="fa fa-backward"></i></a>
                                     </td>
                                 }
 
@@ -140,7 +141,9 @@
                                         <tr>
                                             <td><a
                                                     href="@Url.Action(@actionDetail, new { ipAddress =  @Model.IpAddress, subDirectory =  @subDir})">
-                                                    @listFile[i].FileName
+                                                    <i class="fa fa-folder toggle-folder"
+                                                        style="font-size:18px;color:#fbcf4b;cursor:pointer;"></i>
+                                                    <strong>@listFile[i].FileName</strong>
                                                 </a>
                                             </td>
                                             <td>@listFile[i].FileType</td>
@@ -159,7 +162,10 @@
                                         }
 
                                         <tr>
-                                            <td><a href='@Url.Action("DownloadFile", "OpenApi", new {url = @newUrl})'>@listFile[i].FileName</a>
+                                            <td><a href='@Url.Action("DownloadFile", "OpenApi", new {url = @newUrl})'>
+                                                    <i class="fa fa-file" style="font-size:15px;color:#82a6c9;"></i>
+                                                    <strong>@listFile[i].FileName</strong>
+                                                </a>
                                             </td>
                                             <td>@listFile[i].FileType</td>
                                             <td>@listFile[i].FileSize</td>
@@ -186,9 +192,9 @@
                 }
                 else
                 {
-                    var serverPageSource = await _clientService.GetAsyncApi(getUrl, false);
+                    @* var serverPageSource = await _clientService.GetAsyncApi(getUrl, false);
 
-                    <div id="server-content">@serverPageSource</div>
+        <div id="server-content">@serverPageSource</div> *@
                 }
             }
         </div>
@@ -228,6 +234,10 @@
         .submit-delete {
             text-align: right;
             margin-top: 10px;
+        }
+
+        a {
+            text-decoration: none;
         }
     </style>
 }

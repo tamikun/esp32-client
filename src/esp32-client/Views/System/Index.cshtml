@@ -30,7 +30,7 @@
 
 @using (Html.BeginForm("Delete", "System", FormMethod.Post, new { @enctype = "multipart/form-data" }))
 {
-    <table class="normal">
+    <table class="normal table-hover">
         <col width="800px" />
         <col width="300px" />
         <col width="300px" />
@@ -69,8 +69,7 @@
                 <tr>
                     <td colspan="4">
                         <a href="@Url.Action("Index", new { folder = @backPath})">
-                            <i class="fa fa-folder toggle-folder" style="font-size:18px;color:#fbcf4b;cursor:pointer;"></i>
-                            <span>...</span>
+                            <i class="fa fa-backward"></i>
                         </a>
                     </td>
                 </tr>
@@ -87,7 +86,7 @@
                         <td colspan="3">
                             <a href="@Url.Action("Index", new { folder = @folders[i]?.FilePath})">
                                 <i class="fa fa-folder toggle-folder" style="font-size:18px;color:#fbcf4b;cursor:pointer;"></i>
-                                <span>@folderName</span>
+                                <span><strong>@folderName</strong></span>
                             </a>
                         </td>
                         <td>
@@ -107,7 +106,7 @@
                     <tr>
                         <td colspan="3">
                             <i class="fa fa-file" style="font-size:15px;color:#82a6c9;"></i>
-                            <span>@files[i]?.FilePath?.Split('/').LastOrDefault()</span>
+                            <span><strong>@files[i]?.FilePath?.Split('/').LastOrDefault()</strong></span>
                         </td>
                         <td>
                             @Html.CheckBoxFor(s=> s.ListDeleteFile[i + folders.Count].IsSelected)

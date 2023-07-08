@@ -27,7 +27,7 @@ body {
 
 .tab-menu {
   width: 230px;
-  background-color: #f0f0f0;
+  background-color: #EAF6FB;
   padding: 0px 0px 0px 2px;
   height: fit-content;
 }
@@ -45,10 +45,11 @@ body {
 .list-server a {
   display: block;
   padding: 10px;
-  background-color: #ddd;
-  color: #333;
+  background-color: #005F99;
+  color: white;
   text-decoration: none;
-  border-radius: 3px;
+  border-radius: 75px 75px;
+  text-align: center;
 }
 
 .list-server-detail:hover {
@@ -67,11 +68,12 @@ body {
 
 .search-box {
   margin-bottom: 10px;
+  margin-top: 10px;
+  text-align: center;
 }
 
 .search-box input[type="text"] {
-  width: 100%;
-  padding: 5px;
+  border-style: none;
 }
 
 .vertical-tab {
@@ -216,6 +218,10 @@ iframe {
 .upload-table th,
 .upload-table td {
   padding: 5px;
+}
+
+.table-hover tr:hover {
+  background-color: #f5f5f5;
 }
 
 .juki-bg {
