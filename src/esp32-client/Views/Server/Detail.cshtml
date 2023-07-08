@@ -24,7 +24,7 @@
 
     <div class="tab-content">
         <div id=@Model.IpAddress style="display: block;">
-            <h2>@Model.IpAddress - @serverName</h2>
+            <h2>@serverName <small><small>@Model.IpAddress</small></small></h2>
             <br>
 
             @using (Html.BeginForm("Upload", "Server", FormMethod.Post, new { @enctype = "multipart/form-data" }))

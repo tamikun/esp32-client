@@ -38,7 +38,8 @@ public class MultipleUploadFileController : Controller
 
         foreach (var file in selectedFile)
         {
-            var fileName = file.FilePath.Split('/').LastOrDefault();
+            var fileFilePathSplit = file.FilePath.Split('/');
+            var fileName = fileFilePathSplit.LastOrDefault();
             byte[] fileBytes = { };
 
             if (System.IO.File.Exists(file.FilePath))
@@ -57,13 +58,18 @@ public class MultipleUploadFileController : Controller
                      filePath = fileName;
                  }
 
-                 string message = $"Upload file {file.FilePath} to {server.IpAddress}{filePath}: ";
+                 string displayFileName = string.Join('/', fileFilePathSplit.Where(s => !string.IsNullOrEmpty(s)).Skip(2));
+                 string displayServerName = (await ListServer.GetInstance(_clientService).GetStaticList())
+                                        .Where(s => server.IpAddress.Contains(s.IpAddress))
+                                        .Select(s => string.IsNullOrEmpty(s.ServerName) ? s.IpAddress : s.ServerName).FirstOrDefault();
+
+                 string message = $"Upload file {displayFileName} to {displayServerName}";
 
                  if (fileModel.ReplaceIfExist)
                  {
                      try
                      {
-                        await _clientService.DeleteFile(server.IpAddress, "VDATA", fileName);
+                         await _clientService.DeleteFile(server.IpAddress, "VDATA", fileName);
                      }
                      catch
                      {
@@ -78,16 +84,16 @@ public class MultipleUploadFileController : Controller
 
                      if (!result.IsSuccessStatusCode)
                      {
-                         listAlert.Add(new AlertModel { AlertType = Alert.Danger, AlertMessage = message + result.StatusCode.ToString() });
+                         listAlert.Add(new AlertModel { AlertType = Alert.Danger, AlertMessage = message + $" {result.StatusCode.ToString()}" });
                      }
                      else
                      {
-                         listAlert.Add(new AlertModel { AlertType = Alert.Success, AlertMessage = message + "Success" });
+                         listAlert.Add(new AlertModel { AlertType = Alert.Success, AlertMessage = message });
                      }
                  }
                  catch
                  {
-                     listAlert.Add(new AlertModel { AlertType = Alert.Danger, AlertMessage = message + "Connection time out" });
+                     listAlert.Add(new AlertModel { AlertType = Alert.Danger, AlertMessage = message + " time out" });
                  }
 
              });
