@@ -129,25 +129,36 @@ public class ServerController : Controller
     }
 
 
-    public async Task<IActionResult> ChangeState(string ipAddress)
+    public async Task<IActionResult> ChangeState(string ipAddress, ServerState state)
     {
         try
         {
             var requestUrl = $"http://{ipAddress}/";
-            System.Console.WriteLine("Call change state: " + requestUrl);
+            // System.Console.WriteLine("Call change state: " + requestUrl);
 
-            var currentState = await _clientService.GetServerState(requestUrl);
+            // var currentState = await _clientService.GetServerState(requestUrl);
 
-            if (currentState == ServerState.Server)
+            // if (currentState == ServerState.Server)
+            // {
+            if (state == ServerState.Machine)
             {
                 await _clientService.GetAsyncApi($"{requestUrl}selectedMachine");
-                await _listServer.UpdateStaticItemState(ipAddress, ServerState.Machine);
+                await Task.Delay(500);
             }
-            else if (currentState == ServerState.Machine)
+
+            if (state == ServerState.Server)
             {
                 await _clientService.GetAsyncApi($"{requestUrl}selectedServer");
-                await _listServer.UpdateStaticItemState(ipAddress, ServerState.Server);
+                await Task.Delay(500);
             }
+
+            // await _listServer.UpdateStaticItemState(ipAddress, ServerState.Machine);
+            // }
+            // else if (currentState == ServerState.Machine)
+            // {
+            //     await _clientService.GetAsyncApi($"{requestUrl}selectedServer");
+            //     await _listServer.UpdateStaticItemState(ipAddress, ServerState.Server);
+            // }
         }
         catch (Exception ex)
         {

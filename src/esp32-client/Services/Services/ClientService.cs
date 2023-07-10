@@ -6,6 +6,7 @@ using System.Text;
 using esp32_client.Models;
 using HtmlAgilityPack;
 using System.Linq;
+using Newtonsoft.Json;
 
 namespace esp32_client.Services;
 
@@ -82,7 +83,12 @@ public partial class ClientService : IClientService
         Stopwatch sw = new Stopwatch();
         sw.Start();
 
-        var listIp = _settings.ListServer.Split(';').ToList();
+        // var listIp = _settings.ListServer.Split(';').ToList();
+
+        var dictSettingServer = JsonConvert.DeserializeObject<Dictionary<string,string>>(_settings.ListServer);
+
+        var listIp = dictSettingServer.Keys.ToList();
+
         // string nodeServerName = _configuration["Settings:NodeServerName"].ToString();
         // int timeout = int.Parse(_configuration["Settings:GetDataTimeOut"].ToString());
 
@@ -96,7 +102,7 @@ public partial class ClientService : IClientService
                 };
 
                 // var getServerNameTask = GetServerName($"http://{ip}/", nodeServerName);
-                serverModel.ServerName = await GetServerName($"http://{ip}/");
+                serverModel.ServerName = dictSettingServer[ip];
                 serverModel.ServerState = await GetServerState($"http://{ip}/");
 
                 return serverModel;
@@ -139,8 +145,6 @@ public partial class ClientService : IClientService
             var newurl = $"{ip}{config}";
             var pageData = await GetAsyncApi(newurl, true);
 
-            string nodeServerName = _settings.NodeServerName;
-
             return pageData;
         }
         catch
@@ -161,6 +165,7 @@ public partial class ClientService : IClientService
             HtmlNodeCollection selectedNodes = htmlDoc.DocumentNode.SelectNodes(node);
             if (selectedNodes != null && selectedNodes.Count > 0)
             {
+                System.Console.WriteLine("==== selectedNodes[0].InnerHtml: " + Newtonsoft.Json.JsonConvert.SerializeObject(selectedNodes[0].InnerHtml));
                 if (selectedNodes[0].InnerHtml == "Device is attached to: Server")
                     return ServerState.Server;
 

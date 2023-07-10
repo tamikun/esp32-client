@@ -20,7 +20,8 @@ services:
       - Settings:GetDataTimeOut=1500
       - Settings:PostFileTimeOut=1500
       - Settings:FileDataDirectory=/app/FileData/
-      - Settings:ListServer=192.168.1.203;192.168.1.202;192.168.101.84
+      # - Settings:ListServer=192.168.1.203;192.168.1.202;192.168.101.84
+      - Settings:ListServer={"192.168.1.201":"Machine201","192.168.1.202":"Machine202","192.168.1.203":"Machine203"}
       - Settings:NodeServerName=//h2
       - Settings:ServerNamePath=SYSTEM~1/NAME.TXT
       - Settings:NodeListEspFile=//table[@class='fixed']/tbody/tr

@@ -11,6 +11,17 @@
 
     serverName = string.IsNullOrEmpty(serverName) ? "undefined" : serverName;
 
+    //
+    var getUrl = $"http://{@Model.IpAddress}/";
+    if (!string.IsNullOrEmpty(Model.SubDirectory))
+    {
+        getUrl = $"http://{@Model.IpAddress}/{@Model.SubDirectory}/";
+    }
+
+    var listFile = await _clientService.GetListEspFile(getUrl);
+
+    //
+
     <div class="alert-message">
         @if (TempData["AlertMessage"] is not null)
         {
@@ -26,14 +37,14 @@
         <div id=@Model.IpAddress style="display: block;">
 
             @{
-                switch (serverModel?.ServerState)
+                switch (listFile.Count)
                 {
-                    case ServerState.Server:
-                        <h2>@serverName <a href="@Url.Action("ChangeState", new {ipAddress = @Model.IpAddress})"><i
+                    case >0:
+                        <h2>@serverName <a href="@Url.Action("ChangeState", new {ipAddress = @Model.IpAddress, state = ServerState.Machine })"><i
                                     class="fa fa-toggle-on" style="font-size:25px;color:green;cursor:pointer;"></i></a></h2>
                         break;
-                    case ServerState.Machine:
-                        <h2>@serverName <a href="@Url.Action("ChangeState", new {ipAddress = @Model.IpAddress})"><i
+                    case 0:
+                        <h2>@serverName <a href="@Url.Action("ChangeState", new {ipAddress = @Model.IpAddress, state = ServerState.Server})"><i
                                     class="fa fa-toggle-off" style="font-size:25px;color:green;cursor:pointer;"></i></a></h2>
                         break;
                     default:
@@ -83,14 +94,6 @@
 
 
             @{
-                var getUrl = $"http://{@Model.IpAddress}/";
-                if (!string.IsNullOrEmpty(Model.SubDirectory))
-                {
-                    getUrl = $"http://{@Model.IpAddress}/{@Model.SubDirectory}/";
-                }
-
-                var listFile = await _clientService.GetListEspFile(getUrl);
-
                 if (listFile.Count > 0)
                 {
                     @* Model.ListDeleteFile = new List<ServerModelDetail>(); *@
