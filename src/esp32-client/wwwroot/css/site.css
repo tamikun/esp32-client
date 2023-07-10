@@ -196,6 +196,7 @@ iframe {
 .normal table {
   border-collapse: collapse;
   width: 100%;
+  margin: 5px;
 }
 
 .normal th,
@@ -213,6 +214,7 @@ iframe {
 .upload-table table {
   border-collapse: collapse;
   width: 100%;
+  margin: 5px;
 }
 
 .upload-table th,
