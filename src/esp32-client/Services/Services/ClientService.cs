@@ -335,7 +335,7 @@ public partial class ClientService : IClientService
                             var newAddress = $"{ipAddress}{fileName}/";
                             dict.Add($"{ipAddress}{fileName}/", await GetDictionaryFile(ipAddress: newAddress));
                         }
-                        else
+                        else if (fileType == "file")
                         {
                             dict.Add($"{ipAddress}{fileName}/", $"{ipAddress}{fileName}/");
                         }
