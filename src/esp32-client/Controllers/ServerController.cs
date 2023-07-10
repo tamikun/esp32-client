@@ -10,11 +10,13 @@ public class ServerController : Controller
 {
     private readonly ILogger<ServerController> _logger;
     private readonly IClientService _clientService;
+    private readonly ListServer _listServer;
 
-    public ServerController(ILogger<ServerController> logger, IClientService clientService)
+    public ServerController(ILogger<ServerController> logger, IClientService clientService, ListServer listServer)
     {
         _logger = logger;
         _clientService = clientService;
+        _listServer = listServer;
     }
 
     public IActionResult Index()
@@ -121,7 +123,7 @@ public class ServerController : Controller
     {
 
         // await ListServer.GetInstance(_clientService).ReloadDynamicList();
-        var rs = await ListServer.GetInstance(_clientService).ReloadStaticList();
+        var rs = await _listServer.ReloadStaticList();
 
         return RedirectToAction("Index");
     }
@@ -139,12 +141,12 @@ public class ServerController : Controller
             if (currentState == ServerState.Server)
             {
                 await _clientService.GetAsyncApi($"{requestUrl}selectedMachine");
-                await ListServer.GetInstance(_clientService).UpdateStaticItemState(ipAddress, ServerState.Machine);
+                await _listServer.UpdateStaticItemState(ipAddress, ServerState.Machine);
             }
             else if (currentState == ServerState.Machine)
             {
                 await _clientService.GetAsyncApi($"{requestUrl}selectedServer");
-                await ListServer.GetInstance(_clientService).UpdateStaticItemState(ipAddress, ServerState.Server);
+                await _listServer.UpdateStaticItemState(ipAddress, ServerState.Server);
             }
         }
         catch (Exception ex)

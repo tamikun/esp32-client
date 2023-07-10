@@ -11,12 +11,14 @@ public class MultipleUploadFileController : Controller
     private readonly ILogger<MultipleUploadFileController> _logger;
     private readonly IClientService _clientService;
     private readonly IFileService _fileService;
+    private readonly ListServer _listServer;
 
-    public MultipleUploadFileController(ILogger<MultipleUploadFileController> logger, IFileService fileService, IClientService clientService)
+    public MultipleUploadFileController(ILogger<MultipleUploadFileController> logger, IFileService fileService, IClientService clientService, ListServer listServer)
     {
         _logger = logger;
         _fileService = fileService;
         _clientService = clientService;
+        _listServer = listServer;
     }
 
     public async Task<IActionResult> Index()
@@ -31,18 +33,18 @@ public class MultipleUploadFileController : Controller
     {
         System.Console.WriteLine("==== fileModel: " + Newtonsoft.Json.JsonConvert.SerializeObject(fileModel));
 
-        var selectedFile = fileModel.ListSelectedDataFile.Where(s => s.IsSelected);
-        var selectedServer = fileModel.ListSelectedServer.Where(s => s.IsSelected);
+        var selectedFile = fileModel?.ListSelectedDataFile.Where(s => s.IsSelected);
+        var selectedServer = fileModel?.ListSelectedServer.Where(s => s.IsSelected);
 
         var listAlert = new List<AlertModel>();
 
         foreach (var file in selectedFile)
         {
-            var fileFilePathSplit = file.FilePath.Split('/');
-            var fileName = fileFilePathSplit.LastOrDefault();
+            var fileFilePathSplit = file?.FilePath?.Split('/');
+            var fileName = fileFilePathSplit?.LastOrDefault();
             byte[] fileBytes = { };
 
-            if (System.IO.File.Exists(file.FilePath))
+            if (System.IO.File.Exists(file?.FilePath))
             {
                 // Read file content as byte array
                 fileBytes = System.IO.File.ReadAllBytes(file.FilePath);
@@ -50,7 +52,7 @@ public class MultipleUploadFileController : Controller
 
             Stopwatch sw = new Stopwatch();
             sw.Start();
-            var tasks = selectedServer.Select(async server =>
+            var tasks = selectedServer?.Select(async server =>
              {
                  var filePath = server.Folder + "/" + fileName;
                  if (string.IsNullOrEmpty(server.Folder))
@@ -59,7 +61,7 @@ public class MultipleUploadFileController : Controller
                  }
 
                  string displayFileName = string.Join('/', fileFilePathSplit.Where(s => !string.IsNullOrEmpty(s)).Skip(2));
-                 string displayServerName = (await ListServer.GetInstance(_clientService).GetStaticList())
+                 string? displayServerName = (await _listServer.GetStaticList())
                                         .Where(s => server.IpAddress.Contains(s.IpAddress))
                                         .Select(s => string.IsNullOrEmpty(s.ServerName) ? s.IpAddress : s.ServerName).FirstOrDefault();
 
@@ -97,8 +99,8 @@ public class MultipleUploadFileController : Controller
                  }
 
              });
-
-            await Task.WhenAll(tasks);
+            if (tasks is not null)
+                await Task.WhenAll(tasks);
             sw.Stop();
             System.Console.WriteLine("==== Multi ElapsedMilliseconds: " + Newtonsoft.Json.JsonConvert.SerializeObject(sw.ElapsedMilliseconds));
         }

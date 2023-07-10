@@ -4,13 +4,13 @@ namespace esp32_client.Services
 {
     public class ListServer
     {
-        private static ListServer? instance;
+        // private static ListServer? instance;
         private List<ServerModel> dynamicList;
         private List<ServerModel> staticList;
         private readonly IClientService _clientService;
 
         // Private constructor to prevent direct instantiation
-        private ListServer(IClientService clientService)
+        public ListServer(IClientService clientService)
         {
             _clientService = clientService;
 
@@ -18,17 +18,17 @@ namespace esp32_client.Services
             staticList = new List<ServerModel>();
         }
 
-        // Public method to get the instance of the singleton class
-        public static ListServer GetInstance(IClientService clientService)
-        {
-            // Create a new instance if it doesn't exist
-            if (instance == null)
-            {
-                instance = new ListServer(clientService);
-            }
+        // // Public method to get the instance of the singleton class
+        // public static ListServer GetInstance(IClientService clientService)
+        // {
+        //     // Create a new instance if it doesn't exist
+        //     if (instance == null)
+        //     {
+        //         instance = new ListServer(clientService);
+        //     }
 
-            return instance;
-        }
+        //     return instance;
+        // }
 
         // Method to retrieve the list of items
         public List<ServerModel> GetDynamicList()

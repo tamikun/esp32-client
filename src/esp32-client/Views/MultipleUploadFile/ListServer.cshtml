@@ -1,7 +1,7 @@
 ﻿@model MultipleUploadFileModel
 @using System.Diagnostics
 @{
-    var listServer = await ListServer.GetInstance(_clientService).GetStaticList();
+    var listServer = await _listServer.GetStaticList();
     Dictionary<string, object> listServerDict = new Dictionary<string, object>();
 
     Stopwatch sw = new Stopwatch();
@@ -56,7 +56,7 @@
         {
             //just IP
             //Get ServerName
-            var serverInfo = (await ListServer.GetInstance(_clientService).GetStaticList())
+            var serverInfo = (await _listServer.GetStaticList())
             .Where(s => s.IpAddress == getPath.FirstOrDefault()).FirstOrDefault();
 
             displayName = string.IsNullOrEmpty(serverInfo?.ServerName) ? $"{serverInfo?.IpAddress} {{undefined}}" :
