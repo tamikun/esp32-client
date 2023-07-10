@@ -345,7 +345,7 @@ public partial class ClientService : IClientService
         return dict;
     }
 
-    public virtual async Task<HttpResponseMessage> DeleteFile(string ipAddress, string subDirectory, string fileName)
+    public virtual async Task<HttpResponseMessage> DeleteFile(string ipAddress, string? subDirectory, string? fileName)
     {
         string url = "";
 

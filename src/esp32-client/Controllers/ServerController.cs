@@ -83,7 +83,7 @@ public class ServerController : Controller
 
         List<AlertModel> alertModel = new List<AlertModel>();
 
-        var deleteTasks = requestModel.ListDeleteFile.Where(s => s.IsSelected).Select(async item =>
+        var deleteTasks = requestModel?.ListDeleteFile?.Where(s => s.IsSelected).Select(async item =>
         {
             var delete = _clientService.DeleteFile($"http://{requestModel.IpAddress}/", requestModel.SubDirectory, item.FileName);
             var deleteResult = await delete;
@@ -108,12 +108,13 @@ public class ServerController : Controller
             }
         });
 
-        await Task.WhenAll(deleteTasks);
+        if (deleteTasks is not null)
+            await Task.WhenAll(deleteTasks);
 
         // var response = await _clientService.DeleteFile($"http://{ipAddress}/", subDirectory, fileName);
 
         TempData["AlertMessage"] = JsonConvert.SerializeObject(alertModel);
-        return RedirectToAction("Detail", new { ipAddress = requestModel.IpAddress, subDirectory = requestModel.SubDirectory });
+        return RedirectToAction("Detail", new { ipAddress = requestModel?.IpAddress, subDirectory = requestModel?.SubDirectory });
     }
 
     public async Task<IActionResult> Reload()

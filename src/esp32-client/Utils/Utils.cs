@@ -23,7 +23,7 @@ namespace esp32_client.Utils
             dict = new Dictionary<string, object>();
             try
             {
-                dict = JsonConvert.DeserializeObject<Dictionary<string, object>>(JsonConvert.SerializeObject(obj));
+                dict = JsonConvert.DeserializeObject<Dictionary<string, object>>(JsonConvert.SerializeObject(obj)) ?? new Dictionary<string, object>();
             }
             catch (Exception)
             {
@@ -40,7 +40,7 @@ namespace esp32_client.Utils
         /// <returns></returns>
         public static object? ChangeType(object value, Type conversion)
         {
-            var t = conversion;
+            Type? t = conversion;
             if (t is not null)
             {
                 if (t.IsGenericType && t.GetGenericTypeDefinition().Equals(typeof(Nullable<>)))
@@ -51,6 +51,9 @@ namespace esp32_client.Utils
                     }
 
                     t = Nullable.GetUnderlyingType(t);
+
+                    if (t is null)
+                        return null;
                 }
                 var rs = Convert.ChangeType(value, t);
                 return rs;
