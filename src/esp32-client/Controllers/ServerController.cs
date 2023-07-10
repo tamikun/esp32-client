@@ -11,12 +11,14 @@ public class ServerController : Controller
     private readonly ILogger<ServerController> _logger;
     private readonly IClientService _clientService;
     private readonly ListServer _listServer;
+    private readonly Settings _settings;
 
-    public ServerController(ILogger<ServerController> logger, IClientService clientService, ListServer listServer)
+    public ServerController(ILogger<ServerController> logger, IClientService clientService, ListServer listServer, Settings settings)
     {
         _logger = logger;
         _clientService = clientService;
         _listServer = listServer;
+        _settings = settings;
     }
 
     public IActionResult Index()
@@ -70,7 +72,7 @@ public class ServerController : Controller
         }
         catch
         {
-            listAlert.Add(new AlertModel { AlertType = Alert.Danger, AlertMessage = "Time out" });
+            listAlert.Add(new AlertModel { AlertType = Alert.Danger, AlertMessage = $"Time out {_settings.PostFileTimeOut}" });
         }
         TempData["AlertMessage"] = JsonConvert.SerializeObject(listAlert);
         requestModel.RequestFileModel = null;
