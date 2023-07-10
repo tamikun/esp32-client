@@ -38,6 +38,14 @@ public class MultipleUploadFileController : Controller
         var selectedFile = fileModel?.ListSelectedDataFile.Where(s => s.IsSelected);
         var selectedServer = fileModel?.ListSelectedServer.Where(s => s.IsSelected);
 
+        var dictFileServer = new Dictionary<string, IEnumerable<string>>();
+
+        var dictFileServerTask = selectedServer.Select(async s =>
+        {
+            dictFileServer.Add(s.IpAddress, (await _clientService.GetListEspFile($"{s.IpAddress}VDATA")).Select(s => s.FileName));
+        });
+
+
         var listAlert = new List<AlertModel>();
 
         foreach (var file in selectedFile)
@@ -73,7 +81,12 @@ public class MultipleUploadFileController : Controller
                  {
                      try
                      {
-                         await _clientService.DeleteFile(server.IpAddress, "VDATA", fileName);
+                         await Task.WhenAll(dictFileServerTask);
+                         if (dictFileServer[server.IpAddress].Contains(fileName))
+                         {
+                             await _clientService.DeleteFile(server.IpAddress, "VDATA", fileName);
+                         }
+
                      }
                      catch
                      {
