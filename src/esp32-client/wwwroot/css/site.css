@@ -111,6 +111,13 @@ iframe {
   margin-bottom: 0;
   position: relative;
   right: 0;
+  display: flex;
+}
+
+.close-alert {
+  position: absolute;
+  right: 0;
+  margin-right: 10px;
 }
 
 .alert-message {

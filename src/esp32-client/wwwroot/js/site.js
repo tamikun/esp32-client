@@ -1,12 +1,19 @@
 ﻿$(document).ready(function () {
     // Execute code after the page has finished loading
-    $(".alert").each(function () {
-        var alertElement = $(this);
-        setTimeout(function () {
-            alertElement.fadeOut("slow");
-        }, 5000);
-    });
+    // $(".alert").each(function () {
+    //     var alertElement = $(this);
+    //     setTimeout(function () {
+    //         alertElement.fadeOut("slow");
+    //     }, 15000);
+    // });
 
+    $(".close-alert").each(function () {
+        var alertElement = $(this).closest(".alert");
+        alertElement.on("click", function () {
+            alertElement.fadeOut("slow");
+        });
+    });
+    
 });
 
 
