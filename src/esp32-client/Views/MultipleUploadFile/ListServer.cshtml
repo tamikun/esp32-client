@@ -80,12 +80,15 @@
                 folder = string.Join('/', split.Skip(1));
             }
 
-            if (folder == "VDATA")
+            // Default Folder is VDATA
+            @* if (folder == "VDATA") *@
+            if (getPath.Count == 1)
             {
                 Model.ListSelectedServer.Add(new SelectedServerModel
                     {
                         IpAddress = $"http://{ipAddress}/",
-                        Folder = folder,
+                        @* Folder = folder, *@
+                        Folder = "VDATA",
                         IsSelected = false
                     });
                 var getIndex = Model.ListSelectedServer.Count - 1;

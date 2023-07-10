@@ -85,7 +85,7 @@ public partial class ClientService : IClientService
 
         // var listIp = _settings.ListServer.Split(';').ToList();
 
-        var dictSettingServer = JsonConvert.DeserializeObject<Dictionary<string,string>>(_settings.ListServer);
+        var dictSettingServer = JsonConvert.DeserializeObject<Dictionary<string, string>>(_settings.ListServer);
 
         var listIp = dictSettingServer.Keys.ToList();
 
@@ -330,7 +330,7 @@ public partial class ClientService : IClientService
                         var fileType = tableCells[1].InnerText;
                         var fileSize = long.Parse(tableCells[2].InnerText.Trim());
 
-                        if (fileType == "directory")
+                        if (fileType == "directory" && fileName != "SYSTEM~1")
                         {
                             var newAddress = $"{ipAddress}{fileName}/";
                             dict.Add($"{ipAddress}{fileName}/", await GetDictionaryFile(ipAddress: newAddress));
