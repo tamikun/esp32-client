@@ -3,20 +3,31 @@ using Microsoft.AspNetCore.Mvc;
 using esp32_client.Models;
 using Microsoft.AspNetCore.Cors;
 using Newtonsoft.Json;
+using esp32_client.Services;
 
 namespace esp32_client.Controllers;
 
 public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger;
+    private readonly Settings _settings;
+    private readonly ListServer _listServer;
 
-    public HomeController(ILogger<HomeController> logger)
+    public HomeController(ILogger<HomeController> logger, Settings settings, ListServer listServer)
     {
         _logger = logger;
+        _settings = settings;
+        _listServer = listServer;
     }
 
-    public IActionResult Index()
+    private async Task LoadInitData()
     {
+        await _listServer.GetStaticList();
+    }
+
+    public async Task<IActionResult> Index()
+    {
+        await LoadInitData();
         return View();
     }
 
