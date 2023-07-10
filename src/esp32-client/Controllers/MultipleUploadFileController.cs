@@ -82,7 +82,7 @@ public class MultipleUploadFileController : Controller
                      try
                      {
                          await Task.WhenAll(dictFileServerTask);
-                         if (dictFileServer[server.IpAddress].Contains(fileName))
+                         if (dictFileServer[server.IpAddress].Contains(displayFileName))
                          {
                              await _clientService.DeleteFile(server.IpAddress, "VDATA", fileName);
                          }
