@@ -22,14 +22,11 @@
     await Task.WhenAll(tasks);
 
     sw.Stop();
-
-    System.Console.WriteLine("==== ListServer.cshtml sw: " +
-    Newtonsoft.Json.JsonConvert.SerializeObject(sw.ElapsedMilliseconds)); //1011
 }
 <div class="col-sm-6 p-3" style="border: groove;">
     <ul>
         <li style="text-align: center;"><strong>Machine</strong></li>
-        @foreach (var item in listServerDict)
+        @foreach (var item in listServerDict.OrderBy(s => s.Key))
         {
             <li>
                 @{
