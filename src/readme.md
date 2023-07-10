@@ -9,3 +9,6 @@ Or
 
 - From src run:
 publish.bat
+
+- Run offline: from src run once 
+docker load -i aspnet6.tar
