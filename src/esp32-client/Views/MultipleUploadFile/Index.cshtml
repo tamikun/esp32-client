@@ -21,7 +21,7 @@
 
 @using (Html.BeginForm("Index", "MultipleUploadFile", FormMethod.Post, new { @enctype = "multipart/form-data" }))
 {
-    <div class="row" style="border: groove;">
+    <div class="row" style="border: groove; margin: 1px;">
         @{
             await Html.RenderPartialAsync("ListFile", Model);
             await Html.RenderPartialAsync("ListServer", Model);

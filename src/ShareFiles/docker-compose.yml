@@ -8,6 +8,7 @@ services:
       context: .
       dockerfile: esp32-client/Dockerfile
     container_name: esp32client.api
+    restart: always
     ports:
       - "8051:443"
       - "5051:5000"
@@ -17,8 +18,8 @@ services:
       - Settings:Subnet=192.168.1.
       - Settings:Port=80
       - Settings:ConnectionTimeOut=500
-      - Settings:GetDataTimeOut=1500
-      - Settings:PostFileTimeOut=1500
+      - Settings:GetDataTimeOut=1000
+      - Settings:PostFileTimeOut=1000
       - Settings:FileDataDirectory=/app/FileData/
       # - Settings:ListServer=192.168.1.203;192.168.1.202;192.168.101.84
       - Settings:ListServer={"192.168.1.201":"Machine201","192.168.1.202":"Machine202","192.168.1.203":"Machine203"}
