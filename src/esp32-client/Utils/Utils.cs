@@ -31,5 +31,31 @@ namespace esp32_client.Utils
             }
             return true;
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="conversion"></param>
+        /// <returns></returns>
+        public static object? ChangeType(object value, Type conversion)
+        {
+            var t = conversion;
+            if (t is not null)
+            {
+                if (t.IsGenericType && t.GetGenericTypeDefinition().Equals(typeof(Nullable<>)))
+                {
+                    if (string.IsNullOrEmpty(value?.ToString()))
+                    {
+                        return null;
+                    }
+
+                    t = Nullable.GetUnderlyingType(t);
+                }
+                var rs = Convert.ChangeType(value, t);
+                return rs;
+            }
+            return null;
+        }
     }
 }

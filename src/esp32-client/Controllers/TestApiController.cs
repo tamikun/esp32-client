@@ -15,13 +15,15 @@ public class TestApiController : ControllerBase
     private readonly IClientService _clientService;
     private readonly IFileService _fileService;
     private readonly IConfiguration _configuration;
+    private readonly Settings _settings;
 
-    public TestApiController(ILogger<HomeController> logger, IClientService clientService, IFileService fileService, IConfiguration configuration)
+    public TestApiController(ILogger<HomeController> logger, IClientService clientService, IFileService fileService, IConfiguration configuration, Settings settings)
     {
         _logger = logger;
         _clientService = clientService;
         _fileService = fileService;
         _configuration = configuration;
+        _settings = settings;
     }
 
     [HttpPost]
@@ -98,16 +100,7 @@ public class TestApiController : ControllerBase
                 System.Console.WriteLine("==== InnerText: " + Newtonsoft.Json.JsonConvert.SerializeObject(select.InnerText));
             }
         }
-        return Ok(selectedNodes.Count);
-    }
-
-    [HttpPost]
-    [ProducesResponseType(StatusCodes.Status201Created)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> GetSetting(string setting)
-    {
-
-        return Ok(_configuration[setting]);
+        return Ok(selectedNodes?.Count);
     }
 
     [HttpGet]
@@ -145,7 +138,7 @@ public class TestApiController : ControllerBase
         }
 
         fileContent = Encoding.UTF8.GetString(fileBytes, 0, fileBytes.Length);
-
+await Task.CompletedTask;
         return Ok(fileContent);
     }
 
@@ -155,6 +148,15 @@ public class TestApiController : ControllerBase
     public async Task<IActionResult> GetServerName(string url)
     {
         return Ok(await _clientService.GetServerName(url));
+    }
+
+    [HttpGet]
+    [ProducesResponseType(StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> GetSetting()
+    {
+        await Task.CompletedTask;
+        return Ok(_settings);
     }
 
 }
