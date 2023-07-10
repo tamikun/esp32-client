@@ -60,7 +60,7 @@ public class MultipleUploadFileController : Controller
                      filePath = fileName;
                  }
 
-                 string displayFileName = string.Join('/', fileFilePathSplit.Where(s => !string.IsNullOrEmpty(s)).Skip(2));
+                 string? displayFileName = fileFilePathSplit.Where(s => !string.IsNullOrEmpty(s)).LastOrDefault();
                  string? displayServerName = (await _listServer.GetStaticList())
                                         .Where(s => server.IpAddress.Contains(s.IpAddress))
                                         .Select(s => string.IsNullOrEmpty(s.ServerName) ? s.IpAddress : s.ServerName).FirstOrDefault();
@@ -86,7 +86,7 @@ public class MultipleUploadFileController : Controller
 
                      if (!result.IsSuccessStatusCode)
                      {
-                         listAlert.Add(new AlertModel { AlertType = Alert.Danger, AlertMessage = message + $" {result.StatusCode.ToString()}" });
+                         listAlert.Add(new AlertModel { AlertType = Alert.Danger, AlertMessage = message + $" - {result.StatusCode.ToString()}" });
                      }
                      else
                      {
@@ -95,7 +95,7 @@ public class MultipleUploadFileController : Controller
                  }
                  catch
                  {
-                     listAlert.Add(new AlertModel { AlertType = Alert.Danger, AlertMessage = message + " time out" });
+                     listAlert.Add(new AlertModel { AlertType = Alert.Danger, AlertMessage = message + " - Time out" });
                  }
 
              });

@@ -65,7 +65,7 @@ public class ServerController : Controller
             }
             else
             {
-                listAlert.Add(new AlertModel { AlertType = Alert.Success, AlertMessage = "" });
+                listAlert.Add(new AlertModel { AlertType = Alert.Success, AlertMessage = $"Upload file {requestModel.RequestFileModel.FilePath}" });
             }
         }
         catch
@@ -104,7 +104,7 @@ public class ServerController : Controller
                 alertModel.Add(new AlertModel
                 {
                     AlertType = Alert.Success,
-                    AlertMessage = "Delete successful.",
+                    AlertMessage = $"Delete {item.FileName}",
                 });
 
             }
