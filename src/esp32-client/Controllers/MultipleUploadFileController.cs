@@ -42,8 +42,11 @@ public class MultipleUploadFileController : Controller
 
         var dictFileServerTask = selectedServer.Select(async s =>
         {
-            dictFileServer.Add(s.IpAddress, (await _clientService.GetListEspFile($"{s.IpAddress}VDATA")).Select(s => s.FileName));
+            dictFileServer.Add(s.IpAddress, (await _clientService.GetListEspFile($"{s.IpAddress}VDATA/")).Select(s => s.FileName));
         });
+
+        await Task.WhenAll(dictFileServerTask);
+        System.Console.WriteLine("==== dictFileServer: " + Newtonsoft.Json.JsonConvert.SerializeObject(dictFileServer));
 
 
         var listAlert = new List<AlertModel>();
@@ -81,7 +84,6 @@ public class MultipleUploadFileController : Controller
                  {
                      try
                      {
-                         await Task.WhenAll(dictFileServerTask);
                          if (dictFileServer[server.IpAddress].Contains(displayFileName))
                          {
                              await _clientService.DeleteFile(server.IpAddress, "VDATA", fileName);
