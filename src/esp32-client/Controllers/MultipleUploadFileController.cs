@@ -12,13 +12,15 @@ public class MultipleUploadFileController : Controller
     private readonly IClientService _clientService;
     private readonly IFileService _fileService;
     private readonly ListServer _listServer;
+    private readonly Settings _setting;
 
-    public MultipleUploadFileController(ILogger<MultipleUploadFileController> logger, IFileService fileService, IClientService clientService, ListServer listServer)
+    public MultipleUploadFileController(ILogger<MultipleUploadFileController> logger, IFileService fileService, IClientService clientService, ListServer listServer, Settings setting)
     {
         _logger = logger;
         _fileService = fileService;
         _clientService = clientService;
         _listServer = listServer;
+        _setting = setting;
     }
 
     public async Task<IActionResult> Index()
@@ -95,7 +97,7 @@ public class MultipleUploadFileController : Controller
                  }
                  catch
                  {
-                     listAlert.Add(new AlertModel { AlertType = Alert.Danger, AlertMessage = message + " - Time out" });
+                     listAlert.Add(new AlertModel { AlertType = Alert.Danger, AlertMessage = message + $" - Time out {_setting.PostFileTimeOut} ms" });
                  }
 
              });

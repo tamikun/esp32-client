@@ -72,7 +72,7 @@ public class ServerController : Controller
         }
         catch
         {
-            listAlert.Add(new AlertModel { AlertType = Alert.Danger, AlertMessage = $"Time out {_settings.PostFileTimeOut}" });
+            listAlert.Add(new AlertModel { AlertType = Alert.Danger, AlertMessage = $"Time out {_settings.PostFileTimeOut} ms" });
         }
         TempData["AlertMessage"] = JsonConvert.SerializeObject(listAlert);
         requestModel.RequestFileModel = null;
