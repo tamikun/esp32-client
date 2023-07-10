@@ -14,11 +14,11 @@ namespace esp32_client.Services;
 /// </summary>
 public partial class ClientService : IClientService
 {
-    private readonly IConfiguration _configuration;
+    private readonly Settings _settings;
 
-    public ClientService(IConfiguration configuration)
+    public ClientService(Settings settings)
     {
-        _configuration = configuration;
+        _settings = settings;
     }
 
     public virtual List<ServerModel> GetAvailableIpAddress()
@@ -26,13 +26,8 @@ public partial class ClientService : IClientService
         Stopwatch sw = new Stopwatch();
         sw.Start();
 
-        var configSubnet = _configuration["Settings:Subnet"];
-        var configPort = int.Parse(_configuration["Settings:Port"]);
-        var configConnectionTimeOut = int.Parse(_configuration["Settings:ConnectionTimeOut"]);
-
-        System.Console.WriteLine("configSubnet " + configSubnet);
-        System.Console.WriteLine("configPort " + configPort);
-        System.Console.WriteLine("configConnectionTimeOut " + configConnectionTimeOut);
+        var configSubnet = _settings.Subnet;
+        var configPort = int.Parse(_settings.Port);
 
         string GetAddress(string subnet, int i)
         {
@@ -55,7 +50,7 @@ public partial class ClientService : IClientService
                         {
                             var connectTask = client.ConnectAsync(IPAddress.Parse(address), configPort);
 
-                            if (await Task.WhenAny(connectTask, Task.Delay(configConnectionTimeOut)) != connectTask || !client.Connected)
+                            if (await Task.WhenAny(connectTask, Task.Delay(((int)_settings.ConnectionTimeOut))) != connectTask || !client.Connected)
                             {
                                 return;
                             }
@@ -87,7 +82,7 @@ public partial class ClientService : IClientService
         Stopwatch sw = new Stopwatch();
         sw.Start();
 
-        var listIp = _configuration["Settings:ListServer"].ToString().Split(';').ToList();
+        var listIp = _settings.ListServer.Split(';').ToList();
         // string nodeServerName = _configuration["Settings:NodeServerName"].ToString();
         // int timeout = int.Parse(_configuration["Settings:GetDataTimeOut"].ToString());
 
@@ -140,11 +135,11 @@ public partial class ClientService : IClientService
     {
         try
         {
-            var config = _configuration["Settings:ServerNamePath"].ToString();
+            var config = _settings.ServerNamePath;
             var newurl = $"{ip}{config}";
             var pageData = await GetAsyncApi(newurl, true);
 
-            string nodeServerName = _configuration["Settings:NodeServerName"].ToString();
+            string nodeServerName = _settings.NodeServerName;
 
             return pageData;
         }
@@ -158,7 +153,7 @@ public partial class ClientService : IClientService
     {
         try
         {
-            var node = _configuration["Settings:NodeServerState"].ToString();
+            var node = _settings.NodeServerState;
             var html = await GetAsyncApi(ip, true);
 
             HtmlDocument htmlDoc = new HtmlDocument();
@@ -210,7 +205,7 @@ public partial class ClientService : IClientService
 
         using (var httpClient = new HttpClient())
         {
-            httpClient.Timeout = TimeSpan.FromMilliseconds(long.Parse(_configuration["Settings:PostFileTimeOut"].ToString()));
+            httpClient.Timeout = TimeSpan.FromMilliseconds(_settings.PostFileTimeOut);
 
             var fileContent = new ByteArrayContent(byteContent);
             var response = await httpClient.PostAsync(url, fileContent);
@@ -236,10 +231,9 @@ public partial class ClientService : IClientService
         try
         {
             System.Console.WriteLine("==== GetAsyncApi: " + apiUrl);
-            long timeout = long.Parse(_configuration["Settings:GetDataTimeOut"].ToString());
             using (HttpClient client = new HttpClient())
             {
-                client.Timeout = TimeSpan.FromMilliseconds(timeout);
+                client.Timeout = TimeSpan.FromMilliseconds(_settings.GetDataTimeOut);
 
                 HttpResponseMessage response = await client.GetAsync(apiUrl);
 
@@ -266,7 +260,7 @@ public partial class ClientService : IClientService
 
     public virtual async Task<List<EspFileModel>> GetListEspFile(string apiUrl)
     {
-        string node = _configuration["Settings:NodeListEspFile"].ToString();
+        string node = _settings.NodeListEspFile;
         var pageData = await GetAsyncApi(apiUrl, false);
 
         string html = pageData;
@@ -304,7 +298,7 @@ public partial class ClientService : IClientService
 
     public virtual async Task<Dictionary<string, object>> GetDictionaryFile(string ipAddress = "http://192.168.101.84/")
     {
-        string node = _configuration["Settings:NodeListEspFile"].ToString();
+        string node = _settings.NodeListEspFile;
 
         Dictionary<string, object> dict = new Dictionary<string, object>();
 

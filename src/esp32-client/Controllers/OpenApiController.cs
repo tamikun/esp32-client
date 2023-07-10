@@ -13,13 +13,13 @@ public class OpenApiController : ControllerBase
 {
     private readonly ILogger<HomeController> _logger;
     private readonly IClientService _clientService;
-    private readonly IConfiguration _configuration;
+    private readonly Settings _settings;
 
-    public OpenApiController(ILogger<HomeController> logger, IClientService clientService, IConfiguration configuration)
+    public OpenApiController(ILogger<HomeController> logger, IClientService clientService, Settings settings)
     {
         _logger = logger;
         _clientService = clientService;
-        _configuration = configuration;
+        _settings = settings;
     }
 
     [HttpPost]
@@ -62,7 +62,7 @@ public class OpenApiController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> DownloadFile(string url)
     {
-        long timeout = long.Parse(_configuration["Settings:GetDataTimeOut"].ToString());
+        long timeout = _settings.GetDataTimeOut;
         using (HttpClient client = new HttpClient())
         {
             client.Timeout = TimeSpan.FromMilliseconds(timeout);
@@ -73,8 +73,8 @@ public class OpenApiController : ControllerBase
             {
                 var content = await response.Content.ReadAsByteArrayAsync();
 
-                string fileName = url.Split('/').Where(s => !string.IsNullOrEmpty(s)).LastOrDefault();
-                string fileType = fileName.Split('.').LastOrDefault();
+                string? fileName = url.Split('/').Where(s => !string.IsNullOrEmpty(s)).LastOrDefault();
+                string? fileType = fileName?.Split('.').LastOrDefault();
                 string contentType = "";
                 switch (fileType?.ToLower())
                 {

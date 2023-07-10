@@ -8,7 +8,7 @@
     var folders = await _fileService.GetFolders(Model?.Folder);
     var listSplitFolder = Model?.Folder?.Split('/').Where(s => !string.IsNullOrEmpty(s));
 
-    bool defaultPath = (Model.Folder == _configuration["Settings:FileDataDirectory"].ToString());
+    bool defaultPath = Model?.Folder == _settings.FileDataDirectory;
 
 }
 

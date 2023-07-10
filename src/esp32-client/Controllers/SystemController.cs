@@ -10,19 +10,19 @@ public class SystemController : Controller
 {
     private readonly ILogger<SystemController> _logger;
     private readonly IFileService _fileService;
-    private readonly IConfiguration _configuration;
+    private readonly Settings _settings;
 
-    public SystemController(ILogger<SystemController> logger, IFileService fileService, IConfiguration configuration)
+    public SystemController(ILogger<SystemController> logger, IFileService fileService, Settings settings)
     {
         _logger = logger;
         _fileService = fileService;
-        _configuration = configuration;
+        _settings = settings;
     }
 
     public IActionResult Index(string? folder = null)
     {
         var model = new FileSystemRequestModel();
-        model.Folder = folder ?? _configuration["Settings:FileDataDirectory"].ToString();
+        model.Folder = folder ?? _settings.FileDataDirectory;
         return View(model);
     }
 
@@ -30,15 +30,16 @@ public class SystemController : Controller
     public async Task<IActionResult> Upload(FileSystemRequestModel request)
     {
         var listAlert = new List<AlertModel>();
-        var tasks = request.ListUploadFile.Select(async file =>
+        var tasks = request?.ListUploadFile?.Select(async file =>
         {
             await _fileService.WriteFile(file, $"{request.Folder}/");
             listAlert.Add(new AlertModel { AlertType = Alert.Success, AlertMessage = $"Upload {file.FileName}" });
         });
-        await Task.WhenAll(tasks);
+        if (tasks is not null)
+            await Task.WhenAll(tasks);
         TempData["AlertMessage"] = JsonConvert.SerializeObject(listAlert);
 
-        return RedirectToAction("Index", new { folder = request.Folder });
+        return RedirectToAction("Index", new { folder = request?.Folder });
     }
 
     [HttpPost]
@@ -48,10 +49,13 @@ public class SystemController : Controller
 
         var tasks = request.ListDeleteFile.Where(s => s.IsSelected).Select(async file =>
         {
-            await _fileService.DeleteFile(file.FilePath);
+            if (file.FilePath is not null)
+            {
+                await _fileService.DeleteFile(file.FilePath);
 
-            var fileName = file.FilePath.Split('/').LastOrDefault();
-            listAlert.Add(new AlertModel { AlertType = Alert.Success, AlertMessage = $"Delete file {fileName}" });
+                var fileName = file.FilePath.Split('/').LastOrDefault();
+                listAlert.Add(new AlertModel { AlertType = Alert.Success, AlertMessage = $"Delete file {fileName}" });
+            }
         });
 
         await Task.WhenAll(tasks);

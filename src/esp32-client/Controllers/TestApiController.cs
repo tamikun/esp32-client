@@ -14,15 +14,13 @@ public class TestApiController : ControllerBase
     private readonly ILogger<HomeController> _logger;
     private readonly IClientService _clientService;
     private readonly IFileService _fileService;
-    private readonly IConfiguration _configuration;
     private readonly Settings _settings;
 
-    public TestApiController(ILogger<HomeController> logger, IClientService clientService, IFileService fileService, IConfiguration configuration, Settings settings)
+    public TestApiController(ILogger<HomeController> logger, IClientService clientService, IFileService fileService, Settings settings)
     {
         _logger = logger;
         _clientService = clientService;
         _fileService = fileService;
-        _configuration = configuration;
         _settings = settings;
     }
 

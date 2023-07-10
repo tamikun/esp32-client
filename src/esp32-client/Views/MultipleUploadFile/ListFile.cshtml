@@ -41,8 +41,7 @@
             <i class="fa fa-file" style="font-size:15px;color:#82a6c9;"></i>
             <span>@key</span>
             @* <span>: @value</span> *@
-
-            if (value.ToString().Contains(_configuration["Settings:FileDataDirectory"].ToString() + "VDATA"))
+            if (value.ToString().Contains(_settings.FileDataDirectory + "VDATA"))
             {
                 Model.ListSelectedDataFile.Add(new SelectedDataFileModel
                     {

@@ -8,10 +8,10 @@ namespace esp32_client.Services;
 /// </summary>
 public partial class FileService : IFileService
 {
-    private readonly IConfiguration _configuration;
-    public FileService(IConfiguration configuration)
+    private readonly Settings _settings;
+    public FileService(Settings setting)
     {
-        _configuration = configuration;
+        _settings = setting;
     }
 
     public virtual async Task<List<DataFileModel>> GetAll(string? directoryPath)
@@ -20,7 +20,7 @@ public partial class FileService : IFileService
         {
             var response = new List<DataFileModel>();
 
-            directoryPath = directoryPath ?? _configuration["Settings:FileDataDirectory"].ToString();
+            directoryPath = directoryPath ?? _settings.FileDataDirectory;
 
             var folders = (await GetFolders(directoryPath)).ToList();
             response.AddRange(folders);
@@ -41,7 +41,7 @@ public partial class FileService : IFileService
     public virtual async Task<List<DataFileModel>> GetFolders(string? directoryPath)
     {
         var response = new List<DataFileModel>();
-        directoryPath = directoryPath ?? _configuration["Settings:FileDataDirectory"].ToString();
+        directoryPath = directoryPath ?? _settings.FileDataDirectory;
         var folders = Directory.GetDirectories(directoryPath).OrderBy(q => q).ToList();
 
         foreach (var item in folders)
@@ -61,7 +61,7 @@ public partial class FileService : IFileService
     {
         var response = new List<DataFileModel>();
 
-        directoryPath = directoryPath ?? _configuration["Settings:FileDataDirectory"].ToString();
+        directoryPath = directoryPath ?? _settings.FileDataDirectory;
 
         var files = Directory.GetFiles(directoryPath).OrderBy(q => q).ToList();
 
@@ -86,12 +86,12 @@ public partial class FileService : IFileService
 
         foreach (var item in rs.Where(s => s.FileType == "file"))
         {
-            dict.TryAdd(item.FilePath.Split('/').LastOrDefault(), item.FilePath);
+            dict.TryAdd(item?.FilePath?.Split('/').LastOrDefault() ?? "", item?.FilePath ?? "");
         }
 
         foreach (var item in rs.Where(s => s.FileType == "directory"))
         {
-            dict.TryAdd(item.FilePath.Split('/').LastOrDefault(), await GetDictionaryFile(item.FilePath));
+            dict.TryAdd(item?.FilePath?.Split('/').LastOrDefault() ?? "", await GetDictionaryFile(item?.FilePath));
         }
 
         return dict;
