@@ -183,15 +183,16 @@ public partial class ClientService : IClientService
             {
                 try
                 {
-                    var connectTask = client.ConnectAsync(IPAddress.Parse(ip), int.Parse(_settings.Port));
+                    await client.ConnectAsync(IPAddress.Parse(ip), int.Parse(_settings.Port));
 
-                    if (await Task.WhenAny(connectTask, Task.Delay(((int)_settings.ConnectionTimeOut))) != connectTask || !client.Connected)
+                    if (client.Connected)
                     {
-                        return ServerState.Unknown;
+                        return ServerState.Machine;
                     }
 
                     client.Close();
-                    return ServerState.Machine;
+                    // return ServerState.Machine;
+                    return ServerState.Unknown;
                 }
                 catch
                 {
