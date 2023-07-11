@@ -29,7 +29,7 @@
                         var serverName = string.IsNullOrEmpty(item.ServerName) ? item.IpAddress : item.ServerName;
 
                         <li>
-                            @if (item.ServerState == ServerState.Unknown)
+                            @* @if (item.ServerState == ServerState.Unknown)
                             {
                                 <a href="@Url.Action(@actionName, new { ipAddress = item.IpAddress, subDirectory = @subDir})"
                                     class="list-server-detail" style="background-color: red;">
@@ -42,7 +42,11 @@
                                     class="list-server-detail" style="background-color: #005F99;">
                                     <strong>@serverName</strong>
                                 </a>
-                            }
+                            } *@
+                                <a href="@Url.Action(@actionName, new { ipAddress = item.IpAddress, subDirectory = @subDir})"
+                                    class="list-server-detail" style="background-color: #005F99;">
+                                    <strong>@serverName</strong>
+                                </a>
                         </li>
                     }
                 }

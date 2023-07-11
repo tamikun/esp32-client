@@ -103,10 +103,7 @@ public partial class ClientService : IClientService
 
                 // var getServerNameTask = GetServerName($"http://{ip}/", nodeServerName);
                 serverModel.ServerName = dictSettingServer[ip];
-                serverModel.ServerState = await GetServerState($"{ip}");
-
-                System.Console.WriteLine("server " + $"http://{ip}/");
-                System.Console.WriteLine("serverModel.ServerState " + serverModel.ServerState);
+                serverModel.ServerState = await GetServerState($"http://{ip}/");
 
                 return serverModel;
             });
@@ -160,7 +157,7 @@ public partial class ClientService : IClientService
     {
         try
         {
-            var node = _settings.NodeListEspFile;
+            var node = _settings.NodeServerState;
             var html = await GetAsyncApi(ip, true);
 
             HtmlDocument htmlDoc = new HtmlDocument();
@@ -179,26 +176,27 @@ public partial class ClientService : IClientService
         }
         catch
         {
-            using (var client = new TcpClient())
-            {
-                try
-                {
-                    await client.ConnectAsync(IPAddress.Parse(ip), int.Parse(_settings.Port));
+            // using (var client = new TcpClient())
+            // {
+            //     try
+            //     {
+            //         await client.ConnectAsync(IPAddress.Parse(ip), int.Parse(_settings.Port));
 
-                    if (client.Connected)
-                    {
-                        return ServerState.Machine;
-                    }
+            //         if (client.Connected)
+            //         {
+            //             return ServerState.Machine;
+            //         }
 
-                    client.Close();
-                    // return ServerState.Machine;
-                    return ServerState.Unknown;
-                }
-                catch
-                {
-                    return ServerState.Unknown;
-                }
-            }
+            //         client.Close();
+            //         // return ServerState.Machine;
+            //         return ServerState.Unknown;
+            //     }
+            //     catch
+            //     {
+            //         return ServerState.Unknown;
+            //     }
+            // }
+            return ServerState.Unknown;
         }
     }
 
