@@ -103,7 +103,10 @@ public partial class ClientService : IClientService
 
                 // var getServerNameTask = GetServerName($"http://{ip}/", nodeServerName);
                 serverModel.ServerName = dictSettingServer[ip];
-                serverModel.ServerState = await GetServerState($"http://{ip}/");
+                serverModel.ServerState = await GetServerState($"{ip}");
+
+                System.Console.WriteLine("server " + $"http://{ip}/");
+                System.Console.WriteLine("serverModel.ServerState " + serverModel.ServerState);
 
                 return serverModel;
             });
@@ -157,7 +160,7 @@ public partial class ClientService : IClientService
     {
         try
         {
-            var node = _settings.NodeServerState;
+            var node = _settings.NodeListEspFile;
             var html = await GetAsyncApi(ip, true);
 
             HtmlDocument htmlDoc = new HtmlDocument();
@@ -165,18 +168,36 @@ public partial class ClientService : IClientService
             HtmlNodeCollection selectedNodes = htmlDoc.DocumentNode.SelectNodes(node);
             if (selectedNodes != null && selectedNodes.Count > 0)
             {
-                System.Console.WriteLine("==== selectedNodes[0].InnerHtml: " + Newtonsoft.Json.JsonConvert.SerializeObject(selectedNodes[0].InnerHtml));
-                if (selectedNodes[0].InnerHtml == "Device is attached to: Server")
-                    return ServerState.Server;
+                // System.Console.WriteLine("==== selectedNodes[0].InnerHtml: " + Newtonsoft.Json.JsonConvert.SerializeObject(selectedNodes[0].InnerHtml));
+                // if (selectedNodes[0].InnerHtml == "Device is attached to: Server")
+                return ServerState.Server;
 
-                return ServerState.Machine;
             }
 
-            return ServerState.Unknown;
+            return ServerState.Machine;
+            // return ServerState.Unknown;
         }
         catch
         {
-            return ServerState.Unknown;
+            using (var client = new TcpClient())
+            {
+                try
+                {
+                    var connectTask = client.ConnectAsync(IPAddress.Parse(ip), int.Parse(_settings.Port));
+
+                    if (await Task.WhenAny(connectTask, Task.Delay(((int)_settings.ConnectionTimeOut))) != connectTask || !client.Connected)
+                    {
+                        return ServerState.Unknown;
+                    }
+
+                    client.Close();
+                    return ServerState.Machine;
+                }
+                catch
+                {
+                    return ServerState.Unknown;
+                }
+            }
         }
     }
 

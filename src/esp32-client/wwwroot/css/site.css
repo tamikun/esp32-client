@@ -45,7 +45,7 @@ body {
 .list-server a {
   display: block;
   padding: 10px;
-  background-color: #005F99;
+  /* background-color: #005F99; */
   color: white;
   text-decoration: none;
   border-radius: 75px 75px;
