@@ -5,20 +5,6 @@
     ViewData["Title"] = "Upload Files";
 }
 
-<div class="alert-message">
-
-    @if (TempData["AlertMessage"] is not null)
-    {
-        var alertModel = JsonConvert.DeserializeObject<List<AlertModel>>(TempData["AlertMessage"].ToString());
-
-        foreach (var alert in alertModel)
-        {
-            @await Html.PartialAsync("~/Views/Components/Alert.cshtml", alert)
-        }
-    }
-
-</div>
-
 @using (Html.BeginForm("Index", "MultipleUploadFile", FormMethod.Post, new { @enctype = "multipart/form-data" }))
 {
     <div class="row" style="border: groove; margin: 1px;">
@@ -34,7 +20,7 @@
     </div>
 
     <div class="submit">
-        <input type="submit" value="Upload" />
+        <input type="submit" value="Upload" class="submit-display-loading" />
     </div>
 
 }

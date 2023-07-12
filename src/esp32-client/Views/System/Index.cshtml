@@ -1,7 +1,5 @@
 @model FileSystemRequestModel
 
-@using Newtonsoft.Json
-
 @{
     ViewData["Title"] = "System";
     var files = await _fileService.GetFiles(Model?.Folder);
@@ -12,19 +10,6 @@
 
 }
 
-<div class="alert-message">
-
-    @if (TempData["AlertMessage"] is not null)
-    {
-        var alertModel = JsonConvert.DeserializeObject<List<AlertModel>>(TempData["AlertMessage"].ToString());
-
-        foreach (var alert in alertModel)
-        {
-            @await Html.PartialAsync("~/Views/Components/Alert.cshtml", alert)
-        }
-    }
-
-</div>
 <div style="margin-right: 10px;">
 
     @using (Html.BeginForm("Upload", "System", FormMethod.Post, new { @enctype = "multipart/form-data" }))
@@ -39,7 +24,7 @@
                 </tr>
                 <tr>
                     <td>
-                        <input type="submit" value="Upload" />
+                        <input type="submit" value="Upload" class="submit-display-loading" />
                     </td>
                 </tr>
             </table>
@@ -67,7 +52,7 @@
                             <a href="@Url.Action("AddFolder", new { directory = @Model.Folder, folderName = "__FOLDERNAME__" })"
                                 id="addFolderLink">
 
-                                <i class="fa fa-folder-plus"
+                                <i class="fa fa-folder-plus normal-display-loading"
                                     style="font-size:20px;color:#fbcf4b;cursor:pointer;margin-left:10px;align-self:center;"></i>
                             </a>
 
@@ -135,7 +120,7 @@
 
         <div class="submit-delete">
             @Html.HiddenFor(s=> s.Folder)
-            <input type="submit" value="Delete" />
+            <input type="submit" value="Delete" class="submit-display-loading" />
         </div>
     }
 </div>

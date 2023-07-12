@@ -14,6 +14,15 @@
         });
     });
 
+    document.querySelectorAll('.submit-display-loading').forEach(
+        item => {
+            item.addEventListener('click', showSubmitLoadingPopup);
+        }
+    );
+
+    $(".normal-display-loading").each(function () {
+        $(this).on("click", showNormalLoadingPopup);
+    });
 });
 
 
@@ -63,3 +72,15 @@ searchInput.addEventListener('input', function () {
         }
     });
 });
+
+function showSubmitLoadingPopup(event) {
+    event.preventDefault();
+    var loadingPopup = document.querySelector('.loading-popup');
+    loadingPopup.style.display = 'flex';
+    event.target.form.submit();
+}
+
+function showNormalLoadingPopup() {
+    var loadingPopup = document.querySelector('.loading-popup');
+    loadingPopup.style.display = 'flex';
+}

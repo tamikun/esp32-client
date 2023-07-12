@@ -20,32 +20,23 @@
 
     var listFile = await _clientService.GetListEspFile(getUrl);
 
-    //
-
-    <div class="alert-message">
-        @if (TempData["AlertMessage"] is not null)
-        {
-            var alertModel = JsonConvert.DeserializeObject<List<AlertModel>>(TempData["AlertMessage"].ToString());
-            foreach (var alert in alertModel)
-            {
-                @await Html.PartialAsync("~/Views/Components/Alert.cshtml", alert)
-            }
-        }
-    </div>
-
     <div class="tab-content">
         <div id=@Model.IpAddress style="display: block;">
 
             @{
                 switch (listFile.Count)
                 {
-                    case >0:
-                        <h2>@serverName <a href="@Url.Action("ChangeState", new {ipAddress = @Model.IpAddress, state = ServerState.Machine })"><i
-                                    class="fa fa-toggle-on" style="font-size:25px;color:green;cursor:pointer;"></i></a></h2>
+                    case > 0:
+                        <h2>@serverName <a
+                                href="@Url.Action("ChangeState", new {ipAddress = @Model.IpAddress, state = ServerState.Machine })"><i
+                                    class="fa fa-toggle-on normal-display-loading"
+                                    style="font-size:25px;color:green;cursor:pointer;"></i></a></h2>
                         break;
                     case 0:
-                        <h2>@serverName <a href="@Url.Action("ChangeState", new {ipAddress = @Model.IpAddress, state = ServerState.Server})"><i
-                                    class="fa fa-toggle-off" style="font-size:25px;color:green;cursor:pointer;"></i></a></h2>
+                        <h2>@serverName <a
+                                href="@Url.Action("ChangeState", new {ipAddress = @Model.IpAddress, state = ServerState.Server})"><i
+                                    class="fa fa-toggle-off normal-display-loading"
+                                    style="font-size:25px;color:green;cursor:pointer;"></i></a></h2>
                         break;
                     default:
                         break;
@@ -81,7 +72,7 @@
                     style = "width:100%;" } })
                         </td>
                         <td>
-                            <input type="submit" value="Upload" />
+                            <input type="submit" value="Upload" class="submit-display-loading" />
                         </td>
                     </tr>
 
@@ -108,7 +99,7 @@
 
                     @using (Html.BeginForm("Delete", "Server", FormMethod.Post, new { @enctype = "multipart/form-data" }))
                     {
-                        <table class="normal table-hover" style="width: 100%;">             
+                        <table class="normal table-hover" style="width: 100%;">
                             <thead>
                                 <tr>
                                     <th>Name</th>
@@ -211,7 +202,7 @@
                         @Html.HiddenFor(s => s.IpAddress)
                         @Html.HiddenFor(s => s.SubDirectory)
                         <div class="submit-delete">
-                            <input type="submit" value="Delete" />
+                            <input type="submit" value="Delete" class="submit-display-loading" />
                         </div>
                     }
                 }
