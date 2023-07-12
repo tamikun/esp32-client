@@ -84,3 +84,18 @@ function showNormalLoadingPopup() {
     var loadingPopup = document.querySelector('.loading-popup');
     loadingPopup.style.display = 'flex';
 }
+
+function checkAll() {
+    if (this.checked) {
+        document.querySelectorAll(`input[type="checkbox"]`).forEach(item => {
+            item.checked = false;
+        });
+        this.checked = false;
+    }
+    else {
+        document.querySelectorAll(`input[type="checkbox"]`).forEach(item => {
+            item.checked = true;
+        });
+        this.checked = true;
+    }
+}

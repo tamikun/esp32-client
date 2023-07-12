@@ -66,10 +66,13 @@
                 {
                     var backPath = "/" + string.Join('/', listSplitFolder.Take(listSplitFolder.Count() - 1)) + "/";
                     <tr>
-                        <td colspan="4">
+                        <td colspan="3">
                             <a href="@Url.Action("Index", new { folder = @backPath})">
                                 <i class="fa fa-backward"></i>
                             </a>
+                        </td>
+                        <td>
+                            <input type="checkbox" onclick="checkAll()">
                         </td>
                     </tr>
                 }
@@ -112,16 +115,16 @@
                                 @Html.HiddenFor(s=> s.ListDeleteFile[i + folders.Count].FilePath)
                             </td>
                         </tr>
-                    }
-                }
+            }
+            }
 
-            </tbody>
-        </table>
+        </tbody>
+    </table>
 
-        <div class="submit-delete">
-            @Html.HiddenFor(s=> s.Folder)
-            <input type="submit" value="Delete" class="submit-display-loading" />
-        </div>
+    <div class="submit-delete">
+        @Html.HiddenFor(s=> s.Folder)
+        <input type="submit" value="Delete" class="submit-display-loading" />
+    </div>
     }
 </div>
 
