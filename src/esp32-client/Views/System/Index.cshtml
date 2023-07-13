@@ -24,7 +24,7 @@
                 </tr>
                 <tr>
                     <td>
-                        <input type="submit" value="Upload" class="submit-display-loading" />
+                        <input type="submit" value="Upload" />
                     </td>
                 </tr>
             </table>
@@ -115,16 +115,16 @@
                                 @Html.HiddenFor(s=> s.ListDeleteFile[i + folders.Count].FilePath)
                             </td>
                         </tr>
-            }
-            }
+                    }
+                }
 
-        </tbody>
-    </table>
+            </tbody>
+        </table>
 
-    <div class="submit-delete">
-        @Html.HiddenFor(s=> s.Folder)
-        <input type="submit" value="Delete" class="submit-display-loading" />
-    </div>
+        <div class="submit-delete">
+            @Html.HiddenFor(s=> s.Folder)
+            <input type="submit" value="Delete" />
+        </div>
     }
 </div>
 

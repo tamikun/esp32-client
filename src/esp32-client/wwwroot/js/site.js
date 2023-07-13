@@ -14,13 +14,13 @@
         });
     });
 
-    document.querySelectorAll('.submit-display-loading').forEach(
+    document.querySelectorAll(`input[type="submit"]`).forEach(
         item => {
             item.addEventListener('click', showSubmitLoadingPopup);
         }
     );
 
-    $(".normal-display-loading").each(function () {
+    $("a").each(function () {
         $(this).on("click", showNormalLoadingPopup);
     });
 });
