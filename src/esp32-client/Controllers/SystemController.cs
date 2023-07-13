@@ -45,6 +45,10 @@ public class SystemController : Controller
     [HttpPost]
     public async Task<IActionResult> Delete(FileSystemRequestModel request)
     {
+
+        // System.Console.WriteLine("==== Request Form: " + Newtonsoft.Json.JsonConvert.SerializeObject(Request.Form));
+        // System.Console.WriteLine("==== Request Form Files: " + Newtonsoft.Json.JsonConvert.SerializeObject(Request.Form.Files));
+
         var listAlert = new List<AlertModel>();
 
         var tasks = request.ListDeleteFile.Where(s => s.IsSelected).Select(async file =>
