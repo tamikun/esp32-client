@@ -129,19 +129,18 @@
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td colspan="4"><a
+                                        <td colspan="3"><a
                                                 href="@Url.Action(@actionDetail, new { ipAddress =  @Model.IpAddress, subDirectory =  @backDirString})">
                                                 <i class="fa fa-backward"></i></a>
+                                        </td>
+                                        <td>
+                                            <input type="checkbox" onclick="checkAll()">
                                         </td>
                                     </tr>
                                 }
 
-                                @* @foreach (var file in listFile) *@
                                 @for (int i = 0; i < listFile.Count; i++)
                                 {
-
-                                    @* var newUrl = Model.IpAddress + "/" + file.FileName; *@
-
                                     var subDir = "";
                                     if (!string.IsNullOrEmpty(Model.SubDirectory))
                                     {
