@@ -40,6 +40,9 @@ builder.Services.AddScoped<IFileService, FileService>();
 builder.Services.AddSingleton<Settings>();
 builder.Services.AddSingleton<ListServer>();
 
+builder.Services.AddSession(); // Add session state
+builder.Services.AddScoped<IHttpContextAccessor, HttpContextAccessor>(); // Add HttpContextAccessor
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -60,6 +63,7 @@ if (app.Environment.IsDevelopment() || true)
 
 }
 
+app.UseSession(); // Enable session state
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();

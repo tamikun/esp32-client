@@ -5,7 +5,7 @@ using esp32_client.Services;
 using Newtonsoft.Json;
 
 namespace esp32_client.Controllers;
-
+[CustomAuthenticationFilter]
 public class ServerController : Controller
 {
     private readonly ILogger<ServerController> _logger;
