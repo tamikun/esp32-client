@@ -1,5 +1,7 @@
 ﻿$(document).ready(function () {
 
+    loadIndexData();
+
     $(".alert").each(function () {
         var alertElement = $(this);
         setTimeout(function () {
@@ -23,6 +25,7 @@
     $("a").each(function () {
         $(this).on("click", showNormalLoadingPopup);
     });
+
 });
 
 
@@ -85,6 +88,11 @@ function showNormalLoadingPopup() {
     loadingPopup.style.display = 'flex';
 }
 
+function hideLoadingPopup() {
+    var loadingPopup = document.querySelector('.loading-popup');
+    loadingPopup.style.display = 'none';
+}
+
 function checkAll() {
     if (this.checked) {
         document.querySelectorAll(`input[type="checkbox"]`).forEach(item => {
@@ -98,4 +106,23 @@ function checkAll() {
         });
         this.checked = true;
     }
+}
+
+function loadIndexData() {
+    showNormalLoadingPopup();
+
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', '/Home/LoadIndexData', true);
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState === 4) {
+            if (xhr.status === 200) {
+                hideLoadingPopup();
+                console.log('Request status 200');
+            } else {
+                console.error('Request failed with status', xhr.status);
+            }
+        }
+    };
+    xhr.send();
+
 }

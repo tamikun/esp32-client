@@ -20,15 +20,18 @@ public class HomeController : Controller
         _listServer = listServer;
     }
 
-    private async Task LoadInitData()
-    {
-        await _listServer.GetStaticList();
-    }
-
     public async Task<IActionResult> Index()
     {
-        await LoadInitData();
+        await Task.CompletedTask;
         return View();
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> LoadIndexData()
+    {
+        System.Console.WriteLine("Get Load INDEX DATA");
+        await _listServer.GetStaticList();
+        return Ok();
     }
 
     [HttpPost]
