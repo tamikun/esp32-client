@@ -40,7 +40,11 @@ builder.Services.AddScoped<IFileService, FileService>();
 builder.Services.AddSingleton<Settings>();
 builder.Services.AddSingleton<ListServer>();
 
-builder.Services.AddSession(); // Add session state
+// builder.Services.AddSession(); // Add session state
+builder.Services.AddSession(options =>
+   {
+       options.IdleTimeout = TimeSpan.FromMinutes(30);
+   });
 builder.Services.AddScoped<IHttpContextAccessor, HttpContextAccessor>(); // Add HttpContextAccessor
 
 var app = builder.Build();

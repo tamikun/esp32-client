@@ -1,7 +1,5 @@
 ﻿$(document).ready(function () {
 
-    loadIndexData();
-
     $(".alert").each(function () {
         var alertElement = $(this);
         setTimeout(function () {
@@ -108,21 +106,3 @@ function checkAll() {
     }
 }
 
-function loadIndexData() {
-    showNormalLoadingPopup();
-
-    var xhr = new XMLHttpRequest();
-    xhr.open('GET', '/Home/LoadIndexData', true);
-    xhr.onreadystatechange = function () {
-        if (xhr.readyState === 4) {
-            if (xhr.status === 200) {
-                hideLoadingPopup();
-                console.log('Request status 200');
-            } else {
-                console.error('Request failed with status', xhr.status);
-            }
-        }
-    };
-    xhr.send();
-
-}
