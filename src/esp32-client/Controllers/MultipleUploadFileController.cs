@@ -33,8 +33,6 @@ public class MultipleUploadFileController : Controller
     [HttpPost]
     public async Task<IActionResult> Index(MultipleUploadFileModel? fileModel)
     {
-        System.Console.WriteLine("==== fileModel: " + Newtonsoft.Json.JsonConvert.SerializeObject(fileModel));
-
         var selectedFile = fileModel?.ListSelectedDataFile.Where(s => s.IsSelected);
         var selectedServer = fileModel?.ListSelectedServer.Where(s => s.IsSelected);
 
@@ -46,8 +44,6 @@ public class MultipleUploadFileController : Controller
         });
 
         await Task.WhenAll(dictFileServerTask);
-        System.Console.WriteLine("==== dictFileServer: " + Newtonsoft.Json.JsonConvert.SerializeObject(dictFileServer));
-
 
         var listAlert = new List<AlertModel>();
 
