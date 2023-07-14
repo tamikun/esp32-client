@@ -295,3 +295,7 @@ li.dropdown {
 .dropdown:hover .dropdown-content {
   display: block;
 }
+
+input[type="checkbox"] {
+  transform: scale(1.5);
+}
