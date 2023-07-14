@@ -108,7 +108,12 @@
                         <tr>
                             <td colspan="3">
                                 <i class="fa fa-file" style="font-size:15px;color:#82a6c9;"></i>
-                                <span><strong>@files[i]?.FilePath?.Split('/').LastOrDefault()</strong></span>
+                                <span>
+                                    <a class="download-file"
+                                        href='@Url.Action("DownloadFileServer", "OpenApi", new {path = @files[i].FilePath})'>
+                                        <strong>@files[i]?.FilePath?.Split('/').LastOrDefault()</strong>
+                                    </a>
+                                </span>
                             </td>
                             <td>
                                 @Html.CheckBoxFor(s=> s.ListDeleteFile[i + folders.Count].IsSelected)
@@ -124,9 +129,9 @@
         <div class="submit-delete">
             @Html.HiddenFor(s=> s.Folder)
             @* <input type="file" name="myFile" style="width:100%;" multiple="">
-            <input type="text" name="myDict">
-            <input type="checkbox" name="myCheckBox" data-value="true" value="true"
-                data-val-required="The IsSelected field is required."> *@
+        <input type="text" name="myDict">
+        <input type="checkbox" name="myCheckBox" data-value="true" value="true"
+        data-val-required="The IsSelected field is required."> *@
             <input type="submit" value="Delete" />
         </div>
     }

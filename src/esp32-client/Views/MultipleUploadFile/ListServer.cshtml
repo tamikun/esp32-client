@@ -87,10 +87,10 @@
                 Model.ListSelectedServer.Add(new SelectedServerModel
                     {
                         IpAddress = $"http://{ipAddress}/",
-                        @* Folder = folder, *@
-                        Folder = "VDATA",
-                        IsSelected = false
-                    });
+                    @* Folder = folder, *@
+    Folder = "VDATA",
+    IsSelected = false
+});
                 var getIndex = Model.ListSelectedServer.Count - 1;
 
                 @Html.CheckBoxFor(model => model.ListSelectedServer[getIndex].IsSelected)
@@ -119,7 +119,8 @@
                 downloadFileUrl = downloadFileUrl.Remove(downloadFileUrl.LastIndexOf('/'));
             }
             <i class="fa fa-file" style="font-size:15px;color:#82a6c9;"></i>
-            <span><a href='@Url.Action("DownloadFile", "OpenApi", new {url = @downloadFileUrl})'>@displayName</a></span>
+            <span><a class="download-file"
+                    href='@Url.Action("DownloadFile", "OpenApi", new {url = @downloadFileUrl})'>@displayName</a></span>
         }
     }
 }

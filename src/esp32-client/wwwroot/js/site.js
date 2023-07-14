@@ -20,7 +20,7 @@
         }
     );
 
-    $("a").each(function () {
+    $("a:not(.download-file)").each(function () {
         $(this).on("click", showNormalLoadingPopup);
     });
 
