@@ -34,18 +34,6 @@ public class HomeController : Controller
         return Ok();
     }
 
-    [HttpPost]
-    public async Task<IActionResult> Index(MultipleUploadFileModel? fileModel)
-    {
-        System.Console.WriteLine("Call Home-Index-Post");
-
-        System.Console.WriteLine("==== fileModel: " + JsonConvert.SerializeObject(fileModel));
-
-        await Task.CompletedTask;
-
-        return RedirectToAction("Index");
-    }
-
     public IActionResult Privacy()
     {
         return View();
