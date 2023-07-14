@@ -1,8 +1,19 @@
-﻿@model MultipleUploadFileModel
+﻿@using System.Diagnostics
+
+@model MultipleUploadFileModel
 
 @{
+    Stopwatch sw = new Stopwatch();
+    sw.Start();
     Dictionary<string, object> fileDict = await _fileService.GetDictionaryFile(null);
+    sw.Stop();
+
+    System.Console.WriteLine("==== sw ListFile Get Dict: " +
+    Newtonsoft.Json.JsonConvert.SerializeObject(sw.ElapsedMilliseconds));
+
     Model.ListSelectedDataFile = new List<SelectedDataFileModel>();
+
+    List<Task?> renderTasks = new List<Task?>();
 }
 <div class="col-sm-6 p-3" style="border: groove;">
     <ul>
@@ -11,14 +22,17 @@
         {
             <li>
                 @{
-                    RenderDictionaryItem(item.Key, item.Value);
+                    renderTasks.Add(RenderDictionaryItem(item.Key, item.Value));
                 }
             </li>
+        }
+        @{
+            await Task.WhenAll(renderTasks);
         }
     </ul>
 </div>
 @functions {
-    void RenderDictionaryItem(string key, object value)
+    async Task RenderDictionaryItem(string key, object value)
     {
         @if (value is Dictionary<string, object> nestedDictionary)
         {
@@ -30,7 +44,7 @@
                 {
                     <li>
                         @{
-                            RenderDictionaryItem(nestedItem.Key, nestedItem.Value);
+                            await RenderDictionaryItem(nestedItem.Key, nestedItem.Value);
                         }
                     </li>
                 }

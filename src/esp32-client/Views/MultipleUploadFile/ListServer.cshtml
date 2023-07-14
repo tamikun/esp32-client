@@ -22,6 +22,10 @@
     await Task.WhenAll(tasks);
 
     sw.Stop();
+    System.Console.WriteLine("==== sw ListServer Get Dict: " +
+    Newtonsoft.Json.JsonConvert.SerializeObject(sw.ElapsedMilliseconds));
+
+    List<Task?> renderTasks = new List<Task?>();
 }
 <div class="col-sm-6 p-3" style="border: groove;">
     <ul>
@@ -30,9 +34,12 @@
         {
             <li>
                 @{
-                    await RenderDictionaryItem(item.Key, item.Value);
+                    renderTasks.Add(RenderDictionaryItem(item.Key, item.Value));
                 }
             </li>
+        }
+        @{
+            await Task.WhenAll(renderTasks);
         }
     </ul>
 </div>
