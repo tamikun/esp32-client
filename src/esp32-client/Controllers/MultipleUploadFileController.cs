@@ -47,7 +47,10 @@ public class MultipleUploadFileController : Controller
 
         var listAlert = new List<AlertModel>();
 
-        foreach (var file in selectedFile)
+        Stopwatch sw = new Stopwatch();
+        sw.Start();
+
+        var fileTasks = selectedFile.Select(async file =>
         {
             var fileFilePathSplit = file?.FilePath?.Split('/');
             var fileName = fileFilePathSplit?.LastOrDefault();
@@ -59,8 +62,6 @@ public class MultipleUploadFileController : Controller
                 fileBytes = System.IO.File.ReadAllBytes(file.FilePath);
             }
 
-            Stopwatch sw = new Stopwatch();
-            sw.Start();
             var tasks = selectedServer?.Select(async server =>
              {
                  var filePath = server.Folder + "/" + fileName;
@@ -114,9 +115,78 @@ public class MultipleUploadFileController : Controller
              });
             if (tasks is not null)
                 await Task.WhenAll(tasks);
-            sw.Stop();
-            System.Console.WriteLine("==== Multi ElapsedMilliseconds: " + Newtonsoft.Json.JsonConvert.SerializeObject(sw.ElapsedMilliseconds));
-        }
+        });
+
+        await Task.WhenAll(fileTasks);
+
+        // foreach (var file in selectedFile)
+        // {
+        //     var fileFilePathSplit = file?.FilePath?.Split('/');
+        //     var fileName = fileFilePathSplit?.LastOrDefault();
+        //     byte[] fileBytes = { };
+
+        //     if (System.IO.File.Exists(file?.FilePath))
+        //     {
+        //         // Read file content as byte array
+        //         fileBytes = System.IO.File.ReadAllBytes(file.FilePath);
+        //     }
+
+        //     var tasks = selectedServer?.Select(async server =>
+        //      {
+        //          var filePath = server.Folder + "/" + fileName;
+        //          if (string.IsNullOrEmpty(server.Folder))
+        //          {
+        //              filePath = fileName;
+        //          }
+
+        //          string? displayFileName = fileFilePathSplit.Where(s => !string.IsNullOrEmpty(s)).LastOrDefault();
+        //          string? displayServerName = (await _listServer.GetStaticList())
+        //                                 .Where(s => server.IpAddress.Contains(s.IpAddress))
+        //                                 .Select(s => string.IsNullOrEmpty(s.ServerName) ? s.IpAddress : s.ServerName).FirstOrDefault();
+
+        //          string message = $"Upload file {displayFileName} to {displayServerName}";
+
+        //          if (fileModel.ReplaceIfExist)
+        //          {
+        //              try
+        //              {
+        //                  if (dictFileServer[server.IpAddress].Contains(displayFileName))
+        //                  {
+        //                      await _clientService.DeleteFile(server.IpAddress, "VDATA", fileName);
+        //                  }
+
+        //              }
+        //              catch
+        //              {
+        //                  //Do nothing
+        //              }
+        //          }
+
+        //          try
+        //          {
+
+        //              var result = await _clientService.PostAsyncFile(fileBytes, filePath, server.IpAddress);
+
+        //              if (!result.IsSuccessStatusCode)
+        //              {
+        //                  listAlert.Add(new AlertModel { AlertType = Alert.Danger, AlertMessage = message + $" - {result.StatusCode.ToString()}" });
+        //              }
+        //              else
+        //              {
+        //                  listAlert.Add(new AlertModel { AlertType = Alert.Success, AlertMessage = message });
+        //              }
+        //          }
+        //          catch
+        //          {
+        //              listAlert.Add(new AlertModel { AlertType = Alert.Danger, AlertMessage = message + $" - Time out {_setting.PostFileTimeOut} ms" });
+        //          }
+
+        //      });
+        //     if (tasks is not null)
+        //         await Task.WhenAll(tasks);
+        // }
+        sw.Stop();
+        System.Console.WriteLine("==== Multi ElapsedMilliseconds: " + Newtonsoft.Json.JsonConvert.SerializeObject(sw.ElapsedMilliseconds)); //5075
 
         TempData["AlertMessage"] = JsonConvert.SerializeObject(listAlert);
 
