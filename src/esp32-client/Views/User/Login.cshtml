@@ -1,23 +1,90 @@
 ﻿@{
-    ViewData["Title"] = "Privacy Policy";
+    ViewData["Title"] = "Login";
+    Layout = "";
 }
 
-@using (Html.BeginForm("Login", "User", FormMethod.Post))
-{
-    @Html.ValidationSummary()
+<!DOCTYPE html>
+<html>
 
-    <div>
-        <label for="username">Username:</label>
-        @Html.TextBox("username")
+<head>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f1f1f1;
+            font-family: "Hiragino Kaku Gothic ProN", "ヒラギノ角ゴシック Pro", 游ゴシック体, "Yu Gothic", YuGothic, "メイリオ", sans-serif;
+        }
+
+        label {
+            font-size: x-large;
+            font-weight: 600;
+            color: #005F99;
+        }
+
+        .form-container {
+            position: relative;
+            background-color: #fff;
+            padding: 5px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+            width: 20%;
+            height: 50%;
+            text-align: -webkit-center;
+        }
+
+        .form-container label,
+        .form-container input {
+        @*display:block;*@margin: 10px;
+            width: -webkit-fill-available;
+        }
+
+        .form-container label {
+            font-size: x-large;
+            font-weight: 600;
+            color: #005F99;
+        }
+
+        .form-container input {
+            font-size: large;
+            border-radius: 5px;
+            border-style: groove;
+        }
+
+        .form-container input[type="submit"] {
+            background-color: #005F99;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="form-container">
+        @using (Html.BeginForm("Login", "User", FormMethod.Post))
+        {
+            <div>
+                <label for="username">Username</label>
+                @Html.TextBox("username")
+            </div>
+
+            <div>
+                <label for="password">Password</label>
+                @Html.Password("password")
+            </div>
+
+            @Html.ValidationSummary()
+
+            <div style="position: absolute; bottom: 0px;width: -webkit-fill-available;">
+                <input type="submit" value="Login" />
+            </div>
+        }
     </div>
+</body>
 
-    <div>
-        <label for="password">Password:</label>
-        @Html.Password("password")
-    </div>
-
-    <div>
-        <input type="submit" value="Login" />
-    </div>
-}
-
+</html>

@@ -56,6 +56,6 @@ public class UserController : Controller
         // Return true if the user is valid, false otherwise
         // You can also perform additional checks, such as checking for password hash, etc.
         // For simplicity, this example assumes a hardcoded username and password
-        return (username == "admin" && password == "password");
+        return (username == "admin" && password == "123456");
     }
 }

@@ -1,9 +1,7 @@
 @using esp32_client.Controllers;
 
 @model List<ServerModel>;
-@{
-    System.Console.WriteLine("==== Model: " + Newtonsoft.Json.JsonConvert.SerializeObject(Model));
-}
+
 <div class="tabs-container">
     <div class="tab-menu">
         <div class="search-box">
