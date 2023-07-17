@@ -25,7 +25,7 @@
     System.Console.WriteLine("==== sw ListServer Get Dict: " +
     Newtonsoft.Json.JsonConvert.SerializeObject(sw.ElapsedMilliseconds));
 
-    List<Task?> renderTasks = new List<Task?>();
+    List<Task> renderTasks = new List<Task>();
 }
 <div class="col-sm-6 p-3" style="border: groove;">
     <ul>
@@ -94,9 +94,9 @@
                 Model.ListSelectedServer.Add(new SelectedServerModel
                     {
                         IpAddress = $"http://{ipAddress}/",
-                    @* Folder = folder, *@
-    Folder = "VDATA",
-    IsSelected = false
+                        @* Folder = folder, *@
+                        Folder = "VDATA",
+                        IsSelected = false
 });
                 var getIndex = Model.ListSelectedServer.Count - 1;
 

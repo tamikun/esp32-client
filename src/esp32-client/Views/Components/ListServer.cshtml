@@ -26,7 +26,7 @@
                         var subDir = "";
                         var serverName = string.IsNullOrEmpty(item.ServerName) ? item.IpAddress : item.ServerName;
 
-                        <li class="normal-display-loading">
+                        <li>
                             @* @if (item.ServerState == ServerState.Unknown)
                     {
                     <a href="@Url.Action(@actionName, new { ipAddress = item.IpAddress, subDirectory = @subDir})"

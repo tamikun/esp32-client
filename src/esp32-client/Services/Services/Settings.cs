@@ -21,7 +21,6 @@ namespace esp32_client.Services
                 if (pinfo is not null)
                     pinfo.SetValue(this, Utils.Utils.ChangeType(_configuration[$"Settings:{property.Name}"], pinfo.PropertyType), null);
             }
-            GUID = Guid.NewGuid().ToString();
         }
 #nullable disable
 
@@ -36,6 +35,5 @@ namespace esp32_client.Services
         public string ServerNamePath { get; set; }
         public string NodeListEspFile { get; set; }
         public string NodeServerState { get; set; }
-        public string GUID { get; set; }
     }
 }

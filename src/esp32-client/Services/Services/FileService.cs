@@ -114,10 +114,15 @@ public partial class FileService : IFileService
             var files = Directory.GetFileSystemEntries(directoryPath);
             if (files.Any())
             {
-                foreach (var file in files)
+                // foreach (var file in files)
+                // {
+                //     await DeleteFile(file);
+                // }
+                var deleteTasks = files.Select(async file =>
                 {
                     await DeleteFile(file);
-                }
+                });
+                await Task.WhenAll(deleteTasks);
             }
             Directory.Delete(directoryPath);
         }

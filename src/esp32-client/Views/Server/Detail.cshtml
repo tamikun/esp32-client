@@ -29,13 +29,13 @@
                     case > 0:
                         <h2>@serverName <a
                                 href="@Url.Action("ChangeState", new {ipAddress = @Model.IpAddress, state = ServerState.Machine })"><i
-                                    class="fa fa-toggle-on normal-display-loading"
+                                    class="fa fa-toggle-on"
                                     style="font-size:25px;color:green;cursor:pointer;"></i></a></h2>
                         break;
                     case 0:
                         <h2>@serverName <a
                                 href="@Url.Action("ChangeState", new {ipAddress = @Model.IpAddress, state = ServerState.Server})"><i
-                                    class="fa fa-toggle-off normal-display-loading"
+                                    class="fa fa-toggle-off"
                                     style="font-size:25px;color:green;cursor:pointer;"></i></a></h2>
                         break;
                     default:
@@ -89,13 +89,13 @@
                 {
                     @* Model.ListDeleteFile = new List<ServerModelDetail>(); *@
                     Model.ListDeleteFile = listFile.Select(
-                    s => new SelectedDeleteFileServerModel()
-                {
-                    IpAddress = Model.IpAddress,
-                    Folder = Model.SubDirectory,
-                    FileName = s.FileName,
-                    IsSelected = false
-                }).ToList();
+                        s => new SelectedDeleteFileServerModel()
+                        {
+                            IpAddress = Model.IpAddress,
+                            Folder = Model.SubDirectory,
+                            FileName = s.FileName,
+                            IsSelected = false
+                        }).ToList();
 
                     @using (Html.BeginForm("Delete", "Server", FormMethod.Post, new { @enctype = "multipart/form-data" }))
                     {

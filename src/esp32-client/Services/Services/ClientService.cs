@@ -341,7 +341,28 @@ public partial class ClientService : IClientService
             HtmlNodeCollection tableRows = htmlDoc.DocumentNode.SelectNodes(node);
             if (tableRows != null && tableRows.Count > 0)
             {
-                foreach (HtmlNode row in tableRows)
+                // foreach (HtmlNode row in tableRows)
+                // {
+                //     HtmlNodeCollection tableCells = row.SelectNodes("td");
+                //     if (tableCells != null && tableCells.Count >= 4)
+                //     {
+                //         var fileName = tableCells[0].InnerText;
+                //         var fileType = tableCells[1].InnerText;
+                //         var fileSize = long.Parse(tableCells[2].InnerText.Trim());
+
+                //         if (fileType == "directory" && fileName != "SYSTEM~1")
+                //         {
+                //             var newAddress = $"{ipAddress}{fileName}/";
+                //             dict.Add($"{ipAddress}{fileName}/", await GetDictionaryFile(ipAddress: newAddress));
+                //         }
+                //         else if (fileType == "file")
+                //         {
+                //             dict.Add($"{ipAddress}{fileName}/", $"{ipAddress}{fileName}/");
+                //         }
+                //     }
+                // }
+
+                var tasks = tableRows.Select(async row =>
                 {
                     HtmlNodeCollection tableCells = row.SelectNodes("td");
                     if (tableCells != null && tableCells.Count >= 4)
@@ -360,7 +381,9 @@ public partial class ClientService : IClientService
                             dict.Add($"{ipAddress}{fileName}/", $"{ipAddress}{fileName}/");
                         }
                     }
-                }
+                });
+
+                await Task.WhenAll(tasks);
             }
         }
         catch
