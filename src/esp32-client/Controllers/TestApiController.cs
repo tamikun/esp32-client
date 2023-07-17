@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Diagnostics;
+using System.Text;
 using esp32_client.Models;
 using esp32_client.Services;
 using HtmlAgilityPack;
@@ -136,7 +137,7 @@ public class TestApiController : ControllerBase
         }
 
         fileContent = Encoding.UTF8.GetString(fileBytes, 0, fileBytes.Length);
-await Task.CompletedTask;
+        await Task.CompletedTask;
         return Ok(fileContent);
     }
 
@@ -155,6 +156,29 @@ await Task.CompletedTask;
     {
         await Task.CompletedTask;
         return Ok(_settings);
+    }
+
+    [HttpGet]
+    [ProducesResponseType(StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> TestTasks(int number)
+    {
+        Stopwatch sw = new Stopwatch();
+        sw.Start();
+        var listTask = new List<Task>();
+        for (int i = 0; i < number; i++)
+        {
+            listTask.Add(DelayTask(i));
+        }
+        await Task.WhenAll(listTask);
+        sw.Stop();
+        return Ok(sw.ElapsedMilliseconds);
+    }
+
+    private async Task DelayTask(int i)
+    {
+        await Task.Delay(5000);
+        System.Console.WriteLine($"Task {i} is completed");
     }
 
 }
