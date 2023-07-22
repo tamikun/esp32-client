@@ -39,5 +39,33 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
       - portainer_data:/data
 
+  mysql:
+    image: mysql
+    container_name: mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=admin1234
+    restart: always
+    ports:
+      - "3306:3306"
+    volumes:
+      - D:/MiQ/MiQ_NT/ESP32Client/Databse:/var/lib/mysql
+    command:
+      - "mysqld"
+      - "--binlog_expire_logs_seconds=259200"
+      - "--max_connections=500"
+
+  phpmyadmin:
+    image: phpmyadmin
+    container_name: phpmyadmin
+    links:
+      - mysql
+    environment:
+      - UPLOAD_LIMIT=1G
+      - PMA_HOST=mysql
+      - PMA_PORT=3306
+    restart: always
+    ports:
+      - "8886:80"
+
 volumes:
   portainer_data:
