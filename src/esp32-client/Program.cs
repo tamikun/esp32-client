@@ -1,4 +1,6 @@
+using System.Reflection;
 using esp32_client.Services;
+using FluentMigrator.Runner;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -40,12 +42,45 @@ builder.Services.AddScoped<IFileService, FileService>();
 builder.Services.AddSingleton<Settings>();
 builder.Services.AddSingleton<ListServer>();
 
-// builder.Services.AddSession(); // Add session state
 builder.Services.AddSession(options =>
    {
        options.IdleTimeout = TimeSpan.FromMinutes(30);
    });
 builder.Services.AddScoped<IHttpContextAccessor, HttpContextAccessor>(); // Add HttpContextAccessor
+
+
+builder.Services.AddFluentMigratorCore()
+                .ConfigureRunner(rb => rb
+                    // Add SQLite support to FluentMigrator
+                    .AddMySql4()
+                    // Set the connection string
+                    .WithGlobalConnectionString(builder.Configuration["Settings:ConnectionString"].ToString())
+                    // Define the assembly containing the migrations
+                    .ScanIn(Assembly.GetExecutingAssembly()).For.Migrations())
+                // Enable logging to console in the FluentMigrator way
+                .AddLogging(lb => lb.AddFluentMigratorConsole())
+                // Build the service provider
+                .BuildServiceProvider(false);
+
+// Instantiate the runner
+var serviceProvider = builder.Services.BuildServiceProvider();
+var runner = serviceProvider.GetRequiredService<IMigrationRunner>();
+runner.MigrateUp();
+
+// builder.Services.AddLinqToDBContext<LinqToDbBuilder>((provider, options) =>
+//             {
+//                 options
+//                 //will configure the AppDataConnection to use
+//                 //sqite with the provided connection string
+//                 //there are methods for each supported database
+//                 //.UseSQLite(connStr)
+//                 .UseMySql("Data Source=test.db")
+//                 // //default logging will log everything using the ILoggerFactory configured in the provider (Turn on display log)
+//                 .UseDefaultLogging(provider);
+//             });
+
+// builder.Services.AddSession(); // Add session state
+
 
 var app = builder.Build();
 

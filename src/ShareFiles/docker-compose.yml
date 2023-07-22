@@ -27,6 +27,7 @@ services:
       - Settings:ServerNamePath=SYSTEM~1/NAME.TXT
       - Settings:NodeListEspFile=//table[@class='fixed']/tbody/tr
       - Settings:NodeServerState=//p[@id='result']
+      - Settings:ConnectionString=server=mysql;database=espclient;allowuservariables=True;user id=root;password=admin1234;port=3306
   
   portainer:
     image: portainer/portainer-ce
