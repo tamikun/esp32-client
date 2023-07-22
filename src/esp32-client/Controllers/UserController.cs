@@ -3,16 +3,19 @@ using Microsoft.AspNetCore.Mvc;
 using esp32_client.Models;
 using esp32_client.Services;
 using Newtonsoft.Json;
+using esp32_client.Builder;
 
 namespace esp32_client.Controllers;
 
 public class UserController : Controller
 {
     private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly IUserAccountService _userAccountService;
 
-    public UserController(IHttpContextAccessor httpContextAccessor)
+    public UserController(IHttpContextAccessor httpContextAccessor, IUserAccountService userAccountService)
     {
         _httpContextAccessor = httpContextAccessor;
+        _userAccountService = userAccountService;
     }
 
     // Login action
@@ -23,14 +26,14 @@ public class UserController : Controller
     }
 
     [HttpPost]
-    public ActionResult Login(string username, string password)
+    public async Task<ActionResult> Login(string username, string password)
     {
         // Perform custom authentication logic here
-        if (IsValidUser(username, password))
+        if (await _userAccountService.IsValidUser(username, password))
         {
             // Authentication successful
             // Store the username in session
-            _httpContextAccessor.HttpContext.Session.SetString("Username", username);
+            _httpContextAccessor?.HttpContext?.Session.SetString("Username", username);
 
             return RedirectToAction("Index", "Home");
         }
@@ -44,18 +47,9 @@ public class UserController : Controller
     public ActionResult Logout()
     {
         // Clear the session or cookie used for authentication
-        _httpContextAccessor.HttpContext.Session.Clear();
+        _httpContextAccessor?.HttpContext?.Session.Clear();
 
         return RedirectToAction("Login");
     }
 
-    // Custom authentication logic
-    private bool IsValidUser(string username, string password)
-    {
-        // Validate the username and password against your data source (e.g., database)
-        // Return true if the user is valid, false otherwise
-        // You can also perform additional checks, such as checking for password hash, etc.
-        // For simplicity, this example assumes a hardcoded username and password
-        return (username == "admin" && password == "123456");
-    }
 }

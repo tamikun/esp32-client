@@ -12,17 +12,21 @@ public class HomeController : Controller
     private readonly ILogger<HomeController> _logger;
     private readonly Settings _settings;
     private readonly ListServer _listServer;
+    private readonly IHttpContextAccessor _httpContextAccessor;
 
-    public HomeController(ILogger<HomeController> logger, Settings settings, ListServer listServer)
+    public HomeController(ILogger<HomeController> logger, Settings settings, ListServer listServer, IHttpContextAccessor httpContextAccessor)
     {
         _logger = logger;
         _settings = settings;
         _listServer = listServer;
+        _httpContextAccessor = httpContextAccessor;
     }
 
     public async Task<IActionResult> Index()
     {
         await Task.CompletedTask;
+
+        System.Console.WriteLine("==== Session: " + _httpContextAccessor?.HttpContext?.Session.GetString("Username"));
         return View();
     }
 
