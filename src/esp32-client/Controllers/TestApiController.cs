@@ -1,8 +1,10 @@
 ﻿using System.Diagnostics;
 using System.Text;
+using esp32_client.Builder;
 using esp32_client.Models;
 using esp32_client.Services;
 using HtmlAgilityPack;
+using LinqToDB;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,12 +19,15 @@ public class TestApiController : ControllerBase
     private readonly IFileService _fileService;
     private readonly Settings _settings;
 
-    public TestApiController(ILogger<HomeController> logger, IClientService clientService, IFileService fileService, Settings settings)
+    private readonly LinqToDb _connection;
+
+    public TestApiController(ILogger<HomeController> logger, IClientService clientService, IFileService fileService, Settings settings, LinqToDb connection)
     {
         _logger = logger;
         _clientService = clientService;
         _fileService = fileService;
         _settings = settings;
+        _connection = connection;
     }
 
     [HttpPost]
@@ -179,6 +184,14 @@ public class TestApiController : ControllerBase
     {
         await Task.Delay(5000);
         System.Console.WriteLine($"Task {i} is completed");
+    }
+
+    [HttpGet]
+    [ProducesResponseType(StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> GetDb()
+    {
+        return Ok(await _connection.UserAccount.ToListAsync());
     }
 
 }

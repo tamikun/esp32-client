@@ -1,6 +1,10 @@
 using System.Reflection;
+using esp32_client.Builder;
 using esp32_client.Services;
 using FluentMigrator.Runner;
+using LinqToDB;
+using LinqToDB.AspNet;
+using LinqToDB.AspNet.Logging;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -48,13 +52,14 @@ builder.Services.AddSession(options =>
    });
 builder.Services.AddScoped<IHttpContextAccessor, HttpContextAccessor>(); // Add HttpContextAccessor
 
+var connectionString = builder.Configuration["Settings:ConnectionString"].ToString();
 
 builder.Services.AddFluentMigratorCore()
                 .ConfigureRunner(rb => rb
                     // Add SQLite support to FluentMigrator
                     .AddMySql4()
                     // Set the connection string
-                    .WithGlobalConnectionString(builder.Configuration["Settings:ConnectionString"].ToString())
+                    .WithGlobalConnectionString(connectionString)
                     // Define the assembly containing the migrations
                     .ScanIn(Assembly.GetExecutingAssembly()).For.Migrations())
                 // Enable logging to console in the FluentMigrator way
@@ -62,24 +67,21 @@ builder.Services.AddFluentMigratorCore()
                 // Build the service provider
                 .BuildServiceProvider(false);
 
+
+builder.Services.AddLinqToDBContext<LinqToDb>((provider, options)
+            => options
+                //will configure the AppDataConnection to use
+                //sqite with the provided connection string
+                //there are methods for each supported database
+                .UseMySql(connectionString)
+                //default logging will log everything using the ILoggerFactory configured in the provider
+                .UseDefaultLogging(provider));
+
 // Instantiate the runner
 var serviceProvider = builder.Services.BuildServiceProvider();
 var runner = serviceProvider.GetRequiredService<IMigrationRunner>();
 runner.MigrateUp();
 
-// builder.Services.AddLinqToDBContext<LinqToDbBuilder>((provider, options) =>
-//             {
-//                 options
-//                 //will configure the AppDataConnection to use
-//                 //sqite with the provided connection string
-//                 //there are methods for each supported database
-//                 //.UseSQLite(connStr)
-//                 .UseMySql("Data Source=test.db")
-//                 // //default logging will log everything using the ILoggerFactory configured in the provider (Turn on display log)
-//                 .UseDefaultLogging(provider);
-//             });
-
-// builder.Services.AddSession(); // Add session state
 
 
 var app = builder.Build();
