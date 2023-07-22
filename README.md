@@ -5,6 +5,13 @@
 - Chọn `MySql`
 - Tương tác thông qua giao diện `PhpMyAdmin`
 ## 2. Tổ chức kiểu dữ liệu
+
+- Đầu tiên cần có dữ liệu về `Partern`
+- Sau đó định nghĩa về `Product` (mấy process, tên process, patern)
+- Thêm Department
+- Thêm `Line` tương ứng với `Department`. Trong mỗi Line cần chọn Product của line đó (Nếu chưa có product thì phải khai báo product trước). Ta sẽ được các `Process` tương ứng với `Product`, tiếp tục định nghĩa `Machine` cho từng `Process` (Các Machine khả dụng)
+
+
 ### 2.1 Department
 
 - Lưu tên định danh cho Department
@@ -18,13 +25,13 @@
 
 - Định nghĩa các line theo Department (thứ tự hiển thị)
 
-|Id|DepartmentId|LineName|Order|Visible|
-|--|------------|--------|-----|-------|
-|1 |      1     |Line 1  |  1  |  true |
-|2 |      1     |Line 2  |  2  |  true |
-|3 |      1     |Line 3  |  3  |  true |
-|4 |      1     |Line 4  |  4  |  true |
-|5 |      1     |Line 5  |  5  |  true |
+|Id|DepartmentId|LineName|Order|Visible|Product |
+|--|------------|--------|-----|-------|--------|
+|1 |      1     |Line 1  |  1  |  true |Product1|
+|2 |      1     |Line 2  |  2  |  true |Product1|
+|3 |      1     |Line 3  |  3  |  true |Product1|
+|4 |      1     |Line 4  |  4  |  true |Product1|
+|5 |      1     |Line 5  |  5  |  true |Product1|
 
 ### 2.3 Machine
 
@@ -42,18 +49,31 @@
 |--|-------------|--------|--------|--------------|
 |1 |00001        |VDT001  |base64  |Diễn giải thêm|
 
-### 2.5 Process
+### 2.5 Product
 
 - Định nghĩa process theo các line
 - Chọn Patern cho Process
 
-|Id|DepartmentId|LineId|ProcessName|Order|MachineId|ParternNumber|
-|--|------------|------|-----------|-----|---------|-------------|
-|1 |      1     |  1   |Process 1  |1    |   1     |00001        |
-|2 |      1     |  1   |Process 2  |2    |   2     |00001        |
-|3 |      1     |  1   |Process 3  |3    |   3     |00001        |
-|4 |      1     |  1   |Process 4  |4    |   4     |00001        |
-|5 |      1     |  1   |Process 5  |5    |   5     |00001        |
+|Id|ProductName |ProcessName|Order|ParternNumber|
+|--|------------|-----------|-----|-------------|
+|1 |Product1    |Process 1  |1    |00001        |
+|2 |Product1    |Process 2  |2    |00001        |
+|3 |Product1    |Process 3  |3    |00001        |
+|4 |Product1    |Process 4  |4    |00001        |
+|5 |Product1    |Process 5  |5    |00001        |
+
+### 2.6 Process
+
+- Định nghĩa process theo các line
+- Chọn Patern cho Process
+
+|Id|DepartmentId|LineId|Order|MachineId|
+|--|------------|------|-----|---------|
+|1 |      1     |  1   |1    |   1     |
+|2 |      1     |  1   |2    |   2     |
+|3 |      1     |  1   |3    |   3     |
+|4 |      1     |  1   |4    |   4     |
+|5 |      1     |  1   |5    |   5     |
 
 ### 2.7 RoleOfUser
 
