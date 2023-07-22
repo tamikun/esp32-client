@@ -11,4 +11,10 @@ public class LinqToDb : DataConnection
     { }
 
     public ITable<UserAccount> UserAccount => this.GetTable<UserAccount>();
+
+    public async Task BulkInsert<T>(List<T> source) where T : class
+    {
+        var copyOptions = new BulkCopyOptions(TableOptions: TableOptions.CreateIfNotExists, BulkCopyType: BulkCopyType.MultipleRows, CheckConstraints: true);
+        var temp = await this.BulkCopyAsync<T>(copyOptions, source);
+    }
 }

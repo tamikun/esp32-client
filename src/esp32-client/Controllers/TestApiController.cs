@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Text;
 using esp32_client.Builder;
+using esp32_client.Domain;
 using esp32_client.Models;
 using esp32_client.Services;
 using HtmlAgilityPack;
@@ -192,6 +193,16 @@ public class TestApiController : ControllerBase
     public async Task<IActionResult> GetDb()
     {
         return Ok(await _connection.UserAccount.ToListAsync());
+    }
+
+
+    [HttpPost]
+    [ProducesResponseType(StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> BulkInsert([FromBody] List<UserAccount> data)
+    {
+        await _connection.BulkInsert(data);
+        return Ok();
     }
 
 }
