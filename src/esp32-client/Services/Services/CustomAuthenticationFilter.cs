@@ -14,7 +14,7 @@ namespace esp32_client.Services
         {
 
             // Check if the user is authenticated
-            if (!filterContext.HttpContext.Session.TryGetValue("Username", out var _sessionValue) || _sessionValue == null)
+            if (!filterContext.HttpContext.Session.TryGetValue("LoginName", out var _sessionValue) || _sessionValue == null)
             {
                 // User is not authenticated, redirect to login page
                 filterContext.Result = new RedirectResult("/User/Login");

@@ -5,5 +5,7 @@ namespace esp32_client.Services
     public interface IUserAccountService
     {
         Task<bool> IsValidUser(string loginName, string password);
+
+        Task<UserAccountCreateModel> Create(UserAccountCreateModel model);
     }
 }

@@ -1,13 +1,15 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
-namespace esp32_client.Domain
+namespace esp32_client.Models
 {
-    public class UserAccount
+    public class UserAccountCreateModel
     {
 #nullable disable
-        public int Id { get; set; }
         public string LoginName { get; set; }
         public string Password { get; set; }
-        public string SalfKey { get; set; }
         public string UserName { get; set; }
         public int RoleId { get; set; }
     }

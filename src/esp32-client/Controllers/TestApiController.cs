@@ -19,16 +19,17 @@ public class TestApiController : ControllerBase
     private readonly IClientService _clientService;
     private readonly IFileService _fileService;
     private readonly Settings _settings;
-
     private readonly LinqToDb _connection;
+    private readonly IUserAccountService _userAccountService;
 
-    public TestApiController(ILogger<HomeController> logger, IClientService clientService, IFileService fileService, Settings settings, LinqToDb connection)
+    public TestApiController(ILogger<HomeController> logger, IClientService clientService, IFileService fileService, Settings settings, LinqToDb connection, IUserAccountService userAccountService)
     {
         _logger = logger;
         _clientService = clientService;
         _fileService = fileService;
         _settings = settings;
         _connection = connection;
+        _userAccountService = userAccountService;
     }
 
     [HttpPost]
@@ -118,84 +119,6 @@ public class TestApiController : ControllerBase
         return Ok(rs);
     }
 
-    [HttpGet]
-    [ProducesResponseType(StatusCodes.Status201Created)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> GetDictionaryFileWithNode(string ipAddress)
-    {
-        var rs = await _clientService.GetDictionaryFileWithNode(ipAddress);
-
-        return Ok(rs);
-    }
-
-    [HttpPost]
-    [ProducesResponseType(StatusCodes.Status201Created)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> GetFileContent(IFormFile file)
-    {
-        byte[] fileBytes;
-        string fileContent;
-
-        using (var ms = new MemoryStream())
-        {
-            file.CopyTo(ms);
-            fileBytes = ms.ToArray();
-        }
-
-        fileContent = Encoding.UTF8.GetString(fileBytes, 0, fileBytes.Length);
-        await Task.CompletedTask;
-        return Ok(fileContent);
-    }
-
-    [HttpPost]
-    [ProducesResponseType(StatusCodes.Status201Created)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> GetServerName(string url)
-    {
-        return Ok(await _clientService.GetServerName(url));
-    }
-
-    [HttpGet]
-    [ProducesResponseType(StatusCodes.Status201Created)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> GetSetting()
-    {
-        await Task.CompletedTask;
-        return Ok(_settings);
-    }
-
-    [HttpGet]
-    [ProducesResponseType(StatusCodes.Status201Created)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> TestTasks(int number)
-    {
-        Stopwatch sw = new Stopwatch();
-        sw.Start();
-        var listTask = new List<Task>();
-        for (int i = 0; i < number; i++)
-        {
-            listTask.Add(DelayTask(i));
-        }
-        await Task.WhenAll(listTask);
-        sw.Stop();
-        return Ok(sw.ElapsedMilliseconds);
-    }
-
-    private async Task DelayTask(int i)
-    {
-        await Task.Delay(5000);
-        System.Console.WriteLine($"Task {i} is completed");
-    }
-
-    [HttpGet]
-    [ProducesResponseType(StatusCodes.Status201Created)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> GetDb()
-    {
-        return Ok(await _connection.UserAccount.ToListAsync());
-    }
-
-
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -203,6 +126,22 @@ public class TestApiController : ControllerBase
     {
         await _connection.BulkInsert(data);
         return Ok();
+    }
+
+    [HttpPost]
+    [ProducesResponseType(StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> CreateUserAccount([FromBody] UserAccountCreateModel model)
+    {
+        return Ok(await _userAccountService.Create(model));
+    }
+
+    [HttpPost]
+    [ProducesResponseType(StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> IsValidUser(string loginName, string password)
+    {
+        return Ok(await _userAccountService.IsValidUser(loginName, password));
     }
 
 }

@@ -26,14 +26,14 @@ public class UserController : Controller
     }
 
     [HttpPost]
-    public async Task<ActionResult> Login(string username, string password)
+    public async Task<ActionResult> Login(string loginName, string password)
     {
         // Perform custom authentication logic here
-        if (await _userAccountService.IsValidUser(username, password))
+        if (await _userAccountService.IsValidUser(loginName, password))
         {
             // Authentication successful
             // Store the username in session
-            _httpContextAccessor?.HttpContext?.Session.SetString("Username", username);
+            _httpContextAccessor?.HttpContext?.Session.SetString("LoginName", loginName);
 
             return RedirectToAction("Index", "Home");
         }

@@ -17,7 +17,7 @@ public class AddLogTable : Migration
             Create
             .Table(nameof(UserAccount))
                 .WithColumn(nameof(UserAccount.Id)).AsInt32().PrimaryKey().Identity()
-                .WithColumn(nameof(UserAccount.LoginName)).AsString().NotNullable()
+                .WithColumn(nameof(UserAccount.LoginName)).AsString().NotNullable().Unique()
                 .WithColumn(nameof(UserAccount.Password)).AsString().NotNullable()
                 .WithColumn(nameof(UserAccount.UserName)).AsString().NotNullable()
                 .WithColumn(nameof(UserAccount.SalfKey)).AsString().NotNullable()
