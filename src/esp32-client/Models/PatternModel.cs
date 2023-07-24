@@ -5,37 +5,38 @@ using System.Threading.Tasks;
 
 namespace esp32_client.Models
 {
-    public class PaternCreateModel
+    public class PatternCreateModel
     {
 #nullable disable
         public IFormFile File { get; set; }
+        public string PatternNumber { get; set; }
         public string FileName { get; set; }
         public string Description { get; set; }
     }
 
-    public class PaternIndexPageModel
+    public class PatternIndexPageModel
     {
-        public PaternIndexPageModel()
+        public PatternIndexPageModel()
         {
-            ListDeletePaternById = new List<DeletePaternModel>();
+            ListDeletePatternById = new List<DeletePatternModel>();
         }
 
-        public PaternCreateModel PaternCreateModel { get; set; }
-        public List<DeletePaternModel> ListDeletePaternById { get; set; }
+        public PatternCreateModel PatternCreateModel { get; set; }
+        public List<DeletePatternModel> ListDeletePatternById { get; set; }
     }
 
 #nullable disable
-    public class DeletePaternModel
+    public class DeletePatternModel
     {
         public int Id { get; set; }
         public bool IsSelected { get; set; } = false;
     }
 
 
-    public class PaternResponseModel
+    public class PatternResponseModel
     {
         public int Id { get; set; }
-        public string PaternNumber { get; set; }
+        public string PatternNumber { get; set; }
         public string FileName { get; set; }
         public string Description { get; set; }
     }

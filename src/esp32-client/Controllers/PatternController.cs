@@ -8,34 +8,34 @@ using esp32_client.Builder;
 namespace esp32_client.Controllers;
 
 [CustomAuthenticationFilter]
-public class PaternController : Controller
+public class PatternController : Controller
 {
     private readonly IHttpContextAccessor _httpContextAccessor;
-    private readonly IPaternService _paternService;
+    private readonly IPatternService _patternService;
 
-    public PaternController(IHttpContextAccessor httpContextAccessor, IPaternService paternService)
+    public PatternController(IHttpContextAccessor httpContextAccessor, IPatternService patternService)
     {
         _httpContextAccessor = httpContextAccessor;
-        _paternService = paternService;
+        _patternService = patternService;
     }
 
     public async Task<IActionResult> Index()
     {
         await Task.CompletedTask;
-        return View(new PaternIndexPageModel());
+        return View(new PatternIndexPageModel());
     }
 
     [HttpPost]
-    public async Task<IActionResult> Add(PaternIndexPageModel model)
+    public async Task<IActionResult> Add(PatternIndexPageModel model)
     {
         // Handle if there is no file name
-        model.PaternCreateModel.FileName = string.IsNullOrEmpty(model.PaternCreateModel.FileName) ? model.PaternCreateModel.File.FileName : model.PaternCreateModel.FileName;
+        model.PatternCreateModel.FileName = string.IsNullOrEmpty(model.PatternCreateModel.FileName) ? model.PatternCreateModel.File.FileName : model.PatternCreateModel.FileName;
 
         var listAlert = new List<AlertModel>();
         try
         {
-            await _paternService.Create(model.PaternCreateModel);
-            listAlert.Add(new AlertModel { AlertType = Alert.Success, AlertMessage = $"Add patern successfully" });
+            await _patternService.Create(model.PatternCreateModel);
+            listAlert.Add(new AlertModel { AlertType = Alert.Success, AlertMessage = $"Add pattern successfully" });
 
         }
         catch (Exception ex)
@@ -49,17 +49,17 @@ public class PaternController : Controller
 
 
     [HttpPost]
-    public async Task<IActionResult> Delete(PaternIndexPageModel model)
+    public async Task<IActionResult> Delete(PatternIndexPageModel model)
     {
 
         var listAlert = new List<AlertModel>();
 
-        var listId = model.ListDeletePaternById.Where(s => s.IsSelected == true).Select(s => s.Id).ToList();
+        var listId = model.ListDeletePatternById.Where(s => s.IsSelected == true).Select(s => s.Id).ToList();
 
         try
         {
-            await _paternService.Delete(listId);
-            listAlert.Add(new AlertModel { AlertType = Alert.Success, AlertMessage = $"Delete paterns successfully" });
+            await _patternService.Delete(listId);
+            listAlert.Add(new AlertModel { AlertType = Alert.Success, AlertMessage = $"Delete patterns successfully" });
 
         }
         catch (Exception ex)
@@ -77,12 +77,12 @@ public class PaternController : Controller
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Download(int id)
     {
-        var patern = await _paternService.GetById(id);
-        if (patern is null) return Ok();
+        var pattern = await _patternService.GetById(id);
+        if (pattern is null) return Ok();
 
-        var format = patern.FileName.Split('.').LastOrDefault() ?? "";
+        var format = pattern.FileName.Split('.').LastOrDefault() ?? "";
 
-        return File(Convert.FromBase64String(patern.FileData), Utils.Utils.GetContentType(format), fileDownloadName: patern.FileName);
+        return File(Convert.FromBase64String(pattern.FileData), Utils.Utils.GetContentType(format), fileDownloadName: pattern.FileName);
     }
 
 }

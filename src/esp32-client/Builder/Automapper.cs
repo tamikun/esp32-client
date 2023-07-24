@@ -9,7 +9,7 @@ namespace esp32_client.Builder
         public Automapper()
         {
             CreateMap<UserAccountCreateModel, UserAccount>();
-            CreateMap<PaternCreateModel, Patern>();
+            CreateMap<PatternCreateModel, Pattern>();
         }
     }
 }

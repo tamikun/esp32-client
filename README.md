@@ -7,7 +7,7 @@
 ## 2. Tổ chức kiểu dữ liệu
 
 - Đầu tiên cần có dữ liệu về `Partern`
-- Sau đó định nghĩa về `Product` (mấy process, tên process, patern)
+- Sau đó định nghĩa về `Product` (mấy process, tên process, pattern)
 - Thêm Department
 - Thêm `Line` tương ứng với `Department`. Trong mỗi Line cần chọn Product của line đó (Nếu chưa có product thì phải khai báo product trước). Ta sẽ được các `Process` tương ứng với `Product`, tiếp tục định nghĩa `Machine` cho từng `Process` (Các Machine khả dụng)
 
@@ -45,16 +45,16 @@
 
 ### 2.4 Partern
 
-|Id|ParternNumber|FileName|FileData|Description   |
+|Id|PatternNumber|FileName|FileData|Description   |
 |--|-------------|--------|--------|--------------|
 |1 |00001        |VDT001  |base64  |Diễn giải thêm|
 
 ### 2.5 Product
 
 - Định nghĩa process theo các line
-- Chọn Patern cho Process
+- Chọn Pattern cho Process
 
-|Id|ProductName |ProcessName|Order|ParternNumber|
+|Id|ProductName |ProcessName|Order|PatternNumber|
 |--|------------|-----------|-----|-------------|
 |1 |Product1    |Process 1  |1    |00001        |
 |2 |Product1    |Process 2  |2    |00001        |
@@ -65,7 +65,7 @@
 ### 2.6 Process
 
 - Định nghĩa process theo các line
-- Chọn Patern cho Process
+- Chọn Pattern cho Process
 
 |Id|DepartmentId|LineId|Order|MachineId|
 |--|------------|------|-----|---------|
@@ -104,7 +104,7 @@
 - Line
 - Process
 - Machine
-- Patern
+- Pattern
 
 ### Giao diện Overview (theo phân quyền từng user)
 
