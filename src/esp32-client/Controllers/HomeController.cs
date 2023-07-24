@@ -11,14 +11,12 @@ public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger;
     private readonly Settings _settings;
-    private readonly ListServer _listServer;
     private readonly IHttpContextAccessor _httpContextAccessor;
 
-    public HomeController(ILogger<HomeController> logger, Settings settings, ListServer listServer, IHttpContextAccessor httpContextAccessor)
+    public HomeController(ILogger<HomeController> logger, Settings settings, IHttpContextAccessor httpContextAccessor)
     {
         _logger = logger;
         _settings = settings;
-        _listServer = listServer;
         _httpContextAccessor = httpContextAccessor;
     }
 
@@ -33,8 +31,7 @@ public class HomeController : Controller
     [HttpGet]
     public async Task<IActionResult> LoadIndexData()
     {
-        System.Console.WriteLine("Get Load INDEX DATA");
-        await _listServer.GetStaticList();
+        await Task.CompletedTask;
         return Ok();
     }
 
