@@ -1,5 +1,59 @@
-﻿@{
+﻿@model ProductCreateModel
+@{
     ViewData["Title"] = "Product";
 }
 
 @await Html.PartialAsync("~/Views/Product/ListProduct.cshtml")
+
+<div class="tab-content">
+
+    @using (Html.BeginForm("Add", "Product", FormMethod.Post, new { @enctype = "multipart/form-data" }))
+    {
+
+        <form id="productForm">
+            <label for="productName">Product Name:</label>
+            @Html.EditorFor(s => s.ProductName)
+            <br>
+            <button type="button" onclick="addProcessField()">Add Process</button>
+            <br><br>
+            <div id="processFields">
+                <!-- Process fields will be dynamically added here -->
+            </div>
+            <br>
+            <input type="submit" value="Save">
+        </form>
+    }
+</div>
+
+@section Scripts{
+    <script>
+        let processCount = -1;
+
+        function addProcessField() {
+            processCount++;
+
+            const processFields = document.getElementById("processFields");
+
+            const processDiv = document.createElement("div");
+
+            processDiv.setAttribute("id", `processField${processCount}`);
+
+            processDiv.innerHTML = `
+                                                <label for="ListProcessPattern_${processCount}__ProcessName">Process ${processCount}:</label>
+                                                <input type="text" id="ListProcessPattern_${processCount}__ProcessName" name="ListProcessPattern[${processCount}].ProcessName" required>
+
+                                                <label for="ListProcessPattern_${processCount}__PatternNumber">PatternNumber ${processCount}:</label>
+                                                <input type="text" id="ListProcessPattern_${processCount}__PatternNumber" name="ListProcessPattern[${processCount}].PatternNumber" required>
+                                                <button type="button" onclick="removeProcessField(${processCount})">Remove</button>
+                                                <br>
+                                                `;
+
+            processFields.appendChild(processDiv);
+        }
+
+        function removeProcessField(processNumber) {
+            const processDiv = document.getElementById(`processField${processNumber}`);
+            processDiv.parentNode.removeChild(processDiv);
+        }
+    </script>
+}

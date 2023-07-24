@@ -22,14 +22,23 @@ public class ProductController : Controller
     public async Task<IActionResult> Index()
     {
         await Task.CompletedTask;
-        return View();
+        var model = new ProductCreateModel();
+        return View(model);
     }
-    
+
     public async Task<IActionResult> Detail(string productName)
     {
         var productDetail = await _productService.GetProductDetail(productName);
 
         return View(productDetail);
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> Add(ProductCreateModel model)
+    {
+        var productDetail = await _productService.Create(model);
+
+        return RedirectToAction("Index");
     }
 
 }
