@@ -9,7 +9,7 @@ public class ProductCreateModel
 {
 #nullable disable
     public string ProductName { get; set; }
-    public List<ProcessPattern> ListProcessPattern { get; set; }
+    public List<ProcessPattern> ListProcessPattern { get; set; } = new List<ProcessPattern>();
 }
 
 public class ProcessPattern

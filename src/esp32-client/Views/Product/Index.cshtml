@@ -1,6 +1,16 @@
 ﻿@model ProductCreateModel
 @{
     ViewData["Title"] = "Product";
+
+    var listPatternNumber = new List<SelectListItem>();
+
+
+    (await _patternService.GetAll()).ForEach(s => listPatternNumber.Add(new SelectListItem
+            {
+                Value = s.PatternNumber,
+                Text =
+            s.PatternNumber
+            }));
 }
 
 @await Html.PartialAsync("~/Views/Product/ListProduct.cshtml")
@@ -22,6 +32,7 @@
             <br>
             <input type="submit" value="Save">
         </form>
+
     }
 </div>
 
@@ -39,15 +50,37 @@
             processDiv.setAttribute("id", `processField${processCount}`);
 
             processDiv.innerHTML = `
-                                                <label for="ListProcessPattern_${processCount}__ProcessName">Process ${processCount}:</label>
-                                                <input type="text" id="ListProcessPattern_${processCount}__ProcessName" name="ListProcessPattern[${processCount}].ProcessName" required>
+                                                                        <label for="ListProcessPattern_${processCount}__ProcessName">Process ${processCount}:</label>
+                                                                        <input type="text" id="ListProcessPattern_${processCount}__ProcessName" name="ListProcessPattern[${processCount}].ProcessName" required>
+                                                                        <button type="button" onclick="removeProcessField(${processCount})">Remove</button>
+                                                                        <br>
+                                                                        `;
 
-                                                <label for="ListProcessPattern_${processCount}__PatternNumber">PatternNumber ${processCount}:</label>
-                                                <input type="text" id="ListProcessPattern_${processCount}__PatternNumber" name="ListProcessPattern[${processCount}].PatternNumber" required>
-                                                <button type="button" onclick="removeProcessField(${processCount})">Remove</button>
-                                                <br>
-                                                `;
+            const selectElement = document.createElement("select");
+            selectElement.classList.add("form-control");
+            selectElement.id = `ListProcessPattern_${processCount}__PatternNumber`;
+            selectElement.name = `ListProcessPattern[${processCount}].PatternNumber`;
 
+            // Add the "Choose pattern" option
+            const choosePatternOption = document.createElement("option");
+            choosePatternOption.value = "";
+            choosePatternOption.text = "Choose pattern";
+            selectElement.appendChild(choosePatternOption);
+
+            // Add other options from the listPatternNumber
+            const listPatternNumber = @Html.Raw(Json.Serialize(listPatternNumber));
+            listPatternNumber.forEach(option => {
+            const optionElement = document.createElement("option");
+            optionElement.value = option.value;
+            optionElement.text = option.text;
+            selectElement.appendChild(optionElement);
+            });
+
+
+            // Append Select form to processDiv
+            processDiv.appendChild(selectElement);
+
+            // Append processDiv to processFields
             processFields.appendChild(processDiv);
         }
 
@@ -56,4 +89,5 @@
             processDiv.parentNode.removeChild(processDiv);
         }
     </script>
+
 }

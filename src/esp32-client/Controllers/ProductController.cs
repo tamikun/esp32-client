@@ -23,6 +23,7 @@ public class ProductController : Controller
     {
         await Task.CompletedTask;
         var model = new ProductCreateModel();
+        model.ListProcessPattern.Add(new ProcessPattern { PatternNumber = "", ProcessName = "0" });
         return View(model);
     }
 
@@ -36,7 +37,17 @@ public class ProductController : Controller
     [HttpPost]
     public async Task<IActionResult> Add(ProductCreateModel model)
     {
-        var productDetail = await _productService.Create(model);
+        var listAlert = new List<AlertModel>();
+        try
+        {
+            var productDetail = await _productService.Create(model);
+            listAlert.Add(new AlertModel { AlertType = Alert.Success, AlertMessage = $"Add product successfully" });
+        }
+        catch (Exception ex)
+        {
+            listAlert.Add(new AlertModel { AlertType = Alert.Danger, AlertMessage = $"{ex.Message}" });
+        }
+        TempData["AlertMessage"] = JsonConvert.SerializeObject(listAlert);
 
         return RedirectToAction("Index");
     }
