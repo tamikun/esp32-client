@@ -8,5 +8,9 @@ namespace esp32_client.Services
         Task<List<PaternResponseModel>> GetAll();
 
         Task<Patern> Create(PaternCreateModel model);
+
+        Task<Patern?> GetById(int id);
+
+        Task Delete(int id);
     }
 }

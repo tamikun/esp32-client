@@ -47,4 +47,18 @@ public class PaternController : Controller
         return RedirectToAction("Index");
     }
 
+
+    [HttpGet]
+    [ProducesResponseType(StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> Download(int id)
+    {
+        var patern = await _paternService.GetById(id);
+        if (patern is null) return Ok();
+
+        var format = patern.FileName.Split('.').LastOrDefault() ?? "";
+
+        return File(Convert.FromBase64String(patern.FileData), Utils.Utils.GetContentType(format), fileDownloadName: patern.FileName);
+    }
+
 }

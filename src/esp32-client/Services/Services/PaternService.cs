@@ -29,6 +29,7 @@ public partial class PaternService : IPaternService
         var result = await (from patern in _linq2Db.Patern
                             select new PaternResponseModel()
                             {
+                                Id = patern.Id,
                                 PaternNumber = patern.PaternNumber,
                                 FileName = patern.FileName,
                                 Description = patern.Description,
@@ -44,6 +45,19 @@ public partial class PaternService : IPaternService
         await _linq2Db.InsertAsync(patern);
 
         return patern;
+    }
+
+    public async Task<Patern?> GetById(int id)
+    {
+        var patern = await _linq2Db.Patern.Where(s => s.Id == id).FirstOrDefaultAsync();
+        return patern;
+    }
+
+    public async Task Delete(int id)
+    {
+        var patern = await GetById(id);
+        if (patern is not null)
+            await _linq2Db.DeleteAsync(patern);
     }
 
 

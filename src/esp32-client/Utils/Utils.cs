@@ -72,5 +72,29 @@ namespace esp32_client.Utils
             }
             return fileBytes;
         }
+
+        public static string GetContentType(string? fileType)
+        {
+            string contentType = "";
+            switch (fileType?.ToLower())
+            {
+                case "txt":
+                    contentType = "text/plain";
+                    break;
+                case "ico":
+                    contentType = "image/x-icon";
+                    break;
+                case "json":
+                    contentType = "application/json";
+                    break;
+                case "css":
+                    contentType = "text/css";
+                    break;
+                default:
+                    contentType = "application/octet-stream";
+                    break;
+            }
+            return contentType;
+        }
     }
 }

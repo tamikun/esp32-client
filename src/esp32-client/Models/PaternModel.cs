@@ -16,6 +16,7 @@ namespace esp32_client.Models
 
     public class PaternResponseModel
     {
+        public int Id { get; set; }
         public string PaternNumber { get; set; }
         public string FileName { get; set; }
         public string Description { get; set; }
