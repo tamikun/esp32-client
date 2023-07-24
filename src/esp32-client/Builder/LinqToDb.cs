@@ -13,6 +13,7 @@ public class LinqToDb : DataConnection
     public ITable<UserAccount> UserAccount => this.GetTable<UserAccount>();
     public ITable<Pattern> Pattern => this.GetTable<Pattern>();
     public ITable<Product> Product => this.GetTable<Product>();
+    public ITable<Machine> Machine => this.GetTable<Machine>();
 
     public async Task BulkInsert<T>(List<T> source) where T : class
     {
