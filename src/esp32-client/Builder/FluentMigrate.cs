@@ -86,3 +86,25 @@ public class AddInitData : AutoReversingMigration
     }
 }
 
+[Migration(20230724194300)]
+public class AddSettingData : AutoReversingMigration
+{
+    private readonly LinqToDb _linq2Db;
+    public AddSettingData(LinqToDb linq2Db)
+    {
+        _linq2Db = linq2Db;
+    }
+    public override void Up()
+    {
+        var settings = new List<Setting>{
+            new Setting{Name = "GetDataTimeOut", Value = "1000"},
+            new Setting{Name = "PostFileTimeOut", Value = "1000"},
+            new Setting{Name = "FileDataDirectory", Value = "/app/FileData/"},
+            new Setting{Name = "NodeListEspFile", Value = "//table[@class='fixed']/tbody/tr"},
+            new Setting{Name = "NodeServerState", Value = "//p[@id='result']"},
+
+        };
+        _linq2Db.BulkInsert(settings).Wait();
+    }
+}
+

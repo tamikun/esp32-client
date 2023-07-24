@@ -38,8 +38,10 @@ namespace esp32_client.Utils
         /// <param name="value"></param>
         /// <param name="conversion"></param>
         /// <returns></returns>
-        public static object? ChangeType(object value, Type conversion)
+        public static object? ChangeType(object? value, Type conversion)
         {
+            if (value is null) return null;
+
             Type? t = conversion;
             if (t is not null)
             {

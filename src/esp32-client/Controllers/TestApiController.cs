@@ -71,10 +71,10 @@ public class TestApiController : ControllerBase
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> Get(int id)
+    public async Task<IActionResult> GetSetting()
     {
         await Task.CompletedTask;
-        return Ok(id * 10);
+        return Ok(_settings);
     }
 
     [HttpGet]
