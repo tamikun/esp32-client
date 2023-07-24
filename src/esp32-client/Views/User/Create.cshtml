@@ -1,0 +1,34 @@
+@model UserAccountCreateModel
+
+@{
+    ViewData["Title"] = "Create new user";
+}
+
+<div class="form-container">
+    @using (Html.BeginForm("Create", "User", FormMethod.Post, new { @enctype = "multipart/form-data" }))
+    {
+        <div>
+            <label for="userName">UserName</label>
+            @Html.EditorFor(s => s.UserName)
+        </div>
+
+        <div>
+            <label for="loginName">LoginName</label>
+            @Html.EditorFor(s => s.LoginName)
+        </div>
+
+        <div>
+            <label for="password">Password</label>
+            @Html.PasswordFor(s => s.Password)
+        </div>
+
+        <div>
+            <label for="roleId">UserRole</label>
+            @Html.EditorFor(s => s.RoleId)
+        </div>
+
+        <div>
+            <input type="submit" value="Save" />
+        </div>
+    }
+</div>

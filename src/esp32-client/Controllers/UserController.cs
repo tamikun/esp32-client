@@ -18,9 +18,15 @@ public class UserController : Controller
         _userAccountService = userAccountService;
     }
 
-    // Login action
-    [HttpGet]
+
     public ActionResult Login()
+    {
+        return View();
+    }
+
+
+    [CustomAuthenticationFilter]
+    public ActionResult Create()
     {
         return View();
     }
@@ -35,11 +41,44 @@ public class UserController : Controller
             // Store the username in session
             _httpContextAccessor?.HttpContext?.Session.SetString("LoginName", loginName);
 
+            // Store the role in session
+            var user = await _userAccountService.GetByLoginName(loginName);
+            if (user is not null)
+                _httpContextAccessor?.HttpContext?.Session.SetString("RoleId", user.RoleId.ToString());
+
             return RedirectToAction("Index", "Home");
         }
 
         // Authentication failed
         ModelState.AddModelError("", "Invalid username or password");
+        return View();
+    }
+
+    [HttpPost]
+    [CustomAuthenticationFilter]
+    public async Task<ActionResult> Create(UserAccountCreateModel model)
+    {
+        int roleId = Int32.Parse(_httpContextAccessor?.HttpContext?.Session.GetString("RoleId") ?? "0");
+        var listAlert = new List<AlertModel>();
+        if (roleId == 1)
+        {
+            try
+            {
+                await _userAccountService.Create(model);
+                listAlert.Add(new AlertModel { AlertType = Alert.Success, AlertMessage = $"Create account successfully" });
+            }
+            catch (Exception ex)
+            {
+                listAlert.Add(new AlertModel { AlertType = Alert.Danger, AlertMessage = $"{ex.Message}" });
+            }
+        }
+        else
+        {
+            listAlert.Add(new AlertModel { AlertType = Alert.Danger, AlertMessage = $"User has no right to create new account" });
+        }
+
+        TempData["AlertMessage"] = JsonConvert.SerializeObject(listAlert);
+
         return View();
     }
 

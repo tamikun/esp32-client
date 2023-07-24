@@ -24,10 +24,16 @@ public partial class UserAccountService : IUserAccountService
         _mapper = mapper;
     }
 
+    public async Task<UserAccount?> GetByLoginName(string loginName)
+    {
+        var user = await _linq2Db.UserAccount.Where(s => s.LoginName == loginName).FirstOrDefaultAsync();
+        return user;
+    }
+
     public async Task<bool> IsValidUser(string loginName, string password)
     {
 
-        var user = await _linq2Db.UserAccount.Where(s => s.LoginName == loginName).FirstOrDefaultAsync();
+        var user = await GetByLoginName(loginName);
         if (user is null) return false;
 
         return await VerifyPassword(loginName, password, user.SalfKey);
@@ -71,16 +77,9 @@ public partial class UserAccountService : IUserAccountService
 
     private async Task<bool> VerifyPassword(string loginName, string password, string salt)
     {
-        var user = await _linq2Db.UserAccount.Where(s => s.LoginName == loginName).FirstOrDefaultAsync();
-
-        System.Console.WriteLine("==== user: " + Newtonsoft.Json.JsonConvert.SerializeObject(user));
-
+        var user = await GetByLoginName(loginName);
         if (user is null) return false;
-
         var hash = await HashPassword(password, salt);
-
-        System.Console.WriteLine("==== hash: " + Newtonsoft.Json.JsonConvert.SerializeObject(hash));
-
         return hash == user.Password;
     }
 
