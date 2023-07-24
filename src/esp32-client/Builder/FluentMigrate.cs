@@ -8,7 +8,7 @@ using LinqToDB;
 
 namespace esp32_client.Builder;
 
-[Migration(20180430122400)]
+[Migration(20180430122500)]
 public class AddTable : Migration
 {
     public override void Up()
@@ -54,6 +54,15 @@ public class AddTable : Migration
                 .WithColumn(nameof(Machine.Id)).AsInt32().PrimaryKey().Identity()
                 .WithColumn(nameof(Machine.MachineName)).AsString().NotNullable()
                 .WithColumn(nameof(Machine.IpAddress)).AsString().NotNullable();
+        }
+
+        if (!Schema.Table(nameof(Setting)).Exists())
+        {
+            Create
+            .Table(nameof(Setting))
+                .WithColumn(nameof(Setting.Id)).AsInt32().PrimaryKey().Identity()
+                .WithColumn(nameof(Setting.Name)).AsString().NotNullable()
+                .WithColumn(nameof(Setting.Value)).AsString().NotNullable();
         }
     }
 
