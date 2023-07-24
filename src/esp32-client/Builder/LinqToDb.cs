@@ -11,6 +11,7 @@ public class LinqToDb : DataConnection
     { }
 
     public ITable<UserAccount> UserAccount => this.GetTable<UserAccount>();
+    public ITable<Patern> Patern => this.GetTable<Patern>();
 
     public async Task BulkInsert<T>(List<T> source) where T : class
     {

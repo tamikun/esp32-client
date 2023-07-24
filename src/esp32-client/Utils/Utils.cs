@@ -60,5 +60,17 @@ namespace esp32_client.Utils
             }
             return null;
         }
+
+        public static byte[] GetBytesFromFile(IFormFile file)
+        {
+            byte[] fileBytes;
+
+            using (var ms = new MemoryStream())
+            {
+                file.CopyTo(ms);
+                fileBytes = ms.ToArray();
+            }
+            return fileBytes;
+        }
     }
 }

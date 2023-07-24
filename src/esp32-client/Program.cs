@@ -46,6 +46,7 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddScoped<IClientService, ClientService>();
 builder.Services.AddScoped<IFileService, FileService>();
 builder.Services.AddScoped<IUserAccountService, UserAccountService>();
+builder.Services.AddScoped<IPaternService, PaternService>();
 
 builder.Services.AddSingleton<Settings>();
 builder.Services.AddSingleton<ListServer>();

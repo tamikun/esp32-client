@@ -7,7 +7,7 @@ using FluentMigrator;
 
 namespace esp32_client.Builder;
 
-[Migration(20180430121800)]
+[Migration(20180430122200)]
 public class AddLogTable : Migration
 {
     public override void Up()
@@ -23,7 +23,18 @@ public class AddLogTable : Migration
                 .WithColumn(nameof(UserAccount.SalfKey)).AsString().NotNullable()
                 .WithColumn(nameof(UserAccount.RoleId)).AsInt32().Nullable();
         }
+        if (!Schema.Table(nameof(Patern)).Exists())
+        {
+            Create
+            .Table(nameof(Patern))
+                .WithColumn(nameof(Patern.Id)).AsInt32().PrimaryKey().Identity()
+                .WithColumn(nameof(Patern.PaternNumber)).AsString()
+                .WithColumn(nameof(Patern.FileName)).AsString().NotNullable()
+                .WithColumn(nameof(Patern.FileData)).AsString(int.MaxValue)
+                .WithColumn(nameof(Patern.Description)).AsString();
+        }
     }
+
 
     public override void Down()
     { }

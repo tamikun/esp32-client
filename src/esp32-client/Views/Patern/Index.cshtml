@@ -1,0 +1,64 @@
+﻿@model PaternCreateModel
+@{
+    ViewData["Title"] = "Patern";
+    var paterns = await _paternService.GetAll();
+}
+<div class="add-patern">
+    @using (Html.BeginForm("Add", "Patern", FormMethod.Post, new { @enctype = "multipart/form-data" }))
+    {
+        <table class="upload-table">
+            <tr>
+                <td>
+                    <label for="newFile">Add file</label>
+                </td>
+                <td colspan="2">
+                    <input id="newFile" type="file" name="File" style="width:100%;" />
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label for="filePath">File name</label>
+                </td>
+                <td>
+                    @Html.EditorFor(s => s.FileName )
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label for="description">Description</label>
+                </td>
+                <td>
+                    @Html.EditorFor(s => s.Description )
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <input type="submit" value="Save" />
+                </td>
+            </tr>
+        </table>
+    }
+</div>
+
+<div class="list-patern">
+    <table class="normal table-hover" style="width: 100%; margin-left: 5px;">
+        <thead>
+            <tr>
+                <th style="text-align:center;">Patern number</th>
+                <th style="text-align:center;">File name</th>
+                <th style="text-align:center;">Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var patern in paterns)
+            {
+                <tr>
+                    <td>@patern.PaternNumber</td>
+                    <td>@patern.FileName</td>
+                    <td>@patern.Description</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
