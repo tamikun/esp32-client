@@ -13,6 +13,24 @@ namespace esp32_client.Models
         public string Description { get; set; }
     }
 
+    public class PaternIndexPageModel
+    {
+        public PaternIndexPageModel()
+        {
+            ListDeletePaternById = new List<DeletePaternModel>();
+        }
+
+        public PaternCreateModel PaternCreateModel { get; set; }
+        public List<DeletePaternModel> ListDeletePaternById { get; set; }
+    }
+
+#nullable disable
+    public class DeletePaternModel
+    {
+        public int Id { get; set; }
+        public bool IsSelected { get; set; } = false;
+    }
+
 
     public class PaternResponseModel
     {

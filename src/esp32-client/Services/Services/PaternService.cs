@@ -60,6 +60,11 @@ public partial class PaternService : IPaternService
             await _linq2Db.DeleteAsync(patern);
     }
 
+    public async Task Delete(List<int> listId)
+    {
+        await _linq2Db.Patern.Where(s => listId.Contains(s.Id)).DeleteAsync();
+    }
+
 
 
 }

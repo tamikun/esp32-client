@@ -22,20 +22,44 @@ public class PaternController : Controller
     public async Task<IActionResult> Index()
     {
         await Task.CompletedTask;
-        return View();
+        return View(new PaternIndexPageModel());
     }
 
     [HttpPost]
-    public async Task<IActionResult> Add(PaternCreateModel model)
+    public async Task<IActionResult> Add(PaternIndexPageModel model)
     {
         // Handle if there is no file name
-        model.FileName = string.IsNullOrEmpty(model.FileName) ? model.File.FileName : model.FileName;
+        model.PaternCreateModel.FileName = string.IsNullOrEmpty(model.PaternCreateModel.FileName) ? model.PaternCreateModel.File.FileName : model.PaternCreateModel.FileName;
 
         var listAlert = new List<AlertModel>();
         try
         {
-            await _paternService.Create(model);
+            await _paternService.Create(model.PaternCreateModel);
             listAlert.Add(new AlertModel { AlertType = Alert.Success, AlertMessage = $"Add patern successfully" });
+
+        }
+        catch (Exception ex)
+        {
+            listAlert.Add(new AlertModel { AlertType = Alert.Danger, AlertMessage = $"{ex.Message}" });
+        }
+
+        TempData["AlertMessage"] = JsonConvert.SerializeObject(listAlert);
+        return RedirectToAction("Index");
+    }
+
+
+    [HttpPost]
+    public async Task<IActionResult> Delete(PaternIndexPageModel model)
+    {
+
+        var listAlert = new List<AlertModel>();
+
+        var listId = model.ListDeletePaternById.Where(s => s.IsSelected == true).Select(s => s.Id).ToList();
+
+        try
+        {
+            await _paternService.Delete(listId);
+            listAlert.Add(new AlertModel { AlertType = Alert.Success, AlertMessage = $"Delete paterns successfully" });
 
         }
         catch (Exception ex)

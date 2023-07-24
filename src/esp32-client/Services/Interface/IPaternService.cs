@@ -12,5 +12,7 @@ namespace esp32_client.Services
         Task<Patern?> GetById(int id);
 
         Task Delete(int id);
+
+        Task Delete(List<int> listId);
     }
 }

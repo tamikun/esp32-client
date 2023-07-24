@@ -1,8 +1,9 @@
-﻿@model PaternCreateModel
+﻿@model PaternIndexPageModel
 @{
     ViewData["Title"] = "Patern";
     var paterns = await _paternService.GetAll();
 }
+
 <div class="add-patern">
     @using (Html.BeginForm("Add", "Patern", FormMethod.Post, new { @enctype = "multipart/form-data" }))
     {
@@ -12,7 +13,7 @@
                     <label for="newFile">Add file</label>
                 </td>
                 <td colspan="2">
-                    <input id="newFile" type="file" name="File" style="width:100%;" />
+                    <input id="newFile" type="file" name="PaternCreateModel.File" style="width:100%;" />
                 </td>
             </tr>
             <tr>
@@ -20,7 +21,7 @@
                     <label for="filePath">File name</label>
                 </td>
                 <td>
-                    @Html.EditorFor(s => s.FileName )
+                    @Html.EditorFor(s => s.PaternCreateModel.FileName )
                 </td>
             </tr>
             <tr>
@@ -28,7 +29,7 @@
                     <label for="description">Description</label>
                 </td>
                 <td>
-                    @Html.EditorFor(s => s.Description )
+                    @Html.EditorFor(s => s.PaternCreateModel.Description )
                 </td>
             </tr>
             <tr>
@@ -40,28 +41,42 @@
     }
 </div>
 
-<div class="list-patern">
-    <table class="normal table-hover" style="width: 100%; margin-left: 5px;">
-        <thead>
-            <tr>
-                <th style="text-align:center;">Patern number</th>
-                <th style="text-align:center;">File name</th>
-                <th style="text-align:center;">Description</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var patern in paterns)
-            {
+@using (Html.BeginForm("Delete", "Patern", FormMethod.Post, new { @enctype = "multipart/form-data" }))
+{
+    <div class="list-patern">
+        <table class="normal table-hover" style="width: 100%; margin-left: 5px;">
+            <thead>
                 <tr>
-                    <td>@patern.PaternNumber</td>
-                    <td><a class="download-file" href='@Url.Action("Download", "Patern", new {id = @patern.Id})'>
-                            <i class="fa fa-file" style="font-size:15px;color:#82a6c9;"></i>
-                            <strong>@patern.FileName</strong>
-                        </a></td>
-                    <td>@patern.Description</td>
+                    <th style="text-align:center;">Patern number</th>
+                    <th style="text-align:center;">File name</th>
+                    <th style="text-align:center;">Description</th>
+                    <th style="text-align:center;"><input type="checkbox" onclick="checkAll()"></th>
                 </tr>
-            }
-        </tbody>
-    </table>
-</div>
+            </thead>
+            <tbody>
+                @for (int i = 0; i < paterns.Count; i++)
+                {
+                    Model.ListDeletePaternById.Add(new DeletePaternModel { Id = paterns[i].Id, IsSelected = false });
 
+                    <tr>
+                        <td>@paterns[i].PaternNumber</td>
+                        <td><a class="download-file" href='@Url.Action("Download", "Patern", new {id = @paterns[i].Id})'>
+                                <i class="fa fa-file" style="font-size:15px;color:#82a6c9;"></i>
+                                <strong>@paterns[i].FileName</strong>
+                            </a></td>
+                        <td>@paterns[i].Description</td>
+                        <td>
+                            @Html.CheckBoxFor(s=> s.ListDeletePaternById[i].IsSelected)
+                        </td>
+                    </tr>
+                    @Html.HiddenFor(s=> s.ListDeletePaternById[i].Id)
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <div class="submit-delete">
+        <input type="submit" value="Delete" />
+    </div>
+
+}

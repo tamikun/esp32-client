@@ -73,11 +73,10 @@ builder.Services.AddFluentMigratorCore()
 builder.Services.AddLinqToDBContext<LinqToDb>((provider, options)
             => options
                 //will configure the AppDataConnection to use
-                //sqite with the provided connection string
-                //there are methods for each supported database
                 .UseMySql(connectionString)
                 //default logging will log everything using the ILoggerFactory configured in the provider
-                .UseDefaultLogging(provider));
+                .UseDefaultLogging(provider)
+            , ServiceLifetime.Scoped);
 
 // Instantiate the runner
 var serviceProvider = builder.Services.BuildServiceProvider();

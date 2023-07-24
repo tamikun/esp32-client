@@ -17,5 +17,6 @@ public class LinqToDb : DataConnection
     {
         var copyOptions = new BulkCopyOptions(TableOptions: TableOptions.CreateIfNotExists, BulkCopyType: BulkCopyType.MultipleRows, CheckConstraints: true);
         var temp = await this.BulkCopyAsync<T>(copyOptions, source);
+
     }
 }
