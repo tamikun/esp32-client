@@ -47,6 +47,7 @@ builder.Services.AddScoped<IClientService, ClientService>();
 builder.Services.AddScoped<IFileService, FileService>();
 builder.Services.AddScoped<IUserAccountService, UserAccountService>();
 builder.Services.AddScoped<IPatternService, PatternService>();
+builder.Services.AddScoped<IProductService, ProductService>();
 
 builder.Services.AddSingleton<Settings>();
 builder.Services.AddSingleton<ListServer>();

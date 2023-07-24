@@ -1,0 +1,30 @@
+@{
+    var listProduct = await _productService.GetAllProduct();
+}
+
+<div class="tabs-container">
+    <div class="tab-menu">
+        <div class="search-box">
+            <input type="text" id="searchInput" placeholder="Search">
+        </div>
+       
+        <div class="list-server">
+            <ul>
+                @{
+                    foreach (var product in listProduct)
+                    {
+
+                        <li>
+                            <a href="@Url.Action("Detail", new { productName = @product})"
+                                class="list-server-detail" style="background-color: #005F99;">
+                                <strong>@product</strong>
+                            </a>
+                        </li>
+                    }
+                }
+            </ul>
+        </div>
+
+    </div>
+
+</div>

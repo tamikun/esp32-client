@@ -41,8 +41,8 @@ public class AddTable : Migration
             Create
             .Table(nameof(Product))
                 .WithColumn(nameof(Product.Id)).AsInt32().PrimaryKey().Identity()
-                .WithColumn(nameof(Product.ProductName)).AsString().NotNullable()
-                .WithColumn(nameof(Product.ProcessName)).AsString().NotNullable()
+                .WithColumn(nameof(Product.ProductName)).AsString()
+                .WithColumn(nameof(Product.ProcessName)).AsString()
                 .WithColumn(nameof(Product.Order)).AsInt32()
                 .WithColumn(nameof(Product.PatternNumber)).AsString();
         }
