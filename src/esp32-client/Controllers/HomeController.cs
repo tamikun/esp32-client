@@ -1,8 +1,6 @@
 ﻿using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using esp32_client.Models;
-using Microsoft.AspNetCore.Cors;
-using Newtonsoft.Json;
 using esp32_client.Services;
 
 namespace esp32_client.Controllers;

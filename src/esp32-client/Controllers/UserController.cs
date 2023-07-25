@@ -1,9 +1,7 @@
-﻿using System.Diagnostics;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using esp32_client.Models;
 using esp32_client.Services;
 using Newtonsoft.Json;
-using esp32_client.Builder;
 
 namespace esp32_client.Controllers;
 
@@ -82,7 +80,7 @@ public class UserController : Controller
         return View();
     }
 
-    // Logout action
+    [CustomAuthenticationFilter]
     public ActionResult Logout()
     {
         // Clear the session or cookie used for authentication

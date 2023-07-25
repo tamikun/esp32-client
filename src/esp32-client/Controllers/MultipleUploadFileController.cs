@@ -1,206 +1,206 @@
-﻿using System.Diagnostics;
-using Microsoft.AspNetCore.Mvc;
-using esp32_client.Models;
-using esp32_client.Services;
-using Newtonsoft.Json;
+﻿// using System.Diagnostics;
+// using Microsoft.AspNetCore.Mvc;
+// using esp32_client.Models;
+// using esp32_client.Services;
+// using Newtonsoft.Json;
 
-namespace esp32_client.Controllers;
-[CustomAuthenticationFilter]
-public class MultipleUploadFileController : Controller
-{
-    private readonly ILogger<MultipleUploadFileController> _logger;
-    private readonly IClientService _clientService;
-    private readonly IFileService _fileService;
-    private readonly ListServer _listServer;
-    private readonly Settings _setting;
+// namespace esp32_client.Controllers;
+// [CustomAuthenticationFilter]
+// public class MultipleUploadFileController : Controller
+// {
+//     private readonly ILogger<MultipleUploadFileController> _logger;
+//     private readonly IClientService _clientService;
+//     private readonly IFileService _fileService;
+//     private readonly ListServer _listServer;
+//     private readonly Settings _setting;
 
-    public MultipleUploadFileController(ILogger<MultipleUploadFileController> logger, IFileService fileService, IClientService clientService, ListServer listServer, Settings setting)
-    {
-        _logger = logger;
-        _fileService = fileService;
-        _clientService = clientService;
-        _listServer = listServer;
-        _setting = setting;
-    }
+//     public MultipleUploadFileController(ILogger<MultipleUploadFileController> logger, IFileService fileService, IClientService clientService, ListServer listServer, Settings setting)
+//     {
+//         _logger = logger;
+//         _fileService = fileService;
+//         _clientService = clientService;
+//         _listServer = listServer;
+//         _setting = setting;
+//     }
 
-    public async Task<IActionResult> Index()
-    {
-        var model = new MultipleUploadFileModel();
-        await Task.CompletedTask;
-        return View(model);
-    }
+//     public async Task<IActionResult> Index()
+//     {
+//         var model = new MultipleUploadFileModel();
+//         await Task.CompletedTask;
+//         return View(model);
+//     }
 
-    [HttpPost]
-    public async Task<IActionResult> Index(MultipleUploadFileModel? fileModel)
-    {
-        var selectedFile = fileModel?.ListSelectedDataFile.Where(s => s.IsSelected);
-        var selectedServer = fileModel?.ListSelectedServer.Where(s => s.IsSelected);
+//     [HttpPost]
+//     public async Task<IActionResult> Index(MultipleUploadFileModel? fileModel)
+//     {
+//         var selectedFile = fileModel?.ListSelectedDataFile.Where(s => s.IsSelected);
+//         var selectedServer = fileModel?.ListSelectedServer.Where(s => s.IsSelected);
 
-        var dictFileServer = new Dictionary<string, IEnumerable<string>>();
+//         var dictFileServer = new Dictionary<string, IEnumerable<string>>();
 
-        var dictFileServerTask = selectedServer.Select(async s =>
-        {
-            dictFileServer.Add(s.IpAddress, (await _clientService.GetListEspFile($"{s.IpAddress}VDATA/")).Select(s => s.FileName));
-        });
+//         var dictFileServerTask = selectedServer.Select(async s =>
+//         {
+//             dictFileServer.Add(s.IpAddress, (await _clientService.GetListEspFile($"{s.IpAddress}VDATA/")).Select(s => s.FileName));
+//         });
 
-        await Task.WhenAll(dictFileServerTask);
+//         await Task.WhenAll(dictFileServerTask);
 
-        var listAlert = new List<AlertModel>();
+//         var listAlert = new List<AlertModel>();
 
-        Stopwatch sw = new Stopwatch();
-        sw.Start();
+//         Stopwatch sw = new Stopwatch();
+//         sw.Start();
 
-        var fileTasks = selectedFile.Select(async file =>
-        {
-            var fileFilePathSplit = file?.FilePath?.Split('/');
-            var fileName = fileFilePathSplit?.LastOrDefault();
-            byte[] fileBytes = { };
+//         var fileTasks = selectedFile.Select(async file =>
+//         {
+//             var fileFilePathSplit = file?.FilePath?.Split('/');
+//             var fileName = fileFilePathSplit?.LastOrDefault();
+//             byte[] fileBytes = { };
 
-            if (System.IO.File.Exists(file?.FilePath))
-            {
-                // Read file content as byte array
-                fileBytes = System.IO.File.ReadAllBytes(file.FilePath);
-            }
+//             if (System.IO.File.Exists(file?.FilePath))
+//             {
+//                 // Read file content as byte array
+//                 fileBytes = System.IO.File.ReadAllBytes(file.FilePath);
+//             }
 
-            var tasks = selectedServer?.Select(async server =>
-             {
-                 var filePath = server.Folder + "/" + fileName;
-                 if (string.IsNullOrEmpty(server.Folder))
-                 {
-                     filePath = fileName;
-                 }
+//             var tasks = selectedServer?.Select(async server =>
+//              {
+//                  var filePath = server.Folder + "/" + fileName;
+//                  if (string.IsNullOrEmpty(server.Folder))
+//                  {
+//                      filePath = fileName;
+//                  }
 
-                 string? displayFileName = fileFilePathSplit.Where(s => !string.IsNullOrEmpty(s)).LastOrDefault();
-                 string? displayServerName = (await _listServer.GetStaticList())
-                                        .Where(s => server.IpAddress.Contains(s.IpAddress))
-                                        .Select(s => string.IsNullOrEmpty(s.ServerName) ? s.IpAddress : s.ServerName).FirstOrDefault();
+//                  string? displayFileName = fileFilePathSplit.Where(s => !string.IsNullOrEmpty(s)).LastOrDefault();
+//                  string? displayServerName = (await _listServer.GetStaticList())
+//                                         .Where(s => server.IpAddress.Contains(s.IpAddress))
+//                                         .Select(s => string.IsNullOrEmpty(s.ServerName) ? s.IpAddress : s.ServerName).FirstOrDefault();
 
-                 string message = $"Upload file {displayFileName} to {displayServerName}";
+//                  string message = $"Upload file {displayFileName} to {displayServerName}";
 
-                 if (fileModel.ReplaceIfExist)
-                 {
-                     try
-                     {
-                         if (dictFileServer[server.IpAddress].Contains(displayFileName))
-                         {
-                             await _clientService.DeleteFile(server.IpAddress, "VDATA", fileName);
-                         }
+//                  if (fileModel.ReplaceIfExist)
+//                  {
+//                      try
+//                      {
+//                          if (dictFileServer[server.IpAddress].Contains(displayFileName))
+//                          {
+//                              await _clientService.DeleteFile(server.IpAddress, "VDATA", fileName);
+//                          }
 
-                     }
-                     catch
-                     {
-                         //Do nothing
-                     }
-                 }
+//                      }
+//                      catch
+//                      {
+//                          //Do nothing
+//                      }
+//                  }
 
-                 try
-                 {
+//                  try
+//                  {
 
-                     var result = await _clientService.PostAsyncFile(fileBytes, filePath, server.IpAddress);
+//                      var result = await _clientService.PostAsyncFile(fileBytes, filePath, server.IpAddress);
 
-                     if (!result.IsSuccessStatusCode)
-                     {
-                         listAlert.Add(new AlertModel { AlertType = Alert.Danger, AlertMessage = message + $" - {result.StatusCode.ToString()}" });
-                     }
-                     else
-                     {
-                         listAlert.Add(new AlertModel { AlertType = Alert.Success, AlertMessage = message });
-                     }
-                 }
-                 catch
-                 {
-                     listAlert.Add(new AlertModel { AlertType = Alert.Danger, AlertMessage = message + $" - Time out {_setting.PostFileTimeOut} ms" });
-                 }
+//                      if (!result.IsSuccessStatusCode)
+//                      {
+//                          listAlert.Add(new AlertModel { AlertType = Alert.Danger, AlertMessage = message + $" - {result.StatusCode.ToString()}" });
+//                      }
+//                      else
+//                      {
+//                          listAlert.Add(new AlertModel { AlertType = Alert.Success, AlertMessage = message });
+//                      }
+//                  }
+//                  catch
+//                  {
+//                      listAlert.Add(new AlertModel { AlertType = Alert.Danger, AlertMessage = message + $" - Time out {_setting.PostFileTimeOut} ms" });
+//                  }
 
-             });
-            if (tasks is not null)
-                await Task.WhenAll(tasks);
-        });
+//              });
+//             if (tasks is not null)
+//                 await Task.WhenAll(tasks);
+//         });
 
-        await Task.WhenAll(fileTasks);
+//         await Task.WhenAll(fileTasks);
 
-        // foreach (var file in selectedFile)
-        // {
-        //     var fileFilePathSplit = file?.FilePath?.Split('/');
-        //     var fileName = fileFilePathSplit?.LastOrDefault();
-        //     byte[] fileBytes = { };
+//         // foreach (var file in selectedFile)
+//         // {
+//         //     var fileFilePathSplit = file?.FilePath?.Split('/');
+//         //     var fileName = fileFilePathSplit?.LastOrDefault();
+//         //     byte[] fileBytes = { };
 
-        //     if (System.IO.File.Exists(file?.FilePath))
-        //     {
-        //         // Read file content as byte array
-        //         fileBytes = System.IO.File.ReadAllBytes(file.FilePath);
-        //     }
+//         //     if (System.IO.File.Exists(file?.FilePath))
+//         //     {
+//         //         // Read file content as byte array
+//         //         fileBytes = System.IO.File.ReadAllBytes(file.FilePath);
+//         //     }
 
-        //     var tasks = selectedServer?.Select(async server =>
-        //      {
-        //          var filePath = server.Folder + "/" + fileName;
-        //          if (string.IsNullOrEmpty(server.Folder))
-        //          {
-        //              filePath = fileName;
-        //          }
+//         //     var tasks = selectedServer?.Select(async server =>
+//         //      {
+//         //          var filePath = server.Folder + "/" + fileName;
+//         //          if (string.IsNullOrEmpty(server.Folder))
+//         //          {
+//         //              filePath = fileName;
+//         //          }
 
-        //          string? displayFileName = fileFilePathSplit.Where(s => !string.IsNullOrEmpty(s)).LastOrDefault();
-        //          string? displayServerName = (await _listServer.GetStaticList())
-        //                                 .Where(s => server.IpAddress.Contains(s.IpAddress))
-        //                                 .Select(s => string.IsNullOrEmpty(s.ServerName) ? s.IpAddress : s.ServerName).FirstOrDefault();
+//         //          string? displayFileName = fileFilePathSplit.Where(s => !string.IsNullOrEmpty(s)).LastOrDefault();
+//         //          string? displayServerName = (await _listServer.GetStaticList())
+//         //                                 .Where(s => server.IpAddress.Contains(s.IpAddress))
+//         //                                 .Select(s => string.IsNullOrEmpty(s.ServerName) ? s.IpAddress : s.ServerName).FirstOrDefault();
 
-        //          string message = $"Upload file {displayFileName} to {displayServerName}";
+//         //          string message = $"Upload file {displayFileName} to {displayServerName}";
 
-        //          if (fileModel.ReplaceIfExist)
-        //          {
-        //              try
-        //              {
-        //                  if (dictFileServer[server.IpAddress].Contains(displayFileName))
-        //                  {
-        //                      await _clientService.DeleteFile(server.IpAddress, "VDATA", fileName);
-        //                  }
+//         //          if (fileModel.ReplaceIfExist)
+//         //          {
+//         //              try
+//         //              {
+//         //                  if (dictFileServer[server.IpAddress].Contains(displayFileName))
+//         //                  {
+//         //                      await _clientService.DeleteFile(server.IpAddress, "VDATA", fileName);
+//         //                  }
 
-        //              }
-        //              catch
-        //              {
-        //                  //Do nothing
-        //              }
-        //          }
+//         //              }
+//         //              catch
+//         //              {
+//         //                  //Do nothing
+//         //              }
+//         //          }
 
-        //          try
-        //          {
+//         //          try
+//         //          {
 
-        //              var result = await _clientService.PostAsyncFile(fileBytes, filePath, server.IpAddress);
+//         //              var result = await _clientService.PostAsyncFile(fileBytes, filePath, server.IpAddress);
 
-        //              if (!result.IsSuccessStatusCode)
-        //              {
-        //                  listAlert.Add(new AlertModel { AlertType = Alert.Danger, AlertMessage = message + $" - {result.StatusCode.ToString()}" });
-        //              }
-        //              else
-        //              {
-        //                  listAlert.Add(new AlertModel { AlertType = Alert.Success, AlertMessage = message });
-        //              }
-        //          }
-        //          catch
-        //          {
-        //              listAlert.Add(new AlertModel { AlertType = Alert.Danger, AlertMessage = message + $" - Time out {_setting.PostFileTimeOut} ms" });
-        //          }
+//         //              if (!result.IsSuccessStatusCode)
+//         //              {
+//         //                  listAlert.Add(new AlertModel { AlertType = Alert.Danger, AlertMessage = message + $" - {result.StatusCode.ToString()}" });
+//         //              }
+//         //              else
+//         //              {
+//         //                  listAlert.Add(new AlertModel { AlertType = Alert.Success, AlertMessage = message });
+//         //              }
+//         //          }
+//         //          catch
+//         //          {
+//         //              listAlert.Add(new AlertModel { AlertType = Alert.Danger, AlertMessage = message + $" - Time out {_setting.PostFileTimeOut} ms" });
+//         //          }
 
-        //      });
-        //     if (tasks is not null)
-        //         await Task.WhenAll(tasks);
-        // }
-        sw.Stop();
-        System.Console.WriteLine("==== Multi ElapsedMilliseconds: " + Newtonsoft.Json.JsonConvert.SerializeObject(sw.ElapsedMilliseconds)); //5075
+//         //      });
+//         //     if (tasks is not null)
+//         //         await Task.WhenAll(tasks);
+//         // }
+//         sw.Stop();
+//         System.Console.WriteLine("==== Multi ElapsedMilliseconds: " + Newtonsoft.Json.JsonConvert.SerializeObject(sw.ElapsedMilliseconds)); //5075
 
-        TempData["AlertMessage"] = JsonConvert.SerializeObject(listAlert);
+//         TempData["AlertMessage"] = JsonConvert.SerializeObject(listAlert);
 
-        return RedirectToAction("Index");
-    }
+//         return RedirectToAction("Index");
+//     }
 
-    public IActionResult Privacy()
-    {
-        return View();
-    }
+//     public IActionResult Privacy()
+//     {
+//         return View();
+//     }
 
-    [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-    public IActionResult Error()
-    {
-        return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-    }
-}
+//     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+//     public IActionResult Error()
+//     {
+//         return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+//     }
+// }
