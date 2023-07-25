@@ -1,11 +1,8 @@
-using System.Security.Cryptography;
-using System.Text;
 using AutoMapper;
 using esp32_client.Builder;
 using esp32_client.Domain;
 using esp32_client.Models;
 using LinqToDB;
-using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 
 namespace esp32_client.Services;
 

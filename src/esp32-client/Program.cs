@@ -53,6 +53,7 @@ builder.Services.AddScoped<IPatternService, PatternService>();
 builder.Services.AddScoped<IProcessService, ProcessService>();
 builder.Services.AddScoped<IMachineService, MachineService>();
 builder.Services.AddScoped<IUserAccountService, UserAccountService>();
+builder.Services.AddScoped<IUserRoleService, UserRoleService>();
 
 builder.Services.AddSingleton<Settings>();
 builder.Services.AddSingleton<ListServer>();

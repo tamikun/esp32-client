@@ -1,5 +1,4 @@
 using System.Security.Cryptography;
-using System.Text;
 using AutoMapper;
 using esp32_client.Builder;
 using esp32_client.Domain;
