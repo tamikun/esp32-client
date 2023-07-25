@@ -23,23 +23,34 @@ public partial class MachineService : IMachineService
         _mapper = mapper;
     }
 
+    public async Task<Machine?> GetById(int id)
+    {
+        var machine = await _linq2Db.Machine.Where(s => s.Id == id).FirstOrDefaultAsync();
+        return machine;
+    }
+
     public async Task<List<Machine>> GetAll()
     {
         return await _linq2Db.Machine.ToListAsync();
     }
 
-    public async Task<Machine> Create(Machine model)
+    public async Task<Machine> Create(MachineCreateModel model)
     {
-
+        var machine = _mapper.Map<Machine>(model);
         await _linq2Db.InsertAsync(model);
-
-        return model;
+        return machine;
     }
 
-    public async Task<Machine?> GetById(int id)
+    public async Task<Machine> Update(MachineUpdateModel model)
     {
-        var machine = await _linq2Db.Machine.Where(s => s.Id == id).FirstOrDefaultAsync();
-        return machine;
+        var machine = await GetById(model.Id);
+        if(machine is null) throw new Exception("Machine is not found");
+
+        var machineUpdate = _mapper.Map<Machine>(model);
+        machineUpdate.Id = machine.Id;
+
+        await _linq2Db.InsertAsync(machineUpdate);
+        return machineUpdate;
     }
 
     public async Task Delete(int id)

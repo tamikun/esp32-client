@@ -63,7 +63,7 @@ public partial class UserAccountService : IUserAccountService
     {
         var user = await GetById(model.Id);
 
-        if (user is null) return model;
+        if (user is null) throw new Exception("User is not found");
 
         user.LoginName = model.LoginName;
         user.UserName = model.UserName;

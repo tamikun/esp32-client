@@ -45,12 +45,14 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 builder.Services.AddScoped<IClientService, ClientService>();
 builder.Services.AddScoped<IFileService, FileService>();
-builder.Services.AddScoped<IUserAccountService, UserAccountService>();
-builder.Services.AddScoped<IPatternService, PatternService>();
-builder.Services.AddScoped<IProductService, ProductService>();
-builder.Services.AddScoped<IMachineService, MachineService>();
+
 builder.Services.AddScoped<IDepartmentService, DepartmentService>();
 builder.Services.AddScoped<ILineService, LineService>();
+builder.Services.AddScoped<IProductService, ProductService>();
+builder.Services.AddScoped<IPatternService, PatternService>();
+builder.Services.AddScoped<IProcessService, ProcessService>();
+builder.Services.AddScoped<IMachineService, MachineService>();
+builder.Services.AddScoped<IUserAccountService, UserAccountService>();
 
 builder.Services.AddSingleton<Settings>();
 builder.Services.AddSingleton<ListServer>();

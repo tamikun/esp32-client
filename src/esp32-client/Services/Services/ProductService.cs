@@ -51,7 +51,7 @@ public partial class ProductService : IProductService
     {
         var product = await GetById(model.Id);
 
-        if (product is null) return model;
+        if (product is null) throw new Exception("Product is not found");
 
         product.ProductName = model.ProductName;
 
