@@ -50,6 +50,7 @@ builder.Services.AddScoped<IPatternService, PatternService>();
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<IMachineService, MachineService>();
 builder.Services.AddScoped<IDepartmentService, DepartmentService>();
+builder.Services.AddScoped<ILineService, LineService>();
 
 builder.Services.AddSingleton<Settings>();
 builder.Services.AddSingleton<ListServer>();

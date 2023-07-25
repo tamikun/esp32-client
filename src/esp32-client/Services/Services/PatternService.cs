@@ -55,8 +55,12 @@ public partial class PatternService : IPatternService
 
     public async Task<Pattern> Update(PatternUpdateModel model)
     {
-        var pattern = _mapper.Map<Pattern>(model);
-        pattern.Id = model.Id;
+        var pattern = await GetById(model.Id);
+        if (pattern is null) throw new Exception("Pattern is not found");
+
+        pattern.PatternNumber = model.PatternNumber;
+        pattern.FileName = model.FileName;
+        pattern.Description = model.Description;
         pattern.FileData = Convert.ToBase64String(Utils.Utils.GetBytesFromFile(model.File));
 
         await _linq2Db.UpdateAsync(pattern);

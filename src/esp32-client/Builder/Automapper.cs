@@ -10,6 +10,7 @@ namespace esp32_client.Builder
         {
             CreateMap<UserAccountCreateModel, UserAccount>();
             CreateMap<PatternCreateModel, Pattern>();
+            CreateMap<PatternUpdateModel, Pattern>();
         }
     }
 }
