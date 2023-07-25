@@ -35,13 +35,13 @@
 
 ### 2.3 Machine
 
-|Id|MachineName | IpAddress  |
-|--|------------|------------|
-|1 |Machine 1   |192.168.1.11|
-|2 |Machine 2   |192.168.1.12|
-|3 |Machine 3   |192.168.1.13|
-|4 |Machine 4   |192.168.1.14|
-|5 |Machine 5   |192.168.1.15|
+|Id|MachineName | IpAddress  |DepartmentId|LineId|ProcessName|
+|--|------------|------------|------------|------|-----------|
+|1 |Machine 1   |192.168.1.11|1           |1     |           |
+|2 |Machine 2   |192.168.1.12|1           |1     |           |
+|3 |Machine 3   |192.168.1.13|1           |1     |           |
+|4 |Machine 4   |192.168.1.14|1           |2     |           |
+|5 |Machine 5   |192.168.1.15|1           |2     |           |
 
 ### 2.4 Partern
 
@@ -75,19 +75,34 @@
 |4 |      1     |  1   |4    |   4     |
 |5 |      1     |  1   |5    |   5     |
 
-### 2.7 RoleOfUser
-
-|Id|RoleName     |DepartmentId|LineId|
-|--|-------------|------------|------|
-|1 |Administrator|*           |*     |
-|2 |Operator     |1           |1     |
-|3 |Operator     |1           |2     |
-
 ### 2.6 UserAccount
 
-|Id|LoginName   |Password|SalfKey|UserName|RoleId  |
-|--|------------|--------|-------|--------|--------|
-|1 |quantm      |12qaewfa|abc    |Quan    |1       |
+|Id|LoginName   |Password|SalfKey|UserName|
+|--|------------|--------|-------|--------|
+|1 |quantm      |12qaewfa|abc    |Quan    |
+
+### 2.7 UserRole
+
+|Id|RoleName     |
+|--|-------------|
+|1 |Administrator|
+|2 |Operator     |
+
+### 2.7 RoleOfUser
+
+|Id|UserId       |RoleId      |
+|--|-------------|------------|
+|1 |1            |1           |
+|2 |1            |2           |
+|3 |2            |2           |
+
+### 2.7 UserRight
+
+|Id|RoleId       |ControllerName|ActionName|
+|--|-------------|--------------|----------|
+|1 |1            |Home          |Index     |
+|2 |1            |Patern        |Add       |
+|3 |2            |Home          |Index     |
 
 ## 3. Các trang cần tạo
 

@@ -12,6 +12,13 @@ namespace esp32_client.Services
     {
         public override void OnActionExecuting(ActionExecutingContext filterContext)
         {
+            // Get the name of the controller
+            string? controllerName = filterContext.RouteData.Values["controller"]?.ToString();
+
+            // Get the name of the action method
+            string? actionName = filterContext.RouteData.Values["action"]?.ToString();
+
+            // Check user right
 
             // Check if the user is authenticated
             if (!filterContext.HttpContext.Session.TryGetValue("LoginName", out var _sessionValue) || _sessionValue == null)
