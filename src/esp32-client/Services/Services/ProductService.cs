@@ -28,19 +28,20 @@ public partial class ProductService : IProductService
     {
         return await _linq2Db.Product.Select(s => s.ProductName).Distinct().ToListAsync();
     }
-    
+
     public async Task<List<Product>> GetProductDetail(string productName)
     {
-        return await _linq2Db.Product.Where(s => s.ProductName == productName).OrderBy(s => s.Order).ToListAsync();
+        // return await _linq2Db.Product.Where(s => s.ProductName == productName).OrderBy(s => s.Order).ToListAsync();
+        return new List<Product>();
     }
 
     public async Task<ProductCreateModel> Create(ProductCreateModel model)
     {
         var listData = new List<Product>();
-        for (int i = 0; i < model.ListProcessPattern.Count; i++)
-        {
-            listData.Add(new Product { ProductName = model.ProductName, ProcessName = model.ListProcessPattern[i].ProcessName, PatternNumber = model.ListProcessPattern[i].PatternNumber, Order = i });
-        }
+        // for (int i = 0; i < model.ListProcessPattern.Count; i++)
+        // {
+        //     listData.Add(new Product { ProductName = model.ProductName, ProcessName = model.ListProcessPattern[i].ProcessName, PatternNumber = model.ListProcessPattern[i].PatternNumber, Order = i });
+        // }
 
         await _linq2Db.BulkInsert(listData);
 

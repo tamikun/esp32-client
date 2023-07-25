@@ -44,7 +44,7 @@ public class UserController : Controller
             // Store the role in session
             var user = await _userAccountService.GetByLoginName(loginName);
             if (user is not null)
-                _httpContextAccessor?.HttpContext?.Session.SetString("RoleId", user.RoleId.ToString());
+                _httpContextAccessor?.HttpContext?.Session.SetString("RoleId", "1");
 
             return RedirectToAction("Index", "Home");
         }

@@ -9,6 +9,5 @@ namespace esp32_client.Domain
         public string Password { get; set; }
         public string SalfKey { get; set; }
         public string UserName { get; set; }
-        public int RoleId { get; set; }
     }
 }

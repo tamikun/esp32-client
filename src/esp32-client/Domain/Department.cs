@@ -1,10 +1,10 @@
 
 namespace esp32_client.Domain
 {
-    public class Product
+    public class Department
     {
 #nullable disable
         public int Id { get; set; }
-        public string ProductName { get; set; } = string.Empty;
+        public string DepartmentName { get; set; } = string.Empty;
     }
 }
