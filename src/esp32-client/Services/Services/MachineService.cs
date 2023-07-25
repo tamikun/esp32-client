@@ -35,19 +35,19 @@ public partial class MachineService : IMachineService
     public async Task<Machine> Create(MachineCreateModel model)
     {
         var machine = _mapper.Map<Machine>(model);
-        await _linq2Db.InsertAsync(model);
+        await _linq2Db.InsertAsync(machine);
         return machine;
     }
 
     public async Task<Machine> Update(MachineUpdateModel model)
     {
         var machine = await GetById(model.Id);
-        if(machine is null) throw new Exception("Machine is not found");
+        if (machine is null) throw new Exception("Machine is not found");
 
         var machineUpdate = _mapper.Map<Machine>(model);
         machineUpdate.Id = machine.Id;
 
-        await _linq2Db.InsertAsync(machineUpdate);
+        await _linq2Db.UpdateAsync(machineUpdate);
         return machineUpdate;
     }
 

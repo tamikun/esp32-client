@@ -26,7 +26,7 @@ public partial class ProductService : IProductService
         var product = await _linq2Db.Product.Where(s => s.Id == id).FirstOrDefaultAsync();
         return product;
     }
-    
+
     public async Task<Product?> GetByProductName(string name)
     {
         var product = await _linq2Db.Product.Where(s => s.ProductName == name).FirstOrDefaultAsync();
@@ -63,6 +63,8 @@ public partial class ProductService : IProductService
     public async Task Delete(int id)
     {
         var product = await GetById(id);
+
+        // Check produce is in use
 
         if (product is null) return;
         await _linq2Db.DeleteAsync(product);

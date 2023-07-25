@@ -146,6 +146,11 @@ public class AddInitData : AutoReversingMigration
     }
     public override void Up()
     {
+        var department = new List<Department>{
+            new Department { DepartmentName = "NhatTinh"},
+        };
+        _linq2Db.BulkInsert(department).Wait();
+        
         var userAccount = new List<UserAccount>{
             new UserAccount { LoginName = "admin", Password = "MM08+DTe5SgJ/abCwZW2oRlH+g8mO1XyQxStxGwTetI=", SalfKey = "YSguanX0gfFpM9t6Cn711Q==", UserName = "QuanTM" },
         };

@@ -15,10 +15,10 @@ public class DepartmentController : Controller
     }
 
 
-    public ActionResult Index()
+    public async Task<ActionResult> Index()
     {
-        
-        return View();
+        var department = await _departmentService.GetById(1);
+        return View(department);
     }
 
 }

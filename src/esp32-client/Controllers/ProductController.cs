@@ -24,12 +24,6 @@ public class ProductController : Controller
         return View();
     }
 
-    public async Task<IActionResult> Detail(string productName)
-    {
-        await Task.CompletedTask;
-        return View();
-    }
-
     [HttpPost]
     public async Task<IActionResult> Add(ProductCreateModel model)
     {
@@ -38,6 +32,24 @@ public class ProductController : Controller
         {
             var productDetail = await _productService.Create(model);
             listAlert.Add(new AlertModel { AlertType = Alert.Success, AlertMessage = $"Add product successfully" });
+        }
+        catch (Exception ex)
+        {
+            listAlert.Add(new AlertModel { AlertType = Alert.Danger, AlertMessage = $"{ex.Message}" });
+        }
+        TempData["AlertMessage"] = JsonConvert.SerializeObject(listAlert);
+
+        return RedirectToAction("Index");
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> Delete(int id)
+    {
+        var listAlert = new List<AlertModel>();
+        try
+        {
+            await _productService.Delete(id);
+            listAlert.Add(new AlertModel { AlertType = Alert.Success, AlertMessage = $"Delete product successfully" });
         }
         catch (Exception ex)
         {
