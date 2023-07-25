@@ -18,5 +18,9 @@ namespace esp32_client.Services
         Task<UserAccountChangePasswordModel> ChangePassword(UserAccountChangePasswordModel model);
 
         Task Delete(int id);
+
+        Task<bool> CheckUserRight(string? loginName, string? controllerName, string? actionName);
+
+        Task<List<UserRight>> GetUserRight(string? loginName);
     }
 }

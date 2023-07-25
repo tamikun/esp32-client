@@ -97,6 +97,37 @@ public partial class UserAccountService : IUserAccountService
         await _linq2Db.DeleteAsync(user);
     }
 
+    public async Task<bool> CheckUserRight(string? loginName, string? controllerName, string? actionName)
+    {
+        if (loginName is null) return false;
+        if (controllerName is null) return true;
+        if (actionName is null) return true;
+
+        var userRights = await GetUserRight(loginName);
+
+        if (userRights.Count == 0) return false;
+
+        // Full rights
+        if (userRights.Any(s => s.ControllerName == "*" && s.ActionName == "*")) return true;
+        // Have a right
+        if (userRights.Any(s => s.ControllerName == controllerName && s.ActionName == actionName)) return true;
+
+        return false;
+    }
+
+    public async Task<List<UserRight>> GetUserRight(string? loginName)
+    {
+        if (loginName is null) return new List<UserRight>();
+
+        var userRights = await (from user in _linq2Db.UserAccount.Where(s => s.LoginName == loginName)
+                                join roleOfUser in _linq2Db.RoleOfUser on user.Id equals roleOfUser.UserId into roles
+                                from role in roles
+                                join userRight in _linq2Db.UserRight on role.RoleId equals userRight.RoleId
+                                select userRight).ToListAsync();
+
+        return userRights;
+    }
+
     // Hash a password with a randomly generated salt
     private async Task<string> HashPassword(string password, string salt)
     {

@@ -12,15 +12,18 @@ public class PatternController : Controller
 {
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly IPatternService _patternService;
+    private readonly IUserAccountService _userAccountService;
 
-    public PatternController(IHttpContextAccessor httpContextAccessor, IPatternService patternService)
+    public PatternController(IHttpContextAccessor httpContextAccessor, IPatternService patternService, IUserAccountService userAccountService)
     {
         _httpContextAccessor = httpContextAccessor;
         _patternService = patternService;
+        _userAccountService = userAccountService;
     }
 
     public async Task<IActionResult> Index()
     {
+
         await Task.CompletedTask;
         return View(new PatternIndexPageModel());
     }

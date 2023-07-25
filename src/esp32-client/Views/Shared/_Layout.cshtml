@@ -74,11 +74,9 @@
     </div>
 
     <div class="alert-message">
-
         @if (TempData["AlertMessage"] is not null)
         {
-            var alertModel =
-            Newtonsoft.Json.JsonConvert.DeserializeObject<List<AlertModel>>(TempData["AlertMessage"].ToString());
+            var alertModel = JsonConvert.DeserializeObject<List<AlertModel>>(TempData["AlertMessage"].ToString());
 
             foreach (var alert in alertModel)
             {

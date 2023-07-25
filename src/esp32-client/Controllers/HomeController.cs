@@ -21,8 +21,6 @@ public class HomeController : Controller
     public async Task<IActionResult> Index()
     {
         await Task.CompletedTask;
-
-        System.Console.WriteLine("==== Session: " + _httpContextAccessor?.HttpContext?.Session.GetString("Username"));
         return View();
     }
 

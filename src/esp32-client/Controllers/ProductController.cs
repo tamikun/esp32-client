@@ -19,6 +19,7 @@ public class ProductController : Controller
 
     public async Task<IActionResult> Index()
     {
+
         await Task.CompletedTask;
         return View();
     }

@@ -17,6 +17,7 @@ public class DepartmentController : Controller
 
     public ActionResult Index()
     {
+        
         return View();
     }
 

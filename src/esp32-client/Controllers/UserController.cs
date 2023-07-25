@@ -40,9 +40,9 @@ public class UserController : Controller
             _httpContextAccessor?.HttpContext?.Session.SetString("LoginName", loginName);
 
             // Store the role in session
-            var user = await _userAccountService.GetByLoginName(loginName);
-            if (user is not null)
-                _httpContextAccessor?.HttpContext?.Session.SetString("RoleId", "1");
+            var userRight = await _userAccountService.GetUserRight(loginName);
+            if (userRight is not null)
+                _httpContextAccessor?.HttpContext?.Session.SetString("UserRight", JsonConvert.SerializeObject(userRight));
 
             return RedirectToAction("Index", "Home");
         }
