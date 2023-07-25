@@ -5,11 +5,13 @@ namespace esp32_client.Services
 {
     public interface IPatternService
     {
+        Task<Pattern?> GetById(int id);
+
         Task<List<PatternResponseModel>> GetAll();
 
         Task<Pattern> Create(PatternCreateModel model);
 
-        Task<Pattern?> GetById(int id);
+        Task<Pattern> Update(PatternUpdateModel model);
 
         Task Delete(int id);
 

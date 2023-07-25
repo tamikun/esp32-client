@@ -1,11 +1,8 @@
-using System.Security.Cryptography;
-using System.Text;
 using AutoMapper;
 using esp32_client.Builder;
 using esp32_client.Domain;
 using esp32_client.Models;
 using LinqToDB;
-using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 
 namespace esp32_client.Services;
 
@@ -52,11 +49,11 @@ public partial class ProductService : IProductService
 
     public async Task<ProductUpdateModel> Update(ProductUpdateModel model)
     {
-        var product = await GetByProductName(model.ProductName);
+        var product = await GetById(model.Id);
 
         if (product is null) return model;
 
-        product.ProductName = model.NewProductName;
+        product.ProductName = model.ProductName;
 
         await _linq2Db.UpdateAsync(product);
 

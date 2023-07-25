@@ -61,11 +61,29 @@ public partial class UserAccountService : IUserAccountService
 
     public async Task<UserAccountUpdateModel> Update(UserAccountUpdateModel model)
     {
-        var user = await GetByLoginName(model.LoginName);
+        var user = await GetById(model.Id);
 
         if (user is null) return model;
 
+        user.LoginName = model.LoginName;
         user.UserName = model.UserName;
+
+        await _linq2Db.UpdateAsync(user);
+
+        return model;
+    }
+
+    public async Task<UserAccountChangePasswordModel> ChangePassword(UserAccountChangePasswordModel model)
+    {
+        var user = await GetById(model.Id);
+
+        if (user is null) throw new Exception("User is not found");
+
+        var hash = await HashPassword(model.OldPassword, user.SalfKey);
+
+        if (hash != user.Password) throw new Exception("Incorrect password");
+
+        user.Password = await HashPassword(model.NewPassword, user.SalfKey);
 
         await _linq2Db.UpdateAsync(user);
 

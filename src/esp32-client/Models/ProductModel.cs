@@ -14,6 +14,6 @@ public class ProductCreateModel
 public class ProductUpdateModel
 {
 #nullable disable
+    public int Id { get; set; }
     public string ProductName { get; set; }
-    public string NewProductName { get; set; }
 }
