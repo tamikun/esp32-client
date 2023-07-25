@@ -22,16 +22,12 @@ public class ProductController : Controller
     public async Task<IActionResult> Index()
     {
         await Task.CompletedTask;
-        var model = new ProductCreateModel();
-        model.ListProcessPattern.Add(new ProcessPattern { PatternNumber = "", ProcessName = "0" });
-        return View(model);
+        return View();
     }
 
     public async Task<IActionResult> Detail(string productName)
     {
-        var productDetail = await _productService.GetProductDetail(productName);
-
-        return View(productDetail);
+        return View();
     }
 
     [HttpPost]

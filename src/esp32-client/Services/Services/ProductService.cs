@@ -24,29 +24,50 @@ public partial class ProductService : IProductService
         _mapper = mapper;
     }
 
-    public async Task<List<string>> GetAllProduct()
+    public async Task<Product?> GetById(int id)
     {
-        return await _linq2Db.Product.Select(s => s.ProductName).Distinct().ToListAsync();
+        var product = await _linq2Db.Product.Where(s => s.Id == id).FirstOrDefaultAsync();
+        return product;
+    }
+    
+    public async Task<Product?> GetByProductName(string name)
+    {
+        var product = await _linq2Db.Product.Where(s => s.ProductName == name).FirstOrDefaultAsync();
+        return product;
     }
 
-    public async Task<List<Product>> GetProductDetail(string productName)
+    public async Task<List<Product>> GetAll()
     {
-        // return await _linq2Db.Product.Where(s => s.ProductName == productName).OrderBy(s => s.Order).ToListAsync();
-        return new List<Product>();
+        return await _linq2Db.Product.ToListAsync();
     }
 
     public async Task<ProductCreateModel> Create(ProductCreateModel model)
     {
-        var listData = new List<Product>();
-        // for (int i = 0; i < model.ListProcessPattern.Count; i++)
-        // {
-        //     listData.Add(new Product { ProductName = model.ProductName, ProcessName = model.ListProcessPattern[i].ProcessName, PatternNumber = model.ListProcessPattern[i].PatternNumber, Order = i });
-        // }
+        var product = new Product() { ProductName = model.ProductName };
 
-        await _linq2Db.BulkInsert(listData);
+        await _linq2Db.InsertAsync(product);
 
         return model;
     }
 
+    public async Task<ProductUpdateModel> Update(ProductUpdateModel model)
+    {
+        var product = await GetByProductName(model.ProductName);
 
+        if (product is null) return model;
+
+        product.ProductName = model.NewProductName;
+
+        await _linq2Db.UpdateAsync(product);
+
+        return model;
+    }
+
+    public async Task Delete(int id)
+    {
+        var product = await GetById(id);
+
+        if (product is null) return;
+        await _linq2Db.DeleteAsync(product);
+    }
 }

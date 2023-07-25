@@ -5,8 +5,16 @@ namespace esp32_client.Services
 {
     public interface IProductService
     {
-        Task<List<string>> GetAllProduct();
-        Task<List<Product>> GetProductDetail(string productName);
+        Task<Product?> GetById(int id);
+
+        Task<Product?> GetByProductName(string name);
+
+        Task<List<Product>> GetAll();
+
         Task<ProductCreateModel> Create(ProductCreateModel model);
+
+        Task<ProductUpdateModel> Update(ProductUpdateModel model);
+
+        Task Delete(int id);
     }
 }

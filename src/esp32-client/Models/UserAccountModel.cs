@@ -11,6 +11,12 @@ namespace esp32_client.Models
         public string LoginName { get; set; }
         public string Password { get; set; }
         public string UserName { get; set; }
-        public int RoleId { get; set; }
+    }
+   
+    public class UserAccountUpdateModel
+    {
+#nullable disable
+        public string LoginName { get; set; }
+        public string UserName { get; set; }
     }
 }

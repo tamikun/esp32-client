@@ -24,6 +24,12 @@ public partial class UserAccountService : IUserAccountService
         _mapper = mapper;
     }
 
+    public async Task<UserAccount?> GetById(int id)
+    {
+        var user = await _linq2Db.UserAccount.Where(s => s.Id == id).FirstOrDefaultAsync();
+        return user;
+    }
+
     public async Task<UserAccount?> GetByLoginName(string loginName)
     {
         var user = await _linq2Db.UserAccount.Where(s => s.LoginName == loginName).FirstOrDefaultAsync();
@@ -51,6 +57,27 @@ public partial class UserAccountService : IUserAccountService
         await _linq2Db.InsertAsync(userAccount);
 
         return model;
+    }
+
+    public async Task<UserAccountUpdateModel> Update(UserAccountUpdateModel model)
+    {
+        var user = await GetByLoginName(model.LoginName);
+
+        if (user is null) return model;
+
+        user.UserName = model.UserName;
+
+        await _linq2Db.UpdateAsync(user);
+
+        return model;
+    }
+
+    public async Task Delete(int id)
+    {
+        var user = await GetById(id);
+
+        if (user is null) return;
+        await _linq2Db.DeleteAsync(user);
     }
 
     // Hash a password with a randomly generated salt
