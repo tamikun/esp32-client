@@ -9,17 +9,23 @@
         <table class="upload-table">
             <tr>
                 <td>
-                    <label for="productName">Product name</label>
+                    <label for="patternNumber">Pattern number</label>
                 </td>
                 <td>
                     @Html.HiddenFor(s => s.Id)
                     @Html.EditorFor(s => s.PatternNumber, new { htmlAttributes = new { value = Model.PatternNumber} })
                 </td>
                 <td>
+                    <label for="fileName">FileName</label>
+                </td>
+                <td>
                     @Html.EditorFor(s => s.FileName, new { htmlAttributes = new { value = Model.FileName} })
                 </td>
                 <td>
-                    @Html.EditorFor(s => s.Description, new { htmlAttributes = new { value = Model.PatternNumber} })
+                    <label for="description">Description</label>
+                </td>
+                <td>
+                    @Html.EditorFor(s => s.Description, new { htmlAttributes = new { value = Model.Description} })
                 </td>
                 <td>
                     <input type="submit" value="Save" />
