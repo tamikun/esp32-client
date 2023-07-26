@@ -1,0 +1,33 @@
+﻿@model MachineUpdateModel
+@{
+    ViewData["Title"] = "Update Machine";
+}
+
+<div>
+    @using (Html.BeginForm("Update", "Machine", FormMethod.Post, new { @enctype = "multipart/form-data" }))
+    {
+        <table class="upload-table">
+            <tr>
+                <td>
+                    <label for="machineNumber">Machine name</label>
+                </td>
+                <td>
+                    @Html.HiddenFor(s => s.Id)
+                    @Html.HiddenFor(s => s.DepartmentId)
+                    @Html.HiddenFor(s => s.LineId)
+                    @Html.HiddenFor(s => s.ProcessId)
+                    @Html.EditorFor(s => s.MachineName, new { htmlAttributes = new { value = Model.MachineName} })
+                </td>
+                <td>
+                    <label for="ipAddress">Ip address</label>
+                </td>
+                <td>
+                    @Html.EditorFor(s => s.IpAddress, new { htmlAttributes = new { value = Model.IpAddress} })
+                </td>
+                <td>
+                    <input type="submit" value="Save" />
+                </td>
+            </tr>
+        </table>
+    }
+</div>

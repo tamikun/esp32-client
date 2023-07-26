@@ -12,11 +12,12 @@ namespace esp32_client.Builder
 
             CreateMap<PatternCreateModel, Pattern>();
             CreateMap<PatternUpdateModel, Pattern>();
-            
+
             CreateMap<Pattern, PatternUpdateModel>();
 
             CreateMap<MachineCreateModel, Machine>();
             CreateMap<MachineUpdateModel, Machine>();
+            CreateMap<Machine, MachineUpdateModel>();
 
             CreateMap<Product, ProductUpdateModel>();
         }

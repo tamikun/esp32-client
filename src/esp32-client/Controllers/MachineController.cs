@@ -2,6 +2,7 @@
 using esp32_client.Services;
 using esp32_client.Models;
 using Newtonsoft.Json;
+using AutoMapper;
 
 namespace esp32_client.Controllers;
 
@@ -10,11 +11,13 @@ public class MachineController : Controller
 {
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly IMachineService _machineService;
+    private readonly IMapper _mapper;
 
-    public MachineController(IHttpContextAccessor httpContextAccessor, IMachineService machineService)
+    public MachineController(IHttpContextAccessor httpContextAccessor, IMachineService machineService, IMapper mapper)
     {
         _httpContextAccessor = httpContextAccessor;
         _machineService = machineService;
+        _mapper = mapper;
     }
 
     public async Task<IActionResult> Index()
@@ -57,5 +60,27 @@ public class MachineController : Controller
 
         return RedirectToAction("Index");
     }
+    public async Task<IActionResult> Update(int id)
+    {
+        var machine = await _machineService.GetById(id);
+        var productUpdateModel = _mapper.Map<MachineUpdateModel>(machine);
+        return View(productUpdateModel);
+    }
 
+    [HttpPost]
+    public async Task<IActionResult> Update(MachineUpdateModel model)
+    {
+        var listAlert = new List<AlertModel>();
+        try
+        {
+            var product = await _machineService.Update(model);
+            listAlert.Add(new AlertModel { AlertType = Alert.Success, AlertMessage = $"Update product successfully" });
+        }
+        catch (Exception ex)
+        {
+            listAlert.Add(new AlertModel { AlertType = Alert.Danger, AlertMessage = $"{ex.Message}" });
+        }
+        TempData["AlertMessage"] = JsonConvert.SerializeObject(listAlert);
+        return RedirectToAction("Index");
+    }
 }

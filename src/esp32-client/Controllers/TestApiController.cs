@@ -21,9 +21,9 @@ public class TestApiController : ControllerBase
     private readonly Settings _settings;
     private readonly LinqToDb _connection;
     private readonly IUserAccountService _userAccountService;
-    private readonly IProductService _productService;
+    private readonly IMachineService _machineService;
 
-    public TestApiController(ILogger<HomeController> logger, IClientService clientService, IFileService fileService, Settings settings, LinqToDb connection, IUserAccountService userAccountService, IProductService productService)
+    public TestApiController(ILogger<HomeController> logger, IClientService clientService, IFileService fileService, Settings settings, LinqToDb connection, IUserAccountService userAccountService, IMachineService machineService)
     {
         _logger = logger;
         _clientService = clientService;
@@ -31,7 +31,7 @@ public class TestApiController : ControllerBase
         _settings = settings;
         _connection = connection;
         _userAccountService = userAccountService;
-        _productService = productService;
+        _machineService = machineService;
     }
 
     [HttpPost]
@@ -157,9 +157,9 @@ public class TestApiController : ControllerBase
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> UpdateProduct(ProductUpdateModel model)
+    public async Task<IActionResult> UpdateMachine(MachineUpdateModel model)
     {
-        return Ok(await _productService.Update(model));
+        return Ok(await _machineService.Update(model));
     }
 
 }
