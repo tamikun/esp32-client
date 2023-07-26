@@ -47,7 +47,7 @@ public partial class DepartmentService : IDepartmentService
         if (department is null) throw new Exception("Department is not found");
         
         department.DepartmentName = model.DepartmentName;
-        await _linq2Db.UpdateAsync(department);
+        await _linq2Db.Update(department);
 
         return department;
     }

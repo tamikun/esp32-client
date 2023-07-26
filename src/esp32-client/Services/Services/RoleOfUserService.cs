@@ -49,7 +49,7 @@ public partial class RoleOfUserService : IRoleOfUserService
         RoleOfUser.RoleId = model.RoleId;
         RoleOfUser.UserId = model.UserId;
         
-        await _linq2Db.UpdateAsync(RoleOfUser);
+        await _linq2Db.Update(RoleOfUser);
 
         return RoleOfUser;
     }

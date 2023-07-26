@@ -51,7 +51,7 @@ public partial class LineService : ILineService
         line.Order = model.Order;
         line.ProductId = model.ProductId;
         
-        await _linq2Db.UpdateAsync(line);
+        await _linq2Db.Update(line);
 
         return line;
     }

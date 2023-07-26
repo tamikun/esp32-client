@@ -1,10 +1,11 @@
 
+using esp32_client.Builder;
+
 namespace esp32_client.Domain
 {
-    public class Pattern
+    public class Pattern : BaseEntity
     {
 #nullable disable
-        public int Id { get; set; }
         public string PatternNumber { get; set; } = string.Empty;
         public string FileName { get; set; }
         public string FileData { get; set; }

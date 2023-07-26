@@ -55,7 +55,7 @@ public partial class ProductService : IProductService
 
         product.ProductName = model.ProductName;
 
-        await _linq2Db.UpdateAsync(product);
+        await _linq2Db.Update(product);
 
         return model;
     }

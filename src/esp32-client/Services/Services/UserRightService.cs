@@ -55,7 +55,7 @@ public partial class UserRightService : IUserRightService
         UserRight.ControllerName = model.ControllerName;
         UserRight.ActionName = model.ActionName;
 
-        await _linq2Db.UpdateAsync(UserRight);
+        await _linq2Db.Update(UserRight);
 
         return UserRight;
     }

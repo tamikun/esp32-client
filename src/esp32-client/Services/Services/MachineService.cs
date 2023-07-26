@@ -47,7 +47,7 @@ public partial class MachineService : IMachineService
         var machineUpdate = _mapper.Map<Machine>(model);
         machineUpdate.Id = machine.Id;
 
-        await _linq2Db.UpdateAsync(machineUpdate);
+        await _linq2Db.Update(machineUpdate);
         return machineUpdate;
     }
 

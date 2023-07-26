@@ -1,10 +1,11 @@
 
+using esp32_client.Builder;
+
 namespace esp32_client.Domain
 {
-    public class Setting
+    public class Setting : BaseEntity
     {
 #nullable disable
-        public int Id { get; set; }
         public string Name { get; set; }
         public string Value { get; set; }
     }

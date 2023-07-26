@@ -84,7 +84,7 @@ public partial class UserAccountService : IUserAccountService
 
         user.Password = await HashPassword(model.NewPassword, user.SalfKey);
 
-        await _linq2Db.UpdateAsync(user);
+        await _linq2Db.Update(user);
 
         return model;
     }

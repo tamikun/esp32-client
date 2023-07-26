@@ -21,8 +21,9 @@ public class TestApiController : ControllerBase
     private readonly Settings _settings;
     private readonly LinqToDb _connection;
     private readonly IUserAccountService _userAccountService;
+    private readonly IProductService _productService;
 
-    public TestApiController(ILogger<HomeController> logger, IClientService clientService, IFileService fileService, Settings settings, LinqToDb connection, IUserAccountService userAccountService)
+    public TestApiController(ILogger<HomeController> logger, IClientService clientService, IFileService fileService, Settings settings, LinqToDb connection, IUserAccountService userAccountService, IProductService productService)
     {
         _logger = logger;
         _clientService = clientService;
@@ -30,6 +31,7 @@ public class TestApiController : ControllerBase
         _settings = settings;
         _connection = connection;
         _userAccountService = userAccountService;
+        _productService = productService;
     }
 
     [HttpPost]
@@ -150,6 +152,14 @@ public class TestApiController : ControllerBase
     public async Task<IActionResult> CheckUserRight(string loginName, string controllerName, string actionName)
     {
         return Ok(await _userAccountService.CheckUserRight(loginName, controllerName, actionName));
+    }
+
+    [HttpPost]
+    [ProducesResponseType(StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> UpdateProduct(ProductUpdateModel model)
+    {
+        return Ok(await _productService.Update(model));
     }
 
 }

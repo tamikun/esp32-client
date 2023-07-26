@@ -1,6 +1,9 @@
+using System.Linq.Expressions;
+using System.Reflection;
 using esp32_client.Domain;
 using LinqToDB;
 using LinqToDB.Data;
+using LinqToDB.Linq;
 
 namespace esp32_client.Builder;
 
@@ -22,10 +25,49 @@ public class LinqToDb : DataConnection
     public ITable<UserRight> UserRight => this.GetTable<UserRight>();
     public ITable<UserRole> UserRole => this.GetTable<UserRole>();
 
-    public async Task BulkInsert<T>(List<T> source) where T : class
+    public async Task BulkInsert<T>(List<T> source) where T : BaseEntity
     {
         var copyOptions = new BulkCopyOptions(TableOptions: TableOptions.CreateIfNotExists, BulkCopyType: BulkCopyType.MultipleRows, CheckConstraints: true);
         var temp = await this.BulkCopyAsync<T>(copyOptions, source);
 
     }
+
+    public async Task<T?> Update<T>(T source) where T : BaseEntity
+    {
+#nullable disable
+        if (source is null) return null;
+
+        var propertyInfos = typeof(T).GetProperties();
+
+        if (propertyInfos is null) return null;
+
+        // Get Id
+        PropertyInfo pId = propertyInfos.Where(s => s.Name == "Id").FirstOrDefault();
+
+        int id = Int32.Parse(pId.GetValue(source)?.ToString() ?? "0");
+
+        // update query
+        IUpdatable<T> updateQuery = this.GetTable<T>().Where(p => p.Id == id).AsUpdatable();
+
+        foreach (var prop in propertyInfos.Where(s => s.Name != "Id"))
+        {
+            // Create the member access expression for the property
+            var parameter = Expression.Parameter(typeof(T), "p");
+            var memberAccess = Expression.Property(parameter, prop);
+
+            // Create the lambda expression: p => p.PropertyName
+            var lambdaExpression = Expression.Lambda<Func<T, object>>(memberAccess, parameter);
+
+            // Get the new value of the property from the source object
+            object propValue = prop.GetValue(source);
+
+            // Use the Set method with the dynamically created lambda expression
+            updateQuery = updateQuery.Set(lambdaExpression, propValue);
+        }
+
+        await updateQuery.UpdateAsync();
+
+        return source;
+    }
+
 }

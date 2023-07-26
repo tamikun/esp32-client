@@ -60,7 +60,7 @@ public partial class PatternService : IPatternService
         pattern.Description = model.Description;
         pattern.FileData = Convert.ToBase64String(Utils.Utils.GetBytesFromFile(model.File));
 
-        await _linq2Db.UpdateAsync(pattern);
+        await _linq2Db.Update(pattern);
 
         return pattern;
     }

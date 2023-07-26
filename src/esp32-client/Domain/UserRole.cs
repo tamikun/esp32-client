@@ -1,10 +1,11 @@
 
+using esp32_client.Builder;
+
 namespace esp32_client.Domain
 {
-    public class UserRole
+    public class UserRole : BaseEntity
     {
 #nullable disable
-        public int Id { get; set; }
         public string RoleName { get; set; }
     }
 }

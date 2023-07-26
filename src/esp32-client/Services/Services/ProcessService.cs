@@ -64,7 +64,7 @@ public partial class ProcessService : IProcessService
         process.PatternId = model.PatternId;
         process.Order = model.Order;
 
-        await _linq2Db.UpdateAsync(process);
+        await _linq2Db.Update(process);
 
         return model;
     }

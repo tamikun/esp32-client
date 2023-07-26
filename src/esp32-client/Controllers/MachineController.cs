@@ -41,7 +41,6 @@ public class MachineController : Controller
         return RedirectToAction("Index");
     }
 
-    [HttpPost]
     public async Task<IActionResult> Delete(int id)
     {
         var listAlert = new List<AlertModel>();
