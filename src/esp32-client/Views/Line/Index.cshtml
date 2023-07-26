@@ -1,3 +1,57 @@
-﻿@{
+﻿@model LineCreateModel
+@{
     ViewData["Title"] = "Line";
+    var lines = await _lineService.GetAllLineResponse(Model.DepartmentId);
 }
+
+<div>
+    @using (Html.BeginForm("Add", "Line", FormMethod.Post, new { @enctype = "multipart/form-data" }))
+    {
+        <table class="upload-table">
+            <tr>
+                <td>
+                    <label for="lineName">Machine name</label>
+                </td>
+                <td>
+                    @Html.HiddenFor(s => s.DepartmentId)
+                    @Html.EditorFor(s => s.LineName)
+                </td>
+                <td>
+                    <input type="submit" value="Add" />
+                </td>
+            </tr>
+        </table>
+    }
+</div>
+
+<div>
+    <table class="normal table-hover" style="width: 100%;">
+        <thead>
+            <tr>
+                <th>No</th>
+                <th>Line name</th>
+                <th>Product name</th>
+                <th></th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+
+            @for (int i = 0; i < lines.Count; i++)
+            {
+                int number = i + 1;
+                <tr>
+                    <td>@number</td>
+                    <td>@lines[i].LineName</td>
+                    <td>@lines[i].ProductName</td>
+                    <td>
+                        <a href="@Url.Action("Update", new { id = lines[i].Id })">Edit</a>
+                    </td>
+                    <td>
+                        <a href="@Url.Action("Delete", new { id = lines[i].Id })">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

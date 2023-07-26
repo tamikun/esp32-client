@@ -16,3 +16,10 @@ public class LineUpdateModel
     public int Order { get; set; }
     public int ProductId { get; set; }
 }
+
+public class LineResponseModel
+{
+    public int Id { get; set; }
+    public string LineName { get; set; }
+    public string ProductName { get; set; }
+}

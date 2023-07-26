@@ -9,6 +9,8 @@ namespace esp32_client.Services
 
         Task<List<Line>> GetAll();
 
+        Task<List<LineResponseModel>> GetAllLineResponse(int departmentId);
+
         Task<Line> Create(LineCreateModel model);
 
         Task<Line> Update(LineUpdateModel model);

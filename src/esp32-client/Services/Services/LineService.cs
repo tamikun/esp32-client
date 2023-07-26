@@ -32,6 +32,21 @@ public partial class LineService : ILineService
         return await _linq2Db.Line.ToListAsync();
     }
 
+    public async Task<List<LineResponseModel>> GetAllLineResponse(int departmentId)
+    {
+        var result = await (from line in _linq2Db.Line.Where(s => s.DepartmentId == departmentId)
+                            join product1 in _linq2Db.Product on line.ProductId equals product1.Id into product2
+                            from product in product2.DefaultIfEmpty()
+                            select new LineResponseModel
+                            {
+                                Id = line.Id,
+                                LineName = line.LineName,
+                                ProductName = product.ProductName,
+                            }).ToListAsync();
+
+        return result;
+    }
+
     public async Task<Line> Create(LineCreateModel model)
     {
         var line = new Line { DepartmentId = model.DepartmentId, LineName = model.LineName, Order = model.Order, ProductId = model.ProductId };
@@ -50,7 +65,7 @@ public partial class LineService : ILineService
         line.LineName = model.LineName;
         line.Order = model.Order;
         line.ProductId = model.ProductId;
-        
+
         await _linq2Db.Update(line);
 
         return line;
