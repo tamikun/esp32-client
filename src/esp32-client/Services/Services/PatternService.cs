@@ -58,7 +58,7 @@ public partial class PatternService : IPatternService
         pattern.PatternNumber = model.PatternNumber;
         pattern.FileName = model.FileName;
         pattern.Description = model.Description;
-        pattern.FileData = Convert.ToBase64String(Utils.Utils.GetBytesFromFile(model.File));
+        // pattern.FileData = Convert.ToBase64String(Utils.Utils.GetBytesFromFile(model.File));
 
         await _linq2Db.Update(pattern);
 

@@ -1,0 +1,30 @@
+﻿@model PatternUpdateModel
+@{
+    ViewData["Title"] = "Update Pattern";
+}
+
+<div>
+    @using (Html.BeginForm("Update", "Pattern", FormMethod.Post, new { @enctype = "multipart/form-data" }))
+    {
+        <table class="upload-table">
+            <tr>
+                <td>
+                    <label for="productName">Product name</label>
+                </td>
+                <td>
+                    @Html.HiddenFor(s => s.Id)
+                    @Html.EditorFor(s => s.PatternNumber, new { htmlAttributes = new { value = Model.PatternNumber} })
+                </td>
+                <td>
+                    @Html.EditorFor(s => s.FileName, new { htmlAttributes = new { value = Model.FileName} })
+                </td>
+                <td>
+                    @Html.EditorFor(s => s.Description, new { htmlAttributes = new { value = Model.PatternNumber} })
+                </td>
+                <td>
+                    <input type="submit" value="Save" />
+                </td>
+            </tr>
+        </table>
+    }
+</div>

@@ -4,6 +4,7 @@ using esp32_client.Models;
 using esp32_client.Services;
 using Newtonsoft.Json;
 using esp32_client.Builder;
+using AutoMapper;
 
 namespace esp32_client.Controllers;
 
@@ -13,12 +14,14 @@ public class PatternController : Controller
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly IPatternService _patternService;
     private readonly IUserAccountService _userAccountService;
+    private readonly IMapper _mapper;
 
-    public PatternController(IHttpContextAccessor httpContextAccessor, IPatternService patternService, IUserAccountService userAccountService)
+    public PatternController(IHttpContextAccessor httpContextAccessor, IPatternService patternService, IUserAccountService userAccountService, IMapper mapper)
     {
         _httpContextAccessor = httpContextAccessor;
         _patternService = patternService;
         _userAccountService = userAccountService;
+        _mapper = mapper;
     }
 
     public async Task<IActionResult> Index()
@@ -86,6 +89,30 @@ public class PatternController : Controller
         var format = pattern.FileName.Split('.').LastOrDefault() ?? "";
 
         return File(Convert.FromBase64String(pattern.FileData), Utils.Utils.GetContentType(format), fileDownloadName: pattern.FileName);
+    }
+
+    public async Task<IActionResult> Update(int id)
+    {
+        var pattern = await _patternService.GetById(id);
+        var productUpdateModel = _mapper.Map<PatternUpdateModel>(pattern);
+        return View(productUpdateModel);
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> Update(PatternUpdateModel model)
+    {
+        var listAlert = new List<AlertModel>();
+        try
+        {
+            var product = await _patternService.Update(model);
+            listAlert.Add(new AlertModel { AlertType = Alert.Success, AlertMessage = $"Update product successfully" });
+        }
+        catch (Exception ex)
+        {
+            listAlert.Add(new AlertModel { AlertType = Alert.Danger, AlertMessage = $"{ex.Message}" });
+        }
+        TempData["AlertMessage"] = JsonConvert.SerializeObject(listAlert);
+        return RedirectToAction("Index");
     }
 
 }

@@ -13,11 +13,11 @@ namespace esp32_client.Models
         public string FileName { get; set; }
         public string Description { get; set; }
     }
-    
+
     public class PatternUpdateModel
     {
         public int Id { get; set; }
-        public IFormFile File { get; set; }
+        // public IFormFile File { get; set; }
         public string PatternNumber { get; set; }
         public string FileName { get; set; }
         public string Description { get; set; }

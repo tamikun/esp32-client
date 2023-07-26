@@ -75,14 +75,13 @@ public class ProductController : Controller
         try
         {
             var product = await _productService.Update(model);
-            listAlert.Add(new AlertModel { AlertType = Alert.Success, AlertMessage = $"Delete product successfully" });
+            listAlert.Add(new AlertModel { AlertType = Alert.Success, AlertMessage = $"Update product successfully" });
         }
         catch (Exception ex)
         {
             listAlert.Add(new AlertModel { AlertType = Alert.Danger, AlertMessage = $"{ex.Message}" });
         }
         TempData["AlertMessage"] = JsonConvert.SerializeObject(listAlert);
-
         return RedirectToAction("Index");
     }
 

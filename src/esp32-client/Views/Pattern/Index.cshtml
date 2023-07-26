@@ -58,6 +58,7 @@
                     <th style="text-align:center;">Pattern number</th>
                     <th style="text-align:center;">File name</th>
                     <th style="text-align:center;">Description</th>
+                    <th style="text-align:center;"></th>
                     <th style="text-align:center;"><input type="checkbox" onclick="checkAll()"></th>
                 </tr>
             </thead>
@@ -73,6 +74,9 @@
                                 <strong>@patterns[i].FileName</strong>
                             </a></td>
                         <td>@patterns[i].Description</td>
+                        <td>
+                            <a href="@Url.Action("Update", new { id = @patterns[i].Id })">Edit</a>
+                        </td>
                         <td>
                             @Html.CheckBoxFor(s=> s.ListDeletePatternById[i].IsSelected)
                         </td>
