@@ -27,8 +27,9 @@
     {
 
         <form id="productForm">
-            @Html.EditorFor(s => s.ProductName, new { htmlAttributes = new { value = Model.ProductName}})
             @Html.HiddenFor(s => s.ProductId)
+            <label>Product name:</label>
+            @Html.EditorFor(s => s.ProductName, new { htmlAttributes = new { value = Model.ProductName}})
             <br>
 
             <div id="processFields">
@@ -70,9 +71,9 @@
             processDiv.setAttribute("id", `processField${processCount}`);
 
             processDiv.innerHTML = `
-                                        <label for="ListProcessCreate_${processCount}__ProcessName">Process ${processCount + 1}:</label>
-                                        <input type="text" id="ListProcessCreate_${processCount}__ProcessName" name="ListProcessCreate[${processCount}].ProcessName" required>
-                                        `;
+                                            <label for="ListProcessCreate_${processCount}__ProcessName">Process ${processCount + 1}:</label>
+                                            <input type="text" id="ListProcessCreate_${processCount}__ProcessName" name="ListProcessCreate[${processCount}].ProcessName" required>
+                                            `;
 
             const selectElement = document.createElement("select");
         @* selectElement.classList.add("form-control"); *@
