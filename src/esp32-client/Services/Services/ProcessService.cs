@@ -13,17 +13,25 @@ public partial class ProcessService : IProcessService
 {
 
     private readonly LinqToDb _linq2Db;
+    private readonly IProductService _productService;
     private readonly IMapper _mapper;
 
-    public ProcessService(LinqToDb linq2Db, IMapper mapper)
+    public ProcessService(LinqToDb linq2Db, IMapper mapper, IProductService productService)
     {
         _linq2Db = linq2Db;
         _mapper = mapper;
+        _productService = productService;
     }
 
     public async Task<Process?> GetById(int id)
     {
         var process = await _linq2Db.Process.Where(s => s.Id == id).FirstOrDefaultAsync();
+        return process;
+    }
+
+    public async Task<List<Process>> GetByProductId(int id)
+    {
+        var process = await _linq2Db.Process.Where(s => s.ProductId == id).ToListAsync();
         return process;
     }
 
@@ -65,6 +73,57 @@ public partial class ProcessService : IProcessService
         process.Order = model.Order;
 
         await _linq2Db.Update(process);
+
+        return model;
+    }
+
+    public async Task<ProcessAddRequestModel> Update(ProcessAddRequestModel model)
+    {
+        var product = await _productService.GetById(model.ProductId);
+        if (product is not null && product.ProductName != model.ProductName)
+        {
+            product.ProductName = model.ProductName;
+            await _linq2Db.Update(product);
+        }
+
+        var processTable = _linq2Db.Process.Where(s => s.ProductId == model.ProductId);
+        var listProcessUpdate = await (from process in processTable
+                                       join request in model.ListProcessCreate.Where(s => s.Id != 0) on process.Id equals request.Id
+                                       where process.ProcessName != request.ProcessName ||
+                                           process.PatternId != request.PatternId
+                                       select new Process
+                                       {
+                                           Id = process.Id,
+                                           Order = process.Order,
+                                           ProductId = process.ProductId,
+                                           ProcessName = request.ProcessName,
+                                           PatternId = request.PatternId,
+                                       }).ToListAsync();
+
+        foreach (var item in listProcessUpdate)
+        {
+            await _linq2Db.Update(item);
+        }
+
+        var listProcessDelete = await processTable.Where(s => !model.ListProcessCreate.Select(s => s.Id).Contains(s.Id)).ToListAsync();
+
+        foreach (var item in listProcessDelete)
+        {
+            await Delete(item.Id);
+        }
+
+        var listProcessInsert = model.ListProcessCreate.Where(s => s.Id == 0).Select(s =>
+        {
+            return new Process
+            {
+                ProductId = model.ProductId,
+                ProcessName = s.ProcessName,
+                PatternId = s.PatternId,
+                Order = s.Order,
+            };
+        });
+
+        await _linq2Db.BulkInsert(listProcessInsert);
 
         return model;
     }

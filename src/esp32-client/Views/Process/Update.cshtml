@@ -1,0 +1,104 @@
+﻿@model ProcessAddRequestModel
+@{
+    var listProcess = await _processService.GetByProductId(Model.ProductId);
+
+    listProcess.ForEach(s => Model.ListProcessCreate.Add(new ProcessModel
+            {
+                Id = s.Id,
+                ProcessName = s.ProcessName,
+                PatternId = s.PatternId,
+                Order = s.Order,
+            }));
+
+    var listSelectedPatern = new List<SelectListItem>();
+    listSelectedPatern.Add(new SelectListItem { Value = "", Text = "Choose pattern" });
+
+    var listPattern = await _patternService.GetAll();
+    listPattern.ForEach(s => listSelectedPatern.Add(new SelectListItem
+            {
+                Value = s.Id.ToString(),
+                Text = s.PatternNumber
+            }));
+}
+
+
+<div>
+    @using (Html.BeginForm("Update", "Process", FormMethod.Post, new { @enctype = "multipart/form-data" }))
+    {
+
+        <form id="productForm">
+            @Html.EditorFor(s => s.ProductName, new { htmlAttributes = new { value = Model.ProductName}})
+            @Html.HiddenFor(s => s.ProductId)
+            <br>
+
+            <div id="processFields">
+                @for (int i = 0; i < Model.ListProcessCreate.Count; i++)
+                {
+                    string productFileNumber = $"processField{i}";
+                    int number = i + 1;
+
+                    <div id=@productFileNumber>
+                        @Html.HiddenFor(s => s.ListProcessCreate[i].Id)
+                        <label>Process @number:</label>
+                        @Html.EditorFor(s => s.ListProcessCreate[i].ProcessName)
+                        @Html.DropDownListFor(s => s.ListProcessCreate[i].PatternId, listSelectedPatern)
+
+                    </div>
+                }
+                <!-- Process fields will be dynamically added here -->
+            </div>
+            <button type="button" onclick="addProcessField()">Add Process</button>
+            <button type="button" onclick="removeProcessField()">Remove</button>
+            <br>
+            <input type="submit" value="Save">
+        </form>
+    }
+</div>
+
+
+@section Scripts{
+    <script>
+        let processCount = @Model.ListProcessCreate.Count - 1;
+
+        function addProcessField() {
+            processCount++;
+
+            const processFields = document.getElementById("processFields");
+
+            const processDiv = document.createElement("div");
+
+            processDiv.setAttribute("id", `processField${processCount}`);
+
+            processDiv.innerHTML = `
+                                        <label for="ListProcessCreate_${processCount}__ProcessName">Process ${processCount + 1}:</label>
+                                        <input type="text" id="ListProcessCreate_${processCount}__ProcessName" name="ListProcessCreate[${processCount}].ProcessName" required>
+                                        `;
+
+            const selectElement = document.createElement("select");
+        @* selectElement.classList.add("form-control"); *@
+                selectElement.id = `ListProcessCreate_${processCount}__PatternId`;
+            selectElement.name = `ListProcessCreate[${processCount}].PatternId`;
+
+            // Add other options from the listPatternId
+            const listPatternId = @Html.Raw(Json.Serialize(listSelectedPatern));
+            listPatternId.forEach(option => {
+                const optionElement = document.createElement("option");
+                optionElement.value = option.value;
+                optionElement.text = option.text;
+                selectElement.appendChild(optionElement);
+            });
+
+            // Append Select form to processDiv
+            processDiv.appendChild(selectElement);
+
+            // Append processDiv to processFields
+            processFields.appendChild(processDiv);
+        }
+
+        function removeProcessField(processNumber) {
+            const processDiv = document.getElementById(`processField${processCount}`);
+            processDiv.parentNode.removeChild(processDiv);
+            processCount--;
+        }
+    </script>
+}

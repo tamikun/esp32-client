@@ -7,6 +7,8 @@ namespace esp32_client.Services
     {
         Task<Process?> GetById(int id);
 
+        Task<List<Process>> GetByProductId(int id);
+
         Task<Process?> GetByProcessName(string name);
 
         Task<List<Process>> GetAll();
@@ -14,6 +16,8 @@ namespace esp32_client.Services
         Task<ProcessCreateModel> Create(ProcessCreateModel model);
 
         Task<ProcessUpdateModel> Update(ProcessUpdateModel model);
+        
+        Task<ProcessAddRequestModel> Update(ProcessAddRequestModel model);
 
         Task Delete(int id);
     }

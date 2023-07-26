@@ -25,11 +25,10 @@ public class LinqToDb : DataConnection
     public ITable<UserRight> UserRight => this.GetTable<UserRight>();
     public ITable<UserRole> UserRole => this.GetTable<UserRole>();
 
-    public async Task BulkInsert<T>(List<T> source) where T : BaseEntity
+    public async Task BulkInsert<T>(IEnumerable<T> source) where T : BaseEntity
     {
         var copyOptions = new BulkCopyOptions(TableOptions: TableOptions.CreateIfNotExists, BulkCopyType: BulkCopyType.MultipleRows, CheckConstraints: true);
         var temp = await this.BulkCopyAsync<T>(copyOptions, source);
-
     }
 
     public async Task<T?> Update<T>(T source) where T : BaseEntity

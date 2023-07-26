@@ -17,3 +17,23 @@ public class ProcessUpdateModel
     public int PatternId { get; set; }
     public int Order { get; set; }
 }
+
+public class ProcessAddRequestModel
+{
+    public ProcessAddRequestModel()
+    {
+        ListProcessCreate = new List<ProcessModel>();
+    }
+
+    public int ProductId { get; set; }
+    public string ProductName { get; set; }
+    public List<ProcessModel> ListProcessCreate { get; set; }
+}
+
+public class ProcessModel
+{
+    public int Id { get; set; }
+    public string ProcessName { get; set; }
+    public int PatternId { get; set; }
+    public int Order { get; set; }
+}
