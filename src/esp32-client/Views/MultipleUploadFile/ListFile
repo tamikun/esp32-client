@@ -1,0 +1,75 @@
+﻿// @using System.Diagnostics
+
+// @model MultipleUploadFileModel
+
+// @{
+//     Stopwatch sw = new Stopwatch();
+//     sw.Start();
+//     Dictionary<string, object> fileDict = await _fileService.GetDictionaryFile(null);
+//     sw.Stop();
+
+//     System.Console.WriteLine("==== sw ListFile Get Dict: " +
+//     Newtonsoft.Json.JsonConvert.SerializeObject(sw.ElapsedMilliseconds));
+
+//     Model.ListSelectedDataFile = new List<SelectedDataFileModel>();
+
+//     List<Task?> renderTasks = new List<Task?>();
+// }
+// <div class="col-sm-6 p-3" style="border: groove;">
+//     <ul>
+//         <li style="text-align: center;"><strong>PC</strong></li>
+//         @foreach (var item in fileDict)
+//         {
+//             <li>
+//                 @{
+//                     renderTasks.Add(RenderDictionaryItem(item.Key, item.Value));
+//                 }
+//             </li>
+//         }
+//         @{
+//             await Task.WhenAll(renderTasks);
+//         }
+//     </ul>
+// </div>
+// @functions {
+//     async Task RenderDictionaryItem(string key, object value)
+//     {
+//         @if (value is Dictionary<string, object> nestedDictionary)
+//         {
+//             @* <span class="toggle">[+]</span> *@
+//             <i class="fa fa-folder toggle-folder" style="font-size:18px;color:#fbcf4b;cursor:pointer;"></i>
+//             <span>@key</span>
+//             <ul style="display: none;">
+//                 @foreach (var nestedItem in nestedDictionary)
+//                 {
+//                     <li>
+//                         @{
+//                             await RenderDictionaryItem(nestedItem.Key, nestedItem.Value);
+//                         }
+//                     </li>
+//                 }
+//             </ul>
+//         }
+//         else
+//         {
+//             <i class="fa fa-file" style="font-size:15px;color:#82a6c9;"></i>
+//             <span>
+//                 <a class="download-file" href='@Url.Action("DownloadFileServer", "OpenApi", new {path = @value})'>@key</a>
+//             </span>
+//             if (value.ToString().Contains(_settings.FileDataDirectory + "VDATA"))
+//             {
+//                 Model.ListSelectedDataFile.Add(new SelectedDataFileModel
+//                     {
+//                         FilePath = value.ToString(),
+//                         IsSelected = false
+//                     });
+
+//                 var getIndex = Model.ListSelectedDataFile.Count - 1;
+//                 @Html.CheckBoxFor(model => model.ListSelectedDataFile[getIndex].IsSelected)
+//                 @Html.HiddenFor(model => model.ListSelectedDataFile[getIndex].FilePath)
+//             }
+
+//         }
+//     }
+// }
+

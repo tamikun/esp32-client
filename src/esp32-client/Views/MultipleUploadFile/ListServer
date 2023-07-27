@@ -1,0 +1,134 @@
+﻿// @model MultipleUploadFileModel
+// @using System.Diagnostics
+// @{
+//     var listServer = await _listServer.GetStaticList();
+//     Dictionary<string, object> listServerDict = new Dictionary<string, object>();
+
+//     Stopwatch sw = new Stopwatch();
+
+//     sw.Start();
+
+//     var tasks = listServer.Select(async item =>
+//     {
+//         var url = $"http://{item.IpAddress}/";
+//         var taskGetDict = _clientService.GetDictionaryFile(url);
+
+//         var getDict = await taskGetDict;
+
+//         listServerDict.Add(url, getDict);
+
+//     });
+
+//     await Task.WhenAll(tasks);
+
+//     sw.Stop();
+//     System.Console.WriteLine("==== sw ListServer Get Dict: " +
+//     Newtonsoft.Json.JsonConvert.SerializeObject(sw.ElapsedMilliseconds));
+
+//     List<Task> renderTasks = new List<Task>();
+// }
+// <div class="col-sm-6 p-3" style="border: groove;">
+//     <ul>
+//         <li style="text-align: center;"><strong>Machine</strong></li>
+//         @foreach (var item in listServerDict.OrderBy(s => s.Key))
+//         {
+//             <li>
+//                 @{
+//                     renderTasks.Add(RenderDictionaryItem(item.Key, item.Value));
+//                 }
+//             </li>
+//         }
+//         @{
+//             await Task.WhenAll(renderTasks);
+//         }
+//     </ul>
+// </div>
+// @functions {
+//     async Task RenderDictionaryItem(string key, object value)
+//     {
+//         var displayName = "";
+
+//         // get: {ip}/{path}
+//         var getPath = key.Split("//").Skip(1).FirstOrDefault().Split('/').Where(s => !string.IsNullOrEmpty(s)).ToList();
+
+//         if (getPath.Count > 1)
+//         {
+//             //Exist path
+//             //Get the folder
+//             displayName = getPath.LastOrDefault();
+//         }
+//         else
+//         {
+//             //just IP
+//             //Get ServerName
+//             var serverInfo = (await _listServer.GetStaticList())
+//             .Where(s => s.IpAddress == getPath.FirstOrDefault()).FirstOrDefault();
+
+//             displayName = string.IsNullOrEmpty(serverInfo?.ServerName) ? $"{serverInfo?.IpAddress} {{undefined}}" :
+//             serverInfo.ServerName;
+//         }
+
+//         @if (value is Dictionary<string, object> nestedDictionary)
+//         {
+
+//             @* <span class="toggle">[+]</span> *@
+//             <i class="fa fa-folder toggle-folder" style="font-size:18px;color:#fbcf4b;cursor:pointer;"></i>
+//             <span>@displayName</span>
+
+//             var rmHttp = key.Split("//").LastOrDefault();
+//             string ipAddress;
+//             string folder = "";
+//             var split = rmHttp.Split('/').Where(s => !string.IsNullOrEmpty(s)).ToList();
+
+//             ipAddress = split.FirstOrDefault();
+
+//             if (split.Count > 1)
+//             {
+//                 folder = string.Join('/', split.Skip(1));
+//             }
+
+//             // Default Folder is VDATA
+//             @* if (folder == "VDATA") *@
+//             if (getPath.Count == 1)
+//             {
+//                 Model.ListSelectedServer.Add(new SelectedServerModel
+//                     {
+//                         IpAddress = $"http://{ipAddress}/",
+//                         @* Folder = folder, *@
+//                         Folder = "VDATA",
+//                         IsSelected = false
+// });
+//                 var getIndex = Model.ListSelectedServer.Count - 1;
+
+//                 @Html.CheckBoxFor(model => model.ListSelectedServer[getIndex].IsSelected)
+//                 @Html.HiddenFor(model => model.ListSelectedServer[getIndex].Folder)
+//                 @Html.HiddenFor(model => model.ListSelectedServer[getIndex].IpAddress)
+//             }
+
+//             <ul style="display: none;">
+//                 @foreach (var nestedItem in nestedDictionary)
+//                 {
+//                     <li>
+//                         @{
+//                             await RenderDictionaryItem(nestedItem.Key, nestedItem.Value);
+//                         }
+//                     </li>
+//                 }
+//             </ul>
+//         }
+//         else
+//         {
+
+//             var downloadFileUrl = value.ToString();
+
+//             if (downloadFileUrl.EndsWith('/'))
+//             {
+//                 downloadFileUrl = downloadFileUrl.Remove(downloadFileUrl.LastIndexOf('/'));
+//             }
+//             <i class="fa fa-file" style="font-size:15px;color:#82a6c9;"></i>
+//             <span><a class="download-file"
+//                     href='@Url.Action("DownloadFile", "OpenApi", new {url = @downloadFileUrl})'>@displayName</a></span>
+//         }
+//     }
+// }
+

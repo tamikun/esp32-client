@@ -100,10 +100,7 @@ public partial class LineService : ILineService
         line.ProductId = model.ProductId;
 
         await _linq2Db.Update(line);
-
-        // Auto transfer machine
-        var machines = await _machineService.UpdateMachineLineByProduct(line.Id, model.ProductId);
-
+        
         return line;
     }
 

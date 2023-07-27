@@ -49,24 +49,6 @@ public partial class MachineService : IMachineService
         return result;
     }
 
-    public async Task<List<MachineUpdateModel>> GetInUseMachineByLineToUpdate(int lineId)
-    {
-        var result = await (from line in _linq2Db.Line.Where(s => s.Id == lineId)
-                            join process in _linq2Db.Process on line.ProductId equals process.ProductId
-                            from machine in _linq2Db.Machine.Where(s => s.LineId == lineId && s.ProcessId == process.Id)
-                            select new MachineUpdateModel
-                            {
-                                Id = machine.Id,
-                                MachineName = machine.MachineName,
-                                IpAddress = machine.IpAddress,
-                                DepartmentId = machine.DepartmentId,
-                                LineId = machine.LineId,
-                                ProcessId = machine.ProcessId,
-                            }
-                            ).ToListAsync();
-        return result;
-    }
-
     public async Task<List<Machine>> GetAvalableMachine(int lineId)
     {
         var result = await _linq2Db.Machine.Where(s => s.LineId == 0 || s.ProcessId == 0 || s.LineId == lineId).ToListAsync();

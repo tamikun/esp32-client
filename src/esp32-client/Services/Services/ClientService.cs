@@ -85,7 +85,7 @@ public partial class ClientService : IClientService
 
         // var listIp = _settings.ListServer.Split(';').ToList();
 
-        var dictSettingServer = JsonConvert.DeserializeObject<Dictionary<string, string>>(_settings.ListServer);
+        var dictSettingServer = JsonConvert.DeserializeObject<Dictionary<string, string>>(_settings.ListServer) ?? new Dictionary<string, string>();
 
         var listIp = dictSettingServer.Keys.ToList();
 

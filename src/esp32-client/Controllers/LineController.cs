@@ -80,7 +80,11 @@ public class LineController : Controller
         var listAlert = new List<AlertModel>();
         try
         {
+            // Auto transfer machine
+            var machines = await _machineService.UpdateMachineLineByProduct(model.Id, model.ProductId);
+
             await _lineService.Update(model);
+
             listAlert.Add(new AlertModel { AlertType = Alert.Success, AlertMessage = $"Update product line" });
         }
         catch (Exception ex)
@@ -107,6 +111,7 @@ public class LineController : Controller
         model.ProductName = product?.ProductName;
 
         model.ListProcessAndMachineOfLine = await _lineService.GetProcessAndMachineOfLine(model.DepartmentId, model.LineId);
+        model.ListProcessAndMachineOfLine = model.ListProcessAndMachineOfLine.Where(s => s.ProcessId != 0).ToList();
 
         return View(model);
     }
@@ -114,7 +119,6 @@ public class LineController : Controller
     [HttpPost]
     public async Task<IActionResult> UpdateMachineLine(UpdateMachineLineModel model)
     {
-        System.Console.WriteLine("==== model: " + Newtonsoft.Json.JsonConvert.SerializeObject(model));
         var listAlert = new List<AlertModel>();
         try
         {

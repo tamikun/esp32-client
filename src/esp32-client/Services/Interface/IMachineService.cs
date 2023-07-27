@@ -9,7 +9,6 @@ namespace esp32_client.Services
         Task<List<Machine>> GetByListId(IEnumerable<int> listId);
         Task<List<Machine>> GetAll();
         Task<List<Machine>> GetInUseMachineByLine(int lineId);
-        Task<List<MachineUpdateModel>> GetInUseMachineByLineToUpdate(int lineId);
         Task<List<Machine>> GetAvalableMachine(int lineId);
         Task<List<Machine>> UpdateMachineLineByProduct(int lineId, int productId);
         Task<Machine> Create(MachineCreateModel model);

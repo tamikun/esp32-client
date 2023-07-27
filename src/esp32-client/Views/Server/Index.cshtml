@@ -1,6 +1,0 @@
-﻿@{
-    ViewData["Title"] = "Server";
-    var listServer = await _listServer.GetStaticList();
-}
-
-@await Html.PartialAsync("~/Views/Components/ListServer.cshtml", listServer)
