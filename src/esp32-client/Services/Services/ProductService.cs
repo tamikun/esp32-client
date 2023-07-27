@@ -53,6 +53,9 @@ public partial class ProductService : IProductService
 
         if (product is null) throw new Exception("Product is not found");
 
+        // Check produce is in use
+        if (await IsProductInUse(model.Id)) throw new Exception("Product is in use");
+
         product.ProductName = model.ProductName;
 
         await _linq2Db.Update(product);

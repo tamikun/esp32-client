@@ -30,7 +30,6 @@ public class ProcessController : Controller
     [HttpPost]
     public async Task<IActionResult> Update(ProcessAddRequestModel model)
     {
-        System.Console.WriteLine("==== Update: " + Newtonsoft.Json.JsonConvert.SerializeObject(model));
         var listAlert = new List<AlertModel>();
         try
         {

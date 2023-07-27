@@ -80,50 +80,81 @@ public partial class ProcessService : IProcessService
     public async Task<ProcessAddRequestModel> Update(ProcessAddRequestModel model)
     {
         var product = await _productService.GetById(model.ProductId);
-        if (product is not null && product.ProductName != model.ProductName)
+
+        if (product is null) throw new Exception("Product is not found");
+        bool isProductInUse = await _productService.IsProductInUse(model.ProductId);
+
+        if (product.ProductName != model.ProductName)
         {
             product.ProductName = model.ProductName;
             await _linq2Db.Update(product);
         }
 
         var processTable = _linq2Db.Process.Where(s => s.ProductId == model.ProductId);
-        var listProcessUpdate = await (from process in processTable
-                                       join request in model.ListProcessCreate.Where(s => s.Id != 0) on process.Id equals request.Id
-                                       where process.ProcessName != request.ProcessName ||
-                                           process.PatternId != request.PatternId
-                                       select new Process
-                                       {
-                                           Id = process.Id,
-                                           Order = process.Order,
-                                           ProductId = process.ProductId,
-                                           ProcessName = request.ProcessName,
-                                           PatternId = request.PatternId,
-                                       }).ToListAsync();
 
-        foreach (var item in listProcessUpdate)
+        if (isProductInUse)
         {
-            await _linq2Db.Update(item);
-        }
+            // Just update name, not delete insert or update Pattern
+            var listProcessUpdate = await (from process in processTable
+                                           join request in model.ListProcessCreate.Where(s => s.Id != 0) on process.Id equals request.Id
+                                           where process.ProcessName != request.ProcessName ||
+                                               process.PatternId != request.PatternId
+                                           select new Process
+                                           {
+                                               Id = process.Id,
+                                               Order = process.Order,
+                                               ProductId = process.ProductId,
+                                               ProcessName = request.ProcessName,
+                                               PatternId = process.PatternId,
+                                           }).ToListAsync();
 
-        var listProcessDelete = await processTable.Where(s => !model.ListProcessCreate.Select(s => s.Id).Contains(s.Id)).ToListAsync();
-
-        foreach (var item in listProcessDelete)
-        {
-            await Delete(item.Id);
-        }
-
-        var listProcessInsert = model.ListProcessCreate.Where(s => s.Id == 0).Select(s =>
-        {
-            return new Process
+            foreach (var item in listProcessUpdate)
             {
-                ProductId = model.ProductId,
-                ProcessName = s.ProcessName,
-                PatternId = s.PatternId,
-                Order = s.Order,
-            };
-        });
+                await _linq2Db.Update(item);
+            }
 
-        await _linq2Db.BulkInsert(listProcessInsert);
+        }
+        else
+        {
+            var listProcessUpdate = await (from process in processTable
+                                           join request in model.ListProcessCreate.Where(s => s.Id != 0) on process.Id equals request.Id
+                                           where process.ProcessName != request.ProcessName ||
+                                               process.PatternId != request.PatternId
+                                           select new Process
+                                           {
+                                               Id = process.Id,
+                                               Order = process.Order,
+                                               ProductId = process.ProductId,
+                                               ProcessName = request.ProcessName,
+                                               PatternId = request.PatternId,
+                                           }).ToListAsync();
+
+            foreach (var item in listProcessUpdate)
+            {
+                await _linq2Db.Update(item);
+            }
+
+            var listProcessDelete = await processTable.Where(s => !model.ListProcessCreate.Select(s => s.Id).Contains(s.Id)).ToListAsync();
+
+            foreach (var item in listProcessDelete)
+            {
+                await Delete(item.Id);
+            }
+
+            var listProcessInsert = model.ListProcessCreate.Where(s => s.Id == 0).Select(s =>
+            {
+                return new Process
+                {
+                    ProductId = model.ProductId,
+                    ProcessName = s.ProcessName,
+                    PatternId = s.PatternId,
+                    Order = s.Order,
+                };
+            });
+
+            await _linq2Db.BulkInsert(listProcessInsert);
+        }
+
 
         return model;
     }
@@ -132,7 +163,10 @@ public partial class ProcessService : IProcessService
     {
         var process = await GetById(id);
 
-        if (process is null) return;
+        if (process is null) throw new Exception("Process is not found");
+
+        if (await _productService.IsProductInUse(process.ProductId)) throw new Exception("Product is in use");
+
         await _linq2Db.DeleteAsync(process);
     }
 }

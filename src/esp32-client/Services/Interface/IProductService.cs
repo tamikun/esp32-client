@@ -15,6 +15,8 @@ namespace esp32_client.Services
 
         Task<ProductUpdateModel> Update(ProductUpdateModel model);
 
+        Task<bool> IsProductInUse(int productId);
+
         Task Delete(int id);
     }
 }
