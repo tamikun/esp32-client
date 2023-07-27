@@ -154,4 +154,13 @@ public class TestApiController : ControllerBase
         return Ok(await _machineService.Update(model));
     }
 
+    [HttpPost]
+    [ProducesResponseType(StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> FormatString()
+    {
+        await Task.CompletedTask;
+        return Ok(string.Format(_settings.UploadFileFormat, "192.168.1.1", "VDATA.VDT"));
+    }
+
 }

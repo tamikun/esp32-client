@@ -150,7 +150,7 @@ public class AddInitData : AutoReversingMigration
             new Department { DepartmentName = "NhatTinh"},
         };
         _linq2Db.BulkInsert(department).Wait();
-        
+
         var userAccount = new List<UserAccount>{
             new UserAccount { LoginName = "admin", Password = "MM08+DTe5SgJ/abCwZW2oRlH+g8mO1XyQxStxGwTetI=", SalfKey = "YSguanX0gfFpM9t6Cn711Q==", UserName = "QuanTM" },
         };
@@ -176,12 +176,19 @@ public class AddInitData : AutoReversingMigration
         _linq2Db.BulkInsert(userRight).Wait();
 
         var settings = new List<Setting>{
-            new Setting{Name = "GetDataTimeOut", Value = "1000"},
+            new Setting{Name = "GetApiTimeOut", Value = "1000"},
             new Setting{Name = "PostFileTimeOut", Value = "1000"},
+            new Setting{Name = "PostApiTimeOut", Value = "1000"},
             new Setting{Name = "FileDataDirectory", Value = "/app/FileData/"},
             new Setting{Name = "NodeListEspFile", Value = "//table[@class='fixed']/tbody/tr"},
             new Setting{Name = "NodeServerState", Value = "//p[@id='result']"},
-            new Setting{Name = "UploadFileFormat", Value = "http://{ipAddress}/upload/VDATA/{fileName}"},
+            new Setting{Name = "UploadFileFormat", Value = "http://{0}/upload/VDATA/{1}"},
+            new Setting{Name = "ChangeMachineStateFormat", Value = "http://{0}/selectedMachine"},
+            new Setting{Name = "ChangeServerStateFormat", Value = "http://{0}/selectedServer"},
+            new Setting{Name = "ChangeStateDelay", Value = "500"},
+            new Setting{Name = "DeleteFileFormat", Value = "http://{0}/delete/VDATA/{1}"},
+            new Setting{Name = "PostFileFormat", Value = "http://{0}/upload/VDATA/{1}"},
+            new Setting{Name = "GetListFileFormat", Value = "http://{0}/VDATA"},
 
         };
         _linq2Db.BulkInsert(settings).Wait();
