@@ -60,7 +60,7 @@ builder.Services.AddScoped<IUserRightService, UserRightService>();
 builder.Services.AddSingleton<Settings>();
 builder.Services.AddSingleton<ListServer>();
 
-builder.Services.AddSession();
+builder.Services.AddSession(option => option.IdleTimeout = TimeSpan.FromMinutes(30)); // 10:01
 builder.Services.AddScoped<IHttpContextAccessor, HttpContextAccessor>(); // Add HttpContextAccessor
 
 var connectionString = builder.Configuration["Settings:ConnectionString"].ToString();
@@ -83,8 +83,8 @@ builder.Services.AddLinqToDBContext<LinqToDb>((provider, options)
             => options
                 //will configure the AppDataConnection to use
                 .UseMySql(connectionString)
-                //default logging will log everything using the ILoggerFactory configured in the provider
-                .UseDefaultLogging(provider)
+            //default logging will log everything using the ILoggerFactory configured in the provider
+            // .UseDefaultLogging(provider)
             , ServiceLifetime.Scoped);
 
 // Instantiate the runner

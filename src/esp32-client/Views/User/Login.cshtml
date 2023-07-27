@@ -68,14 +68,18 @@
     <div class="form-container">
         @using (Html.BeginForm("Login", "User", FormMethod.Post))
         {
+            <h2 style="color: #005F99;">Login</h2>
             <div>
-                <label for="loginName">LoginName</label>
-                @Html.TextBox("loginName")
+                @* <label for="loginName">Login name:</label> *@
+                @* @Html.TextBox("loginName", new { htmlAttributes = new { placeholder = "Login name"} }) *@
+
+                <input id="loginName" name="loginName" type="text" placeholder="Login name">
             </div>
 
             <div>
-                <label for="password">Password</label>
-                @Html.Password("password")
+                @* <label for="password">Password:</label> *@
+                @* @Html.Password("password", new { htmlAttributes = new { placeholder = "Password"} }) *@
+                <input id="password" name="password" type="password" placeholder="Password">
             </div>
 
             @Html.ValidationSummary()

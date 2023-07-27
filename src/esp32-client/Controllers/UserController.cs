@@ -63,7 +63,7 @@ public class UserController : Controller
             try
             {
                 await _userAccountService.Create(model);
-                listAlert.Add(new AlertModel { AlertType = Alert.Success, AlertMessage = $"Create account successfully" });
+                listAlert.Add(new AlertModel { AlertType = Alert.Success, AlertMessage = $"Create account" });
             }
             catch (Exception ex)
             {

@@ -41,7 +41,7 @@ public class PatternController : Controller
         try
         {
             await _patternService.Create(model.PatternCreateModel);
-            listAlert.Add(new AlertModel { AlertType = Alert.Success, AlertMessage = $"Add pattern successfully" });
+            listAlert.Add(new AlertModel { AlertType = Alert.Success, AlertMessage = $"Add pattern" });
 
         }
         catch (Exception ex)
@@ -65,7 +65,7 @@ public class PatternController : Controller
         try
         {
             await _patternService.Delete(listId);
-            listAlert.Add(new AlertModel { AlertType = Alert.Success, AlertMessage = $"Delete patterns successfully" });
+            listAlert.Add(new AlertModel { AlertType = Alert.Success, AlertMessage = $"Delete patterns" });
 
         }
         catch (Exception ex)
@@ -105,7 +105,7 @@ public class PatternController : Controller
         try
         {
             var product = await _patternService.Update(model);
-            listAlert.Add(new AlertModel { AlertType = Alert.Success, AlertMessage = $"Update product successfully" });
+            listAlert.Add(new AlertModel { AlertType = Alert.Success, AlertMessage = $"Update product" });
         }
         catch (Exception ex)
         {

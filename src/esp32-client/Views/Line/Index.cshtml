@@ -33,6 +33,7 @@
                 <th>Product name</th>
                 <th></th>
                 <th></th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
@@ -45,7 +46,10 @@
                     <td>@lines[i].LineName</td>
                     <td>@lines[i].ProductName</td>
                     <td>
-                        <a href="@Url.Action("Update", new { id = lines[i].Id })">Edit</a>
+                        <a href="@Url.Action("UpdateProductLine", new { id = lines[i].Id})">Edit product</a>
+                    </td>
+                    <td>
+                        <a href="@Url.Action("UpdateMachineLine", new { id = lines[i].Id})">Edit machine</a>
                     </td>
                     <td>
                         <a href="@Url.Action("Delete", new { id = lines[i].Id })">Delete</a>

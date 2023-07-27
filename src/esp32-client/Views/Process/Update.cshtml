@@ -10,11 +10,11 @@
                 Order = s.Order,
             }));
 
-    var listSelectedPatern = new List<SelectListItem>();
-    listSelectedPatern.Add(new SelectListItem { Value = "", Text = "Choose pattern" });
+    var listSelectePatern = new List<SelectListItem>();
+    listSelectePatern.Add(new SelectListItem { Value = "", Text = "Choose pattern" });
 
     var listPattern = await _patternService.GetAll();
-    listPattern.ForEach(s => listSelectedPatern.Add(new SelectListItem
+    listPattern.ForEach(s => listSelectePatern.Add(new SelectListItem
             {
                 Value = s.Id.ToString(),
                 Text = s.PatternNumber
@@ -42,7 +42,7 @@
                         @Html.HiddenFor(s => s.ListProcessCreate[i].Id)
                         <label>Process @number:</label>
                         @Html.EditorFor(s => s.ListProcessCreate[i].ProcessName)
-                        @Html.DropDownListFor(s => s.ListProcessCreate[i].PatternId, listSelectedPatern)
+                        @Html.DropDownListFor(s => s.ListProcessCreate[i].PatternId, listSelectePatern)
 
                     </div>
                 }
@@ -81,7 +81,7 @@
             selectElement.name = `ListProcessCreate[${processCount}].PatternId`;
 
             // Add other options from the listPatternId
-            const listPatternId = @Html.Raw(Json.Serialize(listSelectedPatern));
+            const listPatternId = @Html.Raw(Json.Serialize(listSelectePatern));
             listPatternId.forEach(option => {
                 const optionElement = document.createElement("option");
                 optionElement.value = option.value;

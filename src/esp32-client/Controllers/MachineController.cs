@@ -33,7 +33,7 @@ public class MachineController : Controller
         try
         {
             var machineDetail = await _machineService.Create(model);
-            listAlert.Add(new AlertModel { AlertType = Alert.Success, AlertMessage = $"Add Machine successfully" });
+            listAlert.Add(new AlertModel { AlertType = Alert.Success, AlertMessage = $"Add machine" });
         }
         catch (Exception ex)
         {
@@ -50,7 +50,7 @@ public class MachineController : Controller
         try
         {
             await _machineService.Delete(id);
-            listAlert.Add(new AlertModel { AlertType = Alert.Success, AlertMessage = $"Delete Machine successfully" });
+            listAlert.Add(new AlertModel { AlertType = Alert.Success, AlertMessage = $"Delete machine" });
         }
         catch (Exception ex)
         {
@@ -73,8 +73,8 @@ public class MachineController : Controller
         var listAlert = new List<AlertModel>();
         try
         {
-            var product = await _machineService.Update(model);
-            listAlert.Add(new AlertModel { AlertType = Alert.Success, AlertMessage = $"Update product successfully" });
+            var machine = await _machineService.Update(model);
+            listAlert.Add(new AlertModel { AlertType = Alert.Success, AlertMessage = $"Update product" });
         }
         catch (Exception ex)
         {

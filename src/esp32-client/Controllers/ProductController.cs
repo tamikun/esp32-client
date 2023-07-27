@@ -33,7 +33,7 @@ public class ProductController : Controller
         try
         {
             var productDetail = await _productService.Create(model);
-            listAlert.Add(new AlertModel { AlertType = Alert.Success, AlertMessage = $"Add product successfully" });
+            listAlert.Add(new AlertModel { AlertType = Alert.Success, AlertMessage = $"Add product" });
         }
         catch (Exception ex)
         {
@@ -50,7 +50,7 @@ public class ProductController : Controller
         try
         {
             await _productService.Delete(id);
-            listAlert.Add(new AlertModel { AlertType = Alert.Success, AlertMessage = $"Delete product successfully" });
+            listAlert.Add(new AlertModel { AlertType = Alert.Success, AlertMessage = $"Delete product" });
         }
         catch (Exception ex)
         {

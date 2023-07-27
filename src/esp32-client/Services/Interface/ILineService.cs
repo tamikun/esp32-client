@@ -10,6 +10,8 @@ namespace esp32_client.Services
         Task<List<Line>> GetAll();
 
         Task<List<LineResponseModel>> GetAllLineResponse(int departmentId);
+        
+        Task<List<GetProcessAndMachineOfLineModel>> GetProcessAndMachineOfLine(int departmentId, int lineId);
 
         Task<Line> Create(LineCreateModel model);
 

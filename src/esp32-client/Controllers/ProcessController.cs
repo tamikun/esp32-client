@@ -35,7 +35,7 @@ public class ProcessController : Controller
         try
         {
             await _processService.Update(model);
-            listAlert.Add(new AlertModel { AlertType = Alert.Success, AlertMessage = $"Update product successfully" });
+            listAlert.Add(new AlertModel { AlertType = Alert.Success, AlertMessage = $"Update product" });
         }
         catch (Exception ex)
         {

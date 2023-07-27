@@ -1,0 +1,61 @@
+﻿@model UpdateMachineLineModel
+@{
+    ViewData["Title"] = "Update machine line";
+
+    var availableMachines = await _machineService.GetAvalableMachine(Model.LineId);
+
+    var listSelecteMachine = new List<SelectListItem>();
+    listSelecteMachine.Add(new SelectListItem { Value = "", Text = "Choose machine" });
+    availableMachines.ForEach(s => listSelecteMachine.Add(new SelectListItem
+            {
+                Value = s.Id.ToString(),
+                Text = s.MachineName
+            }));
+}
+
+
+<div>
+    @using (Html.BeginForm("UpdateMachineLine", "Line", FormMethod.Post, new { @enctype = "multipart/form-data" }))
+    {
+        <table class="upload-table">
+            <tr>
+                <td>
+                    <label>@Model?.LineName</label>
+                </td>
+                <td>
+                    <label>@Model?.ProductName</label>
+                </td>
+            </tr>
+            @for (int i = 0; i < Model?.ListProcessAndMachineOfLine.Count; i++)
+            {
+                <tr>
+                    <td>
+                        <label>Process name</label>
+                        <label>@Model.ListProcessAndMachineOfLine[i].ProcessName</label>
+                    </td>
+                    <td>
+                        @Html.HiddenFor(s =>s.ListProcessAndMachineOfLine[i].LineId)
+                        @Html.HiddenFor(s =>s.ListProcessAndMachineOfLine[i].LineName)
+                        @Html.HiddenFor(s =>s.ListProcessAndMachineOfLine[i].ProductId)
+                        @Html.HiddenFor(s =>s.ListProcessAndMachineOfLine[i].ProductName)
+                        @Html.HiddenFor(s =>s.ListProcessAndMachineOfLine[i].MachineIp)
+                        @Html.HiddenFor(s =>s.ListProcessAndMachineOfLine[i].MachineName)
+                        @Html.HiddenFor(s =>s.ListProcessAndMachineOfLine[i].ProcessId)
+                        @Html.HiddenFor(s =>s.ListProcessAndMachineOfLine[i].ProcessName)
+                        <label>Machine name</label>
+                        @Html.DropDownListFor(s =>s.ListProcessAndMachineOfLine[i].MachineId, listSelecteMachine)
+                    </td>
+                </tr>
+            }
+            <tr>
+                <td>
+                    @Html.HiddenFor(s =>s.DepartmentId)
+                    @Html.HiddenFor(s =>s.LineId)
+                    @Html.HiddenFor(s =>s.ProductName)
+                    @Html.HiddenFor(s =>s.LineName)
+                    <input type="submit" value="Save" />
+                </td>
+            </tr>
+        </table>
+    }
+</div>
