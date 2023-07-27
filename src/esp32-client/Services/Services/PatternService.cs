@@ -65,15 +65,31 @@ public partial class PatternService : IPatternService
         return pattern;
     }
 
+    public async Task<bool> IsPatternInUse(int id)
+    {
+        return await _linq2Db.Process.AnyAsync(s => s.PatternId == id);
+    }
+    public async Task<bool> IsPatternInUse(List<int> listId)
+    {
+        return await _linq2Db.Process.AnyAsync(s => listId.Contains(s.PatternId));
+    }
+
     public async Task Delete(int id)
     {
         var pattern = await GetById(id);
-        if (pattern is not null)
-            await _linq2Db.DeleteAsync(pattern);
+        if (pattern is null) throw new Exception("Pattern is in use");
+
+        // Check pattern is in use
+        if (await IsPatternInUse(id)) throw new Exception("Pattern is in use");
+
+        await _linq2Db.DeleteAsync(pattern);
     }
 
     public async Task Delete(List<int> listId)
     {
+        // Check pattern is in use
+        if (await IsPatternInUse(listId)) throw new Exception("Pattern is in use");
+
         await _linq2Db.Pattern.Where(s => listId.Contains(s.Id)).DeleteAsync();
     }
 

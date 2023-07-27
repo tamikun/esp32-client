@@ -9,7 +9,7 @@ namespace esp32_client.Services
 
         Task<UserAccount?> GetByLoginName(string loginName);
 
-        Task<bool> IsValidUser(string loginName, string password);
+        Task<bool> IsValidUser(UserAccount userAcount, string password);
 
         Task<UserAccountCreateModel> Create(UserAccountCreateModel model);
 

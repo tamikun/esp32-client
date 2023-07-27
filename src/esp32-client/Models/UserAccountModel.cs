@@ -11,6 +11,7 @@ namespace esp32_client.Models
         public string LoginName { get; set; }
         public string Password { get; set; }
         public string UserName { get; set; }
+        public int RoleId { get; set; }
     }
 
     public class UserAccountUpdateModel
@@ -25,5 +26,6 @@ namespace esp32_client.Models
         public int Id { get; set; }
         public string OldPassword { get; set; }
         public string NewPassword { get; set; }
+        public string ConfirmedPassword { get; set; }
     }
 }

@@ -60,12 +60,16 @@
                             <a class="juki-list-menu-header" asp-area="" asp-controller="Pattern"
                                 asp-action="Index">Pattern</a>
                         </li>
+                        @{
+                            var userName = _httpContextAccessor?.HttpContext?.Session.GetString("UserName");
+                        }
                         <li class="dropdown">
-                            <a class="juki-list-menu-header dropbtn" href="">Account</a>
+                            <a class="juki-list-menu-header dropbtn" asp-area="" asp-controller="User"
+                                asp-action="Index">@userName</a>
                             <div class="dropdown-content">
-                                <a href="">Account infomation</a>
+                                <a asp-area="" asp-controller="User" asp-action="Update">Account infomation</a>
                                 <a asp-area="" asp-controller="User" asp-action="Create">Create account</a>
-                                <a href="">Change Password</a>
+                                <a asp-area="" asp-controller="User" asp-action="ChangePassword">Change Password</a>
                                 <a asp-area="" asp-controller="User" asp-action="Logout">Logout</a>
                             </div>
                         </li>
@@ -84,7 +88,8 @@
     <div class="alert-message">
         @if (TempData["AlertMessage"] is not null)
         {
-            var alertModel = JsonConvert.DeserializeObject<List<AlertModel>>(TempData["AlertMessage"]?.ToString() ?? "") ?? new List<AlertModel>();
+            var alertModel = JsonConvert.DeserializeObject<List<AlertModel>>(TempData["AlertMessage"]?.ToString() ?? "") ??
+            new List<AlertModel>();
 
             foreach (var alert in alertModel)
             {

@@ -1,0 +1,30 @@
+﻿@model UserAccountUpdateModel
+@{
+    ViewData["Title"] = "Update account";
+}
+
+<div>
+    @using (Html.BeginForm("Update", "User", FormMethod.Post, new { @enctype = "multipart/form-data" }))
+    {
+        <table class="upload-table">
+            <tr>
+                <td>
+                    <label>Login name</label>
+                </td>
+                <td>
+                    @Html.HiddenFor(s => s.Id)
+                    @Html.EditorFor(s => s.LoginName, new { htmlAttributes = new { value = Model.LoginName} })
+                </td>
+                <td>
+                    <label>User name</label>
+                </td>
+                <td>
+                    @Html.EditorFor(s => s.UserName, new { htmlAttributes = new { value = Model.UserName} })
+                </td>
+                <td>
+                    <input type="submit" value="Save" />
+                </td>
+            </tr>
+        </table>
+    }
+</div>

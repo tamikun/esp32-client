@@ -2,6 +2,16 @@
 
 @{
     ViewData["Title"] = "Create new user";
+
+    var listSelecteRole = new List<SelectListItem>();
+    listSelecteRole.Add(new SelectListItem { Value = "", Text = "Choose role" });
+
+    var listRole = await _userRoleService.GetAll();
+    listRole.ForEach(s => listSelecteRole.Add(new SelectListItem
+            {
+                Value = s.Id.ToString(),
+                Text = s.RoleName
+            }));
 }
 
 <div class="form-container">
@@ -24,7 +34,7 @@
 
         <div>
             <label for="roleId">UserRole</label>
-            @* @Html.EditorFor(s => s.RoleId) *@
+            @Html.DropDownListFor(s => s.RoleId, listSelecteRole)
         </div>
 
         <div>

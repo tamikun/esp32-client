@@ -141,14 +141,6 @@ public class TestApiController : ControllerBase
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> IsValidUser(string loginName, string password)
-    {
-        return Ok(await _userAccountService.IsValidUser(loginName, password));
-    }
-
-    [HttpPost]
-    [ProducesResponseType(StatusCodes.Status201Created)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> CheckUserRight(string loginName, string controllerName, string actionName)
     {
         return Ok(await _userAccountService.CheckUserRight(loginName, controllerName, actionName));

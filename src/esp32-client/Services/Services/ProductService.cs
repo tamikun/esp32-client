@@ -60,13 +60,20 @@ public partial class ProductService : IProductService
         return model;
     }
 
+    public async Task<bool> IsProductInUse(int productId)
+    {
+        return await _linq2Db.Line.AnyAsync(s => s.ProductId == productId);
+    }
+
     public async Task Delete(int id)
     {
         var product = await GetById(id);
 
-        // Check produce is in use
+        if (product is null) throw new Exception("Product is not found");
 
-        if (product is null) return;
+        // Check produce is in use
+        if (await IsProductInUse(id)) throw new Exception("Product is in use");
+
         await _linq2Db.DeleteAsync(product);
     }
 }

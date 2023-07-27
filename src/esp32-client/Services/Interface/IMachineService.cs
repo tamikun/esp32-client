@@ -16,6 +16,5 @@ namespace esp32_client.Services
         Task UpdateById(int id, int departmentId, int lineId, int processId);
         Task UpdateByListId(IEnumerable<int> listId, int departmentId, int lineId, int processId);
         Task Delete(int id);
-        Task Delete(List<int> listId);
     }
 }

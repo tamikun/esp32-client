@@ -100,13 +100,17 @@ public partial class LineService : ILineService
         line.ProductId = model.ProductId;
 
         await _linq2Db.Update(line);
-        
+
         return line;
     }
 
     public async Task Delete(int id)
     {
         var line = await GetById(id);
+
+        // Release machine attached to line
+        await _machineService.UpdateMachineLineByProduct(id, 0);
+
         if (line is not null)
             await _linq2Db.DeleteAsync(line);
     }

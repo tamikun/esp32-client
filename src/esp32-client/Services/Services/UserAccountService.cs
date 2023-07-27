@@ -16,11 +16,13 @@ public partial class UserAccountService : IUserAccountService
 
     private readonly LinqToDb _linq2Db;
     private readonly IMapper _mapper;
+    private readonly IRoleOfUserService _roleOfUser;
 
-    public UserAccountService(LinqToDb linq2Db, IMapper mapper)
+    public UserAccountService(LinqToDb linq2Db, IMapper mapper, IRoleOfUserService roleOfUser)
     {
         _linq2Db = linq2Db;
         _mapper = mapper;
+        _roleOfUser = roleOfUser;
     }
 
     public async Task<UserAccount?> GetById(int id)
@@ -35,17 +37,17 @@ public partial class UserAccountService : IUserAccountService
         return user;
     }
 
-    public async Task<bool> IsValidUser(string loginName, string password)
+    public async Task<bool> IsValidUser(UserAccount userAcount, string password)
     {
 
-        var user = await GetByLoginName(loginName);
-        if (user is null) return false;
-
-        return await VerifyPassword(loginName, password, user.SalfKey);
+        return await VerifyPassword(userAcount, password);
     }
 
     public async Task<UserAccountCreateModel> Create(UserAccountCreateModel model)
     {
+        if (await _linq2Db.UserAccount.AnyAsync(s => s.LoginName == model.LoginName))
+            throw new Exception("Login name has aldready existed");
+
         var userAccount = _mapper.Map<UserAccount>(model);
 
         string salf = await CreateSalfKey();
@@ -54,6 +56,17 @@ public partial class UserAccountService : IUserAccountService
         userAccount.Password = await HashPassword(userAccount.Password, salf);
 
         await _linq2Db.InsertAsync(userAccount);
+
+        userAccount = await GetByLoginName(model.LoginName);
+
+        if (userAccount is not null)
+        {
+            await _roleOfUser.Create(new RoleOfUserCreateModel
+            {
+                UserId = userAccount.Id,
+                RoleId = model.RoleId,
+            });
+        }
 
         return model;
     }
@@ -67,7 +80,7 @@ public partial class UserAccountService : IUserAccountService
         user.LoginName = model.LoginName;
         user.UserName = model.UserName;
 
-        await _linq2Db.UpdateAsync(user);
+        await _linq2Db.Update(user);
 
         return model;
     }
@@ -81,6 +94,8 @@ public partial class UserAccountService : IUserAccountService
         var hash = await HashPassword(model.OldPassword, user.SalfKey);
 
         if (hash != user.Password) throw new Exception("Incorrect password");
+
+        if (model.NewPassword != model.ConfirmedPassword) throw new Exception("Confirmed password does not match password");
 
         user.Password = await HashPassword(model.NewPassword, user.SalfKey);
 
@@ -150,12 +165,10 @@ public partial class UserAccountService : IUserAccountService
         return Convert.ToBase64String(salt);
     }
 
-    private async Task<bool> VerifyPassword(string loginName, string password, string salt)
+    private async Task<bool> VerifyPassword(UserAccount userAcount, string password)
     {
-        var user = await GetByLoginName(loginName);
-        if (user is null) return false;
-        var hash = await HashPassword(password, salt);
-        return hash == user.Password;
+        var hash = await HashPassword(password, userAcount.SalfKey);
+        return hash == userAcount.Password;
     }
 
 }

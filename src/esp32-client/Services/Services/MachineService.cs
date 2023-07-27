@@ -134,13 +134,10 @@ public partial class MachineService : IMachineService
     public async Task Delete(int id)
     {
         var machine = await GetById(id);
-        if (machine is not null)
-            await _linq2Db.DeleteAsync(machine);
-    }
+        if (machine is null) throw new Exception("Machine is not found");
+        if (machine.LineId != 0 || machine.ProcessId != 0) throw new Exception("Machine is in use");
 
-    public async Task Delete(List<int> listId)
-    {
-        await _linq2Db.Machine.Where(s => listId.Contains(s.Id)).DeleteAsync();
+        await _linq2Db.DeleteAsync(machine);
     }
 
 }
