@@ -181,6 +181,7 @@ public class AddInitData : AutoReversingMigration
             new Setting{Name = "FileDataDirectory", Value = "/app/FileData/"},
             new Setting{Name = "NodeListEspFile", Value = "//table[@class='fixed']/tbody/tr"},
             new Setting{Name = "NodeServerState", Value = "//p[@id='result']"},
+            new Setting{Name = "UploadFileFormat", Value = "http://{ipAddress}/upload/VDATA/{fileName}"},
 
         };
         _linq2Db.BulkInsert(settings).Wait();
