@@ -27,8 +27,5 @@ public class UpdateMachineLineModel
         ListProcessAndMachineOfLine = new List<GetProcessAndMachineOfLineModel>();
     }
     public int DepartmentId { get; set; }
-    public int LineId { get; set; }
-    public string LineName { get; set; }
-    public string ProductName { get; set; }
     public List<GetProcessAndMachineOfLineModel> ListProcessAndMachineOfLine { get; set; }
 }

@@ -13,15 +13,19 @@
                 </td>
                 <td>
                     @Html.HiddenFor(s => s.Id)
-                   
                     @Html.EditorFor(s => s.MachineName, new { htmlAttributes = new { value = Model.MachineName} })
                 </td>
+            </tr>
+            <tr>
                 <td>
                     <label for="ipAddress">Ip address</label>
                 </td>
                 <td>
                     @Html.EditorFor(s => s.IpAddress, new { htmlAttributes = new { value = Model.IpAddress} })
                 </td>
+            </tr>
+            <tr>
+                <td></td>
                 <td>
                     <input type="submit" value="Save" />
                 </td>

@@ -100,17 +100,8 @@ public class LineController : Controller
     {
         var model = new UpdateMachineLineModel();
         model.DepartmentId = 1;
-        model.LineId = id;
 
-        var line = await _lineService.GetById(id);
-        if (line is null) return RedirectToAction("Index");
-
-        model.LineName = line.LineName;
-
-        var product = await _productService.GetById(line.ProductId);
-        model.ProductName = product?.ProductName;
-
-        model.ListProcessAndMachineOfLine = await _lineService.GetProcessAndMachineOfLine(model.DepartmentId, model.LineId);
+        model.ListProcessAndMachineOfLine = await _lineService.GetProcessAndMachineOfLine(model.DepartmentId, id);
         model.ListProcessAndMachineOfLine = model.ListProcessAndMachineOfLine.Where(s => s.ProcessId != 0).ToList();
 
         return View(model);
@@ -119,6 +110,7 @@ public class LineController : Controller
     [HttpPost]
     public async Task<IActionResult> UpdateMachineLine(UpdateMachineLineModel model)
     {
+        System.Console.WriteLine("==== UpdateMachineLine: " + Newtonsoft.Json.JsonConvert.SerializeObject(model));
         var listAlert = new List<AlertModel>();
         try
         {
@@ -131,16 +123,20 @@ public class LineController : Controller
             if (duplicateMachineId.Any())
                 throw new Exception("Duplicate machine");
 
+            int lineId = model.ListProcessAndMachineOfLine.Select(s => s.LineId).FirstOrDefault();
+
             // Update
-            var oldList = await _lineService.GetProcessAndMachineOfLine(model.DepartmentId, model.LineId);
+            var oldList = await _lineService.GetProcessAndMachineOfLine(model.DepartmentId, lineId);
 
             var listNewId = model.ListProcessAndMachineOfLine.Select(s => s.MachineId);
 
+            // Release machine
             var listReleaseMachineId = oldList.Where(s => !listNewId.Contains(s.MachineId) && s.MachineId != 0).Select(s => s.MachineId);
             await _machineService.UpdateByListId(listReleaseMachineId, model.DepartmentId, 0, 0);
 
             foreach (var item in model.ListProcessAndMachineOfLine)
             {
+                // Update machine and process
                 await _machineService.UpdateById(item.MachineId, model.DepartmentId, item.LineId, item.ProcessId);
             }
 

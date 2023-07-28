@@ -23,6 +23,7 @@ public class LineResponseModel
     public string LineName { get; set; }
     public string ProductName { get; set; }
     public int ProductId { get; set; }
+    public int Order { get; set; }
 }
 
 public class GetProcessAndMachineOfLineModel

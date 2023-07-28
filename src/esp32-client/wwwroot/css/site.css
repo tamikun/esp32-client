@@ -212,6 +212,11 @@ iframe {
   padding: 15px;
 }
 
+.submit-delete {
+  text-align: right;
+    margin-right: 5px;
+}
+
 .upload-table,
 .upload-table td,
 .upload-table th {
@@ -221,7 +226,6 @@ iframe {
 
 .upload-table {
   border-collapse: collapse;
-  width: -webkit-fill-available;
   margin: 5px;
 }
 

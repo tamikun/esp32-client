@@ -5,6 +5,7 @@
 
     Model.LineName = line?.LineName;
     Model.ProductId = line?.ProductId ?? 0;
+    Model.Order = line?.Order ?? 0;
 
     var listSelecteProduct = new List<SelectListItem>();
     listSelecteProduct.Add(new SelectListItem { Value = "", Text = "Choose product" });
@@ -24,17 +25,33 @@
         <table class="upload-table">
             <tr>
                 <td>
-                    <label>@line?.LineName</label>
+                    <label>Line name:</label>
                 </td>
                 <td>
                     @Html.HiddenFor(s => s.Id)
                     @Html.HiddenFor(s => s.DepartmentId)
                     @Html.EditorFor(s => s.LineName)
-                    @Html.DropDownListFor(s => s.ProductId, listSelecteProduct)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label>Product:</label>
                 </td>
                 <td>
-                    <input type="submit" value="Save" />
+                    @Html.DropDownListFor(s => s.ProductId, listSelecteProduct)
                 </td>
+            </tr>
+            <tr>
+                <td>
+                    <label>Order:</label>
+                </td>
+                <td>
+                    @Html.EditorFor(s => s.Order)
+                </td>
+            </tr>
+            <tr>
+                <td></td>
+                <td><input type="submit" value="Save" /></td>
             </tr>
         </table>
     }

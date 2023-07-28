@@ -2,7 +2,11 @@
 @{
     ViewData["Title"] = "Update machine line";
 
-    var availableMachines = await _machineService.GetAvalableMachine(Model.LineId);
+    int lineId = Model.ListProcessAndMachineOfLine.Select(s => s.LineId).FirstOrDefault();
+    string lineName = Model.ListProcessAndMachineOfLine.Select(s => s.LineName).FirstOrDefault() ?? "";
+    string productName = Model.ListProcessAndMachineOfLine.Select(s => s.ProductName).FirstOrDefault() ?? "Not found";
+
+    var availableMachines = await _machineService.GetAvalableMachine(lineId);
 
     var listSelecteMachine = new List<SelectListItem>();
     listSelecteMachine.Add(new SelectListItem { Value = "", Text = "Choose machine" });
@@ -17,45 +21,76 @@
 <div>
     @using (Html.BeginForm("UpdateMachineLine", "Line", FormMethod.Post, new { @enctype = "multipart/form-data" }))
     {
-        <table class="upload-table">
-            <tr>
-                <td>
-                    <label>@Model?.LineName</label>
-                </td>
-                <td>
-                    <label>@Model?.ProductName</label>
-                </td>
-            </tr>
-            @for (int i = 0; i < Model?.ListProcessAndMachineOfLine.Count; i++)
-            {
+        int dataCount = Model.ListProcessAndMachineOfLine.Count;
+        @Html.HiddenFor(s => s.DepartmentId)
+        <div class="overview-line">
+            <table>
                 <tr>
-                    <td>
-                        <label>Process name</label>
-                        <label>@Model.ListProcessAndMachineOfLine[i].ProcessName</label>
-                    </td>
-                    <td>
-                        @Html.HiddenFor(s =>s.ListProcessAndMachineOfLine[i].LineId)
-                        @Html.HiddenFor(s =>s.ListProcessAndMachineOfLine[i].LineName)
-                        @Html.HiddenFor(s =>s.ListProcessAndMachineOfLine[i].ProductId)
-                        @Html.HiddenFor(s =>s.ListProcessAndMachineOfLine[i].ProductName)
-                        @Html.HiddenFor(s =>s.ListProcessAndMachineOfLine[i].MachineIp)
-                        @Html.HiddenFor(s =>s.ListProcessAndMachineOfLine[i].MachineName)
-                        @Html.HiddenFor(s =>s.ListProcessAndMachineOfLine[i].ProcessId)
-                        @Html.HiddenFor(s =>s.ListProcessAndMachineOfLine[i].ProcessName)
-                        <label>Machine name</label>
-                        @Html.DropDownListFor(s =>s.ListProcessAndMachineOfLine[i].MachineId, listSelecteMachine)
-                    </td>
+                    <td style="border: 0;"></td>
+                    @for (var index = 0; index < dataCount; index++)
+                    {
+                        <td style="border: 0;"></td>
+                        <td>@Html.DropDownListFor(s =>s.ListProcessAndMachineOfLine[index].MachineId, listSelecteMachine)</td>
+                        @Html.HiddenFor(s => s.ListProcessAndMachineOfLine[index].MachineIp)
+                        @Html.HiddenFor(s => s.ListProcessAndMachineOfLine[index].MachineName)
+                    }
                 </tr>
-            }
-            <tr>
-                <td>
-                    @Html.HiddenFor(s =>s.DepartmentId)
-                    @Html.HiddenFor(s =>s.LineId)
-                    @Html.HiddenFor(s =>s.ProductName)
-                    @Html.HiddenFor(s =>s.LineName)
-                    <input type="submit" value="Save" />
-                </td>
-            </tr>
-        </table>
+                <tr>
+                    @for (var index = 0; index < dataCount; index++)
+                    {
+                        if (index == 0)
+                        {
+                            <td style="white-space: nowrap;">@Html.DisplayFor(s=>s.ListProcessAndMachineOfLine[index].LineName)</td>
+                            <td style="white-space: nowrap; border: 0;"></td>
+                        }
+                        @Html.HiddenFor(s=>s.ListProcessAndMachineOfLine[index].LineId)
+
+                        <td style="white-space: nowrap;">@Html.DisplayFor(s => s.ListProcessAndMachineOfLine[index].ProcessName)
+                        </td>
+                        @Html.HiddenFor(s => s.ListProcessAndMachineOfLine[index].ProcessId)
+                        @if (index < dataCount - 1)
+                        {
+                            <td style="white-space: nowrap; border: 0;">
+                                <div class="arrow">&#8594;</div>
+                            </td>
+                        }
+                    }
+                </tr>
+                <tr>
+                    <td style="white-space: nowrap;">@productName</td>
+                    @for (var index = 0; index < dataCount; index++)
+                    {
+                        <td style="border: 0;"></td>
+                        <td>@Html.DisplayFor(s => s.ListProcessAndMachineOfLine[index].PatternName)</td>
+                        @Html.HiddenFor(s => s.ListProcessAndMachineOfLine[index].PatternId)
+                    }
+                </tr>
+            </table>
+            <input type="submit" value="Save" />
+        </div>
     }
 </div>
+
+@section Scripts{
+    <style>
+        .overview-line table {
+            border-collapse: unset;
+            margin: 20px;
+        }
+
+        .overview-line th,
+        .overview-line td {
+            border: 1px solid rgb(0, 0, 0);
+            min-width: 40px;
+        }
+
+        .overview-line table {
+            margin: 10px 10px 0px 10px;
+        }
+
+        .overview-line .arrow {
+            font-size: 30px;
+            line-height: 1;
+        }
+    </style>
+}

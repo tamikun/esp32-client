@@ -45,7 +45,8 @@ public partial class LineService : ILineService
                                 LineName = line.LineName,
                                 ProductName = product.ProductName,
                                 ProductId = line.ProductId,
-                            }).ToListAsync();
+                                Order = line.Order,
+                            }).OrderBy(s => s.Order).ToListAsync();
 
         return result;
     }

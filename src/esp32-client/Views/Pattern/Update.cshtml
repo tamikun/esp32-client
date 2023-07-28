@@ -15,18 +15,25 @@
                     @Html.HiddenFor(s => s.Id)
                     @Html.EditorFor(s => s.PatternNumber, new { htmlAttributes = new { value = Model.PatternNumber} })
                 </td>
+            </tr>
+            <tr>
                 <td>
                     <label for="fileName">FileName</label>
                 </td>
                 <td>
                     @Html.EditorFor(s => s.FileName, new { htmlAttributes = new { value = Model.FileName} })
                 </td>
+            </tr>
+            <tr>
                 <td>
                     <label for="description">Description</label>
                 </td>
                 <td>
                     @Html.EditorFor(s => s.Description, new { htmlAttributes = new { value = Model.Description} })
                 </td>
+            </tr>
+            <tr>
+                <td></td>
                 <td>
                     <input type="submit" value="Save" />
                 </td>
