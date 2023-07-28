@@ -5,82 +5,149 @@
 }
 @if (lines.Count > 0)
 {
-    @for (var i = 0; i < lines.Count; i++)
-    {
-        var lineData = Model.Where(s => s.LineId == lines[i]).ToList();
+    <div class="overview-line">
+        @for (var i = 0; i < lines.Count; i++)
+        {
+            var lineData = Model.Where(s => s.LineId == lines[i]).ToList();
 
-        <table class="overview-line">
-            <tr>
-                <td style="border: 0;"></td>
-                @for (var index = 0; index < lineData.Count; index++)
-                {
-                    string machineName = String.IsNullOrEmpty(lineData[index].MachineName) ? "Notfound" :
-                    lineData[index].MachineName;
+            <table>
+                <tr>
                     <td style="border: 0;"></td>
-                    <td>@machineName</td>
-                }
-            </tr>
-            <tr>
-                <td style="border: 0;"></td>
-                @for (var index = 0; index < lineData.Count; index++)
-                {
-                    <td style="border: 0;"></td>
-                    <td>--</td>
-                }
-            </tr>
-            <tr>
-                <td style="white-space: nowrap;">@lineData[0].LineName</td>
-                <td style="white-space: nowrap; border: 0;"></td>
-                @for (var index = 0; index < lineData.Count; index++)
-                {
-                    string processName = String.IsNullOrEmpty(lineData[index].ProcessName) ? "Notfound" :
-                    lineData[index].ProcessName;
-                    <td style="white-space: nowrap;">@processName</td>
-                    @if (index < lineData.Count - 1)
+                    @for (var index = 0; index < lineData.Count; index++)
                     {
-                        <td style="white-space: nowrap; border: 0;">
-                            <div class="arrow">&#8594;</div>
-                        </td>
+                        string machineName = String.IsNullOrEmpty(lineData[index].MachineName) ? "Not found" :
+                        lineData[index].MachineName;
+                        <td style="border: 0;"></td>
+                        <td><small>@machineName</small></td>
                     }
-                }
-            </tr>
-            <tr>
-                @{
-                    string productName = String.IsNullOrEmpty(lineData[0].ProductName) ? "Notfound" : lineData[0].ProductName;
-                }
-                <td style="white-space: nowrap;">@productName</td>
-                @for (var index = 0; index < lineData.Count; index++)
-                {
-                    string patternName = String.IsNullOrEmpty(lineData[index].PatternName) ? "Notfound" :
-                    lineData[index].PatternName;
+                </tr>
+                <tr>
                     <td style="border: 0;"></td>
-                    <td>@patternName</td>
-                }
-            </tr>
-        </table>
-    }
+                    @for (var index = 0; index < lineData.Count; index++)
+                    {
+                        <td style="border: 0;"></td>
+                        <td style="text-align: right;"><small>--</small></td>
+                    }
+                </tr>
+                <tr>
+                    <td style="white-space: nowrap;">@lineData[0].LineName</td>
+                    <td style="white-space: nowrap; border: 0;"></td>
+                    @for (var index = 0; index < lineData.Count; index++)
+                    {
+                        string processName = String.IsNullOrEmpty(lineData[index].ProcessName) ? "Not found" :
+                        lineData[index].ProcessName;
+                        <td style="white-space: nowrap;">@processName</td>
+                        @if (index < lineData.Count - 1)
+                        {
+                            <td style="white-space: nowrap; border: 0;">
+                                <div class="arrow">&#8594;</div>
+                            </td>
+                        }
+                    }
+                </tr>
+                <tr>
+                    @{
+                        string productName = String.IsNullOrEmpty(lineData[0].ProductName) ? "Not found" : lineData[0].ProductName;
+                    }
+                    <td style="white-space: nowrap;">@productName</td>
+                    @for (var index = 0; index < lineData.Count; index++)
+                    {
+                        string patternName = String.IsNullOrEmpty(lineData[index].PatternName) ? "Not found" :
+                        lineData[index].PatternName;
+                        <td style="border: 0;"></td>
+                        <td><small>@patternName</small></td>
+                    }
+                </tr>
+            </table>
+        }
+    </div>
 }
 
 
 @section Scripts{
     <style>
-        .overview-line table,
-        .overview-line th,
-        .overview-line td {
-            border: 1px solid rgb(230, 55, 55);
+        .overview-line table {
+            border-collapse: unset;
+            margin: 20px;
         }
 
+        .overview-line th,
         .overview-line td {
-            min-width: 20px;
+            border: 1px solid rgb(0, 0, 0);
+            border-radius: 10px;
+            min-width: 40px;
         }
 
         .overview-line table {
-            padding: 10px;
+            margin: 10px 10px 0px 10px;
         }
 
         .overview-line .arrow {
             font-size: 30px;
             line-height: 1;
         }
+
+        .overview-line table:nth-child(3n+1) {
+            color: rgb(65, 79, 43);
+        }
+
+        .overview-line table:nth-child(3n+1) {
+            color: rgb(104, 133, 54);
+        }
+
+        .overview-line table:nth-child(3n+1) tr:nth-child(3) td:nth-child(1) {
+            background-color: rgb(192, 214, 155);
+            color: #000;
+        }
+
+        .overview-line table:nth-child(3n+1) tr:nth-child(3) td:nth-child(2n+3) {
+            background-color: rgb(235, 241, 222);
+            color: #000;
+        }
+
+        .overview-line table:nth-child(3n+2) {
+            color: rgb(46, 72, 104);
+        }
+
+        .overview-line table:nth-child(3n+2) tr:nth-child(3) td:nth-child(1) {
+            background-color: rgb(149, 179, 215);
+            color: #000;
+        }
+
+        .overview-line table:nth-child(3n+2) tr:nth-child(3) td:nth-child(2n+3) {
+            background-color: rgb(198, 217, 241);
+            color: #000;
+        }
+
+        .overview-line table:nth-child(3n) {
+            color: rgb(63, 40, 90);
+        }
+
+        .overview-line table:nth-child(3n) tr:nth-child(3) td:nth-child(1) {
+            background-color: rgb(179, 162, 199);
+            color: #000;
+        }
+
+        .overview-line table:nth-child(3n) tr:nth-child(3) td:nth-child(2n+3) {
+            background-color: rgb(204, 193, 218);
+            color: #000;
+        }
+
+        .notfound {
+            background-color: rgb(197, 197, 197);
+            color: #000;
+        }
     </style>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const cells = document.getElementsByTagName("td");
+
+            for (let i = 0; i < cells.length; i++) {
+                const cell = cells[i];
+                if (cell.textContent === "Not found") {
+                    cell.classList.add("notfound");
+                }
+            }
+        });
+    </script>
 }
