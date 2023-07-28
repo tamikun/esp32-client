@@ -194,34 +194,34 @@ iframe {
   cursor: pointer;
 }
 
-.normal table,
-.normal td,
-.normal th {
+.normal-table,
+.normal-table td,
+.normal-table th {
   border: 2px solid #565656;
   text-align: left;
 }
 
-.normal table {
+.normal-table {
   border-collapse: collapse;
-  width: 100%;
+  width: -webkit-fill-available;
   margin: 5px;
 }
 
-.normal th,
-.normal td {
+.normal-table th,
+.normal-table td {
   padding: 15px;
 }
 
-.upload-table table,
+.upload-table,
 .upload-table td,
 .upload-table th {
   border: 0px solid #ddd;
   text-align: left;
 }
 
-.upload-table table {
+.upload-table {
   border-collapse: collapse;
-  width: 100%;
+  width: -webkit-fill-available;
   margin: 5px;
 }
 
