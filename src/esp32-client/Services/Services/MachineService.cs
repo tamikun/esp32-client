@@ -266,14 +266,15 @@ public partial class MachineService : IMachineService
 
     public async Task ChangeState(string machinIp, ServerState state)
     {
-        var requestUrl = $"http://{machinIp}/";
+        var url = "";
 
         if (state == ServerState.Machine)
-            await GetAsyncApi($"{requestUrl}selectedMachine");
+            url = GetChangeMachineStateUrl(machinIp);
 
         if (state == ServerState.Server)
-            await GetAsyncApi($"{requestUrl}selectedServer");
+            url = GetChangeServerStateUrl(machinIp);
 
+        await GetAsyncApi(url);
         await Task.Delay(_settings.ChangeStateDelay);
     }
 

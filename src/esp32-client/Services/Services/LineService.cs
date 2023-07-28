@@ -63,6 +63,7 @@ public partial class LineService : ILineService
                                                                         s.LineId != 0 &&
                                                                         s.ProcessId == process.Id &&
                                                                         s.ProcessId != 0).DefaultIfEmpty()
+                            from pattern in _linq2Db.Pattern.Where(s => s.Id == process.PatternId).DefaultIfEmpty()
                             select new GetProcessAndMachineOfLineModel
                             {
                                 LineId = line.Id,
@@ -74,6 +75,40 @@ public partial class LineService : ILineService
                                 MachineId = machine.Id,
                                 MachineName = machine.MachineName,
                                 MachineIp = machine.IpAddress,
+                                PatternId = pattern.Id,
+                                PatternName = pattern.PatternNumber,
+                            }).ToListAsync();
+
+        return result;
+    }
+
+    public async Task<List<GetProcessAndMachineOfLineModel>> GetProcessAndMachineOfLines(int departmentId)
+    {
+        var result = await (from line in _linq2Db.Line.Where(s => s.DepartmentId == departmentId)
+                            join product1 in _linq2Db.Product on line.ProductId equals product1.Id into product2
+                            from product in product2.DefaultIfEmpty()
+                            join process1 in _linq2Db.Process on product.Id equals process1.ProductId into process2
+                            from process in process2.DefaultIfEmpty()
+                            from machine in _linq2Db.Machine.Where(s => s.DepartmentId == departmentId &&
+                                                                        s.DepartmentId != 0 &&
+                                                                        s.LineId == line.Id &&
+                                                                        s.LineId != 0 &&
+                                                                        s.ProcessId == process.Id &&
+                                                                        s.ProcessId != 0).DefaultIfEmpty()
+                            from pattern in _linq2Db.Pattern.Where(s => s.Id == process.PatternId).DefaultIfEmpty()
+                            select new GetProcessAndMachineOfLineModel
+                            {
+                                LineId = line.Id,
+                                LineName = line.LineName,
+                                ProductId = line.ProductId,
+                                ProductName = product.ProductName,
+                                ProcessId = process.Id,
+                                ProcessName = process.ProcessName,
+                                MachineId = machine.Id,
+                                MachineName = machine.MachineName,
+                                MachineIp = machine.IpAddress,
+                                PatternId = pattern.Id,
+                                PatternName = pattern.PatternNumber,
                             }).ToListAsync();
 
         return result;

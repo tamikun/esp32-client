@@ -37,7 +37,7 @@ services:
     ports:
       - "3306:3306"
     volumes:
-      - D:/MiQ/MiQ_NT/ESP32Client/Databse:/var/lib/mysql
+      - D:/MiQ/MiQ_NT/ESP32Client/Database:/var/lib/mysql
     command:
       - "mysqld"
       - "--binlog_expire_logs_seconds=259200"

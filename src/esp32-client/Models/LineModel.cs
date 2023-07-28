@@ -36,4 +36,6 @@ public class GetProcessAndMachineOfLineModel
     public int MachineId { get; set; }
     public string MachineName { get; set; }
     public string MachineIp { get; set; }
+    public int PatternId { get; set; }
+    public string PatternName { get; set; }
 }

@@ -7,18 +7,20 @@ public class DepartmentController : Controller
 {
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly IDepartmentService _departmentService;
+    private readonly ILineService _lineService;
 
-    public DepartmentController(IHttpContextAccessor httpContextAccessor, IDepartmentService departmentService)
+    public DepartmentController(IHttpContextAccessor httpContextAccessor, IDepartmentService departmentService, ILineService lineService)
     {
         _httpContextAccessor = httpContextAccessor;
         _departmentService = departmentService;
+        _lineService = lineService;
     }
 
 
     public async Task<ActionResult> Index()
     {
-        var department = await _departmentService.GetById(1);
-        return View(department);
+        var model = await _lineService.GetProcessAndMachineOfLines(1);
+        return View(model);
     }
 
 }
