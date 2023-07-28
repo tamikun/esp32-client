@@ -67,17 +67,19 @@ public partial class LineService : ILineService
                             select new GetProcessAndMachineOfLineModel
                             {
                                 LineId = line.Id,
+                                LineOrder = line.Order,
                                 LineName = line.LineName,
                                 ProductId = line.ProductId,
                                 ProductName = product.ProductName,
                                 ProcessId = process.Id,
+                                ProcessOrder = process.Order,
                                 ProcessName = process.ProcessName,
                                 MachineId = machine.Id,
                                 MachineName = machine.MachineName,
                                 MachineIp = machine.IpAddress,
                                 PatternId = pattern.Id,
                                 PatternName = pattern.PatternNumber,
-                            }).ToListAsync();
+                            }).OrderBy(s => s.ProcessOrder).ToListAsync();
 
         return result;
     }
@@ -99,17 +101,19 @@ public partial class LineService : ILineService
                             select new GetProcessAndMachineOfLineModel
                             {
                                 LineId = line.Id,
+                                LineOrder = line.Order,
                                 LineName = line.LineName,
                                 ProductId = line.ProductId,
                                 ProductName = product.ProductName,
                                 ProcessId = process.Id,
+                                ProcessOrder = process.Order,
                                 ProcessName = process.ProcessName,
                                 MachineId = machine.Id,
                                 MachineName = machine.MachineName,
                                 MachineIp = machine.IpAddress,
                                 PatternId = pattern.Id,
                                 PatternName = pattern.PatternNumber,
-                            }).ToListAsync();
+                            }).OrderBy(s => s.LineOrder).ThenBy(s => s.ProcessOrder).ToListAsync();
 
         return result;
     }

@@ -44,6 +44,7 @@
                         @Html.HiddenFor(s => s.ListProcessCreate[i].Id)
                         <label>Process @number:</label>
                         @Html.EditorFor(s => s.ListProcessCreate[i].ProcessName)
+                        @Html.EditorFor(s => s.ListProcessCreate[i].Order)
                         @if (isProductInUse)
                         {
                             @Html.DropDownListFor(s => s.ListProcessCreate[i].PatternId, listSelectePatern, new { disabled = ""})
@@ -80,13 +81,12 @@
             processDiv.setAttribute("id", `processField${processCount}`);
 
             processDiv.innerHTML = `
-                                                                                            <label for="ListProcessCreate_${processCount}__ProcessName">Process ${processCount + 1}:</label>
-                                                                                            <input type="text" id="ListProcessCreate_${processCount}__ProcessName" name="ListProcessCreate[${processCount}].ProcessName" required>
-                                                                                            `;
+                                                                                                        <label for="ListProcessCreate_${processCount}__ProcessName">Process ${processCount + 1}:</label>
+                                                                                                        <input type="text" id="ListProcessCreate_${processCount}__ProcessName" name="ListProcessCreate[${processCount}].ProcessName" required>
+                                                                                                        `;
 
             const selectElement = document.createElement("select");
-        @* selectElement.classList.add("form-control"); *@
-                selectElement.id = `ListProcessCreate_${processCount}__PatternId`;
+            selectElement.id = `ListProcessCreate_${processCount}__PatternId`;
             selectElement.name = `ListProcessCreate[${processCount}].PatternId`;
 
             // Add other options from the listPatternId
@@ -97,6 +97,15 @@
                 optionElement.text = option.text;
                 selectElement.appendChild(optionElement);
             });
+
+            const orderElement = document.createElement("input");
+            orderElement.id = `ListProcessCreate_${processCount}__Order`;
+            orderElement.name = `ListProcessCreate[${processCount}].Order`;
+            orderElement.class = `text-box single-line`;
+            orderElement.type = `number`;
+
+            // Append Input Order to processDiv
+            processDiv.appendChild(orderElement);
 
             // Append Select form to processDiv
             processDiv.appendChild(selectElement);

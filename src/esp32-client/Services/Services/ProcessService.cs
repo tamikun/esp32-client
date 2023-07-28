@@ -31,7 +31,7 @@ public partial class ProcessService : IProcessService
 
     public async Task<List<Process>> GetByProductId(int id)
     {
-        var process = await _linq2Db.Process.Where(s => s.ProductId == id).ToListAsync();
+        var process = await _linq2Db.Process.Where(s => s.ProductId == id).OrderBy(s => s.Order).ToListAsync();
         return process;
     }
 
@@ -97,12 +97,13 @@ public partial class ProcessService : IProcessService
             // Just update name, not delete insert or update Pattern
             var listProcessUpdate = await (from process in processTable
                                            join request in model.ListProcessCreate.Where(s => s.Id != 0) on process.Id equals request.Id
-                                           where process.ProcessName != request.ProcessName ||
-                                               process.PatternId != request.PatternId
+                                           where process.ProcessName != request.ProcessName
+                                            || process.PatternId != request.PatternId
+                                            || process.Order != request.Order
                                            select new Process
                                            {
                                                Id = process.Id,
-                                               Order = process.Order,
+                                               Order = request.Order,
                                                ProductId = process.ProductId,
                                                ProcessName = request.ProcessName,
                                                PatternId = process.PatternId,
@@ -118,12 +119,13 @@ public partial class ProcessService : IProcessService
         {
             var listProcessUpdate = await (from process in processTable
                                            join request in model.ListProcessCreate.Where(s => s.Id != 0) on process.Id equals request.Id
-                                           where process.ProcessName != request.ProcessName ||
-                                               process.PatternId != request.PatternId
+                                           where process.ProcessName != request.ProcessName
+                                            || process.PatternId != request.PatternId
+                                            || process.Order != request.Order
                                            select new Process
                                            {
                                                Id = process.Id,
-                                               Order = process.Order,
+                                               Order = request.Order,
                                                ProductId = process.ProductId,
                                                ProcessName = request.ProcessName,
                                                PatternId = request.PatternId,

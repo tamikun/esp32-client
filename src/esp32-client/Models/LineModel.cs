@@ -28,10 +28,12 @@ public class LineResponseModel
 public class GetProcessAndMachineOfLineModel
 {
     public int LineId { get; set; }
+    public int LineOrder { get; set; }
     public string LineName { get; set; }
     public int ProductId { get; set; }
     public string ProductName { get; set; }
     public int ProcessId { get; set; }
+    public int ProcessOrder { get; set; }
     public string ProcessName { get; set; }
     public int MachineId { get; set; }
     public string MachineName { get; set; }
