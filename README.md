@@ -44,7 +44,7 @@
 
 ### 2.5 Process
 
-|Id|ProductId   |ProcessName|ProcessNo    |PatternNumber|PatternDirectory |OperationData|COAttachment|Description|
+|Id|ProductId   |ProcessName|ProcessNo    |PatternNo    |PatternDirectory |OperationData|COAttachment|Description|
 |--|------------|-----------|-------------|-------------|-----------------|-------------|------------|-----------|
 |1 |      1     | Process 1 |Product 001.1|VD00001.VDT  |                 |             |            |           |
 |2 |      1     | Process 2 |Product 001.2|VD00002.VDT  |                 |             |            |           |
@@ -55,13 +55,13 @@
 
 ### 2.6 Machine
 
-|Id|MachineName | IpAddress  |FactoryId   |LineId|StationId  |COPartNo|
-|--|------------|------------|------------|------|-----------|--------|
-|1 |Machine 1   |192.168.1.11|1           |1     |     1     |COP--   |
-|2 |Machine 2   |192.168.1.12|1           |1     |     2     |COP--   |
-|3 |Machine 3   |192.168.1.13|1           |1     |     3     |COP--   |
-|4 |Machine 4   |192.168.1.14|1           |2     |     4     |COP--   |
-|5 |Machine 5   |192.168.1.15|1           |2     |     5     |COP--   |
+|Id|MachineNo|MachineName | IpAddress  |FactoryId   |LineId|StationId  |COPartNo|
+|--|---------|------------|------------|------------|------|-----------|--------|
+|1 |Machine 1|---------   |192.168.1.11|1           |1     |     1     |COP--   |
+|2 |Machine 2|---------   |192.168.1.12|1           |1     |     2     |COP--   |
+|3 |Machine 3|---------   |192.168.1.13|1           |1     |     3     |COP--   |
+|4 |Machine 4|---------   |192.168.1.14|1           |2     |     4     |COP--   |
+|5 |Machine 5|---------   |192.168.1.15|1           |2     |     5     |COP--   |
 
 ### 2.7 UserAccount
 
