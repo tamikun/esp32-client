@@ -2,18 +2,18 @@
 using esp32_client.Services;
 using esp32_client.Models;
 using Newtonsoft.Json;
+using esp32_client.Builder;
 
 namespace esp32_client.Controllers;
 [CustomAuthenticationFilter]
-public class ProcessController : Controller
+public class ProcessController : BaseController
 {
-    private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly IProcessService _processService;
     private readonly IProductService _productService;
 
-    public ProcessController(IHttpContextAccessor httpContextAccessor, IProcessService processService, IProductService productService)
+    public ProcessController(LinqToDb linq2db, IProcessService processService, IProductService productService)
     {
-        _httpContextAccessor = httpContextAccessor;
+        _linq2db = linq2db;
         _processService = processService;
         _productService = productService;
     }
@@ -30,19 +30,10 @@ public class ProcessController : Controller
     [HttpPost]
     public async Task<IActionResult> Update(ProcessAddRequestModel model)
     {
-        var listAlert = new List<AlertModel>();
-        try
+        return await HandleActionAsync(async () =>
         {
             await _processService.Update(model);
-            listAlert.Add(new AlertModel { AlertType = Alert.Success, AlertMessage = $"Update product" });
-        }
-        catch (Exception ex)
-        {
-            listAlert.Add(new AlertModel { AlertType = Alert.Danger, AlertMessage = $"{ex.Message}" });
-        }
-        TempData["AlertMessage"] = JsonConvert.SerializeObject(listAlert);
-
-        return RedirectToAction("Index", "Product");
+        }, RedirectToAction("Index", "Product"));
     }
 
 }

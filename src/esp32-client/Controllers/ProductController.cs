@@ -3,19 +3,19 @@ using esp32_client.Models;
 using esp32_client.Services;
 using Newtonsoft.Json;
 using AutoMapper;
+using esp32_client.Builder;
 
 namespace esp32_client.Controllers;
 
 [CustomAuthenticationFilter]
-public class ProductController : Controller
+public class ProductController : BaseController
 {
-    private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly IProductService _productService;
     private readonly IMapper _mapper;
 
-    public ProductController(IHttpContextAccessor httpContextAccessor, IProductService productService, IMapper mapper)
+    public ProductController(LinqToDb linq2db, IProductService productService, IMapper mapper)
     {
-        _httpContextAccessor = httpContextAccessor;
+        _linq2db = linq2db;
         _productService = productService;
         _mapper = mapper;
     }
@@ -29,35 +29,17 @@ public class ProductController : Controller
     [HttpPost]
     public async Task<IActionResult> Add(ProductCreateModel model)
     {
-        var listAlert = new List<AlertModel>();
-        try
+        return await HandleActionAsync(async () =>
         {
             var productDetail = await _productService.Create(model);
-            listAlert.Add(new AlertModel { AlertType = Alert.Success, AlertMessage = $"Add product" });
-        }
-        catch (Exception ex)
-        {
-            listAlert.Add(new AlertModel { AlertType = Alert.Danger, AlertMessage = $"{ex.Message}" });
-        }
-        TempData["AlertMessage"] = JsonConvert.SerializeObject(listAlert);
-
-        return RedirectToAction("Index");
+        }, RedirectToAction("Index"));
     }
 
     public async Task<IActionResult> Delete(int id)
     {
-        var listAlert = new List<AlertModel>();
-        try
+        return await HandleActionAsync(async () =>
         {
             await _productService.Delete(id);
-            listAlert.Add(new AlertModel { AlertType = Alert.Success, AlertMessage = $"Delete product" });
-        }
-        catch (Exception ex)
-        {
-            listAlert.Add(new AlertModel { AlertType = Alert.Danger, AlertMessage = $"{ex.Message}" });
-        }
-        TempData["AlertMessage"] = JsonConvert.SerializeObject(listAlert);
-
-        return RedirectToAction("Index");
+        }, RedirectToAction("Index"));
     }
 }

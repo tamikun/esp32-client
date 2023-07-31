@@ -2,16 +2,18 @@
 using esp32_client.Models;
 using esp32_client.Services;
 using Newtonsoft.Json;
+using esp32_client.Builder;
 
 namespace esp32_client.Controllers;
 
-public class UserController : Controller
+public class UserController : BaseController
 {
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly IUserAccountService _userAccountService;
 
-    public UserController(IHttpContextAccessor httpContextAccessor, IUserAccountService userAccountService)
+    public UserController(LinqToDb linq2db, IHttpContextAccessor httpContextAccessor, IUserAccountService userAccountService)
     {
+        _linq2db = linq2db;
         _httpContextAccessor = httpContextAccessor;
         _userAccountService = userAccountService;
     }
@@ -30,7 +32,7 @@ public class UserController : Controller
 
 
     [HttpPost]
-    public async Task<ActionResult> Login(string loginName, string password)
+    public async Task<IActionResult> Login(string loginName, string password)
     {
         var userAccount = await _userAccountService.GetByLoginName(loginName);
         if (userAccount is not null)
@@ -66,27 +68,16 @@ public class UserController : Controller
 
     [HttpPost]
     [CustomAuthenticationFilter]
-    public async Task<ActionResult> Create(UserAccountCreateModel model)
+    public async Task<IActionResult> Create(UserAccountCreateModel model)
     {
-        var listAlert = new List<AlertModel>();
-
-        try
+        return await HandleActionAsync(async () =>
         {
             await _userAccountService.Create(model);
-            listAlert.Add(new AlertModel { AlertType = Alert.Success, AlertMessage = $"Create account" });
-        }
-        catch (Exception ex)
-        {
-            listAlert.Add(new AlertModel { AlertType = Alert.Danger, AlertMessage = $"{ex.Message}" });
-        }
-
-        TempData["AlertMessage"] = JsonConvert.SerializeObject(listAlert);
-
-        return RedirectToAction("Index");
+        }, RedirectToAction("Index"));
     }
 
     [CustomAuthenticationFilter]
-    public async Task<ActionResult> Update()
+    public async Task<IActionResult> Update()
     {
         string loginName = _httpContextAccessor?.HttpContext?.Session.GetString("LoginName") ?? "";
         var userAccount = await _userAccountService.GetByLoginName(loginName) ?? new Domain.UserAccount();
@@ -99,27 +90,16 @@ public class UserController : Controller
 
     [HttpPost]
     [CustomAuthenticationFilter]
-    public async Task<ActionResult> Update(UserAccountUpdateModel model)
+    public async Task<IActionResult> Update(UserAccountUpdateModel model)
     {
-        var listAlert = new List<AlertModel>();
-
-        try
+        return await HandleActionAsync(async () =>
         {
             await _userAccountService.Update(model);
-            listAlert.Add(new AlertModel { AlertType = Alert.Success, AlertMessage = $"Update account" });
-        }
-        catch (Exception ex)
-        {
-            listAlert.Add(new AlertModel { AlertType = Alert.Danger, AlertMessage = $"{ex.Message}" });
-        }
-
-        TempData["AlertMessage"] = JsonConvert.SerializeObject(listAlert);
-
-        return RedirectToAction("Index");
+        }, RedirectToAction("Index"));
     }
 
     [CustomAuthenticationFilter]
-    public async Task<ActionResult> ChangePassword()
+    public async Task<IActionResult> ChangePassword()
     {
         string loginName = _httpContextAccessor?.HttpContext?.Session.GetString("LoginName") ?? "";
         var userAccount = await _userAccountService.GetByLoginName(loginName) ?? new Domain.UserAccount();
@@ -130,23 +110,13 @@ public class UserController : Controller
 
     [HttpPost]
     [CustomAuthenticationFilter]
-    public async Task<ActionResult> ChangePassword(UserAccountChangePasswordModel model)
+    public async Task<IActionResult> ChangePassword(UserAccountChangePasswordModel model)
     {
-        var listAlert = new List<AlertModel>();
 
-        try
+        return await HandleActionAsync(async () =>
         {
             await _userAccountService.ChangePassword(model);
-            listAlert.Add(new AlertModel { AlertType = Alert.Success, AlertMessage = $"Change password" });
-        }
-        catch (Exception ex)
-        {
-            listAlert.Add(new AlertModel { AlertType = Alert.Danger, AlertMessage = $"{ex.Message}" });
-        }
-
-        TempData["AlertMessage"] = JsonConvert.SerializeObject(listAlert);
-
-        return RedirectToAction("Index");
+        }, RedirectToAction("Index"));
     }
 
     public ActionResult Logout()

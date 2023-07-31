@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using esp32_client.Models;
 using esp32_client.Services;
 using Newtonsoft.Json;
@@ -9,16 +8,15 @@ using AutoMapper;
 namespace esp32_client.Controllers;
 
 [CustomAuthenticationFilter]
-public class PatternController : Controller
+public class PatternController : BaseController
 {
-    private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly IPatternService _patternService;
     private readonly IUserAccountService _userAccountService;
     private readonly IMapper _mapper;
 
-    public PatternController(IHttpContextAccessor httpContextAccessor, IPatternService patternService, IUserAccountService userAccountService, IMapper mapper)
+    public PatternController(LinqToDb linq2db, IPatternService patternService, IUserAccountService userAccountService, IMapper mapper)
     {
-        _httpContextAccessor = httpContextAccessor;
+        _linq2db = linq2db;
         _patternService = patternService;
         _userAccountService = userAccountService;
         _mapper = mapper;
@@ -34,47 +32,24 @@ public class PatternController : Controller
     [HttpPost]
     public async Task<IActionResult> Add(PatternIndexPageModel model)
     {
-        // Handle if there is no file name
-        model.PatternCreateModel.FileName = string.IsNullOrEmpty(model.PatternCreateModel.FileName) ? model.PatternCreateModel.File.FileName : model.PatternCreateModel.FileName;
-
-        var listAlert = new List<AlertModel>();
-        try
+        return await HandleActionAsync(async () =>
         {
+            // Handle if there is no file name
+            model.PatternCreateModel.FileName = string.IsNullOrEmpty(model.PatternCreateModel.FileName) ? model.PatternCreateModel.File.FileName : model.PatternCreateModel.FileName;
+
             await _patternService.Create(model.PatternCreateModel);
-            listAlert.Add(new AlertModel { AlertType = Alert.Success, AlertMessage = $"Add pattern" });
-
-        }
-        catch (Exception ex)
-        {
-            listAlert.Add(new AlertModel { AlertType = Alert.Danger, AlertMessage = $"{ex.Message}" });
-        }
-
-        TempData["AlertMessage"] = JsonConvert.SerializeObject(listAlert);
-        return RedirectToAction("Index");
+        }, RedirectToAction("Index"));
     }
 
 
     [HttpPost]
     public async Task<IActionResult> Delete(PatternIndexPageModel model)
     {
-
-        var listAlert = new List<AlertModel>();
-
-        var listId = model.ListDeletePatternById.Where(s => s.IsSelected == true).Select(s => s.Id).ToList();
-
-        try
+        return await HandleActionAsync(async () =>
         {
+            var listId = model.ListDeletePatternById.Where(s => s.IsSelected == true).Select(s => s.Id).ToList();
             await _patternService.Delete(listId);
-            listAlert.Add(new AlertModel { AlertType = Alert.Success, AlertMessage = $"Delete patterns" });
-
-        }
-        catch (Exception ex)
-        {
-            listAlert.Add(new AlertModel { AlertType = Alert.Danger, AlertMessage = $"{ex.Message}" });
-        }
-
-        TempData["AlertMessage"] = JsonConvert.SerializeObject(listAlert);
-        return RedirectToAction("Index");
+        }, RedirectToAction("Index"));
     }
 
 
@@ -101,18 +76,10 @@ public class PatternController : Controller
     [HttpPost]
     public async Task<IActionResult> Update(PatternUpdateModel model)
     {
-        var listAlert = new List<AlertModel>();
-        try
+        return await HandleActionAsync(async () =>
         {
             var product = await _patternService.Update(model);
-            listAlert.Add(new AlertModel { AlertType = Alert.Success, AlertMessage = $"Update product" });
-        }
-        catch (Exception ex)
-        {
-            listAlert.Add(new AlertModel { AlertType = Alert.Danger, AlertMessage = $"{ex.Message}" });
-        }
-        TempData["AlertMessage"] = JsonConvert.SerializeObject(listAlert);
-        return RedirectToAction("Index");
+        }, RedirectToAction("Index"));
     }
 
 }

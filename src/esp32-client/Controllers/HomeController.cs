@@ -2,20 +2,20 @@
 using Microsoft.AspNetCore.Mvc;
 using esp32_client.Models;
 using esp32_client.Services;
+using esp32_client.Builder;
 
 namespace esp32_client.Controllers;
 [CustomAuthenticationFilter]
-public class HomeController : Controller
+public class HomeController : BaseController
 {
     private readonly ILogger<HomeController> _logger;
     private readonly Settings _settings;
-    private readonly IHttpContextAccessor _httpContextAccessor;
 
-    public HomeController(ILogger<HomeController> logger, Settings settings, IHttpContextAccessor httpContextAccessor)
+    public HomeController(LinqToDb linq2db, ILogger<HomeController> logger, Settings settings)
     {
+        _linq2db = linq2db;
         _logger = logger;
         _settings = settings;
-        _httpContextAccessor = httpContextAccessor;
     }
 
     public async Task<IActionResult> Index()

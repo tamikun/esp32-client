@@ -1,22 +1,19 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using esp32_client.Services;
 using esp32_client.Models;
-using Newtonsoft.Json;
 using esp32_client.Builder;
 
 namespace esp32_client.Controllers;
 [CustomAuthenticationFilter]
 public class LineController : BaseController
 {
-    private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly ILineService _lineService;
     private readonly IProductService _productService;
     private readonly IMachineService _machineService;
 
-    public LineController(LinqToDb linq2db, IHttpContextAccessor httpContextAccessor, ILineService lineService, IProductService productService, IMachineService machineService)
+    public LineController(LinqToDb linq2db, ILineService lineService, IProductService productService, IMachineService machineService)
     {
         _linq2db = linq2db;
-        _httpContextAccessor = httpContextAccessor;
         _lineService = lineService;
         _productService = productService;
         _machineService = machineService;
