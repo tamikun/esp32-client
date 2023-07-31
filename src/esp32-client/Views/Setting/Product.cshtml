@@ -1,0 +1,96 @@
+@{
+    ViewData["Title"] = "Product setting";
+}
+
+<table class="normal-table table-hover">
+    <thead>
+        <tr>
+            <th colspan="100%">
+                <div style="display: flex;justify-content: space-between;">
+                    <div>
+                        Product table screen
+                    </div>
+                    <div style="text-align: right;">
+                        <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#myModal"> 
+                            <i class="fa fa-circle-plus"></i>
+                            Add new product
+                        </button>
+                    </div>
+                </div>
+            </th>
+        </tr>
+    </thead>
+    <thead>
+        <tr>
+            <th>Product name</th>
+            <th>Product No</th>
+            <th>Number of process</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>number</td>
+            <td>machines[i].MachineName</td>
+            <td>machines[i].IpAddress</td>
+        </tr>
+    </tbody>
+</table>
+
+<div class='container'>
+    <!-- Modal -->
+    <div id='myModal' class='modal fade' role='dialog'>
+        <div class='modal-dialog modal-lg'>
+            <div class='modal-content'>
+                <div class='modal-header'>
+                    <button type='button' class='close' data-dismiss='modal'>&times;</button>
+                    <h4 class='modal-title'>Add new product</h4>
+                </div>
+                <div class='modal-body'>
+                    <form action=''>
+                        <div class='form-group'>
+                            <label>Product name:</label>
+                            <input type='text' class='form-control' id='AddProduct_ProductName'
+                                name='AddProduct.ProductName' placeholder='Enter product name'>
+                        </div>
+                        <div class='form-group'>
+                            <label>Product number:</label>
+                            <input type='number' class='form-control' id='AddProduct_ProductNumber'
+                                name='AddProduct.ProductNumber' placeholder='Enter product number'>
+                        </div>
+                        <div class='form-group'>
+                            <label>Number of process:</label>
+                            <input type='number' class='form-control' id='AddProduct_NumberOfProcess'
+                                name='AddProduct.NumberOfProcess' placeholder='Enter number of process'>
+                        </div>
+                    </form>
+                </div>
+                <div class='modal-footer'>
+                    <button type='submit' class='btn btn-default'>Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<button type="button" class="btn btn-primary" onclick="openPopup()">Open Popup Form</button>
+
+    <!-- The popup form container -->
+    <div class="popup-container" id="popupForm">
+        <div class="popup-dialog">
+            <div class="popup-content">
+                <span class="close-button" onclick="closePopup()">&times;</span>
+                <h2>Popup Form</h2>
+                <form>
+                    <div class="form-group">
+                        <label for="name">Name:</label>
+                        <input type="text" class="form-control" id="name" name="name">
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email:</label>
+                        <input type="email" class="form-control" id="email" name="email">
+                    </div>
+                    <button type="button" class="btn btn-primary" onclick="submitForm()">Submit</button>
+                </form>
+            </div>
+        </div>
+    </div>

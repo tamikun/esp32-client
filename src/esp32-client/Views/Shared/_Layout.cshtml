@@ -35,7 +35,11 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="juki-navbar-nav">    
+                    <ul class="juki-navbar-nav">
+                        <li>
+                            <a class="juki-list-menu-header" asp-area="" asp-controller="Home"
+                                asp-action="Index">Home</a>
+                        </li>
                         <li>
                             <a class="juki-list-menu-header" asp-area="" asp-controller="Monitoring"
                                 asp-action="Index">Monitoring</a>
@@ -45,17 +49,19 @@
                             <a class="juki-list-menu-header dropbtn" asp-area="" asp-controller="Setting"
                                 asp-action="Index">Setting</a>
                             <div class="dropdown-content">
-                                <a asp-area="" asp-controller="Line" asp-action="Setting">Line setting</a>
-                                <a asp-area="" asp-controller="Product" asp-action="Setting">Product setting</a>
-                                <a asp-area="" asp-controller="Machine" asp-action="Setting">Machine setting</a>
+                                <a asp-area="" asp-controller="Setting" asp-action="Line">Line setting</a>
+                                <a asp-area="" asp-controller="Setting" asp-action="Product">Product setting</a>
+                                <a asp-area="" asp-controller="Setting" asp-action="Machine">Machine setting</a>
                             </div>
                         </li>
                         <li class="dropdown">
                             <a class="juki-list-menu-header dropbtn" asp-area="" asp-controller="Assigning"
                                 asp-action="Index">Setting</a>
                             <div class="dropdown-content">
-                                <a asp-area="" asp-controller="ProductLine" asp-action="Assigning">Product - Line assigning</a>
-                                <a asp-area="" asp-controller="MachineLine" asp-action="Assigning">Machine - Line assigning</a>
+                                <a asp-area="" asp-controller="Assigning" asp-action="ProductLine">Product - Line
+                                    assigning</a>
+                                <a asp-area="" asp-controller="Assigning" asp-action="MachineLine">Machine - Line
+                                    assigning</a>
                             </div>
                         </li>
                         @{

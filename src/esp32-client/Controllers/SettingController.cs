@@ -17,7 +17,7 @@ public class SettingController : BaseController
     }
 
 
-    public async Task<ActionResult> Index()
+    public async Task<ActionResult> Product()
     {
         await Task.CompletedTask;
         return View();

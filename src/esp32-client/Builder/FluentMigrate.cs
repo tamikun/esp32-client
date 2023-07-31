@@ -40,7 +40,7 @@ public class AddTable : Migration
             Create
             .Table(nameof(Product))
                 .WithColumn(nameof(Product.Id)).AsInt32().PrimaryKey().Identity()
-                .WithColumn(nameof(Product.FactoryId)).AsInt32().PrimaryKey().Identity()
+                .WithColumn(nameof(Product.FactoryId)).AsInt32().Unique()
                 .WithColumn(nameof(Product.ProductNo)).AsString().NotNullable()
                 .WithColumn(nameof(Product.ProductName)).AsString()
                 ;
