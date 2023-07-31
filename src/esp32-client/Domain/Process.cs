@@ -9,7 +9,7 @@ namespace esp32_client.Domain
         public int ProductId { get; set; }
         public string ProcessName { get; set; } = string.Empty;
         public string ProcessNo { get; set; } = string.Empty;
-        public int PatternNumber { get; set; }
+        public string PatternNo { get; set; }
         public string PatternDirectory { get; set; }
         public string OperationData { get; set; }
         public string COAttachment { get; set; }

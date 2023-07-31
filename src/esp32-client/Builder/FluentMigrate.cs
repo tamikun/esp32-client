@@ -18,7 +18,8 @@ public class AddTable : Migration
             Create
             .Table(nameof(Factory))
                 .WithColumn(nameof(Factory.Id)).AsInt32().PrimaryKey().Identity()
-                .WithColumn(nameof(Factory.FactoryName)).AsString().NotNullable().Unique()
+                .WithColumn(nameof(Factory.FactoryNo)).AsString().NotNullable().Unique()
+                .WithColumn(nameof(Factory.FactoryName)).AsString().NotNullable()
             ;
         }
 
@@ -28,8 +29,8 @@ public class AddTable : Migration
             .Table(nameof(Line))
                 .WithColumn(nameof(Line.Id)).AsInt32().PrimaryKey().Identity()
                 .WithColumn(nameof(Line.FactoryId)).AsInt32()
-                .WithColumn(nameof(Line.LineName)).AsString().NotNullable()
-                // .WithColumn(nameof(Line.Order)).AsInt32()
+                .WithColumn(nameof(Line.LineNo)).AsString().NotNullable()
+                .WithColumn(nameof(Line.LineName)).AsString()
                 .WithColumn(nameof(Line.ProductId)).AsInt32()
             ;
         }
@@ -39,19 +40,11 @@ public class AddTable : Migration
             Create
             .Table(nameof(Product))
                 .WithColumn(nameof(Product.Id)).AsInt32().PrimaryKey().Identity()
-                .WithColumn(nameof(Product.ProductName)).AsString();
+                .WithColumn(nameof(Product.FactoryId)).AsInt32().PrimaryKey().Identity()
+                .WithColumn(nameof(Product.ProductNo)).AsString().NotNullable()
+                .WithColumn(nameof(Product.ProductName)).AsString()
+                ;
         }
-
-        // if (!Schema.Table(nameof(Pattern)).Exists())
-        // {
-        //     Create
-        //     .Table(nameof(Pattern))
-        //         .WithColumn(nameof(Pattern.Id)).AsInt32().PrimaryKey().Identity()
-        //         .WithColumn(nameof(Pattern.PatternNumber)).AsString().NotNullable().Unique()
-        //         .WithColumn(nameof(Pattern.FileName)).AsString().NotNullable()
-        //         .WithColumn(nameof(Pattern.FileData)).AsString(int.MaxValue)
-        //         .WithColumn(nameof(Pattern.Description)).AsString();
-        // }
 
         if (!Schema.Table(nameof(Process)).Exists())
         {
@@ -59,9 +52,13 @@ public class AddTable : Migration
             .Table(nameof(Process))
                 .WithColumn(nameof(Process.Id)).AsInt32().PrimaryKey().Identity()
                 .WithColumn(nameof(Process.ProductId)).AsInt32()
-                .WithColumn(nameof(Process.ProcessName)).AsString().NotNullable()
-                // .WithColumn(nameof(Process.PatternId)).AsInt32()
-                // .WithColumn(nameof(Process.Order)).AsInt32()
+                .WithColumn(nameof(Process.ProcessName)).AsString()
+                .WithColumn(nameof(Process.ProcessNo)).AsString().NotNullable()
+                .WithColumn(nameof(Process.PatternNo)).AsString().NotNullable()
+                .WithColumn(nameof(Process.PatternDirectory)).AsString().NotNullable()
+                .WithColumn(nameof(Process.OperationData)).AsString()
+                .WithColumn(nameof(Process.COAttachment)).AsString()
+                .WithColumn(nameof(Process.Description)).AsString()
             ;
         }
 
@@ -70,11 +67,13 @@ public class AddTable : Migration
             Create
             .Table(nameof(Machine))
                 .WithColumn(nameof(Machine.Id)).AsInt32().PrimaryKey().Identity()
-                .WithColumn(nameof(Machine.MachineName)).AsString().NotNullable()
-                .WithColumn(nameof(Machine.IpAddress)).AsString().NotNullable()
+                .WithColumn(nameof(Machine.MachineNo)).AsString().NotNullable()
+                .WithColumn(nameof(Machine.MachineName)).AsString()
+                .WithColumn(nameof(Machine.IpAddress)).AsString().NotNullable().Unique()
                 .WithColumn(nameof(Machine.FactoryId)).AsInt32()
                 .WithColumn(nameof(Machine.LineId)).AsInt32()
                 .WithColumn(nameof(Machine.ProcessId)).AsInt32()
+                .WithColumn(nameof(Machine.COPartNo)).AsString()
             ;
         }
 
@@ -147,7 +146,7 @@ public class AddInitData : AutoReversingMigration
     public override void Up()
     {
         var department = new List<Factory>{
-            new Factory { FactoryName = "NhatTinh"},
+            new Factory { FactoryName = "Juki", FactoryNo = "Factory 001"},
         };
         _linq2Db.BulkInsert(department).Wait();
 
@@ -191,14 +190,14 @@ public class AddInitData : AutoReversingMigration
             new Setting{Name = "DeleteFileFormat", Value = "http://{0}/delete/VDATA/{1}"},
             new Setting{Name = "PostFileFormat", Value = "http://{0}/upload/VDATA/{1}"},
             new Setting{Name = "GetListFileFormat", Value = "http://{0}/VDATA"},
-            new Setting{Name = "LineFormat", Value = "Line {0}"},
-            new Setting{Name = "MinCharLineFormat", Value = "3"},
-            new Setting{Name = "StationFormat", Value = "Station {0}"},
-            new Setting{Name = "MinCharStationFormat", Value = "3"},
-            new Setting{Name = "PatternFormat", Value = "Pattern {0}"},
-            new Setting{Name = "MinCharPatternFormat", Value = "3"},
-            new Setting{Name = "ProductFormat", Value = "Product {0}"},
-            new Setting{Name = "MinCharProductFormat", Value = "3"},
+            // new Setting{Name = "LineFormat", Value = "Line {0}"},
+            // new Setting{Name = "MinCharLineFormat", Value = "3"},
+            // new Setting{Name = "StationFormat", Value = "Station {0}"},
+            // new Setting{Name = "MinCharStationFormat", Value = "3"},
+            // new Setting{Name = "PatternFormat", Value = "Pattern {0}"},
+            // new Setting{Name = "MinCharPatternFormat", Value = "3"},
+            // new Setting{Name = "ProductFormat", Value = "Product {0}"},
+            // new Setting{Name = "MinCharProductFormat", Value = "3"},
 
         };
         _linq2Db.BulkInsert(settings).Wait();

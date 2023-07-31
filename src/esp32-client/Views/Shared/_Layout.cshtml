@@ -35,30 +35,28 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="juki-navbar-nav">
+                    <ul class="juki-navbar-nav">    
                         <li>
-                            <a class="juki-list-menu-header" asp-area="" asp-controller="Home"
-                                asp-action="Index">Home</a>
+                            <a class="juki-list-menu-header" asp-area="" asp-controller="Monitoring"
+                                asp-action="Index">Monitoring</a>
                         </li>
-                        <li>
-                            <a class="juki-list-menu-header" asp-area="" asp-controller="Department"
-                                asp-action="Index">Overview</a>
+
+                        <li class="dropdown">
+                            <a class="juki-list-menu-header dropbtn" asp-area="" asp-controller="Setting"
+                                asp-action="Index">Setting</a>
+                            <div class="dropdown-content">
+                                <a asp-area="" asp-controller="Line" asp-action="Setting">Line setting</a>
+                                <a asp-area="" asp-controller="Product" asp-action="Setting">Product setting</a>
+                                <a asp-area="" asp-controller="Machine" asp-action="Setting">Machine setting</a>
+                            </div>
                         </li>
-                        <li>
-                            <a class="juki-list-menu-header" asp-area="" asp-controller="Line"
-                                asp-action="Index">Line</a>
-                        </li>
-                        <li>
-                            <a class="juki-list-menu-header" asp-area="" asp-controller="Machine"
-                                asp-action="Index">Machine</a>
-                        </li>
-                        <li>
-                            <a class="juki-list-menu-header" asp-area="" asp-controller="Product"
-                                asp-action="Index">Product</a>
-                        </li>
-                        <li>
-                            <a class="juki-list-menu-header" asp-area="" asp-controller="Pattern"
-                                asp-action="Index">Pattern</a>
+                        <li class="dropdown">
+                            <a class="juki-list-menu-header dropbtn" asp-area="" asp-controller="Assigning"
+                                asp-action="Index">Setting</a>
+                            <div class="dropdown-content">
+                                <a asp-area="" asp-controller="ProductLine" asp-action="Assigning">Product - Line assigning</a>
+                                <a asp-area="" asp-controller="MachineLine" asp-action="Assigning">Machine - Line assigning</a>
+                            </div>
                         </li>
                         @{
                             var userName = _httpContextAccessor?.HttpContext?.Session.GetString("UserName");
