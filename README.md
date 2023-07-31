@@ -6,68 +6,62 @@
 - Tương tác thông qua giao diện `PhpMyAdmin`
 ## 2. Tổ chức kiểu dữ liệu
 
-- Đầu tiên cần có dữ liệu về `Partern`
-- Sau đó định nghĩa về `Product` (mấy process, tên process, pattern)
-- Thêm Department
-- Thêm `Line` tương ứng với `Department`. Trong mỗi Line cần chọn Product của line đó (Nếu chưa có product thì phải khai báo product trước). Ta sẽ được các `Process` tương ứng với `Product`, tiếp tục định nghĩa `Machine` cho từng `Process` (Các Machine khả dụng)
+### 2.1 Factory
 
-
-### 2.1 Department
-
-- Lưu tên định danh cho Department
-- Cấu hình ẩn hiện trên giao diện
-
-|Id| DepartmentName |
-|--|----------------|
-|1 |  Department 1  |
+|Id| FactoryName |FactoryNo  |
+|--|-------------|-----------|
+|1 |  Factory 1  |Factory 001|
 
 ### 2.2 Line
 
-- Định nghĩa các line theo Department (thứ tự hiển thị)
+|Id|FactoryId   |LineNo             |LineName|ProductId |
+|--|------------|-------------------|--------|----------|
+|1 |      1     |Production line 1  |--------|1         |
+|2 |      1     |Production line 2  |--------|1         |
+|3 |      1     |Production line 3  |--------|1         |
+|4 |      1     |Production line 4  |--------|1         |
+|5 |      1     |Production line 5  |--------|1         |
 
-|Id|DepartmentId|LineName|Order|ProductId |
-|--|------------|--------|-----|----------|
-|1 |      1     |Line 1  |  1  |1         |
-|2 |      1     |Line 2  |  2  |1         |
-|3 |      1     |Line 3  |  3  |1         |
-|4 |      1     |Line 4  |  4  |1         |
-|5 |      1     |Line 5  |  5  |1         |
+### 2.3 Station
 
-### 2.3 Product
+|Id|LineId      |StationNo   |StationName|
+|--|------------|------------|-----------|
+|2 |      1     |Station 2   |-----------|
+|3 |      1     |Station 3   |-----------|
+|4 |      1     |Station 4   |-----------|
+|5 |      1     |Station 5   |-----------|
 
-|Id|ProductName |
-|--|------------|
-|1 |Product1    |
-|2 |Product2    |
+**StationNo**: Quy ước ở bảng Setting với dạng `Station {0}` (Trong đó {0} sẽ tăng dần trong 1 line và bắt đầu từ 1)
 
+### 2.4 Product
 
-### 2.4 Pattern
+|Id|FactoryId   |ProductName |ProductNo  |
+|--|------------|------------|-----------|
+|1 |      1     |Sản phẩm 1  |Product 001|
+|2 |      1     |Sản phẩm 2  |Product 002|
 
-|Id|PatternNumber|FileName|FileData|Description   |
-|--|-------------|--------|--------|--------------|
-|1 |00001        |VDT001  |base64  |Diễn giải thêm|
-
+**ProductNo**: Quy ước ở bảng Setting với dạng `Product {0}` (Trong đó {0} sẽ được thay bằng giá trị Id của Product)
 
 ### 2.5 Process
 
-|Id|ProductId   |ProcessName|PatternId|Order|
-|--|------------|-----------|---------|-----|
-|1 |      1     | P1        |1        |0    |
-|2 |      1     | P2        |1        |1    |
-|3 |      1     | P3        |1        |2    |
-|4 |      1     | P4        |1        |3    |
-|5 |      1     | P5        |1        |4    |
+|Id|ProductId   |ProcessName|ProcessNo    |Order|PatternNumber|PatternDirectory |OperationData|COAttachment|Description|
+|--|------------|-----------|-------------|-----|-------------|-----------------|-------------|------------|-----------|
+|1 |      1     | Process 1 |Product 001.1|1    |VD00001.VDT  |                 |             |            |           |
+|2 |      1     | Process 2 |Product 001.2|2    |VD00002.VDT  |                 |             |            |           |
+|3 |      1     | Process 3 |Product 001.3|3    |VD00003.VDT  |                 |             |            |           |
+|4 |      1     | Process 4 |Product 001.4|4    |VD00004.VDT  |                 |             |            |           |
+|5 |      1     | Process 5 |Product 001.5|5    |VD00005.VDT  |                 |             |            |           |
 
 
 ### 2.6 Machine
 
-|Id|MachineName | IpAddress  |DepartmentId|LineId|ProcessId  |
-|--|------------|------------|------------|------|-----------|
-|1 |Machine 1   |192.168.1.11|1           |1     |     1     |
-|2 |Machine 2   |192.168.1.12|1           |1     |     2     |
-|3 |Machine 3   |192.168.1.13|1           |1     |     3     |
-|4 |Machine 4   |192.168.1.14|1           |2     |     4     |
-|5 |Machine 5   |192.168.1.15|1           |2     |     5     |
+|Id|MachineName | IpAddress  |FactoryId   |LineId|ProcessId  |COPartNo|
+|--|------------|------------|------------|------|-----------|--------|
+|1 |Machine 1   |192.168.1.11|1           |1     |     1     |COP--   |
+|2 |Machine 2   |192.168.1.12|1           |1     |     2     |COP--   |
+|3 |Machine 3   |192.168.1.13|1           |1     |     3     |COP--   |
+|4 |Machine 4   |192.168.1.14|1           |2     |     4     |COP--   |
+|5 |Machine 5   |192.168.1.15|1           |2     |     5     |COP--   |
 
 ### 2.7 UserAccount
 
@@ -98,23 +92,3 @@
 |1 |1            |Home          |Index     |
 |2 |1            |Patern        |Add       |
 |3 |2            |Home          |Index     |
-
-## 3. Các trang cần tạo
-
-### Account
-
-- Tạo tài khoản
-- Thông tin tài khoản
-- Đổi mật khẩu
-- Phân quyền tài khoản
-
-### Thêm, bớt, xóa, sửa
-
-- Department
-- Line
-- Process
-- Machine
-- Pattern
-
-### Giao diện Overview (theo phân quyền từng user)
-
