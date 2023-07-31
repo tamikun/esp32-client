@@ -55,7 +55,7 @@
 
 ### 2.6 Machine
 
-|Id|MachineName | IpAddress  |FactoryId   |LineId|ProcessId  |COPartNo|
+|Id|MachineName | IpAddress  |FactoryId   |LineId|StationId  |COPartNo|
 |--|------------|------------|------------|------|-----------|--------|
 |1 |Machine 1   |192.168.1.11|1           |1     |     1     |COP--   |
 |2 |Machine 2   |192.168.1.12|1           |1     |     2     |COP--   |
