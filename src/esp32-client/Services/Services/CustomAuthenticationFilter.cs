@@ -33,8 +33,11 @@ namespace esp32_client.Services
                 if (userRight is not null)
                 {
                     var checkUserRight = userRight.Any(s =>
-                                        (s.ControllerName == "*" && s.ActionName == "*") ||
-                                        (s.ControllerName == controllerName && s.ActionName == actionName));
+                                        (s.ControllerName == "*" && s.ActionName == "*")
+                                        || (s.ControllerName == "*" && s.ActionName == actionName)
+                                        || (s.ControllerName == controllerName && s.ActionName == "*")
+                                        || (s.ControllerName == controllerName && s.ActionName == actionName)
+                                        );
 
                     if (!checkUserRight)
                     {

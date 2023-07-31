@@ -172,6 +172,8 @@ public class AddInitData : AutoReversingMigration
 
         var userRight = new List<UserRight>{
             new UserRight{RoleId = 1, ControllerName = "*", ActionName = "*"},
+            new UserRight{RoleId = 2, ControllerName = "*", ActionName = "Index"},
+            new UserRight{RoleId = 3, ControllerName = "*", ActionName = "Index"},
         };
         _linq2Db.BulkInsert(userRight).Wait();
 
