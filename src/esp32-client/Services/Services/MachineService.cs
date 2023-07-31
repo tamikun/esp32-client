@@ -75,7 +75,7 @@ public partial class MachineService : IMachineService
 
         if (machines.Count > minIndex)
         {
-            for (int i = minIndex; i < machines.Count - minIndex; i++)
+            for (int i = minIndex; i < machines.Count; i++)
             {
                 machines[i].LineId = 0;
                 machines[i].ProcessId = 0;

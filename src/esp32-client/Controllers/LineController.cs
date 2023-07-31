@@ -2,18 +2,20 @@
 using esp32_client.Services;
 using esp32_client.Models;
 using Newtonsoft.Json;
+using esp32_client.Builder;
 
 namespace esp32_client.Controllers;
 [CustomAuthenticationFilter]
-public class LineController : Controller
+public class LineController : BaseController
 {
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly ILineService _lineService;
     private readonly IProductService _productService;
     private readonly IMachineService _machineService;
 
-    public LineController(IHttpContextAccessor httpContextAccessor, ILineService lineService, IProductService productService, IMachineService machineService)
+    public LineController(LinqToDb linq2db, IHttpContextAccessor httpContextAccessor, ILineService lineService, IProductService productService, IMachineService machineService)
     {
+        _linq2db = linq2db;
         _httpContextAccessor = httpContextAccessor;
         _lineService = lineService;
         _productService = productService;
@@ -31,36 +33,19 @@ public class LineController : Controller
     [HttpPost]
     public async Task<IActionResult> Add(LineCreateModel model)
     {
-        var listAlert = new List<AlertModel>();
-        try
+        return await HandleActionAsync(async () =>
         {
-            var LineDetail = await _lineService.Create(model);
-            listAlert.Add(new AlertModel { AlertType = Alert.Success, AlertMessage = $"Add line" });
-        }
-        catch (Exception ex)
-        {
-            listAlert.Add(new AlertModel { AlertType = Alert.Danger, AlertMessage = $"{ex.Message}" });
-        }
-        TempData["AlertMessage"] = JsonConvert.SerializeObject(listAlert);
-
-        return RedirectToAction("Index");
+            var lineDetail = await _lineService.Create(model);
+        }, RedirectToAction("Index"));
     }
 
     public async Task<IActionResult> Delete(int id)
     {
-        var listAlert = new List<AlertModel>();
-        try
+        return await HandleActionAsync(async () =>
         {
             await _lineService.Delete(id);
-            listAlert.Add(new AlertModel { AlertType = Alert.Success, AlertMessage = $"Delete line" });
-        }
-        catch (Exception ex)
-        {
-            listAlert.Add(new AlertModel { AlertType = Alert.Danger, AlertMessage = $"{ex.Message}" });
-        }
-        TempData["AlertMessage"] = JsonConvert.SerializeObject(listAlert);
 
-        return RedirectToAction("Index");
+        }, RedirectToAction("Index"));
     }
 
     public async Task<IActionResult> UpdateProductLine(int id)
@@ -77,23 +62,13 @@ public class LineController : Controller
     [HttpPost]
     public async Task<IActionResult> UpdateProductLine(LineUpdateModel model)
     {
-        var listAlert = new List<AlertModel>();
-        try
+        return await HandleActionAsync(async () =>
         {
-            // Auto transfer machine
             var machines = await _machineService.UpdateMachineLineByProduct(model.Id, model.ProductId);
 
             await _lineService.Update(model);
 
-            listAlert.Add(new AlertModel { AlertType = Alert.Success, AlertMessage = $"Update product line" });
-        }
-        catch (Exception ex)
-        {
-            listAlert.Add(new AlertModel { AlertType = Alert.Danger, AlertMessage = $"{ex.Message}" });
-        }
-        TempData["AlertMessage"] = JsonConvert.SerializeObject(listAlert);
-
-        return RedirectToAction("Index");
+        }, RedirectToAction("Index"));
     }
 
     public async Task<IActionResult> UpdateMachineLine(int id)
@@ -110,9 +85,7 @@ public class LineController : Controller
     [HttpPost]
     public async Task<IActionResult> UpdateMachineLine(UpdateMachineLineModel model)
     {
-        System.Console.WriteLine("==== UpdateMachineLine: " + Newtonsoft.Json.JsonConvert.SerializeObject(model));
-        var listAlert = new List<AlertModel>();
-        try
+        return await HandleActionAsync(async () =>
         {
             // Validate data
             var duplicateMachineId = model.ListProcessAndMachineOfLine.Where(s => s.MachineId != 0)
@@ -140,15 +113,7 @@ public class LineController : Controller
                 await _machineService.UpdateById(item.MachineId, model.DepartmentId, item.LineId, item.ProcessId);
             }
 
-            listAlert.Add(new AlertModel { AlertType = Alert.Success, AlertMessage = $"Update machine line" });
-        }
-        catch (Exception ex)
-        {
-            listAlert.Add(new AlertModel { AlertType = Alert.Danger, AlertMessage = $"{ex.Message}" });
-        }
-        TempData["AlertMessage"] = JsonConvert.SerializeObject(listAlert);
-
-        return RedirectToAction("Index");
+        }, RedirectToAction("Index"));
     }
 
 }
