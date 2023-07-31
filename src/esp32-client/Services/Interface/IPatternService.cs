@@ -1,20 +1,20 @@
-using esp32_client.Domain;
-using esp32_client.Models;
+// using esp32_client.Domain;
+// using esp32_client.Models;
 
-namespace esp32_client.Services
-{
-    public interface IPatternService
-    {
-        Task<Pattern?> GetById(int id);
+// namespace esp32_client.Services
+// {
+//     public interface IPatternService
+//     {
+//         Task<Pattern?> GetById(int id);
 
-        Task<List<PatternResponseModel>> GetAll();
+//         Task<List<PatternResponseModel>> GetAll();
 
-        Task<Pattern> Create(PatternCreateModel model);
+//         Task<Pattern> Create(PatternCreateModel model);
 
-        Task<Pattern> Update(PatternUpdateModel model);
+//         Task<Pattern> Update(PatternUpdateModel model);
 
-        Task Delete(int id);
+//         Task Delete(int id);
 
-        Task Delete(List<int> listId);
-    }
-}
+//         Task Delete(List<int> listId);
+//     }
+// }

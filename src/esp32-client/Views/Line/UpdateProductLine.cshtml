@@ -5,7 +5,7 @@
 
     Model.LineName = line?.LineName;
     Model.ProductId = line?.ProductId ?? 0;
-    Model.Order = line?.Order ?? 0;
+    @* Model.Order = line?.Order ?? 0; *@
 
     var listSelecteProduct = new List<SelectListItem>();
     listSelecteProduct.Add(new SelectListItem { Value = "", Text = "Choose product" });

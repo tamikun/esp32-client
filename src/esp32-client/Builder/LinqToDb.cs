@@ -16,7 +16,7 @@ public class LinqToDb : DataConnection
     public ITable<Factory> Department => this.GetTable<Factory>();
     public ITable<Line> Line => this.GetTable<Line>();
     public ITable<Machine> Machine => this.GetTable<Machine>();
-    public ITable<Pattern> Pattern => this.GetTable<Pattern>();
+    // public ITable<Pattern> Pattern => this.GetTable<Pattern>();
     public ITable<Process> Process => this.GetTable<Process>();
     public ITable<Product> Product => this.GetTable<Product>();
     public ITable<RoleOfUser> RoleOfUser => this.GetTable<RoleOfUser>();

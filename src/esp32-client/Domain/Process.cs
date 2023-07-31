@@ -8,7 +8,12 @@ namespace esp32_client.Domain
 #nullable disable
         public int ProductId { get; set; }
         public string ProcessName { get; set; } = string.Empty;
-        public int PatternId { get; set; }
-        public int Order { get; set; }
+        public string ProcessNo { get; set; } = string.Empty;
+        public int PatternNumber { get; set; }
+        public string PatternDirectory { get; set; }
+        public string OperationData { get; set; }
+        public string COAttachment { get; set; }
+        public string Description { get; set; }
+
     }
 }

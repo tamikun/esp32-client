@@ -113,7 +113,7 @@ public partial class MachineService : IMachineService
     {
 
         await _linq2Db.Machine.Where(s => s.Id == id)
-                    .Set(s => s.DepartmentId, departmentId)
+                    .Set(s => s.FactoryId, departmentId)
                     .Set(s => s.LineId, lineId)
                     .Set(s => s.ProcessId, processId)
                     .UpdateAsync();
@@ -123,7 +123,7 @@ public partial class MachineService : IMachineService
     {
 
         await _linq2Db.Machine.Where(s => listId.Contains(s.Id))
-                    .Set(s => s.DepartmentId, departmentId)
+                    .Set(s => s.FactoryId, departmentId)
                     .Set(s => s.LineId, lineId)
                     .Set(s => s.ProcessId, processId)
                     .UpdateAsync();

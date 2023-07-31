@@ -36,7 +36,7 @@ public partial class LineService : ILineService
 
     public async Task<List<LineResponseModel>> GetAllLineResponse(int departmentId)
     {
-        var result = await (from line in _linq2Db.Line.Where(s => s.DepartmentId == departmentId)
+        var result = await (from line in _linq2Db.Line.Where(s => s.FactoryId == departmentId)
                             join product1 in _linq2Db.Product on line.ProductId equals product1.Id into product2
                             from product in product2.DefaultIfEmpty()
                             select new LineResponseModel
@@ -45,7 +45,7 @@ public partial class LineService : ILineService
                                 LineName = line.LineName,
                                 ProductName = product.ProductName,
                                 ProductId = line.ProductId,
-                                Order = line.Order,
+                                // Order = line.Order,
                             }).OrderBy(s => s.Order).ToListAsync();
 
         return result;
@@ -53,33 +53,33 @@ public partial class LineService : ILineService
 
     public async Task<List<GetProcessAndMachineOfLineModel>> GetProcessAndMachineOfLine(int departmentId, int lineId)
     {
-        var result = await (from line in _linq2Db.Line.Where(s => s.DepartmentId == departmentId && s.Id == lineId)
+        var result = await (from line in _linq2Db.Line.Where(s => s.FactoryId == departmentId && s.Id == lineId)
                             join product1 in _linq2Db.Product on line.ProductId equals product1.Id into product2
                             from product in product2.DefaultIfEmpty()
                             join process1 in _linq2Db.Process on product.Id equals process1.ProductId into process2
                             from process in process2.DefaultIfEmpty()
-                            from machine in _linq2Db.Machine.Where(s => s.DepartmentId == departmentId &&
-                                                                        s.DepartmentId != 0 &&
+                            from machine in _linq2Db.Machine.Where(s => s.FactoryId == departmentId &&
+                                                                        s.FactoryId != 0 &&
                                                                         s.LineId == lineId &&
                                                                         s.LineId != 0 &&
                                                                         s.ProcessId == process.Id &&
                                                                         s.ProcessId != 0).DefaultIfEmpty()
-                            from pattern in _linq2Db.Pattern.Where(s => s.Id == process.PatternId).DefaultIfEmpty()
+                            // from pattern in _linq2Db.Pattern.Where(s => s.Id == process.PatternId).DefaultIfEmpty()
                             select new GetProcessAndMachineOfLineModel
                             {
                                 LineId = line.Id,
-                                LineOrder = line.Order,
+                                // LineOrder = line.Order,
                                 LineName = line.LineName,
                                 ProductId = line.ProductId,
                                 ProductName = product.ProductName,
                                 ProcessId = process.Id,
-                                ProcessOrder = process.Order,
+                                // ProcessOrder = process.Order,
                                 ProcessName = process.ProcessName,
                                 MachineId = machine.Id,
                                 MachineName = machine.MachineName,
                                 MachineIp = machine.IpAddress,
-                                PatternId = pattern.Id,
-                                PatternName = pattern.PatternNumber,
+                                // PatternId = pattern.Id,
+                                // PatternName = pattern.PatternNumber,
                             }).OrderBy(s => s.ProcessOrder).ToListAsync();
 
         return result;
@@ -87,33 +87,33 @@ public partial class LineService : ILineService
 
     public async Task<List<GetProcessAndMachineOfLineModel>> GetProcessAndMachineOfLines(int departmentId)
     {
-        var result = await (from line in _linq2Db.Line.Where(s => s.DepartmentId == departmentId)
+        var result = await (from line in _linq2Db.Line.Where(s => s.FactoryId == departmentId)
                             join product1 in _linq2Db.Product on line.ProductId equals product1.Id into product2
                             from product in product2.DefaultIfEmpty()
                             join process1 in _linq2Db.Process on product.Id equals process1.ProductId into process2
                             from process in process2.DefaultIfEmpty()
-                            from machine in _linq2Db.Machine.Where(s => s.DepartmentId == departmentId &&
-                                                                        s.DepartmentId != 0 &&
+                            from machine in _linq2Db.Machine.Where(s => s.FactoryId == departmentId &&
+                                                                        s.FactoryId != 0 &&
                                                                         s.LineId == line.Id &&
                                                                         s.LineId != 0 &&
                                                                         s.ProcessId == process.Id &&
                                                                         s.ProcessId != 0).DefaultIfEmpty()
-                            from pattern in _linq2Db.Pattern.Where(s => s.Id == process.PatternId).DefaultIfEmpty()
+                            // from pattern in _linq2Db.Pattern.Where(s => s.Id == process.PatternId).DefaultIfEmpty()
                             select new GetProcessAndMachineOfLineModel
                             {
                                 LineId = line.Id,
-                                LineOrder = line.Order,
+                                // LineOrder = line.Order,
                                 LineName = line.LineName,
                                 ProductId = line.ProductId,
                                 ProductName = product.ProductName,
                                 ProcessId = process.Id,
-                                ProcessOrder = process.Order,
+                                // ProcessOrder = process.Order,
                                 ProcessName = process.ProcessName,
                                 MachineId = machine.Id,
                                 MachineName = machine.MachineName,
                                 MachineIp = machine.IpAddress,
-                                PatternId = pattern.Id,
-                                PatternName = pattern.PatternNumber,
+                                // PatternId = pattern.Id,
+                                // PatternName = pattern.PatternNumber,
                             }).OrderBy(s => s.LineOrder).ThenBy(s => s.ProcessOrder).ToListAsync();
 
         return result;
@@ -121,7 +121,7 @@ public partial class LineService : ILineService
 
     public async Task<Line> Create(LineCreateModel model)
     {
-        var line = new Line { DepartmentId = model.DepartmentId, LineName = model.LineName, Order = model.Order, ProductId = model.ProductId };
+        var line = new Line { FactoryId = model.DepartmentId, LineName = model.LineName, ProductId = model.ProductId };
 
         await _linq2Db.InsertAsync(line);
 
@@ -134,9 +134,9 @@ public partial class LineService : ILineService
         if (line is null) throw new Exception("Line is not found");
 
         // Update line info
-        line.DepartmentId = model.DepartmentId;
+        line.FactoryId = model.DepartmentId;
         line.LineName = model.LineName;
-        line.Order = model.Order;
+        // line.Order = model.Order;
         line.ProductId = model.ProductId;
 
         await _linq2Db.Update(line);

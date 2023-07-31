@@ -1,4 +1,4 @@
-﻿@model PatternIndexPageModel
+﻿@* @model PatternIndexPageModel
 @{
     ViewData["Title"] = "Pattern";
     var patterns = await _patternService.GetAll();
@@ -92,4 +92,4 @@
         <input type="submit" value="Delete" />
     </div>
 
-}
+} *@

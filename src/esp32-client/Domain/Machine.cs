@@ -8,8 +8,9 @@ namespace esp32_client.Domain
 #nullable disable
         public string MachineName { get; set; } = string.Empty;
         public string IpAddress { get; set; }
-        public int DepartmentId { get; set; }
+        public int FactoryId { get; set; }
         public int LineId { get; set; }
         public int ProcessId { get; set; }
+        public string COPartNo { get; set; }
     }
 }

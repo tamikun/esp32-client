@@ -31,7 +31,7 @@ public partial class ProcessService : IProcessService
 
     public async Task<List<Process>> GetByProductId(int id)
     {
-        var process = await _linq2Db.Process.Where(s => s.ProductId == id).OrderBy(s => s.Order).ToListAsync();
+        var process = await _linq2Db.Process.Where(s => s.ProductId == id).ToListAsync();
         return process;
     }
 
@@ -52,8 +52,8 @@ public partial class ProcessService : IProcessService
         {
             ProductId = model.ProductId,
             ProcessName = model.ProcessName,
-            PatternId = model.PatternId,
-            Order = model.Order,
+            // PatternId = model.PatternId,
+            // Order = model.Order,
         };
 
         await _linq2Db.InsertAsync(process);
@@ -69,8 +69,8 @@ public partial class ProcessService : IProcessService
 
         process.ProductId = model.ProductId;
         process.ProcessName = model.ProcessName;
-        process.PatternId = model.PatternId;
-        process.Order = model.Order;
+        // process.PatternId = model.PatternId;
+        // process.Order = model.Order;
 
         await _linq2Db.Update(process);
 
@@ -98,15 +98,15 @@ public partial class ProcessService : IProcessService
             var listProcessUpdate = await (from process in processTable
                                            join request in model.ListProcessCreate.Where(s => s.Id != 0) on process.Id equals request.Id
                                            where process.ProcessName != request.ProcessName
-                                            || process.PatternId != request.PatternId
-                                            || process.Order != request.Order
+                                            // || process.PatternId != request.PatternId
+                                            // || process.Order != request.Order
                                            select new Process
                                            {
                                                Id = process.Id,
-                                               Order = request.Order,
+                                            //    Order = request.Order,
                                                ProductId = process.ProductId,
                                                ProcessName = request.ProcessName,
-                                               PatternId = process.PatternId,
+                                            //    PatternId = process.PatternId,
                                            }).ToListAsync();
 
             foreach (var item in listProcessUpdate)
@@ -120,15 +120,15 @@ public partial class ProcessService : IProcessService
             var listProcessUpdate = await (from process in processTable
                                            join request in model.ListProcessCreate.Where(s => s.Id != 0) on process.Id equals request.Id
                                            where process.ProcessName != request.ProcessName
-                                            || process.PatternId != request.PatternId
-                                            || process.Order != request.Order
+                                            // || process.PatternId != request.PatternId
+                                            // || process.Order != request.Order
                                            select new Process
                                            {
                                                Id = process.Id,
-                                               Order = request.Order,
+                                            //    Order = request.Order,
                                                ProductId = process.ProductId,
                                                ProcessName = request.ProcessName,
-                                               PatternId = request.PatternId,
+                                            //    PatternId = request.PatternId,
                                            }).ToListAsync();
 
             foreach (var item in listProcessUpdate)
@@ -149,8 +149,8 @@ public partial class ProcessService : IProcessService
                 {
                     ProductId = model.ProductId,
                     ProcessName = s.ProcessName,
-                    PatternId = s.PatternId,
-                    Order = s.Order,
+                    // PatternId = s.PatternId,
+                    // Order = s.Order,
                 };
             });
 

@@ -8,19 +8,19 @@
             {
                 Id = s.Id,
                 ProcessName = s.ProcessName,
-                PatternId = s.PatternId,
-                Order = s.Order,
+                @* PatternId = s.PatternId,
+                Order = s.Order, *@
             }));
 
     var listSelectePatern = new List<SelectListItem>();
     listSelectePatern.Add(new SelectListItem { Value = "", Text = "Choose pattern" });
 
-    var listPattern = await _patternService.GetAll();
+    @* var listPattern = await _patternService.GetAll();
     listPattern.ForEach(s => listSelectePatern.Add(new SelectListItem
             {
                 Value = s.Id.ToString(),
                 Text = s.PatternNumber
-            }));
+            })); *@
 }
 
 

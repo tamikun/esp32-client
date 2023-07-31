@@ -27,9 +27,9 @@ public class AddTable : Migration
             Create
             .Table(nameof(Line))
                 .WithColumn(nameof(Line.Id)).AsInt32().PrimaryKey().Identity()
-                .WithColumn(nameof(Line.DepartmentId)).AsInt32()
+                .WithColumn(nameof(Line.FactoryId)).AsInt32()
                 .WithColumn(nameof(Line.LineName)).AsString().NotNullable()
-                .WithColumn(nameof(Line.Order)).AsInt32()
+                // .WithColumn(nameof(Line.Order)).AsInt32()
                 .WithColumn(nameof(Line.ProductId)).AsInt32()
             ;
         }
@@ -42,16 +42,16 @@ public class AddTable : Migration
                 .WithColumn(nameof(Product.ProductName)).AsString();
         }
 
-        if (!Schema.Table(nameof(Pattern)).Exists())
-        {
-            Create
-            .Table(nameof(Pattern))
-                .WithColumn(nameof(Pattern.Id)).AsInt32().PrimaryKey().Identity()
-                .WithColumn(nameof(Pattern.PatternNumber)).AsString().NotNullable().Unique()
-                .WithColumn(nameof(Pattern.FileName)).AsString().NotNullable()
-                .WithColumn(nameof(Pattern.FileData)).AsString(int.MaxValue)
-                .WithColumn(nameof(Pattern.Description)).AsString();
-        }
+        // if (!Schema.Table(nameof(Pattern)).Exists())
+        // {
+        //     Create
+        //     .Table(nameof(Pattern))
+        //         .WithColumn(nameof(Pattern.Id)).AsInt32().PrimaryKey().Identity()
+        //         .WithColumn(nameof(Pattern.PatternNumber)).AsString().NotNullable().Unique()
+        //         .WithColumn(nameof(Pattern.FileName)).AsString().NotNullable()
+        //         .WithColumn(nameof(Pattern.FileData)).AsString(int.MaxValue)
+        //         .WithColumn(nameof(Pattern.Description)).AsString();
+        // }
 
         if (!Schema.Table(nameof(Process)).Exists())
         {
@@ -60,8 +60,8 @@ public class AddTable : Migration
                 .WithColumn(nameof(Process.Id)).AsInt32().PrimaryKey().Identity()
                 .WithColumn(nameof(Process.ProductId)).AsInt32()
                 .WithColumn(nameof(Process.ProcessName)).AsString().NotNullable()
-                .WithColumn(nameof(Process.PatternId)).AsInt32()
-                .WithColumn(nameof(Process.Order)).AsInt32()
+                // .WithColumn(nameof(Process.PatternId)).AsInt32()
+                // .WithColumn(nameof(Process.Order)).AsInt32()
             ;
         }
 
@@ -72,7 +72,7 @@ public class AddTable : Migration
                 .WithColumn(nameof(Machine.Id)).AsInt32().PrimaryKey().Identity()
                 .WithColumn(nameof(Machine.MachineName)).AsString().NotNullable()
                 .WithColumn(nameof(Machine.IpAddress)).AsString().NotNullable()
-                .WithColumn(nameof(Machine.DepartmentId)).AsInt32()
+                .WithColumn(nameof(Machine.FactoryId)).AsInt32()
                 .WithColumn(nameof(Machine.LineId)).AsInt32()
                 .WithColumn(nameof(Machine.ProcessId)).AsInt32()
             ;
