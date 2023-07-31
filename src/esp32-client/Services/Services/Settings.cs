@@ -47,5 +47,9 @@ namespace esp32_client.Services
         public string DeleteFileFormat { get; set; }
         public string PostFileFormat { get; set; }
         public string GetListFileFormat { get; set; }
+        public string LineFormat { get; set; }
+        public string StationFormat { get; set; }
+        public string PatternFormat { get; set; }
+        public string ProductFormat { get; set; }
     }
 }

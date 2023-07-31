@@ -13,12 +13,12 @@ public class AddTable : Migration
 {
     public override void Up()
     {
-        if (!Schema.Table(nameof(Department)).Exists())
+        if (!Schema.Table(nameof(Factory)).Exists())
         {
             Create
-            .Table(nameof(Department))
-                .WithColumn(nameof(Department.Id)).AsInt32().PrimaryKey().Identity()
-                .WithColumn(nameof(Department.DepartmentName)).AsString().NotNullable().Unique()
+            .Table(nameof(Factory))
+                .WithColumn(nameof(Factory.Id)).AsInt32().PrimaryKey().Identity()
+                .WithColumn(nameof(Factory.FactoryName)).AsString().NotNullable().Unique()
             ;
         }
 
@@ -146,8 +146,8 @@ public class AddInitData : AutoReversingMigration
     }
     public override void Up()
     {
-        var department = new List<Department>{
-            new Department { DepartmentName = "NhatTinh"},
+        var department = new List<Factory>{
+            new Factory { FactoryName = "NhatTinh"},
         };
         _linq2Db.BulkInsert(department).Wait();
 
@@ -191,6 +191,10 @@ public class AddInitData : AutoReversingMigration
             new Setting{Name = "DeleteFileFormat", Value = "http://{0}/delete/VDATA/{1}"},
             new Setting{Name = "PostFileFormat", Value = "http://{0}/upload/VDATA/{1}"},
             new Setting{Name = "GetListFileFormat", Value = "http://{0}/VDATA"},
+            new Setting{Name = "LineFormat", Value = "Line {0}"},
+            new Setting{Name = "StationFormat", Value = "Station {0}"},
+            new Setting{Name = "PatternFormat", Value = "Pattern {0}"},
+            new Setting{Name = "ProductFormat", Value = "Product {0}"},
 
         };
         _linq2Db.BulkInsert(settings).Wait();

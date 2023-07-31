@@ -13,7 +13,7 @@ public class LinqToDb : DataConnection
        : base(options.Options)
     { }
 
-    public ITable<Department> Department => this.GetTable<Department>();
+    public ITable<Factory> Department => this.GetTable<Factory>();
     public ITable<Line> Line => this.GetTable<Line>();
     public ITable<Machine> Machine => this.GetTable<Machine>();
     public ITable<Pattern> Pattern => this.GetTable<Pattern>();

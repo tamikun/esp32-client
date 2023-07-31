@@ -21,32 +21,32 @@ public partial class DepartmentService : IDepartmentService
         _mapper = mapper;
     }
 
-    public async Task<Department?> GetById(int id)
+    public async Task<Factory?> GetById(int id)
     {
         var department = await _linq2Db.Department.Where(s => s.Id == id).FirstOrDefaultAsync();
         return department;
     }
 
-    public async Task<List<Department>> GetAll()
+    public async Task<List<Factory>> GetAll()
     {
         return await _linq2Db.Department.ToListAsync();
     }
 
-    public async Task<Department> Create(DepartmentCreateModel model)
+    public async Task<Factory> Create(DepartmentCreateModel model)
     {
-        var department = new Department { DepartmentName = model.DepartmentName };
+        var department = new Factory { FactoryName = model.DepartmentName };
 
         await _linq2Db.InsertAsync(department);
 
         return department;
     }
 
-    public async Task<Department> Update(DepartmentUpdateModel model)
+    public async Task<Factory> Update(DepartmentUpdateModel model)
     {
         var department = await GetById(model.Id);
         if (department is null) throw new Exception("Department is not found");
-        
-        department.DepartmentName = model.DepartmentName;
+
+        department.FactoryName = model.DepartmentName;
         await _linq2Db.Update(department);
 
         return department;

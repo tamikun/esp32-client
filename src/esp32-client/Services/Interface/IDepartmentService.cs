@@ -5,13 +5,13 @@ namespace esp32_client.Services
 {
     public interface IDepartmentService
     {
-        Task<Department?> GetById(int id);
+        Task<Factory?> GetById(int id);
 
-        Task<List<Department>> GetAll();
+        Task<List<Factory>> GetAll();
 
-        Task<Department> Create(DepartmentCreateModel model);
+        Task<Factory> Create(DepartmentCreateModel model);
 
-        Task<Department> Update(DepartmentUpdateModel model);
+        Task<Factory> Update(DepartmentUpdateModel model);
 
         Task Delete(int id);
     }
