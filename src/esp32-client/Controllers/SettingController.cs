@@ -26,6 +26,13 @@ public class SettingController : BaseController
         await Task.CompletedTask;
         return View();
     }
+    public async Task<ActionResult> ProductDetail(int factoryId = 0, int productId = 0)
+    {
+        ViewBag.FactoryId = factoryId;
+        ViewBag.ProductId = productId;
+        await Task.CompletedTask;
+        return View();
+    }
 
     [HttpPost]
     public async Task<IActionResult> AddProduct(ProductCreateModel model)

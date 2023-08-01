@@ -79,6 +79,7 @@ public partial class ProductService : IProductService
                           {
                               FactoryId = factoryId,
                               FactoryName = factory.FactoryName,
+                              ProductId = product.Id,
                               ProductName = product.ProductName,
                               ProductNo = product.ProductNo,
                               NumberOfProcess = _linq2Db.Process.Where(s => s.ProductId == product.Id).Count(),

@@ -212,6 +212,10 @@ iframe {
   padding: 15px;
 }
 
+.normal-table th {
+  color: rgb(6, 45, 148);
+}
+
 .submit-delete {
   text-align: right;
     margin-right: 5px;

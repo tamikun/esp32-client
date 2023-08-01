@@ -1,0 +1,86 @@
+@{
+    ViewData["Title"] = "Product setting";
+    int factoryId = ViewBag.FactoryId;
+    int productId = ViewBag.ProductId;
+
+    var productData = await _productService.GetProductByFactoryId(factoryId);
+
+    // Process data: Get by product id
+    var processData = await _processService.GetByProductId(productId);
+}
+<table class="normal-table table-hover">
+    <thead>
+        <tr>
+            <th colspan="100%">
+                <div style="display: flex;justify-content: space-between;">
+                    <div>
+                        Product data setting table
+                    </div>
+                </div>
+            </th>
+        </tr>
+        <tr>
+            <th>
+                Product:
+            </th>
+            <th colspan="4">
+                @using (Html.BeginForm("ProductDetail", "Setting", FormMethod.Get, new
+                {
+                    @enctype =
+                "multipart/form-data"
+                }))
+                {
+                    <input type="number" class="form-control" id="FactoryId" name="FactoryId" style="display: none;"
+                        value='@factoryId'>
+                    <select data-val="true" data-val-required="The Number field is required." id="productId"
+                        name="productId">
+
+                        @if (productId == 0)
+                        {
+                            <option value='' selected="selected">Choose product</option>
+                        }
+                        else
+                        {
+                            <option value=''>Choose product</option>
+                        }
+
+                        @foreach (var item in productData)
+                        {
+                            @if (productId == item.ProductId)
+                            {
+                                <option value='@item.ProductId' selected="selected">@item.ProductName</option>
+                            }
+                            else
+                            {
+                                <option value='@item.ProductId'>@item.ProductName</option>
+                            }
+                        }
+                    </select>
+                    <button type="submit" style="border: none;"><i class="fa fa-magnifying-glass"
+                            style="cursor: pointer;"></i> Search</button>
+                }
+            </th>
+        </tr>
+    </thead>
+    <thead>
+        <tr>
+            <th>Process name</th>
+            <th>Process No</th>
+            <th>CO attachment</th>
+            <th>Operation data</th>
+            <th>Pattern No</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in processData)
+        {
+            <tr>
+                <td>@item.ProcessName</td>
+                <td>@item.ProcessNo</td>
+                <td>@item.COAttachment</td>
+                <td>@item.OperationData</td>
+                <td>@item.PatternNo</td>
+            </tr>
+        }
+    </tbody>
+</table>
