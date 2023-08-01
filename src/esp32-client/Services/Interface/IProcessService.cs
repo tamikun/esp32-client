@@ -15,7 +15,7 @@ namespace esp32_client.Services
 
         Task<ProcessCreateModel> Create(ProcessCreateModel model);
 
-        Task<ProcessUpdateModel> Update(ProcessUpdateModel model);
+        Task<ProcessUpdateModel> UpdateProcessNamePatternNoById(ProcessUpdateModel model);
         
         Task<ProcessAddRequestModel> Update(ProcessAddRequestModel model);
 

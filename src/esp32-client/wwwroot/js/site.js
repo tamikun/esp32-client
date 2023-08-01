@@ -19,6 +19,11 @@
             item.addEventListener('click', showSubmitLoadingPopup);
         }
     );
+    document.querySelectorAll(`button[type="submit"]`).forEach(
+        item => {
+            item.addEventListener('click', showSubmitLoadingPopup);
+        }
+    );
 
     $("a:not(.download-file):not(.no-loading)").each(function () {
         $(this).on("click", showNormalLoadingPopup);

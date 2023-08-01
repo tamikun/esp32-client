@@ -15,12 +15,14 @@ public partial class ProcessService : IProcessService
     private readonly LinqToDb _linq2Db;
     private readonly IProductService _productService;
     private readonly IMapper _mapper;
+    private readonly Settings _settings;
 
-    public ProcessService(LinqToDb linq2Db, IMapper mapper, IProductService productService)
+    public ProcessService(LinqToDb linq2Db, IMapper mapper, IProductService productService, Settings settings)
     {
         _linq2Db = linq2Db;
         _mapper = mapper;
         _productService = productService;
+        _settings = settings;
     }
 
     public async Task<Process?> GetById(int id)
@@ -59,16 +61,25 @@ public partial class ProcessService : IProcessService
         return model;
     }
 
-    public async Task<ProcessUpdateModel> Update(ProcessUpdateModel model)
+    public async Task<ProcessUpdateModel> UpdateProcessNamePatternNoById(ProcessUpdateModel model)
     {
         var process = await GetById(model.Id);
 
         if (process is null) throw new Exception("Process is not found");
 
-        process.ProductId = model.ProductId;
         process.ProcessName = model.ProcessName;
-        // process.PatternId = model.PatternId;
-        // process.Order = model.Order;
+
+        if(model.FileData is not null){
+
+            process.PatternNo = model.FileData.FileName.ToUpper();
+
+            await Utils.Utils.DeleteFile(process.PatternDirectory);
+
+            var directory = $"{_settings.FileDataDirectory}{DateTime.UtcNow.ToString("yyyyMMddhhmmss")}-{process.PatternNo}";
+            process.PatternDirectory = directory;
+
+            await Utils.Utils.WriteFile(model.FileData, directory);
+        }
 
         await _linq2Db.Update(process);
 

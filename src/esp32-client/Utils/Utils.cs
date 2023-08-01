@@ -98,5 +98,37 @@ namespace esp32_client.Utils
             }
             return contentType;
         }
+
+        public static async Task WriteFile(IFormFile file, string directory)
+        {
+            using (var ms = new MemoryStream())
+            {
+                file.CopyTo(ms);
+                var fileBytes = ms.ToArray();
+                await File.WriteAllBytesAsync(directory, fileBytes);
+            }
+        }
+
+        public static async Task DeleteFile(string directoryPath)
+        {
+            if (Directory.Exists(directoryPath))
+            {
+                var files = Directory.GetFileSystemEntries(directoryPath);
+                if (files.Any())
+                {
+                    var deleteTasks = files.Select(async file =>
+                    {
+                        await DeleteFile(file);
+                    });
+                    await Task.WhenAll(deleteTasks);
+                }
+                Directory.Delete(directoryPath);
+            }
+            else if (File.Exists(directoryPath))
+            {
+                File.Delete(directoryPath);
+            }
+            await Task.CompletedTask;
+        }
     }
 }

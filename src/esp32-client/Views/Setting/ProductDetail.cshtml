@@ -2,6 +2,9 @@
     ViewData["Title"] = "Product setting";
     int factoryId = ViewBag.FactoryId;
     int productId = ViewBag.ProductId;
+    bool edit = ViewBag.Edit;
+
+    string acceptedFiles = ".VDT,.PMD";
 
     var productData = await _productService.GetProductByFactoryId(factoryId);
 
@@ -16,6 +19,13 @@
                     <div>
                         Product data setting table
                     </div>
+                    <div style="text-align: right;">
+                        @if(!edit){
+                            <a href='@Url.Action("ProductDetail", "Setting", new {factoryId =  @factoryId, productId = @productId, edit = true})'>Edit</a>
+                        }else{
+                            <a href='@Url.Action("ProductDetail", "Setting", new {factoryId =  @factoryId, productId = @productId, edit = false})'>View</a>
+                        }
+                    </div>
                 </div>
             </th>
         </tr>
@@ -24,16 +34,10 @@
                 Product:
             </th>
             <th colspan="4">
-                @using (Html.BeginForm("ProductDetail", "Setting", FormMethod.Get, new
+                @using (Html.BeginForm("ProductDetail", "Setting", FormMethod.Get, new {@enctype = "multipart/form-data"}))
                 {
-                    @enctype =
-                "multipart/form-data"
-                }))
-                {
-                    <input type="number" class="form-control" id="FactoryId" name="FactoryId" style="display: none;"
-                        value='@factoryId'>
-                    <select data-val="true" data-val-required="The Number field is required." id="productId"
-                        name="productId">
+                    <input type="number" class="form-control" id="factoryId" name="factoryId" style="display: none;" value='@factoryId'>
+                    <select data-val="true" data-val-required="The Number field is required." id="productId" name="productId">
 
                         @if (productId == 0)
                         {
@@ -56,31 +60,80 @@
                             }
                         }
                     </select>
-                    <button type="submit" style="border: none;"><i class="fa fa-magnifying-glass"
-                            style="cursor: pointer;"></i> Search</button>
+                    <button type="submit" style="border: none;"><i class="fa fa-magnifying-glass" style="cursor: pointer;"></i> Search</button>
                 }
             </th>
         </tr>
     </thead>
     <thead>
-        <tr>
-            <th>Process name</th>
-            <th>Process No</th>
-            <th>CO attachment</th>
-            <th>Operation data</th>
-            <th>Pattern No</th>
-        </tr>
+        @if(!edit){
+            <tr>
+                <th>Process name</th>
+                <th>Process No</th>
+                <th>CO attachment</th>
+                <th>Operation data</th>
+                <th>Pattern No</th>
+            </tr>
+        }else{
+            <tr>
+                <th>Process name</th>
+                <th>Process No</th>
+                <th>CO attachment</th>
+                <th>Operation data</th>
+                <th>Pattern No</th>
+                <th>Change pattern</th>
+            </tr>
+        }
     </thead>
     <tbody>
-        @foreach (var item in processData)
-        {
-            <tr>
-                <td>@item.ProcessName</td>
-                <td>@item.ProcessNo</td>
-                <td>@item.COAttachment</td>
-                <td>@item.OperationData</td>
-                <td>@item.PatternNo</td>
-            </tr>
+        @if(!edit){
+            @foreach (var item in processData)
+            {
+                <tr>
+                    <td>@item.ProcessName</td>
+                    <td>@item.ProcessNo</td>
+                    <td>@item.COAttachment</td>
+                    <td>@item.OperationData</td>
+                    <td>@item.PatternNo</td>
+                </tr>
+            }
+        }else{
+
+            @using (Html.BeginForm("UpdateProcess", "Setting", FormMethod.Post, new { @enctype = "multipart/form-data" }))
+            {                
+                <input type="number" class="form-control" id="FactoryId" name="FactoryId" style="display: none;" value='@factoryId'>
+                <input type="number" class="form-control" id="ProductId" name="ProductId" style="display: none;" value='@productId'>
+                
+                @for (int i = 0; i < processData.Count; i++)
+                {
+                    //Update ProcessName, Pattern, Description
+                    var strId = $"ListProcessUpdate_{i}__Id";
+                    var strName = $"ListProcessUpdate[{i}].Id";
+                    <input type="number" class="form-control" id="@strId" name="@strName" value='@processData[i].Id' style="display: none;">
+
+                    strId = $"ListProcessUpdate_{i}__ProcessName";
+                    strName = $"ListProcessUpdate[{i}].ProcessName";
+
+                    <tr>
+                        <td><input type="text" class="form-control" id="@strId" name="@strName" value='@processData[i].ProcessName'></td>
+                        <td>@processData[i].ProcessNo</td>
+                        <td>@processData[i].COAttachment</td>
+                        <td>@processData[i].OperationData</td>
+                        <td>@processData[i].PatternNo</td>
+                        
+                        @{
+                            strId = $"ListProcessUpdate_{i}__FileData";
+                            strName = $"ListProcessUpdate[{i}].FileData";
+                        }
+
+                        <td><input type="file" id="@strId" name="@strName" accept="@acceptedFiles"></td>
+                    </tr>
+                }
+
+                <tr>
+                    <td colspan="100%"><input type="submit" class="btn btn-primary" value="Save"> </td>
+                </tr>
+            }
         }
     </tbody>
 </table>

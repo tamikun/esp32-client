@@ -10,10 +10,19 @@ public class ProcessCreateModel
 public class ProcessUpdateModel
 {
     public int Id { get; set; }
-    public int ProductId { get; set; }
     public string ProcessName { get; set; }
-    public int PatternId { get; set; }
-    public int Order { get; set; }
+#nullable enable
+    public IFormFile? FileData { get; set; }
+#nullable disable
+
+}
+
+public class ListProcessUpdateModel
+{
+    public List<ProcessUpdateModel> ListProcessUpdate { get; set; }
+    public int FactoryId { get; set; }
+    public int ProductId { get; set; }
+
 }
 
 public class ProcessAddRequestModel

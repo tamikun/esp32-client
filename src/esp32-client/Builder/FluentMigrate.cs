@@ -52,13 +52,13 @@ public class AddTable : Migration
             .Table(nameof(Process))
                 .WithColumn(nameof(Process.Id)).AsInt32().PrimaryKey().Identity()
                 .WithColumn(nameof(Process.ProductId)).AsInt32()
-                .WithColumn(nameof(Process.ProcessName)).AsString()
+                .WithColumn(nameof(Process.ProcessName)).AsString().Nullable()
                 .WithColumn(nameof(Process.ProcessNo)).AsString()
                 .WithColumn(nameof(Process.PatternNo)).AsString()
-                .WithColumn(nameof(Process.PatternDirectory)).AsString()
-                .WithColumn(nameof(Process.OperationData)).AsString()
-                .WithColumn(nameof(Process.COAttachment)).AsString()
-                .WithColumn(nameof(Process.Description)).AsString()
+                .WithColumn(nameof(Process.PatternDirectory)).AsString().Nullable()
+                .WithColumn(nameof(Process.OperationData)).AsString().Nullable()
+                .WithColumn(nameof(Process.COAttachment)).AsString().Nullable()
+                .WithColumn(nameof(Process.Description)).AsString().Nullable()
             ;
         }
 
