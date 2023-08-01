@@ -58,4 +58,21 @@ public class SettingController : BaseController
         }, RedirectToAction("ProductDetail", new { factoryId = model.FactoryId, productId = model.ProductId }));
     }
 
+    [HttpGet]
+    [ProducesResponseType(StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> DownloadFile(string path)
+    {
+        if (System.IO.File.Exists(path))
+        {
+            var fileName = path.Split('/').Where(s => !string.IsNullOrEmpty(s)).LastOrDefault();
+            var fileBytes = await System.IO.File.ReadAllBytesAsync(path);
+
+            string contentType = Utils.Utils.GetContentType(fileName?.Split('.')?.LastOrDefault()?.ToLower());
+
+            return File(fileBytes, contentType, fileDownloadName: fileName);
+        }
+        return Ok();
+    }
+
 }

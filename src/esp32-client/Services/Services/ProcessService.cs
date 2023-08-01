@@ -68,6 +68,7 @@ public partial class ProcessService : IProcessService
         if (process is null) throw new Exception("Process is not found");
 
         process.ProcessName = model.ProcessName;
+        process.Description = model.Description;
 
         if(model.FileData is not null){
 

@@ -73,6 +73,7 @@
                 <th>CO attachment</th>
                 <th>Operation data</th>
                 <th>Pattern No</th>
+                <th>Description</th>
             </tr>
         }else{
             <tr>
@@ -82,6 +83,7 @@
                 <th>Operation data</th>
                 <th>Pattern No</th>
                 <th>Change pattern</th>
+                <th>Description</th>
             </tr>
         }
     </thead>
@@ -94,7 +96,12 @@
                     <td>@item.ProcessNo</td>
                     <td>@item.COAttachment</td>
                     <td>@item.OperationData</td>
-                    <td>@item.PatternNo</td>
+                    <td>
+                        <a href='@Url.Action("DownloadFile", "Setting", new {path =  @item.PatternDirectory})' class="download-file">
+                            <strong>@item.PatternNo</strong>
+                        </a>
+                    </td>
+                    <td>@item.Description</td>
                 </tr>
             }
         }else{
@@ -127,6 +134,13 @@
                         }
 
                         <td><input type="file" id="@strId" name="@strName" accept="@acceptedFiles"></td>
+                        
+                        @{
+                            strId = $"ListProcessUpdate_{i}__Description";
+                            strName = $"ListProcessUpdate[{i}].Description";
+                        }
+
+                        <td><input type="text" class="form-control" id="@strId" name="@strName" value='@processData[i].Description'></td>
                     </tr>
                 }
 

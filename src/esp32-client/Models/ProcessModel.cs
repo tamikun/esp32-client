@@ -11,6 +11,7 @@ public class ProcessUpdateModel
 {
     public int Id { get; set; }
     public string ProcessName { get; set; }
+    public string Description { get; set; }
 #nullable enable
     public IFormFile? FileData { get; set; }
 #nullable disable
