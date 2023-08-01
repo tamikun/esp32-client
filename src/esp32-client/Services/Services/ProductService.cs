@@ -84,7 +84,7 @@ public partial class ProductService : IProductService
                               ProductNo = product.ProductNo,
                               NumberOfProcess = _linq2Db.Process.Where(s => s.ProductId == product.Id).Count(),
                           }
-                        ).ToListAsync();
+                        ).OrderBy(s => s.ProductNo).ToListAsync();
         return data;
     }
 

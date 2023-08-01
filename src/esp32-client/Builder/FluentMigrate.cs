@@ -34,6 +34,17 @@ public class AddTable : Migration
                 .WithColumn(nameof(Line.ProductId)).AsInt32()
             ;
         }
+       
+        if (!Schema.Table(nameof(Station)).Exists())
+        {
+            Create
+            .Table(nameof(Station))
+                .WithColumn(nameof(Station.Id)).AsInt32().PrimaryKey().Identity()
+                .WithColumn(nameof(Station.LineId)).AsInt32()
+                .WithColumn(nameof(Station.StationNo)).AsString().NotNullable()
+                .WithColumn(nameof(Station.StationName)).AsString()
+            ;
+        }
 
         if (!Schema.Table(nameof(Product)).Exists())
         {
@@ -190,14 +201,13 @@ public class AddInitData : AutoReversingMigration
             new Setting{Name = "DeleteFileFormat", Value = "http://{0}/delete/VDATA/{1}"},
             new Setting{Name = "PostFileFormat", Value = "http://{0}/upload/VDATA/{1}"},
             new Setting{Name = "GetListFileFormat", Value = "http://{0}/VDATA"},
-            // new Setting{Name = "LineFormat", Value = "Line {0}"},
-            // new Setting{Name = "MinCharLineFormat", Value = "3"},
-            // new Setting{Name = "StationFormat", Value = "Station {0}"},
-            // new Setting{Name = "MinCharStationFormat", Value = "3"},
-            // new Setting{Name = "PatternFormat", Value = "Pattern {0}"},
-            // new Setting{Name = "MinCharPatternFormat", Value = "3"},
+            new Setting{Name = "StationFormat", Value = "Station {0}"},
+            new Setting{Name = "MinCharStationFormat", Value = "3"},
             new Setting{Name = "ProductFormat", Value = "Product {0}"},
             new Setting{Name = "MinCharProductFormat", Value = "3"},
+            new Setting{Name = "LineFormat", Value = "Line {0}"},
+            new Setting{Name = "MinCharLineFormat", Value = "3"},
+            
 
         };
         _linq2Db.BulkInsert(settings).Wait();

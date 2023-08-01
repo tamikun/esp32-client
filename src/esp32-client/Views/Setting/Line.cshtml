@@ -1,0 +1,113 @@
+@{
+    ViewData["Title"] = "Line setting";
+    int factoryId = ViewBag.FactoryId;
+
+    var factories = await _factoryService.GetAll();
+    var lineData = await _lineService.GetAllLineResponse(factoryId);
+
+}
+
+<table class="normal-table table-hover">
+    <thead>
+        <tr>
+            <th colspan="100%">
+                <div style="display: flex;justify-content: space-between;">
+                    <div>
+                        Line table
+                    </div>
+                    <div style="text-align: right;">
+                        <button type="button" class="btn btn-info btn-sm" style="color: white;"
+                            onclick="openPopup('addNewLine')">
+                            <i class="fa fa-circle-plus" style="color: white;"></i>
+                            Add new line
+                        </button>
+                    </div>
+                </div>
+            </th>
+        </tr>
+        <tr>
+            <th>
+                Factory:
+            </th>
+            <th colspan="2">
+                @using (Html.BeginForm("Line", "Setting", FormMethod.Get, new { @enctype = "multipart/form-data" }))
+                {
+                    <select data-val="true" data-val-required="The Number field is required." id="factoryId"
+                        name="factoryId">
+
+                        @if (factoryId == 0)
+                        {
+                            <option value='' selected="selected">Choose factory</option>
+                        }
+                        else
+                        {
+                            <option value=''>Choose factory</option>
+                        }
+
+                        @foreach (var item in factories)
+                        {
+                            @if (factoryId == item.Id)
+                            {
+                                <option value='@item.Id' selected="selected">@item.FactoryName</option>
+                            }
+                            else
+                            {
+                                <option value='@item.Id'>@item.FactoryName</option>
+                            }
+                        }
+                    </select>
+                    <button type="submit" style="border: none;"><i class="fa fa-magnifying-glass" style="cursor: pointer;"></i> Search</button>
+                }
+            </th>
+        </tr>
+    </thead>
+    <thead>
+        <tr>
+            <th>Line name</th>
+            <th>Line No</th>
+            <th>Number of station</th>
+            <th>Product name</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in lineData)
+        {
+            <tr>
+                <td><a href='@Url.Action("LineDetail", "Setting", new {factoryId =  @item.FactoryId, lineId = @item.LineId})'>
+                            <strong>@item.LineName</strong>
+                        </a></td>
+                <td>@item.LineNo</td>
+                <td>@item.NumberOfStation</td>
+                <td>@item.ProductName</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<div class="popup-container" id="addNewLine">
+    <div class="popup-dialog">
+        <div class="popup-content">
+            <span class="close-button" onclick="closePopup('addNewLine')">&times;</span>
+            <h2>Add new line</h2>
+            @using (Html.BeginForm("AddLine", "Setting", FormMethod.Post, new { @enctype = "multipart/form-data" }))
+            {
+                <div class="mb-3">
+                    <label for="LineName" class="form-label">Line name:</label>
+                    <input type="text" class="form-control" id="LineName" name="LineName">
+                    <input type="number" class="form-control" id="FactoryId" name="FactoryId" style="display: none;" value='@factoryId'>
+                </div>
+                <div class="mb-3">
+                    <label for="NumberOfStation" class="form-label">Number of station:</label>
+                    <input type="number" class="form-control" id="NumberOfStation" name="NumberOfStation">
+                </div>
+                <div class="mb-3">
+                    <label for="LineNo" class="form-label">Line no:</label>
+                    <input type="number" class="form-control" id="LineNo" name="LineNo">
+                </div>
+                <div class="d-grid">
+                    <input type="submit" class="btn btn-primary" value="Save">
+                </div>
+            }
+        </div>
+    </div>
+</div>

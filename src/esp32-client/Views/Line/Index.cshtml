@@ -1,7 +1,7 @@
 ﻿@model LineCreateModel
 @{
     ViewData["Title"] = "Line";
-    var lines = await _lineService.GetAllLineResponse(Model.DepartmentId);
+    var lines = await _lineService.GetAllLineResponse(Model.FactoryId);
 }
 
 <div>
@@ -13,7 +13,7 @@
                     <label for="lineName">Line name</label>
                 </td>
                 <td>
-                    @Html.HiddenFor(s => s.DepartmentId)
+                    @Html.HiddenFor(s => s.FactoryId)
                     @Html.EditorFor(s => s.LineName)
                 </td>
                 <td>
@@ -46,15 +46,15 @@
                     <td>@number</td>
                     <td>@lines[i].LineName</td>
                     <td>@lines[i].ProductName</td>
-                    <td>@lines[i].Order</td>
+                    <td>Order</td>
                     <td>
-                        <a href="@Url.Action("UpdateProductLine", new { id = lines[i].Id})">Edit product</a>
+                        <a href="@Url.Action("UpdateProductLine", new { id = lines[i].LineId})">Edit product</a>
                     </td>
                     <td>
-                        <a href="@Url.Action("UpdateMachineLine", new { id = lines[i].Id})">Edit machine</a>
+                        <a href="@Url.Action("UpdateMachineLine", new { id = lines[i].LineId})">Edit machine</a>
                     </td>
                     <td>
-                        <a href="@Url.Action("Delete", new { id = lines[i].Id })">Delete</a>
+                        <a href="@Url.Action("Delete", new { id = lines[i].LineId })">Delete</a>
                     </td>
                 </tr>
             }

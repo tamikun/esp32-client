@@ -22,12 +22,38 @@ public class SettingController : BaseController
     }
 
 
+    public async Task<ActionResult> Line(int factoryId = 0)
+    {
+        ViewBag.FactoryId = factoryId;
+        await Task.CompletedTask;
+        return View();
+    }
+
+    public async Task<ActionResult> LineDetail(int factoryId = 0, int lineId = 0, bool edit = false)
+    {
+        ViewBag.FactoryId = factoryId;
+        ViewBag.LineId = lineId;
+        await Task.CompletedTask;
+        return View();
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> AddLine(LineCreateModel model)
+    {
+        return await HandleActionAsync(async () =>
+        {
+            var productDetail = await _lineService.Create(model);
+        }, RedirectToAction("Line", new { factoryId = model.FactoryId }));
+    }
+    
+    
     public async Task<ActionResult> Product(int factoryId = 0)
     {
         ViewBag.FactoryId = factoryId;
         await Task.CompletedTask;
         return View();
     }
+
     public async Task<ActionResult> ProductDetail(int factoryId = 0, int productId = 0, bool edit = false)
     {
         ViewBag.FactoryId = factoryId;

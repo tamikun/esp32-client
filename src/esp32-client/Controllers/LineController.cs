@@ -23,7 +23,7 @@ public class LineController : BaseController
     public ActionResult Index()
     {
         var model = new LineCreateModel();
-        model.DepartmentId = 1;
+        // model.DepartmentId = 1;
         return View(model);
     }
 
