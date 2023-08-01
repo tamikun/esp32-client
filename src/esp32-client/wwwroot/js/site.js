@@ -107,16 +107,10 @@ function checkAll() {
 }
 
 // JavaScript functions to open and close the popup form
-function openPopup() {
-    document.getElementById("popupForm").style.display = "block";
+function openPopup(id) {
+    document.getElementById(id).style.display = "block";
 }
 
-function closePopup() {
-    document.getElementById("popupForm").style.display = "none";
-}
-
-function submitForm() {
-    // Add your form submission logic here (e.g., AJAX request)
-    alert("Form submitted!");
-    closePopup();
+function closePopup(id) {
+    document.getElementById(id).style.display = "none";
 }

@@ -6,10 +6,10 @@ namespace esp32_client.Controllers;
 [CustomAuthenticationFilter]
 public class DepartmentController : BaseController
 {
-    private readonly IDepartmentService _departmentService;
+    private readonly IFactoryService _departmentService;
     private readonly ILineService _lineService;
 
-    public DepartmentController(LinqToDb linq2db, IDepartmentService departmentService, ILineService lineService)
+    public DepartmentController(LinqToDb linq2db, IFactoryService departmentService, ILineService lineService)
     {
         _linq2db = linq2db;
         _departmentService = departmentService;

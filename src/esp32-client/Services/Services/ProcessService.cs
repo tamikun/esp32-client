@@ -51,9 +51,7 @@ public partial class ProcessService : IProcessService
         var process = new Process()
         {
             ProductId = model.ProductId,
-            ProcessName = model.ProcessName,
-            // PatternId = model.PatternId,
-            // Order = model.Order,
+            ProcessNo = model.ProcessNo,
         };
 
         await _linq2Db.InsertAsync(process);
@@ -98,15 +96,15 @@ public partial class ProcessService : IProcessService
             var listProcessUpdate = await (from process in processTable
                                            join request in model.ListProcessCreate.Where(s => s.Id != 0) on process.Id equals request.Id
                                            where process.ProcessName != request.ProcessName
-                                            // || process.PatternId != request.PatternId
-                                            // || process.Order != request.Order
+                                           // || process.PatternId != request.PatternId
+                                           // || process.Order != request.Order
                                            select new Process
                                            {
                                                Id = process.Id,
-                                            //    Order = request.Order,
+                                               //    Order = request.Order,
                                                ProductId = process.ProductId,
                                                ProcessName = request.ProcessName,
-                                            //    PatternId = process.PatternId,
+                                               //    PatternId = process.PatternId,
                                            }).ToListAsync();
 
             foreach (var item in listProcessUpdate)
@@ -120,15 +118,15 @@ public partial class ProcessService : IProcessService
             var listProcessUpdate = await (from process in processTable
                                            join request in model.ListProcessCreate.Where(s => s.Id != 0) on process.Id equals request.Id
                                            where process.ProcessName != request.ProcessName
-                                            // || process.PatternId != request.PatternId
-                                            // || process.Order != request.Order
+                                           // || process.PatternId != request.PatternId
+                                           // || process.Order != request.Order
                                            select new Process
                                            {
                                                Id = process.Id,
-                                            //    Order = request.Order,
+                                               //    Order = request.Order,
                                                ProductId = process.ProductId,
                                                ProcessName = request.ProcessName,
-                                            //    PatternId = request.PatternId,
+                                               //    PatternId = request.PatternId,
                                            }).ToListAsync();
 
             foreach (var item in listProcessUpdate)

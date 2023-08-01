@@ -4,86 +4,91 @@
 <head>
     <title>Popup Form Example</title>
     <link rel="stylesheet" href="../../wwwroot/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="../../wwwroot/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="../../wwwroot/css/fontawesome/css/all.css">
+    <script src="../../wwwroot/js/site.js" asp-append-version="true"></script>
 </head>
 
 <body>
-    <button type="button" class="btn btn-primary" onclick="openPopup()">Open Popup Form</button>
+    <table class="normal-table table-hover">
+        <thead>
+            <tr>
+                <th colspan="100&">
+                    <div style="display: flex;justify-content: space-between;">
+                        <div>
+                            Product table screen
+                        </div>
+                        <div style="text-align: right;">
+                            <button type="button" class="btn btn-info btn-sm" style="color: white;"
+                                onclick="openPopup('popupForm')">
+                                <i class="fa fa-circle-plus" style="color: white;"></i>
+                                Add new product
+                            </button>
+                        </div>
+                    </div>
+                </th>
+            </tr>
+            <tr>
+                <th>
+                    Factory:
+                </th>
+                <th colspan="2">
+                    <select data-val="true" data-val-required="The Number field is required." id="Number" name="Number">
+                        <option value="" selected="selected">Choose factory</option>
+                        <option>1</option>
+                        <option>2</option>
+                        <option>3</option>
+                    </select>
+                    <i class="fa fa-magnifying-glass" style="cursor: pointer;"></i>
+                </th>
+            </tr>
 
-    <!-- The popup form container -->
+        </thead>
+        <thead>
+            <tr>
+                <th>Product name</th>
+                <th>Product No</th>
+                <th>Number of process</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>number</td>
+                <td>machines[i].MachineName</td>
+                <td>machines[i].IpAddress</td>
+            </tr>
+        </tbody>
+    </table>
+
     <div class="popup-container" id="popupForm">
         <div class="popup-dialog">
             <div class="popup-content">
-                <span class="close-button" onclick="closePopup()">&times;</span>
-                <h2>Popup Form</h2>
+                <span class="close-button" onclick="closePopup('popupForm')">&times;</span>
+                <h2>Add new product</h2>
                 <form>
-                    <div class="form-group">
-                        <label for="name">Name:</label>
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Product name:</label>
                         <input type="text" class="form-control" id="name" name="name">
                     </div>
-                    <div class="form-group">
-                        <label for="email">Email:</label>
-                        <input type="email" class="form-control" id="email" name="email">
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Number of process:</label>
+                        <input type="number" class="form-control" id="email" name="email">
                     </div>
-                    <button type="button" class="btn btn-primary" onclick="submitForm()">Submit</button>
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Product no:</label>
+                        <input type="number" class="form-control" id="email" name="email"
+                            placeholder="Empty for auto-increment">
+                    </div>
+                    <div class="d-grid">
+                        <input type="submit" class="btn btn-primary" value="Save">
+                    </div>
                 </form>
             </div>
         </div>
     </div>
 
-    <script>
-        // JavaScript functions to open and close the popup form
-        function openPopup() {
-            document.getElementById("popupForm").style.display = "block";
-        }
 
-        function closePopup() {
-            document.getElementById("popupForm").style.display = "none";
-        }
 
-        function submitForm() {
-            // Add your form submission logic here (e.g., AJAX request)
-            alert("Form submitted!");
-            closePopup();
-        }
-    </script>
-
-    <style>
-        /* Style the popup container */
-        .popup-container {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            /* Semi-transparent background */
-            z-index: 1;
-        }
-
-        /* Center the popup dialog vertically and horizontally */
-        .popup-dialog {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 5px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            width: 400px;
-        }
-
-        /* Style the close button inside the popup */
-        .close-button {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            font-size: 24px;
-            color: #aaa;
-            cursor: pointer;
-        }
-    </style>
 </body>
 
 </html>

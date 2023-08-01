@@ -14,11 +14,13 @@ public partial class ProductService : IProductService
 
     private readonly LinqToDb _linq2Db;
     private readonly IMapper _mapper;
+    private readonly Settings _settings;
 
-    public ProductService(LinqToDb linq2Db, IMapper mapper)
+    public ProductService(LinqToDb linq2Db, IMapper mapper, Settings settings)
     {
         _linq2Db = linq2Db;
         _mapper = mapper;
+        _settings = settings;
     }
 
     public async Task<Product?> GetById(int id)
@@ -27,9 +29,9 @@ public partial class ProductService : IProductService
         return product;
     }
 
-    public async Task<Product?> GetByProductName(string name)
+    public async Task<Product?> GetByProductNo(string productNo)
     {
-        var product = await _linq2Db.Product.Where(s => s.ProductName == name).FirstOrDefaultAsync();
+        var product = await _linq2Db.Product.Where(s => s.ProductNo == productNo).FirstOrDefaultAsync();
         return product;
     }
 
@@ -40,11 +42,49 @@ public partial class ProductService : IProductService
 
     public async Task<ProductCreateModel> Create(ProductCreateModel model)
     {
-        var product = new Product() { ProductName = model.ProductName };
+        if (model.FactoryId == 0) throw new Exception("Invalid factory");
+
+        var product = new Product();
+        product.ProductName = model.ProductName;
+        product.FactoryId = model.FactoryId;
+
+        string formattedNumber = model.ProductNo.ToString($"D{_settings.MinCharProductFormat}");
+        product.ProductNo = string.Format(_settings.ProductFormat, formattedNumber);
 
         await _linq2Db.InsertAsync(product);
 
+        // Get product id
+        product = await GetByProductNo(product.ProductNo) ?? new Product();
+
+        // Create process
+        var listProcess = new List<Process>();
+        for (int i = 0; i < model.NumberOfProcess; i++)
+        {
+            listProcess.Add(new Process
+            {
+                ProductId = product.Id,
+                ProcessNo = $"{product.ProductNo}.{i}",
+            });
+        }
+        await _linq2Db.BulkInsert(listProcess);
+
         return model;
+    }
+
+    public async Task<List<ProductResponseModel>> GetProductByFactoryId(int factoryId)
+    {
+        var data = await (from factory in _linq2Db.Factory.Where(s => s.Id == factoryId)
+                          from product in _linq2Db.Product.Where(s => s.FactoryId == factoryId)
+                          select new ProductResponseModel
+                          {
+                              FactoryId = factoryId,
+                              FactoryName = factory.FactoryName,
+                              ProductName = product.ProductName,
+                              ProductNo = product.ProductNo,
+                              NumberOfProcess = _linq2Db.Process.Where(s => s.ProductId == product.Id).Count(),
+                          }
+                        ).ToListAsync();
+        return data;
     }
 
     public async Task<ProductUpdateModel> Update(ProductUpdateModel model)

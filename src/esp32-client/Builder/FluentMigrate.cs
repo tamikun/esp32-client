@@ -40,8 +40,8 @@ public class AddTable : Migration
             Create
             .Table(nameof(Product))
                 .WithColumn(nameof(Product.Id)).AsInt32().PrimaryKey().Identity()
-                .WithColumn(nameof(Product.FactoryId)).AsInt32().Unique()
-                .WithColumn(nameof(Product.ProductNo)).AsString().NotNullable()
+                .WithColumn(nameof(Product.FactoryId)).AsInt32()
+                .WithColumn(nameof(Product.ProductNo)).AsString().NotNullable().Unique()
                 .WithColumn(nameof(Product.ProductName)).AsString()
                 ;
         }
@@ -53,9 +53,9 @@ public class AddTable : Migration
                 .WithColumn(nameof(Process.Id)).AsInt32().PrimaryKey().Identity()
                 .WithColumn(nameof(Process.ProductId)).AsInt32()
                 .WithColumn(nameof(Process.ProcessName)).AsString()
-                .WithColumn(nameof(Process.ProcessNo)).AsString().NotNullable()
-                .WithColumn(nameof(Process.PatternNo)).AsString().NotNullable()
-                .WithColumn(nameof(Process.PatternDirectory)).AsString().NotNullable()
+                .WithColumn(nameof(Process.ProcessNo)).AsString()
+                .WithColumn(nameof(Process.PatternNo)).AsString()
+                .WithColumn(nameof(Process.PatternDirectory)).AsString()
                 .WithColumn(nameof(Process.OperationData)).AsString()
                 .WithColumn(nameof(Process.COAttachment)).AsString()
                 .WithColumn(nameof(Process.Description)).AsString()
@@ -196,8 +196,8 @@ public class AddInitData : AutoReversingMigration
             // new Setting{Name = "MinCharStationFormat", Value = "3"},
             // new Setting{Name = "PatternFormat", Value = "Pattern {0}"},
             // new Setting{Name = "MinCharPatternFormat", Value = "3"},
-            // new Setting{Name = "ProductFormat", Value = "Product {0}"},
-            // new Setting{Name = "MinCharProductFormat", Value = "3"},
+            new Setting{Name = "ProductFormat", Value = "Product {0}"},
+            new Setting{Name = "MinCharProductFormat", Value = "3"},
 
         };
         _linq2Db.BulkInsert(settings).Wait();

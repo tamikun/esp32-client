@@ -7,11 +7,13 @@ namespace esp32_client.Services
     {
         Task<Product?> GetById(int id);
 
-        Task<Product?> GetByProductName(string name);
+        Task<Product?> GetByProductNo(string name);
 
         Task<List<Product>> GetAll();
 
         Task<ProductCreateModel> Create(ProductCreateModel model);
+
+        Task<List<ProductResponseModel>> GetProductByFactoryId(int factoryId);
 
         Task<ProductUpdateModel> Update(ProductUpdateModel model);
 

@@ -46,7 +46,7 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddScoped<IClientService, ClientService>();
 builder.Services.AddScoped<IFileService, FileService>();
 
-builder.Services.AddScoped<IDepartmentService, DepartmentService>();
+builder.Services.AddScoped<IFactoryService, FactoryService>();
 builder.Services.AddScoped<ILineService, LineService>();
 builder.Services.AddScoped<IProductService, ProductService>();
 // builder.Services.AddScoped<IPatternService, PatternService>();

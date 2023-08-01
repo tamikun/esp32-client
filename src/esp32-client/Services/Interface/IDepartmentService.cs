@@ -3,7 +3,7 @@ using esp32_client.Models;
 
 namespace esp32_client.Services
 {
-    public interface IDepartmentService
+    public interface IFactoryService
     {
         Task<Factory?> GetById(int id);
 

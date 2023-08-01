@@ -4,9 +4,7 @@ public class ProcessCreateModel
 {
 #nullable disable
     public int ProductId { get; set; }
-    public string ProcessName { get; set; }
-    public int PatternId { get; set; }
-    public int Order { get; set; }
+    public string ProcessNo { get; set; }
 }
 
 public class ProcessUpdateModel
