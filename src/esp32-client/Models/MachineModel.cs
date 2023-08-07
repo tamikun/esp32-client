@@ -27,6 +27,19 @@ public class UpdateMachineLineModel
     public List<GetProcessAndMachineOfLineModel> ListProcessAndMachineOfLine { get; set; }
 }
 
+public class AssignMachineLineModel
+{
+    public int MachineId { get; set; }
+    public int StationId { get; set; }
+}
+
+public class ListAssignMachineLineModel
+{
+    public List<AssignMachineLineModel> ListAssignMachine { get; set; }
+    public int FactoryId { get; set; }
+    public int LineId { get; set; }
+}
+
 public class MachineResponseModel
 {
     public int MachineId { get; set; }

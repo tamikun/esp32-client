@@ -48,7 +48,7 @@ public partial class MachineService : IMachineService
         var response = await (from machine in _linq2Db.Machine.Where(s => s.FactoryId == factoryId)
                               join line1 in _linq2Db.Line.Where(s => s.FactoryId == factoryId) on machine.LineId equals line1.Id into line2
                               from line in line2.DefaultIfEmpty()
-                              join process1 in _linq2Db.Process on machine.ProcessId equals process1.Id into process2
+                              join process1 in _linq2Db.Process on machine.StationId equals process1.Id into process2
                               from process in process2.DefaultIfEmpty()
                               select new MachineResponseModel
                               {
@@ -67,8 +67,8 @@ public partial class MachineService : IMachineService
     public async Task<List<Machine>> GetInUseMachineByLine(int lineId)
     {
         var result = await (from line in _linq2Db.Line.Where(s => s.Id == lineId)
-                            join process in _linq2Db.Process on line.ProductId equals process.ProductId
-                            from machine in _linq2Db.Machine.Where(s => s.LineId == lineId && s.ProcessId == process.Id)
+                            join station in _linq2Db.Station on line.Id equals station.LineId
+                            from machine in _linq2Db.Machine.Where(s => s.LineId == lineId && s.StationId == station.Id)
                             select machine
                             ).ToListAsync();
         return result;
@@ -76,7 +76,7 @@ public partial class MachineService : IMachineService
 
     public async Task<List<Machine>> GetAvalableMachine(int lineId)
     {
-        var result = await _linq2Db.Machine.Where(s => s.LineId == 0 || s.ProcessId == 0 || s.LineId == lineId).ToListAsync();
+        var result = await _linq2Db.Machine.Where(s => s.LineId == 0 || s.StationId == 0 || s.LineId == lineId).ToListAsync();
         return result;
     }
 
@@ -91,7 +91,7 @@ public partial class MachineService : IMachineService
 
         for (int i = 0; i < minIndex; i++)
         {
-            machines[i].ProcessId = processes[i].Id;
+            machines[i].StationId = processes[i].Id;
         }
 
         if (machines.Count > minIndex)
@@ -99,7 +99,7 @@ public partial class MachineService : IMachineService
             for (int i = minIndex; i < machines.Count; i++)
             {
                 machines[i].LineId = 0;
-                machines[i].ProcessId = 0;
+                machines[i].StationId = 0;
             }
         }
 
@@ -137,13 +137,25 @@ public partial class MachineService : IMachineService
         return machine;
     }
 
+    public async Task AssignMachineLine(ListAssignMachineLineModel model)
+    {
+        foreach (var item in model.ListAssignMachine)
+        {
+            await _linq2Db.Machine.Where(s => s.Id == item.MachineId)
+                       .Set(s => s.FactoryId, model.FactoryId)
+                       .Set(s => s.LineId, model.LineId)
+                       .Set(s => s.StationId, item.StationId)
+                       .UpdateAsync();
+        }
+    }
+
     public async Task UpdateById(int id, int departmentId, int lineId, int processId)
     {
 
         await _linq2Db.Machine.Where(s => s.Id == id)
                     .Set(s => s.FactoryId, departmentId)
                     .Set(s => s.LineId, lineId)
-                    .Set(s => s.ProcessId, processId)
+                    .Set(s => s.StationId, processId)
                     .UpdateAsync();
     }
 
@@ -153,7 +165,7 @@ public partial class MachineService : IMachineService
         await _linq2Db.Machine.Where(s => listId.Contains(s.Id))
                     .Set(s => s.FactoryId, departmentId)
                     .Set(s => s.LineId, lineId)
-                    .Set(s => s.ProcessId, processId)
+                    .Set(s => s.StationId, processId)
                     .UpdateAsync();
     }
 
@@ -167,7 +179,7 @@ public partial class MachineService : IMachineService
     {
         var machine = await GetById(id);
         if (machine is null) throw new Exception("Machine is not found");
-        if (machine.LineId != 0 || machine.ProcessId != 0) throw new Exception("Machine is in use");
+        if (machine.LineId != 0 || machine.StationId != 0) throw new Exception("Machine is in use");
 
         await _linq2Db.DeleteAsync(machine);
     }

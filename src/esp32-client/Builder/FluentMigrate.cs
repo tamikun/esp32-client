@@ -83,7 +83,7 @@ public class AddTable : Migration
                 .WithColumn(nameof(Machine.IpAddress)).AsString().NotNullable().Unique()
                 .WithColumn(nameof(Machine.FactoryId)).AsInt32()
                 .WithColumn(nameof(Machine.LineId)).AsInt32()
-                .WithColumn(nameof(Machine.ProcessId)).AsInt32()
+                .WithColumn(nameof(Machine.StationId)).AsInt32()
                 .WithColumn(nameof(Machine.COPartNo)).AsString()
             ;
         }

@@ -73,8 +73,8 @@ public partial class LineService : ILineService
                                                                         s.FactoryId != 0 &&
                                                                         s.LineId == lineId &&
                                                                         s.LineId != 0 &&
-                                                                        s.ProcessId == process.Id &&
-                                                                        s.ProcessId != 0).DefaultIfEmpty()
+                                                                        s.StationId == process.Id &&
+                                                                        s.StationId != 0).DefaultIfEmpty()
                             // from pattern in _linq2Db.Pattern.Where(s => s.Id == process.PatternId).DefaultIfEmpty()
                             select new GetProcessAndMachineOfLineModel
                             {
@@ -107,8 +107,8 @@ public partial class LineService : ILineService
                                                                         s.FactoryId != 0 &&
                                                                         s.LineId == line.Id &&
                                                                         s.LineId != 0 &&
-                                                                        s.ProcessId == process.Id &&
-                                                                        s.ProcessId != 0).DefaultIfEmpty()
+                                                                        s.StationId == process.Id &&
+                                                                        s.StationId != 0).DefaultIfEmpty()
                             // from pattern in _linq2Db.Pattern.Where(s => s.Id == process.PatternId).DefaultIfEmpty()
                             select new GetProcessAndMachineOfLineModel
                             {

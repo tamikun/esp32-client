@@ -11,7 +11,7 @@ namespace esp32_client.Domain
         public string IpAddress { get; set; }
         public int FactoryId { get; set; }
         public int LineId { get; set; }
-        public int ProcessId { get; set; }
+        public int StationId { get; set; }
         public string COPartNo { get; set; } = string.Empty;
     }
 }
