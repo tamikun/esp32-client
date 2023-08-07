@@ -1,0 +1,147 @@
+@{
+    ViewData["Title"] = "Product - Line Assigning";
+    int factoryId = ViewBag.FactoryId;
+    bool edit = ViewBag.Edit;
+    
+    var factories = await _factoryService.GetAll();
+
+    var products = await _productService.GetAll();
+    
+    var lineData = await _lineService.GetInfoProductLine(factoryId);
+
+}
+<table class="normal-table table-hover">
+    <thead>
+        <tr>
+            <th colspan="100%">
+                <div style="display: flex;justify-content: space-between;">
+                    <div>
+                        Product - line assigning table
+                    </div>
+                    <div style="text-align: right;">
+                        @if (!edit)
+                        {
+                            <a
+                                href='@Url.Action("ProductLine", "Assigning", new {factoryId =  @factoryId, edit = true})'>
+                                <i class="fa fa-light fa-pen-to-square"></i>
+                            </a>
+                        }
+                        else
+                        {
+                            <a
+                                href='@Url.Action("ProductLine", "Assigning", new {factoryId =  @factoryId, edit = false})'>
+                                <i class="fa fa-light fa-eye"></i>
+                            </a>
+                        }
+                    </div>
+                </div>
+            </th>
+        </tr>
+        <tr>
+            <th>
+                Factory:
+            </th>
+            <th colspan="4">
+                @using (Html.BeginForm("ProductLine", "Assigning", FormMethod.Get, new { @enctype = "multipart/form-data",  @id = "searchByFactoryId" }))
+                {
+                    <select data-val="true" data-val-required="The Number field is required." id="factoryId"  name="factoryId" onchange="submitById('searchByFactoryId')">
+                        @if (factoryId == 0)
+                        {
+                            <option value='' selected="selected">Choose factory</option>
+                        }
+                        else
+                        {
+                            <option value=''>Choose factory</option>
+                        }
+
+                        @foreach (var item in factories)
+                        {
+                            @if (factoryId == item.Id)
+                            {
+                                <option value='@item.Id' selected="selected">@item.FactoryName</option>
+                            }
+                            else
+                            {
+                                <option value='@item.Id'>@item.FactoryName</option>
+                            }
+                        }
+                    </select>
+                }
+            </th>
+        </tr>
+    </thead>
+    <thead>
+        <tr>
+            <th>Line name</th>
+            <th>Line No</th>
+            <th>ProductName</th>
+        </tr>
+
+    </thead>
+    <tbody>
+        @if (!edit)
+        {
+            @foreach (var item in lineData)
+            {
+                <tr>
+                    <td>@item.LineName</td>
+                    <td>@item.LineNo</td>
+                    <td>@item.ProductName</td>
+                </tr>
+            }
+        }
+        else
+        {
+            @using (Html.BeginForm("AssignProductLine", "Assigning", FormMethod.Post, new { @enctype = "multipart/form-data" }))
+            {
+                <input type="number" class="form-control" id="FactoryId" name="FactoryId" style="display: none;"
+                    value='@factoryId'>
+
+                @for (int i = 0; i < lineData.Count; i++)
+                {
+                    var strId = $"ListProductLine_{i}__LineId";
+                    var strName = $"ListProductLine[{i}].LineId";
+                    <input type="number" class="form-control" id="@strId" name="@strName" value='@lineData[i].LineId'
+                        style="display: none;">
+
+                    strId = $"ListProductLine_{i}__ProductId";
+                    strName = $"ListProductLine[{i}].ProductId";
+
+                    <tr>
+                        <td>@lineData[i].LineName</td>
+                        <td>@lineData[i].LineNo</td>
+                        <td>
+                            <select data-val="true" data-val-required="The Number field is required." id="@strId" name="@strName">
+                               
+                                @if (lineData[i].ProductId == 0)
+                                {
+                                    <option value='' selected="selected">Empty</option>
+                                }
+                                else
+                                {
+                                    <option value=''>Empty</option>
+                                }
+                                
+                                @foreach (var product in products)
+                                {
+                                    @if (lineData[i].ProductId == product.Id)
+                                    {
+                                        <option value='@product.Id' selected="selected">@product.ProductName</option>
+                                    }
+                                    else
+                                    {
+                                        <option value='@product.Id'>@product.ProductName</option>
+                                    }
+                                }
+                            </select>
+                        </td>
+                    </tr>
+                }
+
+                <tr>
+                    <td colspan="100%"><input type="submit" class="btn btn-primary" value="Save"> </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>

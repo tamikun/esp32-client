@@ -45,3 +45,24 @@ public class GetProcessAndMachineOfLineModel
     public int PatternId { get; set; }
     public string PatternName { get; set; }
 }
+
+public class GetInfoProductLineModel
+{
+    public int LineId { get; set; }
+    public string LineName { get; set; }
+    public string LineNo { get; set; }
+    public int ProductId { get; set; }
+    public string ProductName { get; set; }
+}
+
+public class ProductLineModel
+{
+    public int LineId { get; set; }
+    public int ProductId { get; set; }
+}
+
+public class AssignProductLineModel
+{
+    public List<ProductLineModel> ListProductLine { get; set; }
+    public int FactoryId { get; set; }
+}

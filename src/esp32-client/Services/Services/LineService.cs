@@ -35,7 +35,7 @@ public partial class LineService : ILineService
     {
         return await _linq2Db.Line.ToListAsync();
     }
-   
+
     public async Task<List<Line>> GetByFactoryId(int factoryId)
     {
         return await _linq2Db.Line.Where(s => s.FactoryId == factoryId).ToListAsync();
@@ -75,7 +75,7 @@ public partial class LineService : ILineService
                                                                         s.LineId != 0 &&
                                                                         s.StationId == process.Id &&
                                                                         s.StationId != 0).DefaultIfEmpty()
-                            // from pattern in _linq2Db.Pattern.Where(s => s.Id == process.PatternId).DefaultIfEmpty()
+                                // from pattern in _linq2Db.Pattern.Where(s => s.Id == process.PatternId).DefaultIfEmpty()
                             select new GetProcessAndMachineOfLineModel
                             {
                                 LineId = line.Id,
@@ -109,7 +109,7 @@ public partial class LineService : ILineService
                                                                         s.LineId != 0 &&
                                                                         s.StationId == process.Id &&
                                                                         s.StationId != 0).DefaultIfEmpty()
-                            // from pattern in _linq2Db.Pattern.Where(s => s.Id == process.PatternId).DefaultIfEmpty()
+                                // from pattern in _linq2Db.Pattern.Where(s => s.Id == process.PatternId).DefaultIfEmpty()
                             select new GetProcessAndMachineOfLineModel
                             {
                                 LineId = line.Id,
@@ -196,6 +196,32 @@ public partial class LineService : ILineService
 
         if (line is not null)
             await _linq2Db.DeleteAsync(line);
+    }
+
+    public async Task<List<GetInfoProductLineModel>> GetInfoProductLine(int factoryId)
+    {
+        var result = await (from line in _linq2Db.Line.Where(s => s.FactoryId == factoryId)
+                            join product1 in _linq2Db.Product on line.ProductId equals product1.Id into product2
+                            from product in product2.DefaultIfEmpty()
+                            select new GetInfoProductLineModel
+                            {
+                                LineId = line.Id,
+                                LineName = line.LineName,
+                                LineNo = line.LineNo,
+                                ProductId = product.Id,
+                                ProductName = product.ProductName,
+                            }).ToListAsync();
+        return result;
+    }
+
+    public async Task AssignProductLine(AssignProductLineModel model)
+    {
+        foreach (var item in model.ListProductLine)
+        {
+            await _linq2Db.Line.Where(s => s.Id == item.LineId)
+                       .Set(s => s.ProductId, item.ProductId)
+                       .UpdateAsync();
+        }
     }
 
 }

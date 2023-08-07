@@ -22,5 +22,9 @@ namespace esp32_client.Services
         Task<Line> Update(LineUpdateModel model);
 
         Task Delete(int id);
+        
+        Task<List<GetInfoProductLineModel>> GetInfoProductLine(int factoryId);
+
+        Task AssignProductLine(AssignProductLineModel model);
     }
 }

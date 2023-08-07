@@ -20,6 +20,22 @@ public class AssigningController : BaseController
         _machineService = machineService;
     }
 
+    public async Task<IActionResult> ProductLine(int factoryId = 0, bool edit = false)
+    {
+        ViewBag.FactoryId = factoryId;
+        ViewBag.Edit = edit;
+        await Task.CompletedTask;
+        return View();
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> AssignProductLine(AssignProductLineModel model)
+    {
+        return await HandleActionAsync(async () =>
+        {
+            await _lineService.AssignProductLine(model);
+        }, RedirectToAction("ProductLine", new { factoryId = model.FactoryId }));
+    }
 
     public async Task<IActionResult> MachineLine(int factoryId = 0, int lineId = 0, bool edit = false)
     {
@@ -37,7 +53,7 @@ public class AssigningController : BaseController
         return await HandleActionAsync(async () =>
         {
             await _machineService.AssignMachineLine(model);
-        }, RedirectToAction("MachineLine",  new { factoryId = model.FactoryId, lineId = model.LineId }));
+        }, RedirectToAction("MachineLine", new { factoryId = model.FactoryId, lineId = model.LineId }));
     }
 
 }
