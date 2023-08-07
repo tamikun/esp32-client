@@ -11,14 +11,16 @@ public class SettingController : BaseController
     private readonly ILineService _lineService;
     private readonly IProductService _productService;
     private readonly IProcessService _processService;
+    private readonly IStationService _stationService;
 
-    public SettingController(LinqToDb linq2db, IFactoryService departmentService, ILineService lineService, IProductService productService, IProcessService processService)
+    public SettingController(LinqToDb linq2db, IFactoryService departmentService, ILineService lineService, IProductService productService, IProcessService processService, IStationService stationService)
     {
         _linq2db = linq2db;
         _departmentService = departmentService;
         _lineService = lineService;
         _productService = productService;
         _processService = processService;
+        _stationService = stationService;
     }
 
 
@@ -33,9 +35,24 @@ public class SettingController : BaseController
     {
         ViewBag.FactoryId = factoryId;
         ViewBag.LineId = lineId;
+        ViewBag.Edit = edit;
         await Task.CompletedTask;
         return View();
     }
+
+
+    [HttpPost]
+    public async Task<IActionResult> UpdateStation(ListStationUpdateModel model)
+    {
+        return await HandleActionAsync(async () =>
+        {
+            foreach (var item in model.ListStationUpdate)
+            {
+                await _stationService.UpdateStationName(item);
+            }
+        }, RedirectToAction("LineDetail", new { factoryId = model.FactoryId, lineId = model.LineId }));
+    }
+
 
     [HttpPost]
     public async Task<IActionResult> AddLine(LineCreateModel model)
@@ -45,8 +62,8 @@ public class SettingController : BaseController
             var productDetail = await _lineService.Create(model);
         }, RedirectToAction("Line", new { factoryId = model.FactoryId }));
     }
-    
-    
+
+
     public async Task<ActionResult> Product(int factoryId = 0)
     {
         ViewBag.FactoryId = factoryId;
@@ -71,7 +88,7 @@ public class SettingController : BaseController
             var productDetail = await _productService.Create(model);
         }, RedirectToAction("Product", new { factoryId = model.FactoryId }));
     }
-    
+
     [HttpPost]
     public async Task<IActionResult> UpdateProcess(ListProcessUpdateModel model)
     {

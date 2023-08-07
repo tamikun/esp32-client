@@ -35,6 +35,11 @@ public partial class LineService : ILineService
     {
         return await _linq2Db.Line.ToListAsync();
     }
+   
+    public async Task<List<Line>> GetByFactoryId(int factoryId)
+    {
+        return await _linq2Db.Line.Where(s => s.FactoryId == factoryId).ToListAsync();
+    }
 
     public async Task<List<LineResponseModel>> GetAllLineResponse(int factoryId)
     {

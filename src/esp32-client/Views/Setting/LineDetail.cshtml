@@ -1,0 +1,124 @@
+@{
+    ViewData["Title"] = "Station setting";
+    int factoryId = ViewBag.FactoryId;
+    int lineId = ViewBag.LineId;
+    bool edit = ViewBag.Edit;
+
+    var lineData = await _lineService.GetByFactoryId(factoryId);
+
+    // Process data: Get by product id
+    var stationData = await _stationService.GetByLineId(lineId);
+}
+<table class="normal-table table-hover">
+    <thead>
+        <tr>
+            <th colspan="100%">
+                <div style="display: flex;justify-content: space-between;">
+                    <div>
+                        Line data setting table
+                    </div>
+                    <div style="text-align: right;">
+                        @if (!edit)
+                        {
+                            <a
+                                href='@Url.Action("LineDetail", "Setting", new {factoryId =  @factoryId, lineId = lineId, edit = true})'>Edit</a>
+                        }
+                        else
+                        {
+                            <a
+                                href='@Url.Action("LineDetail", "Setting", new {factoryId =  @factoryId, lineId = lineId, edit = false})'>View</a>
+                        }
+                    </div>
+                </div>
+            </th>
+        </tr>
+        <tr>
+            <th>
+                Line:
+            </th>
+            <th colspan="4">
+                @using (Html.BeginForm("LineDetail", "Setting", FormMethod.Get, new { @enctype = "multipart/form-data" }))
+                {
+                    <input type="number" class="form-control" id="factoryId" name="factoryId" style="display: none;"
+                        value='@factoryId'>
+                    <select data-val="true" data-val-required="The Number field is required." id="lineId" name="lineId">
+
+                        @if (lineId == 0)
+                        {
+                            <option value='' selected="selected">Choose line</option>
+                        }
+                        else
+                        {
+                            <option value=''>Choose line</option>
+                        }
+
+                        @foreach (var item in lineData)
+                        {
+                            @if (lineId == item.Id)
+                            {
+                                <option value='@item.Id' selected="selected">@item.LineName</option>
+                            }
+                            else
+                            {
+                                <option value='@item.Id'>@item.LineName</option>
+                            }
+                        }
+                    </select>
+                    <button type="submit" style="border: none;"><i class="fa fa-magnifying-glass"
+                            style="cursor: pointer;"></i> Search</button>
+                }
+            </th>
+        </tr>
+    </thead>
+    <thead>
+        <tr>
+            <th>Station name</th>
+            <th>Station No</th>
+        </tr>
+
+    </thead>
+    <tbody>
+        @if (!edit)
+        {
+            @foreach (var item in stationData)
+            {
+                <tr>
+                    <td>@item.StationName</td>
+                    <td>@item.StationNo</td>
+                </tr>
+            }
+        }
+        else
+        {
+            @using (Html.BeginForm("UpdateStation", "Setting", FormMethod.Post, new { @enctype = "multipart/form-data" }))
+            {
+                <input type="number" class="form-control" id="FactoryId" name="FactoryId" style="display: none;"
+                    value='@factoryId'>
+                <input type="number" class="form-control" id="LineId" name="LineId" style="display: none;"
+                    value='@lineId'>
+
+                @for (int i = 0; i < stationData.Count; i++)
+                {
+                    //Update StationName
+                    var strId = $"ListStationUpdate_{i}__Id";
+                    var strName = $"ListStationUpdate[{i}].Id";
+                    <input type="number" class="form-control" id="@strId" name="@strName" value='@stationData[i].Id'
+                        style="display: none;">
+
+                    strId = $"ListStationUpdate_{i}__StationName";
+                    strName = $"ListStationUpdate[{i}].StationName";
+
+                    <tr>
+                        <td><input type="text" class="form-control" id="@strId" name="@strName" value='@stationData[i].StationName'>
+                        </td>
+                        <td>@stationData[i].StationNo</td>
+                    </tr>
+                }
+
+                <tr>
+                    <td colspan="100%"><input type="submit" class="btn btn-primary" value="Save"> </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>

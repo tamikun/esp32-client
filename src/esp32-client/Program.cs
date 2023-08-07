@@ -56,6 +56,7 @@ builder.Services.AddScoped<IUserAccountService, UserAccountService>();
 builder.Services.AddScoped<IUserRoleService, UserRoleService>();
 builder.Services.AddScoped<IRoleOfUserService, RoleOfUserService>();
 builder.Services.AddScoped<IUserRightService, UserRightService>();
+builder.Services.AddScoped<IStationService, StationService>();
 
 builder.Services.AddSingleton<Settings>();
 builder.Services.AddSingleton<ListServer>();
