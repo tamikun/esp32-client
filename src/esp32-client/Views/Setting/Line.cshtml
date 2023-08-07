@@ -30,10 +30,14 @@
                 Factory:
             </th>
             <th colspan="2">
-                @using (Html.BeginForm("Line", "Setting", FormMethod.Get, new { @enctype = "multipart/form-data" }))
+                @using (Html.BeginForm("Line", "Setting", FormMethod.Get, new
+                {
+                    @enctype = "multipart/form-data",
+                    @id = "searchByFactoryId"
+                }))
                 {
                     <select data-val="true" data-val-required="The Number field is required." id="factoryId"
-                        name="factoryId">
+                        name="factoryId" onchange="submitById('searchByFactoryId')">
 
                         @if (factoryId == 0)
                         {
@@ -56,7 +60,8 @@
                             }
                         }
                     </select>
-                    <button type="submit" style="border: none;"><i class="fa fa-magnifying-glass" style="cursor: pointer;"></i> Search</button>
+                    <button type="submit" style="border: none;"><i class="fa fa-magnifying-glass"
+                            style="cursor: pointer;"></i> Search</button>
                 }
             </th>
         </tr>
@@ -73,9 +78,10 @@
         @foreach (var item in lineData)
         {
             <tr>
-                <td><a href='@Url.Action("LineDetail", "Setting", new {factoryId =  @item.FactoryId, lineId = @item.LineId})'>
-                            <strong>@item.LineName</strong>
-                        </a></td>
+                <td><a
+                        href='@Url.Action("LineDetail", "Setting", new {factoryId =  @item.FactoryId, lineId = @item.LineId})'>
+                        <strong>@item.LineName</strong>
+                    </a></td>
                 <td>@item.LineNo</td>
                 <td>@item.NumberOfStation</td>
                 <td>@item.ProductName</td>
@@ -94,7 +100,8 @@
                 <div class="mb-3">
                     <label for="LineName" class="form-label">Line name:</label>
                     <input type="text" class="form-control" id="LineName" name="LineName">
-                    <input type="number" class="form-control" id="FactoryId" name="FactoryId" style="display: none;" value='@factoryId'>
+                    <input type="number" class="form-control" id="FactoryId" name="FactoryId" style="display: none;"
+                        value='@factoryId'>
                 </div>
                 <div class="mb-3">
                     <label for="NumberOfStation" class="form-label">Number of station:</label>

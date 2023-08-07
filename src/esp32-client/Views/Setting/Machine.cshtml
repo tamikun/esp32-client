@@ -31,10 +31,14 @@
                 Factory:
             </th>
             <th colspan="6">
-                @using (Html.BeginForm("Machine", "Setting", FormMethod.Get, new { @enctype = "multipart/form-data" }))
+                @using (Html.BeginForm("Machine", "Setting", FormMethod.Get, new
+                {
+                    @enctype = "multipart/form-data",
+                    @id = "searchByFactoryId"
+                }))
                 {
                     <select data-val="true" data-val-required="The Number field is required." id="factoryId"
-                        name="factoryId">
+                        name="factoryId" onchange="submitById('searchByFactoryId')">
 
                         @if (factoryId == 0)
                         {
@@ -81,7 +85,7 @@
                 <td>@item.MachineName</td>
                 <td>@item.MachineNo</td>
                 <td>@item.IpAddress</td>
-                <td>@item.LineName</td> 
+                <td>@item.LineName</td>
                 <td>@item.ProcessName</td>
                 <td>@item.COPartNo</td>
                 <td>

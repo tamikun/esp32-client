@@ -45,14 +45,14 @@
             <th colspan="4">
                 @using (Html.BeginForm("ProductDetail", "Setting", FormMethod.Get, new
                 {
-                    @enctype =
-                "multipart/form-data"
+                    @enctype = "multipart/form-data",
+                     @id = "searchByProductId"
                 }))
                 {
                     <input type="number" class="form-control" id="factoryId" name="factoryId" style="display: none;"
                         value='@factoryId'>
                     <select data-val="true" data-val-required="The Number field is required." id="productId"
-                        name="productId">
+                        name="productId" onchange="submitById('searchByProductId')">
 
                         @if (productId == 0)
                         {
