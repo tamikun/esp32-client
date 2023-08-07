@@ -8,6 +8,7 @@ namespace esp32_client.Services
         Task<Machine?> GetById(int id);
         Task<List<Machine>> GetByListId(IEnumerable<int> listId);
         Task<List<Machine>> GetAll();
+        Task<List<MachineResponseModel>> GetByFactoryId(int factoryId);
         Task<List<Machine>> GetInUseMachineByLine(int lineId);
         Task<List<Machine>> GetAvalableMachine(int lineId);
         Task<List<Machine>> UpdateMachineLineByProduct(int lineId, int productId);

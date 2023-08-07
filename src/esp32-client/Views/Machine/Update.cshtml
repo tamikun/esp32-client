@@ -12,7 +12,7 @@
                     <label for="machineNumber">Machine name</label>
                 </td>
                 <td>
-                    @Html.HiddenFor(s => s.Id)
+                    @Html.HiddenFor(s => s.MachineId)
                     @Html.EditorFor(s => s.MachineName, new { htmlAttributes = new { value = Model.MachineName} })
                 </td>
             </tr>

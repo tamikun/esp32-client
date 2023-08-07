@@ -78,7 +78,7 @@ public class AddTable : Migration
             Create
             .Table(nameof(Machine))
                 .WithColumn(nameof(Machine.Id)).AsInt32().PrimaryKey().Identity()
-                .WithColumn(nameof(Machine.MachineNo)).AsString().NotNullable()
+                .WithColumn(nameof(Machine.MachineNo)).AsString().NotNullable().Unique()
                 .WithColumn(nameof(Machine.MachineName)).AsString()
                 .WithColumn(nameof(Machine.IpAddress)).AsString().NotNullable().Unique()
                 .WithColumn(nameof(Machine.FactoryId)).AsInt32()
@@ -207,6 +207,8 @@ public class AddInitData : AutoReversingMigration
             new Setting{Name = "MinCharProductFormat", Value = "3"},
             new Setting{Name = "LineFormat", Value = "Line {0}"},
             new Setting{Name = "MinCharLineFormat", Value = "3"},
+            new Setting{Name = "MachineFormat", Value = "Machine {0}"},
+            new Setting{Name = "MinCharMachineFormat", Value = "3"},
             
 
         };

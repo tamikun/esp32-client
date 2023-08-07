@@ -12,8 +12,11 @@ public class SettingController : BaseController
     private readonly IProductService _productService;
     private readonly IProcessService _processService;
     private readonly IStationService _stationService;
+    private readonly IMachineService _machineService;
 
-    public SettingController(LinqToDb linq2db, IFactoryService departmentService, ILineService lineService, IProductService productService, IProcessService processService, IStationService stationService)
+    public SettingController(LinqToDb linq2db, IFactoryService departmentService, ILineService lineService,
+                            IProductService productService, IProcessService processService, IStationService stationService,
+                            IMachineService machineService)
     {
         _linq2db = linq2db;
         _departmentService = departmentService;
@@ -21,8 +24,34 @@ public class SettingController : BaseController
         _productService = productService;
         _processService = processService;
         _stationService = stationService;
+        _machineService = machineService;
     }
 
+
+    public async Task<ActionResult> Machine(int factoryId = 0)
+    {
+        ViewBag.FactoryId = factoryId;
+        await Task.CompletedTask;
+        return View();
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> AddMachine(MachineCreateModel model)
+    {
+        return await HandleActionAsync(async () =>
+        {
+            var machine = await _machineService.Create(model);
+        }, RedirectToAction("Machine", new { factoryId = model.FactoryId }));
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> UpdateMachine(MachineUpdateModel model)
+    {
+        return await HandleActionAsync(async () =>
+        {
+            var machine = await _machineService.Update(model);
+        }, RedirectToAction("Machine", new { factoryId = model.FactoryId }));
+    }
 
     public async Task<ActionResult> Line(int factoryId = 0)
     {

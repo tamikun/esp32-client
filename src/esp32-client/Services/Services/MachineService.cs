@@ -43,6 +43,27 @@ public partial class MachineService : IMachineService
         return await _linq2Db.Machine.ToListAsync();
     }
 
+    public async Task<List<MachineResponseModel>> GetByFactoryId(int factoryId)
+    {
+        var response = await (from machine in _linq2Db.Machine.Where(s => s.FactoryId == factoryId)
+                              join line1 in _linq2Db.Line.Where(s => s.FactoryId == factoryId) on machine.LineId equals line1.Id into line2
+                              from line in line2.DefaultIfEmpty()
+                              join process1 in _linq2Db.Process on machine.ProcessId equals process1.Id into process2
+                              from process in process2.DefaultIfEmpty()
+                              select new MachineResponseModel
+                              {
+                                  MachineId = machine.Id,
+                                  MachineName = machine.MachineName,
+                                  MachineNo = machine.MachineNo,
+                                  IpAddress = machine.IpAddress,
+                                  LineName = line.LineName,
+                                  ProcessName = process.ProcessName,
+                                  COPartNo = machine.COPartNo,
+                              }
+                            ).ToListAsync();
+        return response;
+    }
+
     public async Task<List<Machine>> GetInUseMachineByLine(int lineId)
     {
         var result = await (from line in _linq2Db.Line.Where(s => s.Id == lineId)
@@ -92,21 +113,28 @@ public partial class MachineService : IMachineService
 
     public async Task<Machine> Create(MachineCreateModel model)
     {
-        var machine = _mapper.Map<Machine>(model);
+        var machine = new Machine();
+        machine.MachineName = model.MachineName;
+        machine.IpAddress = model.IpAddress;
+        machine.FactoryId = model.FactoryId;
+
+        string formattedNumber = model.MachineNo.ToString($"D{_settings.MinCharMachineFormat}");
+        machine.MachineNo = string.Format(_settings.MachineFormat, formattedNumber);
+
         await _linq2Db.InsertAsync(machine);
         return machine;
     }
 
     public async Task<Machine> Update(MachineUpdateModel model)
     {
-        var machine = await GetById(model.Id);
+        var machine = await GetById(model.MachineId);
         if (machine is null) throw new Exception("Machine is not found");
 
-        var machineUpdate = _mapper.Map<Machine>(model);
-        machineUpdate.Id = machine.Id;
+        machine.MachineName = model.MachineName;
+        machine.IpAddress = model.IpAddress;
 
-        await _linq2Db.Update(machineUpdate);
-        return machineUpdate;
+        await _linq2Db.Update(machine);
+        return machine;
     }
 
     public async Task UpdateById(int id, int departmentId, int lineId, int processId)

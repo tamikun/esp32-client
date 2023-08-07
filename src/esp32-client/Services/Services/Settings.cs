@@ -53,5 +53,7 @@ namespace esp32_client.Services
         public int MinCharStationFormat { get; set; }
         public string ProductFormat { get; set; }
         public int MinCharProductFormat { get; set; }
+        public string MachineFormat { get; set; }
+        public int MinCharMachineFormat { get; set; }
     }
 }
