@@ -21,12 +21,16 @@
                         @if (!edit)
                         {
                             <a
-                                href='@Url.Action("LineDetail", "Setting", new {factoryId =  @factoryId, lineId = lineId, edit = true})'>Edit</a>
+                                href='@Url.Action("LineDetail", "Setting", new {factoryId =  @factoryId, lineId = lineId, edit = true})'>
+                                <i class="fa fa-light fa-pen-to-square"></i>
+                            </a>
                         }
                         else
                         {
                             <a
-                                href='@Url.Action("LineDetail", "Setting", new {factoryId =  @factoryId, lineId = lineId, edit = false})'>View</a>
+                                href='@Url.Action("LineDetail", "Setting", new {factoryId =  @factoryId, lineId = lineId, edit = false})'>
+                                <i class="fa fa-light fa-eye"></i>
+                            </a>
                         }
                     </div>
                 </div>
@@ -37,7 +41,10 @@
                 Line:
             </th>
             <th colspan="4">
-                @using (Html.BeginForm("LineDetail", "Setting", FormMethod.Get, new { @enctype = "multipart/form-data" }))
+                @using (Html.BeginForm("LineDetail", "Setting", FormMethod.Get, new
+                {
+                    @enctype = "multipart/form-data"
+                }))
                 {
                     <input type="number" class="form-control" id="factoryId" name="factoryId" style="display: none;"
                         value='@factoryId'>
@@ -94,8 +101,7 @@
             {
                 <input type="number" class="form-control" id="FactoryId" name="FactoryId" style="display: none;"
                     value='@factoryId'>
-                <input type="number" class="form-control" id="LineId" name="LineId" style="display: none;"
-                    value='@lineId'>
+                <input type="number" class="form-control" id="LineId" name="LineId" style="display: none;" value='@lineId'>
 
                 @for (int i = 0; i < stationData.Count; i++)
                 {
