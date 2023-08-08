@@ -9,10 +9,6 @@ namespace esp32_client.Services
 
         Task<List<Factory>> GetAll();
 
-        Task<Factory> Create(DepartmentCreateModel model);
-
-        Task<Factory> Update(DepartmentUpdateModel model);
-
         Task Delete(int id);
     }
 }

@@ -15,8 +15,6 @@ namespace esp32_client.Services
 
         Task<List<ProductResponseModel>> GetProductByFactoryId(int factoryId);
 
-        Task<ProductUpdateModel> Update(ProductUpdateModel model);
-
         Task<bool> IsProductInUse(int productId);
 
         Task Delete(int id);

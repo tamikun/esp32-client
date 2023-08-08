@@ -16,18 +16,14 @@ namespace esp32_client.Controllers;
 public class TestApiController : ControllerBase
 {
     private readonly ILogger<HomeController> _logger;
-    private readonly IClientService _clientService;
-    private readonly IFileService _fileService;
     private readonly Settings _settings;
     private readonly LinqToDb _connection;
     private readonly IUserAccountService _userAccountService;
     private readonly IMachineService _machineService;
 
-    public TestApiController(ILogger<HomeController> logger, IClientService clientService, IFileService fileService, Settings settings, LinqToDb connection, IUserAccountService userAccountService, IMachineService machineService)
+    public TestApiController(ILogger<HomeController> logger, Settings settings, LinqToDb connection, IUserAccountService userAccountService, IMachineService machineService)
     {
         _logger = logger;
-        _clientService = clientService;
-        _fileService = fileService;
         _settings = settings;
         _connection = connection;
         _userAccountService = userAccountService;
@@ -61,15 +57,6 @@ public class TestApiController : ControllerBase
         public string? Key2 { get; set; }
     }
 
-    [HttpPost]
-    [ProducesResponseType(StatusCodes.Status201Created)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> PostJson(string? requestBody, string apiUrl = "https://api.example.com/api/endpoint")
-    {
-        var rs = await _clientService.PostAsyncApi(requestBody, apiUrl);
-        return Ok(rs);
-    }
-
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -77,57 +64,6 @@ public class TestApiController : ControllerBase
     {
         await Task.CompletedTask;
         return Ok(_settings);
-    }
-
-    [HttpGet]
-    [ProducesResponseType(StatusCodes.Status201Created)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> GetListEspFile(string apiUrl)
-    {
-        var result = await _clientService.GetListEspFile(apiUrl);
-        return Ok(result);
-    }
-
-    [HttpPost]
-    [ProducesResponseType(StatusCodes.Status201Created)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> TestGetDataFromHtmlString(string apiUrl, string node = "//h3")
-    {
-        var pageData = await _clientService.GetAsyncApi(apiUrl, false);
-
-        string html = pageData;
-
-        HtmlDocument htmlDoc = new HtmlDocument();
-        htmlDoc.LoadHtml(html);
-        HtmlNodeCollection selectedNodes = htmlDoc.DocumentNode.SelectNodes(node);
-        if (selectedNodes != null && selectedNodes.Count > 0)
-        {
-            foreach (var select in selectedNodes)
-            {
-                System.Console.WriteLine("==== InnerHtml: " + Newtonsoft.Json.JsonConvert.SerializeObject(select.InnerHtml));
-                System.Console.WriteLine("==== InnerText: " + Newtonsoft.Json.JsonConvert.SerializeObject(select.InnerText));
-            }
-        }
-        return Ok(selectedNodes?.Count);
-    }
-
-    [HttpGet]
-    [ProducesResponseType(StatusCodes.Status201Created)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> GetDictionaryFile(string? directoryPath = null)
-    {
-        var rs = await _fileService.GetDictionaryFile(directoryPath);
-
-        return Ok(rs);
-    }
-
-    [HttpPost]
-    [ProducesResponseType(StatusCodes.Status201Created)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> BulkInsert([FromBody] List<UserAccount> data)
-    {
-        await _connection.BulkInsert(data);
-        return Ok();
     }
 
     [HttpPost]

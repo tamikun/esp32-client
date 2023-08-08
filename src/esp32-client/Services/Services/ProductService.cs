@@ -88,22 +88,6 @@ public partial class ProductService : IProductService
         return data;
     }
 
-    public async Task<ProductUpdateModel> Update(ProductUpdateModel model)
-    {
-        var product = await GetById(model.Id);
-
-        if (product is null) throw new Exception("Product is not found");
-
-        // Check produce is in use
-        if (await IsProductInUse(model.Id)) throw new Exception("Product is in use");
-
-        product.ProductName = model.ProductName;
-
-        await _linq2Db.Update(product);
-
-        return model;
-    }
-
     public async Task<bool> IsProductInUse(int productId)
     {
         return await _linq2Db.Line.AnyAsync(s => s.ProductId == productId);

@@ -32,26 +32,6 @@ public partial class FactoryService : IFactoryService
         return await _linq2Db.Factory.ToListAsync();
     }
 
-    public async Task<Factory> Create(DepartmentCreateModel model)
-    {
-        var department = new Factory { FactoryName = model.DepartmentName };
-
-        await _linq2Db.InsertAsync(department);
-
-        return department;
-    }
-
-    public async Task<Factory> Update(DepartmentUpdateModel model)
-    {
-        var department = await GetById(model.Id);
-        if (department is null) throw new Exception("Department is not found");
-
-        department.FactoryName = model.DepartmentName;
-        await _linq2Db.Update(department);
-
-        return department;
-    }
-
     public async Task Delete(int id)
     {
         var department = await GetById(id);

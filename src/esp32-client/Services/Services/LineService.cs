@@ -31,11 +31,6 @@ public partial class LineService : ILineService
         return line;
     }
 
-    public async Task<List<Line>> GetAll()
-    {
-        return await _linq2Db.Line.ToListAsync();
-    }
-
     public async Task<List<Line>> GetByFactoryId(int factoryId)
     {
         return await _linq2Db.Line.Where(s => s.FactoryId == factoryId).ToListAsync();
@@ -58,74 +53,6 @@ public partial class LineService : ILineService
                                 ProductName = product.ProductName,
                                 NumberOfStation = _linq2Db.Station.Where(s => s.LineId == line.Id).Count()
                             }).OrderBy(s => s.LineNo).ToListAsync();
-
-        return result;
-    }
-
-    public async Task<List<GetProcessAndMachineOfLineModel>> GetProcessAndMachineOfLine(int departmentId, int lineId)
-    {
-        var result = await (from line in _linq2Db.Line.Where(s => s.FactoryId == departmentId && s.Id == lineId)
-                            join product1 in _linq2Db.Product on line.ProductId equals product1.Id into product2
-                            from product in product2.DefaultIfEmpty()
-                            join process1 in _linq2Db.Process on product.Id equals process1.ProductId into process2
-                            from process in process2.DefaultIfEmpty()
-                            from machine in _linq2Db.Machine.Where(s => s.FactoryId == departmentId &&
-                                                                        s.FactoryId != 0 &&
-                                                                        s.LineId == lineId &&
-                                                                        s.LineId != 0 &&
-                                                                        s.StationId == process.Id &&
-                                                                        s.StationId != 0).DefaultIfEmpty()
-                                // from pattern in _linq2Db.Pattern.Where(s => s.Id == process.PatternId).DefaultIfEmpty()
-                            select new GetProcessAndMachineOfLineModel
-                            {
-                                LineId = line.Id,
-                                // LineOrder = line.Order,
-                                LineName = line.LineName,
-                                ProductId = line.ProductId,
-                                ProductName = product.ProductName,
-                                ProcessId = process.Id,
-                                // ProcessOrder = process.Order,
-                                ProcessName = process.ProcessName,
-                                MachineId = machine.Id,
-                                MachineName = machine.MachineName,
-                                MachineIp = machine.IpAddress,
-                                // PatternId = pattern.Id,
-                                // PatternName = pattern.PatternNumber,
-                            }).OrderBy(s => s.ProcessOrder).ToListAsync();
-
-        return result;
-    }
-
-    public async Task<List<GetProcessAndMachineOfLineModel>> GetProcessAndMachineOfLines(int departmentId)
-    {
-        var result = await (from line in _linq2Db.Line.Where(s => s.FactoryId == departmentId)
-                            join product1 in _linq2Db.Product on line.ProductId equals product1.Id into product2
-                            from product in product2.DefaultIfEmpty()
-                            join process1 in _linq2Db.Process on product.Id equals process1.ProductId into process2
-                            from process in process2.DefaultIfEmpty()
-                            from machine in _linq2Db.Machine.Where(s => s.FactoryId == departmentId &&
-                                                                        s.FactoryId != 0 &&
-                                                                        s.LineId == line.Id &&
-                                                                        s.LineId != 0 &&
-                                                                        s.StationId == process.Id &&
-                                                                        s.StationId != 0).DefaultIfEmpty()
-                                // from pattern in _linq2Db.Pattern.Where(s => s.Id == process.PatternId).DefaultIfEmpty()
-                            select new GetProcessAndMachineOfLineModel
-                            {
-                                LineId = line.Id,
-                                // LineOrder = line.Order,
-                                LineName = line.LineName,
-                                ProductId = line.ProductId,
-                                ProductName = product.ProductName,
-                                ProcessId = process.Id,
-                                // ProcessOrder = process.Order,
-                                ProcessName = process.ProcessName,
-                                MachineId = machine.Id,
-                                MachineName = machine.MachineName,
-                                MachineIp = machine.IpAddress,
-                                // PatternId = pattern.Id,
-                                // PatternName = pattern.PatternNumber,
-                            }).OrderBy(s => s.LineOrder).ThenBy(s => s.ProcessOrder).ToListAsync();
 
         return result;
     }
@@ -171,32 +98,6 @@ public partial class LineService : ILineService
         return line;
     }
 
-    public async Task<Line> Update(LineUpdateModel model)
-    {
-        var line = await GetById(model.Id);
-        if (line is null) throw new Exception("Line is not found");
-
-        // Update line info
-        line.FactoryId = model.DepartmentId;
-        line.LineName = model.LineName;
-        // line.Order = model.Order;
-        line.ProductId = model.ProductId;
-
-        await _linq2Db.Update(line);
-
-        return line;
-    }
-
-    public async Task Delete(int id)
-    {
-        var line = await GetById(id);
-
-        // Release machine attached to line
-        await _machineService.UpdateMachineLineByProduct(id, 0);
-
-        if (line is not null)
-            await _linq2Db.DeleteAsync(line);
-    }
 
     public async Task<List<GetInfoProductLineModel>> GetInfoProductLine(int factoryId)
     {

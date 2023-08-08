@@ -13,12 +13,8 @@ namespace esp32_client.Services
 
         Task<List<Process>> GetAll();
 
-        Task<ProcessCreateModel> Create(ProcessCreateModel model);
-
         Task<ProcessUpdateModel> UpdateProcessNamePatternNoById(ProcessUpdateModel model);
         
-        Task<ProcessAddRequestModel> Update(ProcessAddRequestModel model);
-
         Task Delete(int id);
     }
 }
