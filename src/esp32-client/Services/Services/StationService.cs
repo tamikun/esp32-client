@@ -32,9 +32,9 @@ public partial class StationService : IStationService
         return await _linq2Db.Station.ToListAsync();
     }
 
-    public async Task<List<Station>> GetByLineId(int linId)
+    public async Task<List<Station>> GetByLineId(int lineId)
     {
-        return await _linq2Db.Station.Where(s => s.LineId == linId).ToListAsync();
+        return await _linq2Db.Station.Where(s => s.LineId == lineId).ToListAsync();
     }
 
     public async Task UpdateStationName(StationUpdateModel model)

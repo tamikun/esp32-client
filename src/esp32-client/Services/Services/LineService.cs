@@ -223,5 +223,43 @@ public partial class LineService : ILineService
                        .UpdateAsync();
         }
     }
+    
+    public async Task AssignStationProcess(AssignStationProcessModel model)
+    {
+        foreach (var item in model.ListStationProcess)
+        {
+            await _linq2Db.Station.Where(s => s.Id == item.StationId)
+                       .Set(s => s.ProcessId, item.ProcessId)
+                       .UpdateAsync();
+        }
+    }
+
+    public async Task<List<GetStationAndProcessModel>> GetStationAndProcess(int lineId)
+    {
+        var result = await (from line in _linq2Db.Line.Where(s => s.Id == lineId)
+                            join station1 in _linq2Db.Station on line.Id equals station1.LineId into station2
+                            from station in station2.DefaultIfEmpty()
+                            join product1 in _linq2Db.Product on line.ProductId equals product1.Id into product2
+                            from product in product2.DefaultIfEmpty()
+                            join process1 in _linq2Db.Process on station.ProcessId equals process1.Id into process2
+                            from process in process2.DefaultIfEmpty()
+                            // where process.ProductId == product.Id
+                            select new GetStationAndProcessModel
+                            {
+                                LineId = line.Id,
+                                LineName = line.LineName,
+                                LineNo = line.LineNo,
+                                ProductId = product.Id,
+                                ProductName = product.ProductName,
+                                ProductNo = product.ProductNo,
+                                StationId = station.Id,
+                                StationName = station.StationName,
+                                StationNo = station.StationNo,
+                                ProcessId = process.Id,
+                                ProcessName = process.ProcessName,
+                                ProcessNo = process.ProcessNo,
+                            }).ToListAsync();
+        return result;
+    }
 
 }

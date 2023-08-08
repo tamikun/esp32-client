@@ -43,6 +43,7 @@ public class AddTable : Migration
                 .WithColumn(nameof(Station.LineId)).AsInt32()
                 .WithColumn(nameof(Station.StationNo)).AsString().NotNullable()
                 .WithColumn(nameof(Station.StationName)).AsString()
+                .WithColumn(nameof(Station.ProcessId)).AsInt32()
             ;
         }
 

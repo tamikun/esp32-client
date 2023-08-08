@@ -66,3 +66,32 @@ public class AssignProductLineModel
     public List<ProductLineModel> ListProductLine { get; set; }
     public int FactoryId { get; set; }
 }
+
+public class StationProcessModel
+{
+    public int StationId { get; set; }
+    public int ProcessId { get; set; }
+}
+
+public class AssignStationProcessModel
+{
+    public List<StationProcessModel> ListStationProcess { get; set; }
+    public int FactoryId { get; set; }
+    public int LineId { get; set; }
+}
+
+public class GetStationAndProcessModel
+{
+    public int LineId { get; set; }
+    public string LineName { get; set; }
+    public string LineNo { get; set; }
+    public int ProductId { get; set; }
+    public string ProductName { get; set; }
+    public string ProductNo { get; set; }
+    public int StationId { get; set; }
+    public string StationName { get; set; }
+    public string StationNo { get; set; }
+    public int ProcessId { get; set; }
+    public string ProcessName { get; set; }
+    public string ProcessNo { get; set; }
+}

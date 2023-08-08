@@ -1,0 +1,121 @@
+@{
+    ViewData["Title"] = "Station - Process Assigning"; 
+    int factoryId = ViewBag.FactoryId;
+    int lineId = ViewBag.LineId;
+    bool edit = ViewBag.Edit;
+
+    var stationData = await _lineService.GetStationAndProcess(lineId);
+
+    var listProcess = new List<Process>();
+    if(stationData.Count > 0){
+        listProcess = await _processService.GetByProductId(stationData[0].ProductId);
+    }
+}
+
+<table class="normal-table table-hover">
+  <thead>
+    <tr>
+        <th colspan="100%">
+            <div style="display: flex;justify-content: space-between;">
+                <div>
+                    Station - process assigning table
+                </div>
+                <div style="text-align: right;">
+                    @if (!edit)
+                    {
+                        <a
+                            href='@Url.Action("StationProcess", "Assigning", new {factoryId =  @factoryId, lineId = @lineId, edit = true})'>
+                            <i class="fa fa-light fa-pen-to-square"></i>
+                        </a>
+                    }
+                    else
+                    {
+                        <a
+                            href='@Url.Action("StationProcess", "Assigning", new {factoryId =  @factoryId, lineId = @lineId, edit = false})'>
+                            <i class="fa fa-light fa-eye"></i>
+                        </a>
+                    }
+                </div>
+            </div>
+        </th>
+    </tr>
+    @if(stationData.Count > 0){
+        <tr>
+            <th colspan="100%">
+                Line: @stationData[0].LineName - @stationData[0].LineNo
+            </th>
+        </tr>
+        <tr>
+            <th colspan="100%">
+                Product: @stationData[0].ProductName - @stationData[0].ProductNo
+            </th>
+        </tr>
+        <tr>
+            <th>Station name</th>
+            <th>Station No</th>
+            <th>Process name</th>
+            <th>Process No</th>
+        </tr>
+    }
+  </thead>
+  <tbody>
+    @if(!edit){
+        @for(int i = 0; i < stationData.Count ; i++){
+            <tr>
+                <td>@stationData[i].StationName</td>
+                <td>@stationData[i].StationNo</td>
+                <td>@stationData[i].ProcessName</td>
+                <td>@stationData[i].ProcessNo</td>
+            </tr>
+        }
+    }else{
+        @using (Html.BeginForm("AssignStationProcess", "Assigning", FormMethod.Post, new { @enctype = "multipart/form-data" })){
+            
+            <input type="number" class="form-control" id="FactoryId" name="FactoryId" style="display: none;"
+                    value='@factoryId'>
+            <input type="number" class="form-control" id="LineId" name="LineId" style="display: none;"
+                    value='@lineId'>
+
+            @for(int i = 0; i < stationData.Count ; i++){
+
+                var strId = $"ListStationProcess_{i}__StationId";
+                var strName = $"ListStationProcess[{i}].StationId";
+                
+                <input type="number" class="form-control" id="@strId" name="@strName" value='@stationData[i].StationId'
+                    style="display: none;">
+
+                strId = $"ListStationProcess_{i}__ProcessId";
+                strName = $"ListStationProcess[{i}].ProcessId";
+                
+                <tr>
+                    <td>@stationData[i].StationName</td>
+                    <td>@stationData[i].StationNo</td>
+                    <td>
+                        <select data-val="true" data-val-required="The Number field is required." id="@strId" name="@strName">
+                            @if (stationData[i].ProcessId == 0){
+                                <option value='' selected="selected">Empty</option>
+                            }else{
+                                <option value=''>Empty</option>
+                            }
+                            
+                            @foreach (var process in listProcess){
+                                @if (stationData[i].ProcessId == process.Id){
+                                    <option value='@process.Id' selected="selected">@process.ProcessName</option>
+                                }else{
+                                    <option value='@process.Id'>@process.ProcessName</option>
+                                }
+                            }
+                        </select>
+                    </td>
+                    <td>@stationData[i].ProcessNo</td>
+                </tr>
+            }
+            @if(stationData.Count > 0){
+                <tr>
+                    <td colspan="100%"><input type="submit" class="btn btn-primary" value="Save"> </td>
+                </tr>
+            }
+        }
+    }
+  </tbody>
+</table>

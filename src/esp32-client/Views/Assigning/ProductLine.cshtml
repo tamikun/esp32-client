@@ -84,7 +84,11 @@
             @foreach (var item in lineData)
             {
                 <tr>
-                    <td>@item.LineName</td>
+                    <td>
+                        <a href='@Url.Action("StationProcess", "Assigning", new {factoryId =  @factoryId, lineId = @item.LineId})'>
+                            <strong>@item.LineName</strong>
+                        </a>
+                    </td>
                     <td>@item.LineNo</td>
                     <td>@item.ProductName</td>
                 </tr>

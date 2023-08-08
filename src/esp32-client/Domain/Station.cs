@@ -9,5 +9,6 @@ namespace esp32_client.Domain
         public int LineId { get; set; }
         public string StationNo { get; set; } = string.Empty;
         public string StationName { get; set; } = string.Empty;
+        public int ProcessId { get; set; }
     }
 }
