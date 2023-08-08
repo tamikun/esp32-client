@@ -53,6 +53,15 @@ public class SettingController : BaseController
         }, RedirectToAction("Machine", new { factoryId = model.FactoryId }));
     }
 
+    [HttpPost]
+    public async Task<IActionResult> DeleteMachine(int machineId, int factoryId)
+    {
+        return await HandleActionAsync(async () =>
+        {
+            await _machineService.DeleteById(machineId);
+        }, RedirectToAction("Machine", new { factoryId = factoryId }));
+    }
+
     public async Task<ActionResult> Line(int factoryId = 0)
     {
         ViewBag.FactoryId = factoryId;

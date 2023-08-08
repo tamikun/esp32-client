@@ -33,6 +33,8 @@ public class ListAssignMachineLineModel
 public class MachineResponseModel
 {
     public int MachineId { get; set; }
+    public int LineId { get; set; }
+    public int StationId { get; set; }
     public string MachineName { get; set; }
     public string MachineNo { get; set; }
     public string IpAddress { get; set; }

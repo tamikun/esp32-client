@@ -29,7 +29,7 @@ public class AddTable : Migration
             .Table(nameof(Line))
                 .WithColumn(nameof(Line.Id)).AsInt32().PrimaryKey().Identity()
                 .WithColumn(nameof(Line.FactoryId)).AsInt32()
-                .WithColumn(nameof(Line.LineNo)).AsString().NotNullable()
+                .WithColumn(nameof(Line.LineNo)).AsString().NotNullable().Unique()
                 .WithColumn(nameof(Line.LineName)).AsString()
                 .WithColumn(nameof(Line.ProductId)).AsInt32()
             ;
@@ -55,7 +55,7 @@ public class AddTable : Migration
                 .WithColumn(nameof(Product.FactoryId)).AsInt32()
                 .WithColumn(nameof(Product.ProductNo)).AsString().NotNullable().Unique()
                 .WithColumn(nameof(Product.ProductName)).AsString()
-                ;
+            ;
         }
 
         if (!Schema.Table(nameof(Process)).Exists())

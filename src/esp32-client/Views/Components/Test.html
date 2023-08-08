@@ -144,6 +144,23 @@
             </tr>
         </table>
     </div>
+
+    <div class="popup-container" id="deleteMachine" style="display: block;">
+        <div class="popup-dialog">
+            <div class="popup-content">
+                <span class="close-button" onclick="closePopup('deleteMachine')">&times;</span>
+                <h2>Delete machine</h2>
+                    <div class="mb-3">
+                        <label for="MachineName" class="form-label">Do you want to delete machine {machineName}?</label>
+                        <input type="number" class="form-control" id="machineId" name="machineId" style="display: none;">
+                    </div>
+                    <div class="d-grid">
+                        <input type="submit" class="btn btn-danger" value="Delete">
+                    </div>
+                
+            </div>
+        </div>
+    </div>
 </body>
 
 </html>

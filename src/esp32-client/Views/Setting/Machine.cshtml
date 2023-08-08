@@ -98,7 +98,11 @@
                             </button>
                         </div>
                         <div id="delete">
-                            <i class="fa fa-light fa-trash" style="color: red;"></i>
+                            <button type="button" class="btn btn-danger btn-sm" style="color: white;"
+                                onclick="openDeletePopup('deleteMachine', '@item.MachineId', '@item.MachineName')">
+                                <i class="fa fa-light fa-trash" style="color: white;"></i>
+                                Delete
+                            </button>
                         </div>
                     </div>
                 </td>
@@ -149,10 +153,8 @@
                 <div class="mb-3">
                     <label for="MachineName" class="form-label">Machine name:</label>
                     <input type="text" class="form-control" id="MachineName" name="MachineName">
-                    <input type="number" class="form-control" id="FactoryId" name="FactoryId" style="display: none;"
-                        value='@factoryId'>
-                    <input type="number" class="form-control" id="MachineId" name="MachineId" style="display: none;"
-                        value=''>
+                    <input type="number" class="form-control" id="FactoryId" name="FactoryId" style="display: none;" value='@factoryId'>
+                    <input type="number" class="form-control" id="MachineId" name="MachineId" style="display: none;" value=''>
                 </div>
                 <div class="mb-3">
                     <label for="IpAddress" class="form-label">Ip address:</label>
@@ -160,6 +162,29 @@
                 </div>
                 <div class="d-grid">
                     <input type="submit" class="btn btn-primary" value="Save">
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<div class="popup-container" id="deleteMachine">
+    <div class="popup-dialog">
+        <div class="popup-content">
+            <span class="close-button" onclick="closePopup('deleteMachine')">&times;</span>
+            <h2>Delete machine</h2>
+            @using (Html.BeginForm("DeleteMachine", "Setting", FormMethod.Post, new
+            {
+                @enctype = "multipart/form-data"
+            }))
+            {
+                <div class="mb-3">
+                    <label for="machineId" class="form-label">Do you want to delete machine: <strong></strong>?</label>
+                    <input type="number" class="form-control" id="machineId" name="machineId" style="display: none;">
+                    <input type="number" class="form-control" id="factoryId" name="factoryId" style="display: none;" value='@factoryId'>
+                </div>
+                <div class="d-grid">
+                    <input type="submit" class="btn btn-danger" value="Delete">
                 </div>
             }
         </div>
@@ -180,7 +205,24 @@
             pMachineName.value = param.MachineName;
             pIpAddress.value = param.IpAddress;
 
+            if(param.LineId !== 0 || param.StationId !== 0){
+                pIpAddress.setAttribute("disabled", true);
+            }else{
+                pIpAddress.removeAttribute("disabled");
+            }
+
             document.getElementById(id).style.display = "block";
         }
+
+        function openDeletePopup(id, machineId, machineName) {
+            var machineNameElement = document.querySelector('[id=deleteMachine] label strong');
+            machineNameElement.innerText = `${machineName}`;
+
+            var pMachineId = document.querySelector('[id=deleteMachine] [id=machineId]');
+            pMachineId.value = machineId;
+
+            document.getElementById(id).style.display = "block";
+        }
+
     </script>
 }

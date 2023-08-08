@@ -53,6 +53,8 @@ public partial class MachineService : IMachineService
                               select new MachineResponseModel
                               {
                                   MachineId = machine.Id,
+                                  LineId = machine.LineId,
+                                  StationId = machine.StationId,
                                   MachineName = machine.MachineName,
                                   MachineNo = machine.MachineNo,
                                   IpAddress = machine.IpAddress,
@@ -113,6 +115,13 @@ public partial class MachineService : IMachineService
 
     public async Task<Machine> Create(MachineCreateModel model)
     {
+        #region validation
+        if (model.MachineNo <= 0)
+            throw new Exception("Machine No should be greater than 0");
+        if (String.IsNullOrEmpty(model.IpAddress))
+            throw new Exception("Ip Address is required");
+        #endregion
+
         var machine = new Machine();
         machine.MachineName = model.MachineName;
         machine.IpAddress = model.IpAddress;
@@ -131,10 +140,23 @@ public partial class MachineService : IMachineService
         if (machine is null) throw new Exception("Machine is not found");
 
         machine.MachineName = model.MachineName;
-        machine.IpAddress = model.IpAddress;
+
+        // Allow change ip when machine is not in use
+        if (machine.LineId == 0 && machine.StationId == 0)
+        {
+            machine.IpAddress = model.IpAddress;
+        }
 
         await _linq2Db.Update(machine);
         return machine;
+    }
+
+    public async Task DeleteById(int id)
+    {
+        var machine = await GetById(id);
+        if (machine is null) throw new Exception("Machine is not found");
+        if (machine.LineId != 0 || machine.StationId != 0) throw new Exception("Machine is in use");
+        await _linq2Db.DeleteAsync(machine);
     }
 
     public async Task AssignMachineLine(ListAssignMachineLineModel model)
