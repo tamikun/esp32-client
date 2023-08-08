@@ -46,7 +46,6 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddScoped<IFactoryService, FactoryService>();
 builder.Services.AddScoped<ILineService, LineService>();
 builder.Services.AddScoped<IProductService, ProductService>();
-// builder.Services.AddScoped<IPatternService, PatternService>();
 builder.Services.AddScoped<IProcessService, ProcessService>();
 builder.Services.AddScoped<IMachineService, MachineService>();
 builder.Services.AddScoped<IUserAccountService, UserAccountService>();
@@ -90,8 +89,9 @@ var runner = serviceProvider.GetRequiredService<IMigrationRunner>();
 runner.MigrateUp();
 
 
-
 var app = builder.Build();
+
+EngineContext.SetServiceProvider(app.Services);
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
