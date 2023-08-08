@@ -32,18 +32,20 @@ public class LineResponseModel
 public class GetProcessAndMachineOfLineModel
 {
     public int LineId { get; set; }
-    public int LineOrder { get; set; }
     public string LineName { get; set; }
-    public int ProductId { get; set; }
+    public string LineNo { get; set; }
+    public int StationId { get; set; }
+    public string StationName { get; set; }
+    public string StationNo { get; set; }
     public string ProductName { get; set; }
-    public int ProcessId { get; set; }
-    public int ProcessOrder { get; set; }
+    public string ProductNo { get; set; }
     public string ProcessName { get; set; }
-    public int MachineId { get; set; }
+    public string ProcessNo { get; set; }
+    public string PatternNo { get; set; }
+    public string PatterDescription { get; set; }
     public string MachineName { get; set; }
+    public string MachineNo { get; set; }
     public string MachineIp { get; set; }
-    public int PatternId { get; set; }
-    public string PatternName { get; set; }
 }
 
 public class GetInfoProductLineModel

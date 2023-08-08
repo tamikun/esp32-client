@@ -7,91 +7,143 @@
     <link rel="stylesheet" href="../../wwwroot/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="../../wwwroot/css/fontawesome/css/all.css">
     <script src="../../wwwroot/js/site.js" asp-append-version="true"></script>
+    <style>
+        .overview-line table {
+            border-collapse: unset;
+            margin: 20px;
+        }
+
+        .overview-line th,
+        .overview-line td {
+            border: 1px solid rgb(0, 0, 0);
+            border-radius: 5px;
+            min-width: 40px;
+        }
+
+        .overview-line table {
+            margin: 10px 10px 0px 10px;
+        }
+
+        .overview-line .arrow {
+            font-size: 30px;
+            line-height: 1;
+        }
+
+        .overview-line table:nth-child(3n+1) {
+            color: rgb(65, 79, 43);
+        }
+
+        .overview-line table:nth-child(3n+1) {
+            color: rgb(104, 133, 54);
+        }
+
+        .overview-line table:nth-child(3n+1) tr:nth-child(3) td:nth-child(1) {
+            background-color: rgb(192, 214, 155);
+            color: #000;
+        }
+
+        .overview-line table:nth-child(3n+1) tr:nth-child(3) td:nth-child(2n+3) {
+            background-color: rgb(235, 241, 222);
+            color: #000;
+        }
+
+        .overview-line table:nth-child(3n+2) {
+            color: rgb(46, 72, 104);
+        }
+
+        .overview-line table:nth-child(3n+2) tr:nth-child(3) td:nth-child(1) {
+            background-color: rgb(149, 179, 215);
+            color: #000;
+        }
+
+        .overview-line table:nth-child(3n+2) tr:nth-child(3) td:nth-child(2n+3) {
+            background-color: rgb(198, 217, 241);
+            color: #000;
+        }
+
+        .overview-line table:nth-child(3n) {
+            color: rgb(63, 40, 90);
+        }
+
+        .overview-line table:nth-child(3n) tr:nth-child(3) td:nth-child(1) {
+            background-color: rgb(179, 162, 199);
+            color: #000;
+        }
+
+        .overview-line table:nth-child(3n) tr:nth-child(3) td:nth-child(2n+3) {
+            background-color: rgb(204, 193, 218);
+            color: #000;
+        }
+
+        .notfound {
+            background-color: rgb(197, 197, 197);
+            color: #000;
+        }
+    </style>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const cells = document.getElementsByTagName("td");
+
+            for (let i = 0; i < cells.length; i++) {
+                const cell = cells[i];
+                if (cell.textContent === "Not found") {
+                    cell.classList.add("notfound");
+                }
+            }
+        });
+    </script>
 </head>
 
 <body>
-    <a href=""><i class="fa fa-light fa-eye"></i></a>
-    
-    <i class="fa fa-light fa-pen-to-square"></i>
-    <table class="normal-table table-hover">
-        <thead>
+    <div class="overview-line">
+        <table>
             <tr>
-                <th colspan="100&">
-                    <div style="display: flex;justify-content: space-between;">
-                        <div>
-                            Product table screen
-                        </div>
-                        <div style="text-align: right;">
-                            <button type="button" class="btn btn-info btn-sm" style="color: white;"
-                                onclick="openPopup('popupForm')">
-                                <i class="fa fa-circle-plus" style="color: white;"></i>
-                                Add new product
-                            </button>
-                        </div>
-                    </div>
-                </th>
+                <td style="border: 0;"></td>
+                <td style="border: 0;"></td>
+                <td>
+                    <small>@machineName</small>
+                    <br>
+                    <small>(@machineNo)</small>
+                    <br>
+                    <small>(@ipAddress)</small>
+                </td>
             </tr>
             <tr>
-                <th>
-                    Factory:
-                </th>
-                <th colspan="2">
-                    <select data-val="true" data-val-required="The Number field is required." id="Number" name="Number">
-                        <option value="" selected="selected">Choose factory</option>
-                        <option>1</option>
-                        <option>2</option>
-                        <option>3</option>
-                    </select>
-                    <i class="fa fa-magnifying-glass" style="cursor: pointer;"></i>
-                </th>
+                <td style="border: 0;"></td>
+                <td style="border: 0;"></td>
+                <td style="text-align: right;"><small>--</small></td>
             </tr>
-
-        </thead>
-        <thead>
             <tr>
-                <th>Product name</th>
-                <th>Product No</th>
-                <th>Number of process</th>
+                <td style="white-space: nowrap; width: 100px;">
+                    @lineData[0].LineName
+                    <br>
+                    @LineNo
+                </td>
+                <td style="white-space: nowrap; border: 0;"></td>
+                <td style="white-space: nowrap;">
+                    @stationName
+                    <br>
+                    @stationNo
+                </td>
+                <td style="white-space: nowrap; border: 0;">
+                    <div class="arrow">&#8594;</div>
+                </td>
             </tr>
-        </thead>
-        <tbody>
             <tr>
-                <td>number</td>
-                <td>machines[i].MachineName</td>
-                <td>machines[i].IpAddress</td>
+                <td style="white-space: nowrap;">@productName</td>
+                <td style="border: 0;"></td>
+                <td>
+                    <small>@ProcessName</small>
+                    <br>
+                    <small>@ProcessNo</small>
+                    <br>
+                    <small>@PatternNo</small>
+                    <br>
+                    <small>@Desription</small>
+                </td>
             </tr>
-        </tbody>
-    </table>
-
-    <div class="popup-container" id="popupForm">
-        <div class="popup-dialog">
-            <div class="popup-content">
-                <span class="close-button" onclick="closePopup('popupForm')">&times;</span>
-                <h2>Add new product</h2>
-                <form>
-                    <div class="mb-3">
-                        <label for="name" class="form-label">Product name:</label>
-                        <input type="text" class="form-control" id="name" name="name">
-                    </div>
-                    <div class="mb-3">
-                        <label for="email" class="form-label">Number of process:</label>
-                        <input type="number" class="form-control" id="email" name="email">
-                    </div>
-                    <div class="mb-3">
-                        <label for="email" class="form-label">Product no:</label>
-                        <input type="number" class="form-control" id="email" name="email"
-                            placeholder="Empty for auto-increment">
-                    </div>
-                    <div class="d-grid">
-                        <input type="submit" class="btn btn-primary" value="Save">
-                    </div>
-                </form>
-            </div>
-        </div>
+        </table>
     </div>
-
-
-
 </body>
 
 </html>

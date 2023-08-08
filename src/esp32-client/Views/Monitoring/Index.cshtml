@@ -1,0 +1,185 @@
+@{
+    ViewData["Title"] = "Monitoring";
+
+    int factoryId = ViewBag.FactoryId;
+
+    var data = await _lineService.GetProcessAndMachineOfLine(factoryId);
+
+    var lines = data.DistinctBy(s => s.LineId).Where(s => s.LineId != 0).Select(s => s.LineId).ToList();
+}
+@if (lines.Count > 0)
+{
+    <div class="overview-line">
+        @for (var i = 0; i < lines.Count; i++)
+        {
+            var lineData = data.Where(s => s.LineId == lines[i]).ToList();
+
+            <table>
+                <tr>
+                    <td style="border: 0;"></td>
+                    @for (var index = 0; index < lineData.Count; index++)
+                    {
+                        string machineName = String.IsNullOrEmpty(lineData[index].MachineName) ? "null" : lineData[index].MachineName;
+                        string machineNo = String.IsNullOrEmpty(lineData[index].MachineNo) ? "null" : lineData[index].MachineNo;
+                        <td style="border: 0;"></td>
+                        <td>
+                            <small>Machine No: @machineNo</small>
+                            <br>
+                            <small>Machine name: @machineName</small>
+                        </td>
+                    }
+                </tr>
+                <tr>
+                    <td style="border: 0;"></td>
+                    @for (var index = 0; index < lineData.Count; index++)
+                    {
+                        <td style="border: 0;"></td>
+                        <td style="text-align: right;"><small>--</small></td>
+                    }
+                </tr>
+                <tr>
+                    <td style="white-space: nowrap; width: 100px;">
+                        @lineData[0].LineNo
+                        <br>
+                        @lineData[0].LineName
+                    </td>
+                    <td style="white-space: nowrap; border: 0;"></td>
+                    @for (var index = 0; index < lineData.Count; index++)
+                    {
+                        string stationName = String.IsNullOrEmpty(lineData[index].StationName) ? "null" : lineData[index].StationName;
+                        string stationNo = String.IsNullOrEmpty(lineData[index].StationNo) ? "null" : lineData[index].StationNo;
+
+                        <td style="white-space: nowrap;">
+                            Station No: @stationNo
+                            <br>
+                            Station name: @stationName
+                        </td>
+                        @if (index < lineData.Count - 1)
+                        {
+                            <td style="white-space: nowrap; border: 0;">
+                                <div class="arrow">&#8594;</div>
+                            </td>
+                        }
+                    }
+                </tr>
+                <tr>
+                    @{
+                        string productName = String.IsNullOrEmpty(lineData[0].ProductName) ? "null" : lineData[0].ProductName;
+                        string productNo = String.IsNullOrEmpty(lineData[0].ProductNo) ? "null" : lineData[0].ProductNo;
+                    }
+                    <td style="white-space: nowrap;">
+                        <small>Product No: @productNo</small>
+                        <br>
+                        <small>Product name: @productName</small>
+                    </td>
+                    @for (var index = 0; index < lineData.Count; index++)
+                    {
+                        string processNo = String.IsNullOrEmpty(lineData[index].ProcessNo) ? "null" : lineData[index].ProcessNo;
+                        string processName = String.IsNullOrEmpty(lineData[index].ProcessName) ? "null" : lineData[index].ProcessName;
+                        string patternNo = String.IsNullOrEmpty(lineData[index].PatternNo) ? "null" : lineData[index].PatternNo;
+
+                        <td style="border: 0;"></td>
+                        <td>
+                            <small>Process No: @processNo</small>
+                            <br>
+                            <small>Process name: @processName</small>
+                            <br>
+                            <small>Pattern No: @patternNo</small>
+                            <br>
+                            <small>@lineData[index].PatterDescription</small>
+                        </td>
+                    }
+                </tr>
+            </table>
+        }
+    </div>
+}
+
+
+@section Scripts{
+    <style>
+        .overview-line table {
+            border-collapse: unset;
+            margin: 20px;
+        }
+
+        .overview-line th,
+        .overview-line td {
+            border: 1px solid rgb(0, 0, 0);
+            border-radius: 5px;
+            min-width: 40px;
+        }
+
+        .overview-line table {
+            margin: 10px 10px 0px 10px;
+        }
+
+        .overview-line .arrow {
+            font-size: 30px;
+            line-height: 1;
+        }
+
+        .overview-line table:nth-child(3n+1) {
+            color: rgb(65, 79, 43);
+        }
+
+        .overview-line table:nth-child(3n+1) {
+            color: rgb(104, 133, 54);
+        }
+
+        .overview-line table:nth-child(3n+1) tr:nth-child(3) td:nth-child(1) {
+            background-color: rgb(192, 214, 155);
+            color: #000;
+        }
+
+        .overview-line table:nth-child(3n+1) tr:nth-child(3) td:nth-child(2n+3) {
+            background-color: rgb(235, 241, 222);
+            color: #000;
+        }
+
+        .overview-line table:nth-child(3n+2) {
+            color: rgb(46, 72, 104);
+        }
+
+        .overview-line table:nth-child(3n+2) tr:nth-child(3) td:nth-child(1) {
+            background-color: rgb(149, 179, 215);
+            color: #000;
+        }
+
+        .overview-line table:nth-child(3n+2) tr:nth-child(3) td:nth-child(2n+3) {
+            background-color: rgb(198, 217, 241);
+            color: #000;
+        }
+
+        .overview-line table:nth-child(3n) {
+            color: rgb(63, 40, 90);
+        }
+
+        .overview-line table:nth-child(3n) tr:nth-child(3) td:nth-child(1) {
+            background-color: rgb(179, 162, 199);
+            color: #000;
+        }
+
+        .overview-line table:nth-child(3n) tr:nth-child(3) td:nth-child(2n+3) {
+            background-color: rgb(204, 193, 218);
+            color: #000;
+        }
+
+        .notfound {
+            background-color: rgb(197, 197, 197);
+            color: #000;
+        }
+    </style>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const cells = document.getElementsByTagName("td");
+
+            for (let i = 0; i < cells.length; i++) {
+                const cell = cells[i];
+                if (cell.textContent === "Not found") {
+                    cell.classList.add("notfound");
+                }
+            }
+        });
+    </script>
+}

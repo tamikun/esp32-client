@@ -20,5 +20,7 @@ namespace esp32_client.Services
         Task AssignStationProcess(AssignStationProcessModel model);
 
         Task<List<GetStationAndProcessModel>> GetStationAndProcess(int lineId);
+        
+        Task<List<GetProcessAndMachineOfLineModel>> GetProcessAndMachineOfLine(int factoryId);
     }
 }

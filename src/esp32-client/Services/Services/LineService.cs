@@ -124,7 +124,7 @@ public partial class LineService : ILineService
                        .UpdateAsync();
         }
     }
-    
+
     public async Task AssignStationProcess(AssignStationProcessModel model)
     {
         foreach (var item in model.ListStationProcess)
@@ -144,7 +144,6 @@ public partial class LineService : ILineService
                             from product in product2.DefaultIfEmpty()
                             join process1 in _linq2Db.Process on station.ProcessId equals process1.Id into process2
                             from process in process2.DefaultIfEmpty()
-                            // where process.ProductId == product.Id
                             select new GetStationAndProcessModel
                             {
                                 LineId = line.Id,
@@ -160,6 +159,41 @@ public partial class LineService : ILineService
                                 ProcessName = process.ProcessName,
                                 ProcessNo = process.ProcessNo,
                             }).ToListAsync();
+        return result;
+    }
+
+    public async Task<List<GetProcessAndMachineOfLineModel>> GetProcessAndMachineOfLine(int factoryId)
+    {
+        var result = await (from line in _linq2Db.Line.Where(s => s.FactoryId == factoryId)
+                            join station1 in _linq2Db.Station on line.Id equals station1.LineId into station2
+                            from station in station2.DefaultIfEmpty()
+                            join product1 in _linq2Db.Product on line.ProductId equals product1.Id into product2
+                            from product in product2.DefaultIfEmpty()
+                            join process1 in _linq2Db.Process on station.ProcessId equals process1.Id into process2
+                            from process in process2.DefaultIfEmpty()
+                            from machine in _linq2Db.Machine.Where(s =>
+                                s.FactoryId == factoryId
+                                && s.LineId == line.Id
+                                && s.StationId == station.Id
+                            ).DefaultIfEmpty()
+                            select new GetProcessAndMachineOfLineModel
+                            {
+                                LineId = line.Id,
+                                LineName = line.LineName,
+                                LineNo = line.LineNo,
+                                StationId = station.Id,
+                                StationName = station.StationName,
+                                StationNo = station.StationNo,
+                                ProductName = product.ProductName,
+                                ProductNo = product.ProductNo,
+                                ProcessName = process.ProcessName,
+                                ProcessNo = process.ProcessNo,
+                                PatternNo = process.PatternNo,
+                                PatterDescription = process.Description,
+                                MachineName = machine.MachineName,
+                                MachineNo = machine.MachineNo,
+                                MachineIp = machine.IpAddress,
+                            }).OrderBy(s => s.LineId).ThenBy(s => s.StationId).ToListAsync();
         return result;
     }
 

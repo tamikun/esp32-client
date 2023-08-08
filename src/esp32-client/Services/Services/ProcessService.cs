@@ -57,13 +57,14 @@ public partial class ProcessService : IProcessService
         process.ProcessName = model.ProcessName;
         process.Description = model.Description;
 
-        if(model.FileData is not null){
+        if (model.FileData is not null)
+        {
 
             process.PatternNo = model.FileData.FileName.ToUpper();
 
             await Utils.Utils.DeleteFile(process.PatternDirectory);
 
-            var directory = $"{_settings.FileDataDirectory}{DateTime.UtcNow.ToString("yyyyMMddhhmmss")}-{process.PatternNo}";
+            var directory = $"{_settings.FileDataDirectory}{DateTime.UtcNow.ToString("yyyyMMddhhmmssfff")}-{process.PatternNo}";
             process.PatternDirectory = directory;
 
             await Utils.Utils.WriteFile(model.FileData, directory);

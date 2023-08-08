@@ -17,8 +17,9 @@ public class MonitoringController : BaseController
     }
 
 
-    public async Task<ActionResult> Index()
+    public async Task<IActionResult> Index(int factoryId = 1)
     {
+        ViewBag.FactoryId = factoryId;
         await Task.CompletedTask;
         return View();
     }

@@ -17,16 +17,6 @@ public class MachineUpdateModel
     public int FactoryId { get; set; }
 }
 
-public class UpdateMachineLineModel
-{
-    public UpdateMachineLineModel()
-    {
-        ListProcessAndMachineOfLine = new List<GetProcessAndMachineOfLineModel>();
-    }
-    public int DepartmentId { get; set; }
-    public List<GetProcessAndMachineOfLineModel> ListProcessAndMachineOfLine { get; set; }
-}
-
 public class AssignMachineLineModel
 {
     public int MachineId { get; set; }
