@@ -7,157 +7,27 @@
     <link rel="stylesheet" href="../../wwwroot/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="../../wwwroot/css/fontawesome/css/all.css">
     <script src="../../wwwroot/js/site.js" asp-append-version="true"></script>
-    <style>
-        .overview-line table {
-            border-collapse: unset;
-            margin: 20px;
-        }
-
-        .overview-line th,
-        .overview-line td {
-            border: 1px solid rgb(0, 0, 0);
-            border-radius: 5px;
-            min-width: 40px;
-        }
-
-        .overview-line table {
-            margin: 10px 10px 0px 10px;
-        }
-
-        .overview-line .arrow {
-            font-size: 30px;
-            line-height: 1;
-        }
-
-        .overview-line table:nth-child(3n+1) {
-            color: rgb(65, 79, 43);
-        }
-
-        .overview-line table:nth-child(3n+1) {
-            color: rgb(104, 133, 54);
-        }
-
-        .overview-line table:nth-child(3n+1) tr:nth-child(3) td:nth-child(1) {
-            background-color: rgb(192, 214, 155);
-            color: #000;
-        }
-
-        .overview-line table:nth-child(3n+1) tr:nth-child(3) td:nth-child(2n+3) {
-            background-color: rgb(235, 241, 222);
-            color: #000;
-        }
-
-        .overview-line table:nth-child(3n+2) {
-            color: rgb(46, 72, 104);
-        }
-
-        .overview-line table:nth-child(3n+2) tr:nth-child(3) td:nth-child(1) {
-            background-color: rgb(149, 179, 215);
-            color: #000;
-        }
-
-        .overview-line table:nth-child(3n+2) tr:nth-child(3) td:nth-child(2n+3) {
-            background-color: rgb(198, 217, 241);
-            color: #000;
-        }
-
-        .overview-line table:nth-child(3n) {
-            color: rgb(63, 40, 90);
-        }
-
-        .overview-line table:nth-child(3n) tr:nth-child(3) td:nth-child(1) {
-            background-color: rgb(179, 162, 199);
-            color: #000;
-        }
-
-        .overview-line table:nth-child(3n) tr:nth-child(3) td:nth-child(2n+3) {
-            background-color: rgb(204, 193, 218);
-            color: #000;
-        }
-
-        .notfound {
-            background-color: rgb(197, 197, 197);
-            color: #000;
-        }
-    </style>
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            const cells = document.getElementsByTagName("td");
-
-            for (let i = 0; i < cells.length; i++) {
-                const cell = cells[i];
-                if (cell.textContent === "Not found") {
-                    cell.classList.add("notfound");
-                }
-            }
-        });
-    </script>
 </head>
-
 <body>
-    <div class="overview-line">
-        <table>
-            <tr>
-                <td style="border: 0;"></td>
-                <td style="border: 0;"></td>
-                <td>
-                    <small>@machineName</small>
-                    <br>
-                    <small>(@machineNo)</small>
-                    <br>
-                    <small>(@ipAddress)</small>
-                </td>
-            </tr>
-            <tr>
-                <td style="border: 0;"></td>
-                <td style="border: 0;"></td>
-                <td style="text-align: right;"><small>--</small></td>
-            </tr>
-            <tr>
-                <td style="white-space: nowrap; width: 100px;">
-                    @lineData[0].LineName
-                    <br>
-                    @LineNo
-                </td>
-                <td style="white-space: nowrap; border: 0;"></td>
-                <td style="white-space: nowrap;">
-                    @stationName
-                    <br>
-                    @stationNo
-                </td>
-                <td style="white-space: nowrap; border: 0;">
-                    <div class="arrow">&#8594;</div>
-                </td>
-            </tr>
-            <tr>
-                <td style="white-space: nowrap;">@productName</td>
-                <td style="border: 0;"></td>
-                <td>
-                    <small>@ProcessName</small>
-                    <br>
-                    <small>@ProcessNo</small>
-                    <br>
-                    <small>@PatternNo</small>
-                    <br>
-                    <small>@Desription</small>
-                </td>
-            </tr>
-        </table>
-    </div>
-
-    <div class="popup-container" id="deleteMachine" style="display: block;">
+    <div class="popup-container" style="display: block;">
         <div class="popup-dialog">
             <div class="popup-content">
-                <span class="close-button" onclick="closePopup('deleteMachine')">&times;</span>
-                <h2>Delete machine</h2>
-                    <div class="mb-3">
-                        <label for="MachineName" class="form-label">Do you want to delete machine {machineName}?</label>
-                        <input type="number" class="form-control" id="machineId" name="machineId" style="display: none;">
+                    <div class="mb-3 d-grid">
+                        <h2 style="color: #005F99; text-align: center;"><strong>Sign in</strong></h2>
                     </div>
+                    <div class="mb-3 d-grid">
+                        <label for="loginName" class="form-label"><strong>Login name</strong></label>
+                        <input id="loginName" name="loginName" type="text" placeholder="Login name">
+                    </div>
+                    
+                    <div class="mb-3 d-grid">
+                        <label for="password" class="form-label"><Strong>Password</Strong></label>
+                        <input id="password" name="password" type="password" placeholder="Password">
+                    </div>
+        
                     <div class="d-grid">
-                        <input type="submit" class="btn btn-danger" value="Delete">
+                        <input type="submit" class="btn btn-primary" value="SIGN IN">
                     </div>
-                
             </div>
         </div>
     </div>

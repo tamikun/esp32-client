@@ -1,5 +1,4 @@
 ﻿@{
-    ViewData["Title"] = "Login";
     Layout = "";
 }
 
@@ -7,88 +6,46 @@
 <html>
 
 <head>
-    <style>
-        body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            background-color: #f1f1f1;
-            font-family: "Hiragino Kaku Gothic ProN", "ヒラギノ角ゴシック Pro", 游ゴシック体, "Yu Gothic", YuGothic, "メイリオ", sans-serif;
-        }
-
-        label {
-            font-size: x-large;
-            font-weight: 600;
-            color: #005F99;
-        }
-
-        .form-container {
-            position: relative;
-            background-color: #fff;
-            padding: 5px;
-            border-radius: 5px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
-            width: 20%;
-            height: 50%;
-            text-align: -webkit-center;
-        }
-
-        .form-container label,
-        .form-container input {
-        @*display:block;*@margin: 10px;
-            width: -webkit-fill-available;
-        }
-
-        .form-container label {
-            font-size: x-large;
-            font-weight: 600;
-            color: #005F99;
-        }
-
-        .form-container input {
-            font-size: large;
-            border-radius: 5px;
-            border-style: groove;
-        }
-
-        .form-container input[type="submit"] {
-            background-color: #005F99;
-            color: #fff;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 3px;
-            cursor: pointer;
-        }
-    </style>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+    <title>Login</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/fontawesome/css/all.css">
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/esp32_client.styles.css" asp-append-version="true" />
 </head>
 
 <body>
-    <div class="form-container">
-        @using (Html.BeginForm("Login", "User", FormMethod.Post))
-        {
-            <h2 style="color: #005F99;">Login</h2>
-            <div>
-                @* <label for="loginName">Login name:</label> *@
-                @* @Html.TextBox("loginName", new { htmlAttributes = new { placeholder = "Login name"} }) *@
-
-                <input id="loginName" name="loginName" type="text" placeholder="Login name">
+    @using (Html.BeginForm("Login", "User", FormMethod.Post))
+    {
+        <div class="popup-container" style="display: block;">
+            <div class="popup-dialog">
+                <div class="popup-content">
+                        <div class="mb-3 d-grid">
+                            <h2 style="color: #005F99; text-align: center;"><strong>Sign in</strong></h2>
+                        </div>
+                        <div class="mb-3 d-grid">
+                            <label for="loginName" class="form-label"><strong>Login name</strong></label>
+                            <input id="loginName" name="loginName" type="text" placeholder="Login name">
+                        </div>
+                        
+                        <div class="mb-3 d-grid">
+                            <label for="password" class="form-label"><Strong>Password</Strong></label>
+                            <input id="password" name="password" type="password" placeholder="Password">
+                        </div>
+                        
+                        <div class="mb-3 d-grid text-danger">
+                            @Html.ValidationSummary()
+                        </div>
+            
+                        <div class="d-grid">
+                            <input type="submit" class="btn btn-primary" value="SIGN IN">
+                        </div>
+                </div>
             </div>
-
-            <div>
-                @* <label for="password">Password:</label> *@
-                @* @Html.Password("password", new { htmlAttributes = new { placeholder = "Password"} }) *@
-                <input id="password" name="password" type="password" placeholder="Password">
-            </div>
-
-            @Html.ValidationSummary()
-
-            <div style="position: absolute; bottom: 0px;width: -webkit-fill-available;">
-                <input type="submit" value="Login" />
-            </div>
-        }
-    </div>
+        </div>
+    }
 </body>
 
 </html>
