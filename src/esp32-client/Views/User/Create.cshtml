@@ -14,31 +14,37 @@
             }));
 }
 
-<div class="form-container">
-    @using (Html.BeginForm("Create", "User", FormMethod.Post, new { @enctype = "multipart/form-data" }))
-    {
-        <div>
-            <label for="userName">UserName</label>
-            @Html.EditorFor(s => s.UserName)
-        </div>
+ <div class="popup-container" style="display: block;" id="popup">
+    <div class="popup-dialog">
+        <div class="popup-content">
+            <span class="close-button" onclick="closePopup('popup')">&times;</span>
+            <h2>Create new user</h2>
+            @using (Html.BeginForm("Create", "User", FormMethod.Post, new { @enctype = "multipart/form-data" }))
+            {
+                <div class="mb-3 d-grid">
+                    <label for="userName">UserName</label>
+                    @Html.EditorFor(s => s.UserName)
+                </div>
+                
+                <div class="mb-3 d-grid">
+                    <label for="loginName">LoginName</label>
+                    @Html.EditorFor(s => s.LoginName)
+                </div>
+                
+                <div class="mb-3 d-grid">
+                    <label for="password">Password</label>
+                    @Html.PasswordFor(s => s.Password)
+                </div>
 
-        <div>
-            <label for="loginName">LoginName</label>
-            @Html.EditorFor(s => s.LoginName)
+                <div class="mb-3 d-grid">
+                    <label for="roleId">UserRole</label>
+                    @Html.DropDownListFor(s => s.RoleId, listSelecteRole)
+                </div>
+                
+                <div class="d-grid">
+                    <input type="submit" class="btn btn-primary" value="Save">
+                </div>
+            }
         </div>
-
-        <div>
-            <label for="password">Password</label>
-            @Html.PasswordFor(s => s.Password)
-        </div>
-
-        <div>
-            <label for="roleId">UserRole</label>
-            @Html.DropDownListFor(s => s.RoleId, listSelecteRole)
-        </div>
-
-        <div>
-            <input type="submit" value="Save" />
-        </div>
-    }
+    </div>
 </div>

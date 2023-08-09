@@ -3,28 +3,29 @@
     ViewData["Title"] = "Update account";
 }
 
-<div>
-    @using (Html.BeginForm("Update", "User", FormMethod.Post, new { @enctype = "multipart/form-data" }))
-    {
-        <table class="upload-table">
-            <tr>
-                <td>
+ <div class="popup-container" style="display: block;" id="popup">
+    <div class="popup-dialog">
+        <div class="popup-content">
+            <span class="close-button" onclick="closePopup('popup')">&times;</span>
+            <h2>Update account</h2>
+            @using (Html.BeginForm("Update", "User", FormMethod.Post, new { @enctype = "multipart/form-data" }))
+            {
+                <div class="mb-3 d-grid">
                     <label>Login name</label>
-                </td>
-                <td>
                     @Html.HiddenFor(s => s.Id)
                     @Html.EditorFor(s => s.LoginName, new { htmlAttributes = new { value = Model.LoginName} })
-                </td>
-                <td>
+                </div>
+                
+                <div class="mb-3 d-grid">
                     <label>User name</label>
-                </td>
-                <td>
                     @Html.EditorFor(s => s.UserName, new { htmlAttributes = new { value = Model.UserName} })
-                </td>
-                <td>
-                    <input type="submit" value="Save" />
-                </td>
-            </tr>
-        </table>
-    }
+                </div>
+                
+                <div class="d-grid">
+                    <input type="submit" class="btn btn-primary" value="Save">
+                </div>
+            }
+        </div>
+    </div>
 </div>
+
