@@ -59,6 +59,8 @@ public partial class ProcessService : IProcessService
 
         if (model.FileData is not null)
         {
+            if (await _productService.IsProductInUse(process.ProductId))
+                throw new Exception("Cannot change pattern: Product is in use!");
 
             process.PatternNo = model.FileData.FileName.ToUpper();
 
