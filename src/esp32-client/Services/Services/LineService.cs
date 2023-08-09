@@ -58,9 +58,9 @@ public partial class LineService : ILineService
         return result;
     }
 
-    public async Task<Line?> GetByLineNo(string lineNo)
+    public async Task<Line?> GetByLineNo(string lineNo, int factoryId)
     {
-        var line = await _linq2Db.Line.Where(s => s.LineNo == lineNo).FirstOrDefaultAsync();
+        var line = await _linq2Db.Line.Where(s => s.LineNo == lineNo && s.FactoryId == factoryId).FirstOrDefaultAsync();
         return line;
     }
 
@@ -79,7 +79,7 @@ public partial class LineService : ILineService
         await _linq2Db.InsertAsync(line);
 
         // Get line id
-        line = await GetByLineNo(line.LineNo) ?? new Line();
+        line = await GetByLineNo(line.LineNo, model.FactoryId) ?? new Line();
 
         // Create station
         await AddStation(line.Id, model.NumberOfStation);

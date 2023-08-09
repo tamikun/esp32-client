@@ -29,15 +29,15 @@ public partial class ProductService : IProductService
         return product;
     }
 
-    public async Task<Product?> GetByProductNo(string productNo)
+    public async Task<Product?> GetByProductNo(string productNo, int factoryId)
     {
-        var product = await _linq2Db.Product.Where(s => s.ProductNo == productNo).FirstOrDefaultAsync();
+        var product = await _linq2Db.Product.Where(s => s.ProductNo == productNo && s.FactoryId ==factoryId).FirstOrDefaultAsync();
         return product;
     }
 
-    public async Task<List<Product>> GetAll()
+    public async Task<List<Product>> GetAll(int factoryId)
     {
-        return await _linq2Db.Product.ToListAsync();
+        return await _linq2Db.Product.Where(s => s.FactoryId == factoryId).ToListAsync();
     }
 
     public async Task<ProductCreateModel> Create(ProductCreateModel model)
@@ -54,7 +54,7 @@ public partial class ProductService : IProductService
         await _linq2Db.InsertAsync(product);
 
         // Get product id
-        product = await GetByProductNo(product.ProductNo) ?? new Product();
+        product = await GetByProductNo(product.ProductNo, model.FactoryId) ?? new Product();
 
         // Create process
         var listProcess = new List<Process>();

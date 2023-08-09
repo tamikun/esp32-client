@@ -7,19 +7,19 @@ namespace esp32_client.Controllers;
 [CustomAuthenticationFilter]
 public class SettingController : BaseController
 {
-    private readonly IFactoryService _departmentService;
+    private readonly IFactoryService _factoryService;
     private readonly ILineService _lineService;
     private readonly IProductService _productService;
     private readonly IProcessService _processService;
     private readonly IStationService _stationService;
     private readonly IMachineService _machineService;
 
-    public SettingController(LinqToDb linq2db, IFactoryService departmentService, ILineService lineService,
+    public SettingController(LinqToDb linq2db, IFactoryService factoryService, ILineService lineService,
                             IProductService productService, IProcessService processService, IStationService stationService,
                             IMachineService machineService)
     {
         _linq2db = linq2db;
-        _departmentService = departmentService;
+        _factoryService = factoryService;
         _lineService = lineService;
         _productService = productService;
         _processService = processService;
@@ -31,6 +31,39 @@ public class SettingController : BaseController
     {
         await Task.CompletedTask;
         return View();
+    }
+
+    public async Task<ActionResult> Factory()
+    {
+        await Task.CompletedTask;
+        return View();
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> AddFactory(int factoryNo, string factoryName)
+    {
+        return await HandleActionAsync(async () =>
+        {
+            var factory = await _factoryService.Create(factoryNo, factoryName);
+        }, RedirectToAction("Factory"));
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> UpdateFactory(int factoryId, string factoryName)
+    {
+        return await HandleActionAsync(async () =>
+        {
+            await _factoryService.UpdateName(factoryId, factoryName);
+        }, RedirectToAction("Factory"));
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> DeleteFactory(int factoryId)
+    {
+        return await HandleActionAsync(async () =>
+        {
+            await _factoryService.Delete(factoryId);
+        }, RedirectToAction("Factory"));
     }
 
     public async Task<ActionResult> Machine(int factoryId = 0)

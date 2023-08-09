@@ -9,6 +9,12 @@ namespace esp32_client.Services
 
         Task<List<Factory>> GetAll();
 
+        Task<List<FactoryResponseModel>> GetAllResponse();
+
+        Task<Factory> Create(int factoryNo, string factoryName);
+
         Task Delete(int id);
+
+        Task UpdateName(int id, string name);
     }
 }

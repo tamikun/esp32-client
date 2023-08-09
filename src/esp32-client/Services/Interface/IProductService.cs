@@ -7,9 +7,9 @@ namespace esp32_client.Services
     {
         Task<Product?> GetById(int id);
 
-        Task<Product?> GetByProductNo(string name);
+        Task<Product?> GetByProductNo(string productNo, int factoryId);
 
-        Task<List<Product>> GetAll();
+        Task<List<Product>> GetAll(int factoryId);
 
         Task<ProductCreateModel> Create(ProductCreateModel model);
 

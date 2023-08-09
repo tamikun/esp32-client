@@ -6,7 +6,38 @@
     var data = await _lineService.GetProcessAndMachineOfLine(factoryId);
 
     var lines = data.DistinctBy(s => s.LineId).Where(s => s.LineId != 0).Select(s => s.LineId).ToList();
+
+    var factories = await _factoryService.GetAll();
 }
+<div class="m-3">
+    @using (Html.BeginForm("Index", "Monitoring", FormMethod.Post, new { @enctype = "multipart/form-data", @id = "searchByFactoryId" }))
+    {
+        <label for="factoryId" class="form-label">Factory name:</label>
+        <select data-val="true" data-val-required="The Number field is required." id="factoryId" name="factoryId" onchange="submitById('searchByFactoryId')">
+            @if (factoryId == 0)
+            {
+                <option value='' selected="selected">Choose factory</option>
+            }
+            else
+            {
+                <option value=''>Choose factory</option>
+            }
+
+            @foreach (var item in factories)
+            {
+                @if (factoryId == item.Id)
+                {
+                    <option value='@item.Id' selected="selected">@item.FactoryName</option>
+                }
+                else
+                {
+                    <option value='@item.Id'>@item.FactoryName</option>
+                }
+            }
+        </select>
+    }
+</div>
+
 @if (lines.Count > 0)
 {
     <div class="overview-line">

@@ -5,7 +5,7 @@
     
     var factories = await _factoryService.GetAll();
 
-    var products = await _productService.GetAll();
+    var products = await _productService.GetAll(factoryId);
     
     var lineData = await _lineService.GetInfoProductLine(factoryId);
 

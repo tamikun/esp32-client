@@ -29,12 +29,14 @@ public class AddTable : Migration
             .Table(nameof(Line))
                 .WithColumn(nameof(Line.Id)).AsInt32().PrimaryKey().Identity()
                 .WithColumn(nameof(Line.FactoryId)).AsInt32()
-                .WithColumn(nameof(Line.LineNo)).AsString().NotNullable().Unique()
+                .WithColumn(nameof(Line.LineNo)).AsString().NotNullable()
                 .WithColumn(nameof(Line.LineName)).AsString()
                 .WithColumn(nameof(Line.ProductId)).AsInt32()
             ;
+
+            Create.UniqueConstraint("UC_Line").OnTable(nameof(Line)).Columns(nameof(Line.FactoryId), nameof(Line.LineNo));
         }
-       
+
         if (!Schema.Table(nameof(Station)).Exists())
         {
             Create
@@ -45,6 +47,7 @@ public class AddTable : Migration
                 .WithColumn(nameof(Station.StationName)).AsString()
                 .WithColumn(nameof(Station.ProcessId)).AsInt32()
             ;
+
         }
 
         if (!Schema.Table(nameof(Product)).Exists())
@@ -53,9 +56,11 @@ public class AddTable : Migration
             .Table(nameof(Product))
                 .WithColumn(nameof(Product.Id)).AsInt32().PrimaryKey().Identity()
                 .WithColumn(nameof(Product.FactoryId)).AsInt32()
-                .WithColumn(nameof(Product.ProductNo)).AsString().NotNullable().Unique()
+                .WithColumn(nameof(Product.ProductNo)).AsString().NotNullable()
                 .WithColumn(nameof(Product.ProductName)).AsString()
             ;
+
+            Create.UniqueConstraint("UC_Product").OnTable(nameof(Product)).Columns(nameof(Product.FactoryId), nameof(Product.ProductNo));
         }
 
         if (!Schema.Table(nameof(Process)).Exists())
@@ -79,7 +84,7 @@ public class AddTable : Migration
             Create
             .Table(nameof(Machine))
                 .WithColumn(nameof(Machine.Id)).AsInt32().PrimaryKey().Identity()
-                .WithColumn(nameof(Machine.MachineNo)).AsString().NotNullable().Unique()
+                .WithColumn(nameof(Machine.MachineNo)).AsString().NotNullable()
                 .WithColumn(nameof(Machine.MachineName)).AsString()
                 .WithColumn(nameof(Machine.IpAddress)).AsString().NotNullable().Unique()
                 .WithColumn(nameof(Machine.FactoryId)).AsInt32()
@@ -87,6 +92,8 @@ public class AddTable : Migration
                 .WithColumn(nameof(Machine.StationId)).AsInt32()
                 .WithColumn(nameof(Machine.COPartNo)).AsString()
             ;
+
+            Create.UniqueConstraint("UC_Machine").OnTable(nameof(Machine)).Columns(nameof(Machine.FactoryId), nameof(Machine.MachineNo));
         }
 
         if (!Schema.Table(nameof(UserAccount)).Exists())
@@ -208,9 +215,11 @@ public class AddInitData : AutoReversingMigration
             new Setting{Name = "MinCharProductFormat", Value = "3"},
             new Setting{Name = "LineFormat", Value = "Line {0}"},
             new Setting{Name = "MinCharLineFormat", Value = "3"},
+            new Setting{Name = "FactoryFormat", Value = "Factory {0}"},
+            new Setting{Name = "MinCharFactoryFormat", Value = "3"},
             new Setting{Name = "MachineFormat", Value = "Machine {0}"},
             new Setting{Name = "MinCharMachineFormat", Value = "3"},
-            
+
 
         };
         _linq2Db.BulkInsert(settings).Wait();

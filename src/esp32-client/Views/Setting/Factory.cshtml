@@ -1,0 +1,158 @@
+@{
+    ViewData["Title"] = "Factory setting";
+
+    var factories = await _factoryService.GetAllResponse();
+}
+
+<table class="normal-table table-hover">
+    <thead>
+        <tr>
+            <th colspan="100%">
+                <div style="display: flex;justify-content: space-between;">
+                    <div>
+                        Line table
+                    </div>
+                    <div style="text-align: right;">
+                        <button type="button" class="btn btn-info btn-sm" style="color: white;"
+                            onclick="openPopup('addNewFactory')">
+                            <i class="fa fa-circle-plus" style="color: white;"></i>
+                            Add new factory
+                        </button>
+                    </div>
+                </div>
+            </th>
+        </tr>
+    </thead>
+    <thead>
+        <tr>
+            <th>Factory name</th>
+            <th>Factory No</th>
+            <th>Number of line</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in factories)
+        {
+            <tr>
+                <td>@item.FactoryName</td>
+                <td>@item.FactoryNo</td>
+                <td>@item.NumberOfLine</td>
+                <td>
+                    <div style="display: flex; justify-content: space-around; align-items: center;">
+                        <div id="update">
+                            <button type="button" class="btn btn-info btn-sm" style="color: white;"
+                                onclick="openUpdatePopup('updateFactory', @JsonConvert.SerializeObject(item))">
+                                <i class="fa fa-light fa-pen-to-square" style="color: rgb(0, 73, 128);"></i>
+                                Edit
+                            </button>
+                        </div>
+                        <div id="delete">
+                            <button type="button" class="btn btn-danger btn-sm" style="color: white;"
+                                onclick="openDeletePopup('deleteFactory', '@item.FactoryId', '@item.FactoryName')">
+                                <i class="fa fa-light fa-trash" style="color: white;"></i>
+                                Delete
+                            </button>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<div class="popup-container" id="addNewFactory">
+    <div class="popup-dialog">
+        <div class="popup-content">
+            <span class="close-button" onclick="closePopup('addNewFactory')">&times;</span>
+            <h2>Add new line</h2>
+            @using (Html.BeginForm("AddFactory", "Setting", FormMethod.Post, new { @enctype = "multipart/form-data" }))
+            {
+                <div class="mb-3">
+                    <label for="factoryName" class="form-label">Factory name:</label>
+                    <input type="text" class="form-control" id="factoryName" name="factoryName">
+                </div>
+                <div class="mb-3">
+                    <label for="factoryNo" class="form-label">Factory No</label>
+                    <input type="number" class="form-control" id="factoryNo" name="factoryNo">
+                </div>
+                <div class="d-grid">
+                    <input type="submit" class="btn btn-primary" value="Save">
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<div class="popup-container" id="updateFactory">
+    <div class="popup-dialog">
+        <div class="popup-content">
+            <span class="close-button" onclick="closePopup('updateFactory')">&times;</span>
+            <h2>Update factory</h2>
+            @using (Html.BeginForm("UpdateFactory", "Setting", FormMethod.Post, new
+            {
+                @enctype = "multipart/form-data"
+            }))
+            {
+                <div class="mb-3">
+                    <label for="factoryName" class="form-label">Factory name:</label>
+                    <input type="text" class="form-control" id="factoryName" name="factoryName">
+                    <input type="number" class="form-control" id="factoryId" name="factoryId" style="display: none;">
+                </div>
+                <div class="d-grid">
+                    <input type="submit" class="btn btn-primary" value="Save">
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<div class="popup-container" id="deleteFactory">
+    <div class="popup-dialog">
+        <div class="popup-content">
+            <span class="close-button" onclick="closePopup('deleteFactory')">&times;</span>
+            <h2>Delete factory</h2>
+            @using (Html.BeginForm("DeleteFactory", "Setting", FormMethod.Post, new
+            {
+                @enctype = "multipart/form-data"
+            }))
+            {
+                <div class="mb-3">
+                    <label for="factoryId" class="form-label">Do you want to delete factory: <strong></strong>?</label>
+                    <input type="number" class="form-control" id="factoryId" name="factoryId" style="display: none;">
+                </div>
+                <div class="d-grid">
+                    <input type="submit" class="btn btn-danger" value="Delete">
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script>
+        function openUpdatePopup(id, param) {
+
+            // Access elements within the form using document.getElementById()
+            var pFactoryId = document.querySelector('[id=updateFactory] [id=factoryId]');
+            var pFactoryName = document.querySelector('[id=updateFactory] [id=factoryName]');
+
+            // Set the values using the properties from the param object
+            pFactoryId.value = param.FactoryId;
+            pFactoryName.value = param.FactoryName;
+
+            document.getElementById(id).style.display = "block";
+        }
+
+        function openDeletePopup(id, factoryId, factoryName) {
+            var factoryNameElement = document.querySelector('[id=deleteFactory] label strong');
+            factoryNameElement.innerText = `${factoryName}`;
+
+            var pFactoryId = document.querySelector('[id=deleteFactory] [id=factoryId]');
+            pFactoryId.value = factoryId;
+
+            document.getElementById(id).style.display = "block";
+        }
+
+    </script>
+}
