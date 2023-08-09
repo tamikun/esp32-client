@@ -24,13 +24,6 @@ public class HomeController : BaseController
         return View();
     }
 
-    [HttpGet]
-    public async Task<IActionResult> LoadIndexData()
-    {
-        await Task.CompletedTask;
-        return Ok();
-    }
-
     public IActionResult Privacy()
     {
         return View();

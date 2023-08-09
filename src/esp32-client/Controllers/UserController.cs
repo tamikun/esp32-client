@@ -45,8 +45,8 @@ public class UserController : BaseController
                 _httpContextAccessor?.HttpContext?.Session.SetString("LoginName", loginName);
                 _httpContextAccessor?.HttpContext?.Session.SetString("UserName", userAccount.UserName);
 
-                var expiredTime = DateTime.UtcNow.AddMinutes(15).ToString("o");
-                System.Console.WriteLine("==== expiredTimeLogin: " + expiredTime);
+                // Set user session for 30 minutes
+                var expiredTime = DateTime.UtcNow.AddMinutes(30).ToString("o");
                 _httpContextAccessor?.HttpContext?.Session.SetString("ExpiredTime", expiredTime);
 
                 // Store the role in session

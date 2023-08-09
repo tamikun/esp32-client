@@ -19,9 +19,6 @@ namespace esp32_client.Services
             DateTime expiredTime = DateTime.UtcNow.AddDays(-1);
             var parseDateTime = DateTime.TryParseExact(expiredTimeString, "o", null, DateTimeStyles.None, out expiredTime);
 
-            System.Console.WriteLine("==== expiredTime: " + expiredTime);
-            System.Console.WriteLine("==== DateTime.UtcNow: " + DateTime.UtcNow);
-
             // Check if the user is authenticated
             if (string.IsNullOrEmpty(loginName))
             {
