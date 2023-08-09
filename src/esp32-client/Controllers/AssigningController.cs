@@ -20,6 +20,12 @@ public class AssigningController : BaseController
         _machineService = machineService;
     }
 
+    public async Task<IActionResult> Index()
+    {
+        await Task.CompletedTask;
+        return View();
+    }
+
     public async Task<IActionResult> StationProcess(int factoryId = 0, int lineId = 0, bool edit = false)
     {
         ViewBag.FactoryId = factoryId;
@@ -37,7 +43,7 @@ public class AssigningController : BaseController
             await _lineService.AssignStationProcess(model);
         }, RedirectToAction("StationProcess", new { factoryId = model.FactoryId, lineId = model.LineId }));
     }
-    
+
     public async Task<IActionResult> ProductLine(int factoryId = 0, bool edit = false)
     {
         ViewBag.FactoryId = factoryId;

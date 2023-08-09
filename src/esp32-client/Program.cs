@@ -55,8 +55,8 @@ builder.Services.AddScoped<IStationService, StationService>();
 
 builder.Services.AddSingleton<Settings>();
 
-builder.Services.AddSession(option => option.IdleTimeout = TimeSpan.FromMinutes(30)); // 10:01
-builder.Services.AddScoped<IHttpContextAccessor, HttpContextAccessor>(); // Add HttpContextAccessor
+builder.Services.AddSession(option => option.IdleTimeout = TimeSpan.FromMinutes(1440));
+builder.Services.AddScoped<IHttpContextAccessor, HttpContextAccessor>();
 
 var connectionString = builder.Configuration["Settings:ConnectionString"].ToString();
 
@@ -78,8 +78,8 @@ builder.Services.AddLinqToDBContext<LinqToDb>((provider, options)
             => options
                 //will configure the AppDataConnection to use
                 .UseMySql(connectionString)
-                //default logging will log everything using the ILoggerFactory configured in the provider
-                // .UseDefaultLogging(provider)
+            //default logging will log everything using the ILoggerFactory configured in the provider
+            // .UseDefaultLogging(provider)
             , ServiceLifetime.Scoped);
 
 // builder.Services.AddHostedService<ScheduledTaskService>();

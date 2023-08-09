@@ -1,4 +1,4 @@
-using esp32_client.Builder;
+using System.Globalization;
 using esp32_client.Domain;
 using esp32_client.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -15,11 +15,22 @@ namespace esp32_client.Services
 
             var loginName = filterContext.HttpContext.Session.GetString("LoginName");
 
+            var expiredTimeString = filterContext.HttpContext.Session.GetString("ExpiredTime");
+            DateTime expiredTime = DateTime.UtcNow.AddDays(-1);
+            var parseDateTime = DateTime.TryParseExact(expiredTimeString, "o", null, DateTimeStyles.None, out expiredTime);
+
+            System.Console.WriteLine("==== expiredTime: " + expiredTime);
+            System.Console.WriteLine("==== DateTime.UtcNow: " + DateTime.UtcNow);
+
             // Check if the user is authenticated
             if (string.IsNullOrEmpty(loginName))
             {
                 // User is not authenticated, redirect to login page
                 filterContext.Result = new RedirectResult("/User/Login");
+            }
+            else if (expiredTime < DateTime.UtcNow)
+            {
+                filterContext.Result = new RedirectResult("/User/Logout");
             }
             else
             {

@@ -27,6 +27,11 @@ public class SettingController : BaseController
         _machineService = machineService;
     }
 
+    public async Task<IActionResult> Index()
+    {
+        await Task.CompletedTask;
+        return View();
+    }
 
     public async Task<ActionResult> Machine(int factoryId = 0)
     {
