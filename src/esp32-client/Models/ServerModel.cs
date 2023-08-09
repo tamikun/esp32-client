@@ -1,13 +1,6 @@
-using esp32_client.Services;
 
 namespace esp32_client.Models;
 
-public class ServerModel
-{
-    public string? IpAddress { get; set; }
-    public string? ServerName { get; set; }
-    public ServerState ServerState { get; set; } = ServerState.Unknown;
-}
 
 public enum ServerState
 {
@@ -15,11 +8,3 @@ public enum ServerState
     Server = 1,
     Machine = 2
 }
-
-public class SelectedServerModel
-{
-    public string? IpAddress { get; set; }
-    public string? Folder { get; set; }
-    public bool IsSelected { get; set; } = false;
-}
-

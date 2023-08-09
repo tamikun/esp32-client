@@ -71,7 +71,8 @@ builder.Services.AddFluentMigratorCore()
                 // Enable logging to console in the FluentMigrator way
                 .AddLogging(lb => lb.AddFluentMigratorConsole())
                 // Build the service provider
-                .BuildServiceProvider(false);
+                // .BuildServiceProvider(false)
+                ;
 
 
 builder.Services.AddLinqToDBContext<LinqToDb>((provider, options)
@@ -84,13 +85,11 @@ builder.Services.AddLinqToDBContext<LinqToDb>((provider, options)
 
 // builder.Services.AddHostedService<ScheduledTaskService>();
 
-// Instantiate the runner
-var serviceProvider = builder.Services.BuildServiceProvider();
-var runner = serviceProvider.GetRequiredService<IMigrationRunner>();
-runner.MigrateUp();
-
 
 var app = builder.Build();
+
+var runner = app.Services.GetRequiredService<IMigrationRunner>();
+runner.MigrateUp();
 
 EngineContext.SetServiceProvider(app.Services);
 
