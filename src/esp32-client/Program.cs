@@ -4,7 +4,6 @@ using esp32_client.Services;
 using FluentMigrator.Runner;
 using LinqToDB;
 using LinqToDB.AspNet;
-using LinqToDB.AspNet.Logging;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -79,9 +78,11 @@ builder.Services.AddLinqToDBContext<LinqToDb>((provider, options)
             => options
                 //will configure the AppDataConnection to use
                 .UseMySql(connectionString)
-            //default logging will log everything using the ILoggerFactory configured in the provider
-            // .UseDefaultLogging(provider)
+                //default logging will log everything using the ILoggerFactory configured in the provider
+                // .UseDefaultLogging(provider)
             , ServiceLifetime.Scoped);
+
+// builder.Services.AddHostedService<ScheduledTaskService>();
 
 // Instantiate the runner
 var serviceProvider = builder.Services.BuildServiceProvider();
