@@ -22,5 +22,9 @@ namespace esp32_client.Services
         Task<List<GetStationAndProcessModel>> GetStationAndProcess(int lineId);
         
         Task<List<GetProcessAndMachineOfLineModel>> GetProcessAndMachineOfLine(int factoryId);
+
+        Task Delete(int lineId);
+
+        Task UpdateNameAndStationNo(LineUpdateModel model);
     }
 }

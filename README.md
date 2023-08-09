@@ -127,3 +127,6 @@
 | Change Name               | ✔️    | ✔️       |
 | Change StationNo (unique) | ❌    | ❌       |
 | Change IpAddress          | ❌    | ✔️       |
+
+
+**Note:** Thực hiện ChangeState/DeleteFile/UploadFile khi: Assign Process cho Station; Assign Machine cho Station;

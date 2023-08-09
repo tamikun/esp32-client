@@ -29,7 +29,7 @@
             <th>
                 Factory:
             </th>
-            <th colspan="2">
+            <th colspan="100%">
                 @using (Html.BeginForm("Line", "Setting", FormMethod.Get, new
                 {
                     @enctype = "multipart/form-data",
@@ -60,8 +60,8 @@
                             }
                         }
                     </select>
-                    <button type="submit" style="border: none; display: none;"><i class="fa fa-magnifying-glass"
-                            style="cursor: pointer;"></i> Search</button>
+                    <button type="submit" style="border: none; display: none;">
+                        <i class="fa fa-magnifying-glass" style="cursor: pointer;"></i> Search</button>
                 }
             </th>
         </tr>
@@ -72,6 +72,7 @@
             <th>Line No</th>
             <th>Number of station</th>
             <th>Product name</th>
+            <th></th>
         </tr>
     </thead>
     <tbody>
@@ -85,6 +86,24 @@
                 <td>@item.LineNo</td>
                 <td>@item.NumberOfStation</td>
                 <td>@item.ProductName</td>
+                <td>
+                    <div style="display: flex; justify-content: space-around; align-items: center;">
+                        <div id="update">
+                            <button type="button" class="btn btn-info btn-sm" style="color: white;"
+                                onclick="openUpdatePopup('updateLine', @JsonConvert.SerializeObject(item))">
+                                <i class="fa fa-light fa-pen-to-square" style="color: rgb(0, 73, 128);"></i>
+                                Edit
+                            </button>
+                        </div>
+                        <div id="delete">
+                            <button type="button" class="btn btn-danger btn-sm" style="color: white;"
+                                onclick="openDeletePopup('deleteLine', '@item.LineId', '@item.LineName')">
+                                <i class="fa fa-light fa-trash" style="color: white;"></i>
+                                Delete
+                            </button>
+                        </div>
+                    </div>
+                </td>
             </tr>
         }
     </tbody>
@@ -118,3 +137,84 @@
         </div>
     </div>
 </div>
+
+<div class="popup-container" id="updateLine">
+    <div class="popup-dialog">
+        <div class="popup-content">
+            <span class="close-button" onclick="closePopup('updateLine')">&times;</span>
+            <h2>Update line</h2>
+            @using (Html.BeginForm("UpdateLine", "Setting", FormMethod.Post, new
+            {
+                @enctype = "multipart/form-data"
+            }))
+            {
+                <div class="mb-3">
+                    <label for="LineName" class="form-label">Line name:</label>
+                    <input type="text" class="form-control" id="LineName" name="LineName">
+                    <input type="number" class="form-control" id="FactoryId" name="FactoryId" style="display: none;" value='@factoryId'>
+                    <input type="number" class="form-control" id="LineId" name="LineId" style="display: none;" value=''>
+                </div>
+                <div class="mb-3">
+                    <label for="NumberOfStation" class="form-label">Number of station:</label>
+                    <input type="number" class="form-control" id="NumberOfStation" name="NumberOfStation">
+                </div>
+                <div class="d-grid">
+                    <input type="submit" class="btn btn-primary" value="Save">
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<div class="popup-container" id="deleteLine">
+    <div class="popup-dialog">
+        <div class="popup-content">
+            <span class="close-button" onclick="closePopup('deleteLine')">&times;</span>
+            <h2>Delete line</h2>
+            @using (Html.BeginForm("DeleteLine", "Setting", FormMethod.Post, new
+            {
+                @enctype = "multipart/form-data"
+            }))
+            {
+                <div class="mb-3">
+                    <label for="lineId" class="form-label">Do you want to delete line: <strong></strong>?</label>
+                    <input type="number" class="form-control" id="lineId" name="lineId" style="display: none;">
+                    <input type="number" class="form-control" id="factoryId" name="factoryId" style="display: none;" value='@factoryId'>
+                </div>
+                <div class="d-grid">
+                    <input type="submit" class="btn btn-danger" value="Delete">
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script>
+        function openUpdatePopup(id, param) {
+
+            // Access elements within the form using document.getElementById()
+            var pLineId = document.querySelector('[id=updateLine] [id=LineId]');
+            var pLineName = document.querySelector('[id=updateLine] [id=LineName]');
+            var pNumberOfStation = document.querySelector('[id=updateLine] [id=NumberOfStation]');
+
+            // Set the values using the properties from the param object
+            pLineId.value = param.LineId;
+            pLineName.value = param.LineName;
+            pNumberOfStation.value = param.NumberOfStation;
+
+            document.getElementById(id).style.display = "block";
+        }
+
+        function openDeletePopup(id, lineId, lineName) {
+            var lineNameElement = document.querySelector('[id=deleteLine] label strong');
+            lineNameElement.innerText = `${lineName}`;
+
+            var pLineId = document.querySelector('[id=deleteLine] [id=lineId]');
+            pLineId.value = lineId;
+
+            document.getElementById(id).style.display = "block";
+        }
+
+    </script>
+}

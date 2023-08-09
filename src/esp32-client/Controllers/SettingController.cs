@@ -101,6 +101,24 @@ public class SettingController : BaseController
         }, RedirectToAction("Line", new { factoryId = model.FactoryId }));
     }
 
+    [HttpPost]
+    public async Task<IActionResult> UpdateLine(LineUpdateModel model)
+    {
+        return await HandleActionAsync(async () =>
+        {
+            await _lineService.UpdateNameAndStationNo(model);
+        }, RedirectToAction("Line", new { factoryId = model.FactoryId }));
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> DeleteLine(int factoryId, int lineId)
+    {
+        return await HandleActionAsync(async () =>
+        {
+            await _lineService.Delete(lineId);
+        }, RedirectToAction("Line", new { factoryId = factoryId }));
+    }
+
 
     public async Task<ActionResult> Product(int factoryId = 0)
     {

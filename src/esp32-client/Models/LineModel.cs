@@ -10,11 +10,10 @@ public class LineCreateModel
 
 public class LineUpdateModel
 {
-    public int Id { get; set; }
-    public int DepartmentId { get; set; }
+    public int FactoryId { get; set; }
+    public int LineId { get; set; }
     public string LineName { get; set; }
-    public int Order { get; set; }
-    public int ProductId { get; set; }
+    public int NumberOfStation { get; set; }
 }
 
 public class LineResponseModel

@@ -82,19 +82,7 @@ public partial class LineService : ILineService
         line = await GetByLineNo(line.LineNo) ?? new Line();
 
         // Create station
-        var listStation = new List<Station>();
-        for (int i = 0; i < model.NumberOfStation; i++)
-        {
-            int index = i + 1;
-            string stationFormat = index.ToString($"D{_settings.MinCharStationFormat}");
-
-            listStation.Add(new Station
-            {
-                LineId = line.Id,
-                StationNo = string.Format(_settings.StationFormat, stationFormat),
-            });
-        }
-        await _linq2Db.BulkInsert(listStation);
+        await AddStation(line.Id, model.NumberOfStation);
 
         return line;
     }
@@ -215,6 +203,75 @@ public partial class LineService : ILineService
                                 MachineIp = machine.IpAddress,
                             }).OrderBy(s => s.LineId).ThenBy(s => s.StationId).ToListAsync();
         return result;
+    }
+
+    public async Task Delete(int lineId)
+    {
+        var line = await GetById(lineId);
+        if (line is null) throw new Exception("Line is not found");
+
+        // Delete line
+        await _linq2Db.DeleteAsync(line);
+
+        // Delete station
+        await _linq2Db.Station.Where(s => s.LineId == line.Id).DeleteAsync();
+
+        // Release machine
+        await _linq2Db.Machine.Where(s => s.LineId == line.Id)
+                                .Set(s => s.LineId, 0)
+                                .Set(s => s.StationId, 0)
+                                .UpdateAsync();
+    }
+
+    public async Task UpdateNameAndStationNo(LineUpdateModel model)
+    {
+        var line = await GetById(model.LineId);
+        if (line is null) throw new Exception("Line is not found");
+
+        var numberOfStation = await _linq2Db.Station.Where(s => s.LineId == line.Id).CountAsync();
+
+        line.LineName = model.LineName;
+
+        if (numberOfStation != model.NumberOfStation)
+        {
+            // Check line is in use
+            if (line.ProductId != 0) throw new Exception("Cannot change number of station: Product exists");
+
+            if (numberOfStation < model.NumberOfStation)
+            {
+                // Add more station
+                await AddStation(line.Id, model.NumberOfStation - numberOfStation, numberOfStation + 1);
+            }
+            else
+            {
+                var stationIdsToDelete = await _linq2Db.Station.Where(s => s.LineId == line.Id)
+                                                                .OrderBy(s => s.Id)
+                                                                .Skip(model.NumberOfStation)
+                                                                .Select(s => s.Id)
+                                                                .ToListAsync();
+
+                // Delete station
+                await _linq2Db.Station.Where(s => stationIdsToDelete.Contains(s.Id))
+                                        .DeleteAsync();
+            }
+        }
+        await _linq2Db.Update(line);
+    }
+
+    public async Task AddStation(int lineId, int numberOfStation, int index = 1)
+    {
+        var listStation = new List<Station>();
+        for (int i = index; i < numberOfStation + index; i++)
+        {
+            string stationFormat = i.ToString($"D{_settings.MinCharStationFormat}");
+
+            listStation.Add(new Station
+            {
+                LineId = lineId,
+                StationNo = string.Format(_settings.StationFormat, stationFormat),
+            });
+        }
+        await _linq2Db.BulkInsert(listStation);
     }
 
 }
