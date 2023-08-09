@@ -1,3 +1,4 @@
+using System.Linq.Expressions;
 using AutoMapper;
 using esp32_client.Builder;
 using esp32_client.Domain;
@@ -117,16 +118,35 @@ public partial class LineService : ILineService
 
     public async Task AssignProductLine(AssignProductLineModel model)
     {
+        var queryListUpdate = _linq2Db.Line.Where(s => s.FactoryId == model.FactoryId);
+
         foreach (var item in model.ListProductLine)
         {
-            await _linq2Db.Line.Where(s => s.Id == item.LineId)
+            queryListUpdate = queryListUpdate.Where(s => !(s.Id == item.LineId && s.ProductId == item.ProductId));
+        }
+
+        var listUpdate = await queryListUpdate.ToListAsync();
+
+        // Update product of Line
+        foreach (var item in model.ListProductLine)
+        {
+            await queryListUpdate.Where(s => s.Id == item.LineId)
                        .Set(s => s.ProductId, item.ProductId)
                        .UpdateAsync();
         }
+
+        // Update process of Station (Set ProcessId to 0)
+        var listLineId = listUpdate.Select(s => s.Id);
+        await _linq2Db.Station.Where(s => listLineId.Contains(s.LineId)).Set(s => s.ProcessId, 0).UpdateAsync();
     }
 
     public async Task AssignStationProcess(AssignStationProcessModel model)
     {
+        // Validation
+        // Duplicate process in line
+        if (model.ListStationProcess.Where(s => s.ProcessId != 0).GroupBy(s => s.ProcessId).Any(s => s.Count() > 1))
+            throw new Exception("A process cannot be used for more than one station.");
+
         foreach (var item in model.ListStationProcess)
         {
             await _linq2Db.Station.Where(s => s.Id == item.StationId)

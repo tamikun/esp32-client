@@ -13,6 +13,8 @@ namespace esp32_client.Services
 
         Task<ProductCreateModel> Create(ProductCreateModel model);
 
+        Task UpdateNameAndProcess(ProductUpdateModel model);
+
         Task<List<ProductResponseModel>> GetProductByFactoryId(int factoryId);
 
         Task<bool> IsProductInUse(int productId);

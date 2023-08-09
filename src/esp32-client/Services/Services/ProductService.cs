@@ -58,7 +58,7 @@ public partial class ProductService : IProductService
 
         // Create process
         var listProcess = new List<Process>();
-        for (int i = 0; i < model.NumberOfProcess; i++)
+        for (int i = 1; i < model.NumberOfProcess + 1; i++)
         {
             listProcess.Add(new Process
             {
@@ -69,6 +69,46 @@ public partial class ProductService : IProductService
         await _linq2Db.BulkInsert(listProcess);
 
         return model;
+    }
+
+    public async Task UpdateNameAndProcess(ProductUpdateModel model)
+    {
+        var product = await GetById(model.ProductId);
+        if (product is null) throw new Exception("Product is not found");
+
+        product.ProductName = model.ProductName;
+
+        var listProcess = await _linq2Db.Process.Where(s => s.ProductId == product.Id).OrderBy(s => s.Id).ToListAsync();
+
+        if (model.NumberOfProcess != listProcess.Count)
+        {
+            if (await IsProductInUse(product.Id))
+            {
+                throw new Exception("Can not change process: Product is in use");
+            }
+            if (model.NumberOfProcess > listProcess.Count)
+            {
+                var listNewProcess = new List<Process>();
+                for (int i = listProcess.Count + 1; i < model.NumberOfProcess - listProcess.Count + 1; i++)
+                {
+                    listProcess.Add(new Process
+                    {
+                        ProductId = product.Id,
+                        ProcessNo = $"{product.ProductNo}.{i}",
+                    });
+                }
+                await _linq2Db.BulkInsert(listProcess);
+            }
+            else
+            {
+                var listDeleteProcess = listProcess.TakeLast(listProcess.Count - model.NumberOfProcess);
+                foreach (var item in listDeleteProcess)
+                {
+                    await _linq2Db.DeleteAsync(item);
+                }
+            }
+        }
+        await _linq2Db.Update(product);
     }
 
     public async Task<List<ProductResponseModel>> GetProductByFactoryId(int factoryId)

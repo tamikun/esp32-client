@@ -75,14 +75,4 @@ public partial class ProcessService : IProcessService
         return model;
     }
 
-    public async Task Delete(int id)
-    {
-        var process = await GetById(id);
-
-        if (process is null) throw new Exception("Process is not found");
-
-        if (await _productService.IsProductInUse(process.ProductId)) throw new Exception("Product is in use");
-
-        await _linq2Db.DeleteAsync(process);
-    }
 }

@@ -116,6 +116,8 @@ public partial class MachineService : IMachineService
     public async Task<Machine> Create(MachineCreateModel model)
     {
         #region validation
+        if (model.FactoryId == 0)
+            throw new Exception("Invalid factory");
         if (model.MachineNo <= 0)
             throw new Exception("Machine No should be greater than 0");
         if (String.IsNullOrEmpty(model.IpAddress))
@@ -161,10 +163,27 @@ public partial class MachineService : IMachineService
 
     public async Task AssignMachineLine(ListAssignMachineLineModel model)
     {
+        // Validation
+        // Duplicate machine in line
+        if (model.ListAssignMachine.Where(s => s.MachineId != 0).GroupBy(s => s.MachineId).Any(s => s.Count() > 1))
+            throw new Exception("A machine cannot be used for more than one station.");
+
+        var queryListUpdate = _linq2Db.Machine.Where(s => s.FactoryId == model.FactoryId);
+
         foreach (var item in model.ListAssignMachine)
         {
-            await _linq2Db.Machine.Where(s => s.Id == item.MachineId)
-                       .Set(s => s.FactoryId, model.FactoryId)
+            queryListUpdate = queryListUpdate.Where(s => !(s.Id == item.MachineId && s.StationId == item.StationId && s.LineId == model.LineId));
+        }
+
+        var listUpdate = await queryListUpdate.ToListAsync();
+        
+        listUpdate.ForEach(s =>{
+            // Update file
+        });
+
+        foreach (var item in model.ListAssignMachine)
+        {
+            await queryListUpdate.Where(s => s.Id == item.MachineId)
                        .Set(s => s.LineId, model.LineId)
                        .Set(s => s.StationId, item.StationId)
                        .UpdateAsync();

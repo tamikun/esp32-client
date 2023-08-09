@@ -128,6 +128,24 @@ public class SettingController : BaseController
     }
 
     [HttpPost]
+    public async Task<IActionResult> UpdateProduct(ProductUpdateModel model)
+    {
+        return await HandleActionAsync(async () =>
+        {
+            await _productService.UpdateNameAndProcess(model);
+        }, RedirectToAction("Product", new { factoryId = model.FactoryId }));
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> DeleteProduct(int factoryId, int productId)
+    {
+        return await HandleActionAsync(async () =>
+        {
+            await _productService.Delete(productId);
+        }, RedirectToAction("Product", new { factoryId = factoryId }));
+    }
+
+    [HttpPost]
     public async Task<IActionResult> UpdateProcess(ListProcessUpdateModel model)
     {
         return await HandleActionAsync(async () =>

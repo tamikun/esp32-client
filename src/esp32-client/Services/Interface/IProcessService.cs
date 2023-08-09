@@ -15,6 +15,5 @@ namespace esp32_client.Services
 
         Task<ProcessUpdateModel> UpdateProcessNamePatternNoById(ProcessUpdateModel model);
         
-        Task Delete(int id);
     }
 }

@@ -11,8 +11,10 @@ public class ProductCreateModel
 
 public class ProductUpdateModel
 {
-    public int Id { get; set; }
+    public int FactoryId { get; set; }
+    public int ProductId { get; set; }
     public string ProductName { get; set; }
+    public int NumberOfProcess { get; set; }
 }
 
 public class ProductResponseModel
