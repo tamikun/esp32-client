@@ -5,6 +5,7 @@ using esp32_client.Domain;
 using esp32_client.Models;
 using HtmlAgilityPack;
 using LinqToDB;
+using Newtonsoft.Json;
 
 namespace esp32_client.Services;
 
@@ -292,9 +293,26 @@ public partial class MachineService : IMachineService
         await Task.WhenAll(tasks);
 
         return result;
-
     }
 
+    public async Task<(bool Success, int Data)> GetProductNumberMachine(string ipAddress)
+    {
+        var result = await Get(GetProductNumberUrl(ipAddress));
+        var dict = JsonConvert.DeserializeObject<Dictionary<string, int>>(result.ResponseBody);
+        int number = 0;
+
+        if (dict is not null)
+            dict.TryGetValue("Data", out number);
+
+        return (result.Success, number);
+    }
+
+    private string GetProductNumberUrl(string machineIp, bool isEndWithSlash = false)
+    {
+        string rs = string.Format(_settings.GetProductNumberFormat, machineIp);
+        if (isEndWithSlash) rs = rs + '/';
+        return rs;
+    }
     private string GetChangeMachineStateUrl(string machineIp, bool isEndWithSlash = false)
     {
         string rs = string.Format(_settings.ChangeMachineStateFormat, machineIp);

@@ -232,6 +232,7 @@ public class AddInitData : AutoReversingMigration
             new Setting{Name = "UploadFileFormat", Value = "http://{0}/upload/VDATA/{1}"},
             new Setting{Name = "ChangeMachineStateFormat", Value = "http://{0}/selectedMachine"},
             new Setting{Name = "ChangeServerStateFormat", Value = "http://{0}/selectedServer"},
+            new Setting{Name = "GetProductNumberFormat", Value = "http://{0}/data_prod"},
             new Setting{Name = "ChangeStateDelay", Value = "500"},
             new Setting{Name = "DeleteFileFormat", Value = "http://{0}/delete/VDATA/{1}"},
             new Setting{Name = "PostFileFormat", Value = "http://{0}/upload/VDATA/{1}"},
