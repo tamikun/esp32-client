@@ -41,5 +41,5 @@ public partial class StationService : IStationService
     {
         var department = await _linq2Db.Station.Where(s => s.Id == model.Id).Set(s => s.StationName, model.StationName).UpdateAsync();
     }
-
+    
 }

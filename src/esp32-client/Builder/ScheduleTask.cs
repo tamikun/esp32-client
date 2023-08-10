@@ -10,9 +10,10 @@
 //             // Perform your specific task here
 //             Console.WriteLine($"Task executed at: {DateTime.Now}");
 
-//             var linq2Db = EngineContext.Resolve<LinqToDb>();
-//             var user = linq2Db.UserAccount.FirstOrDefault(s => s.Id == 1);
-//             System.Console.WriteLine($"Username {user?.UserName}");
+// var scheduledTaskService = EngineContext.Resolve<IScheduleTaskService>();
+
+// var rs = typeof(IScheduleTaskService)?.GetMethod(nameof(IScheduleTaskService.SaveProductData))
+//                                     ?.Invoke(scheduledTaskService, new object[] { });
 
 //             await Task.Delay(TimeSpan.FromSeconds(10), stoppingToken);
 //         }

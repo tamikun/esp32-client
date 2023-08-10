@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using esp32_client.Domain;
+using esp32_client.Services;
 using FluentMigrator;
 using LinqToDB;
 
@@ -147,6 +149,31 @@ public class AddTable : Migration
                 .WithColumn(nameof(Setting.Value)).AsString().NotNullable()
             ;
         }
+
+        if (!Schema.Table(nameof(ScheduleTask)).Exists())
+        {
+            Create
+            .Table(nameof(ScheduleTask))
+                .WithColumn(nameof(ScheduleTask.Id)).AsInt32().PrimaryKey().Identity()
+                .WithColumn(nameof(ScheduleTask.Name)).AsString().NotNullable()
+                .WithColumn(nameof(ScheduleTask.Seconds)).AsInt32()
+                .WithColumn(nameof(ScheduleTask.Method)).AsString().NotNullable()
+                .WithColumn(nameof(ScheduleTask.Enabled)).AsBoolean().NotNullable()
+                .WithColumn(nameof(ScheduleTask.LastStartUtc)).AsDateTime2().Nullable()
+                .WithColumn(nameof(ScheduleTask.LastSuccessUtc)).AsDateTime2().Nullable()
+            ;
+        }
+
+        if (!Schema.Table(nameof(DataReport)).Exists())
+        {
+            Create
+            .Table(nameof(DataReport))
+                .WithColumn(nameof(DataReport.Id)).AsInt32().PrimaryKey().Identity()
+                .WithColumn(nameof(DataReport.StationId)).AsInt32()
+                .WithColumn(nameof(DataReport.ProductNumber)).AsInt32()
+                .WithColumn(nameof(DataReport.DateTimeUtc)).AsDateTime2().NotNullable()
+            ;
+        }
     }
 
 
@@ -219,10 +246,21 @@ public class AddInitData : AutoReversingMigration
             new Setting{Name = "MinCharFactoryFormat", Value = "3"},
             new Setting{Name = "MachineFormat", Value = "Machine {0}"},
             new Setting{Name = "MinCharMachineFormat", Value = "3"},
+        };
 
+        _linq2Db.BulkInsert(settings).Wait();
+
+        var scheduleTask = new List<ScheduleTask>{
+            new ScheduleTask{
+                Name = "Save product data",
+                Seconds = 120,
+                Method = $"{nameof(ScheduleTaskService.SaveProductData)}",
+                Enabled = true,
+            },
 
         };
-        _linq2Db.BulkInsert(settings).Wait();
+
+        _linq2Db.BulkInsert(scheduleTask).Wait();
     }
 }
 

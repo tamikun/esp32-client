@@ -57,4 +57,17 @@ public class TestApiController : ControllerBase
         return Ok(string.Format(_settings.UploadFileFormat, "192.168.1.1", "VDATA.VDT"));
     }
 
+    [HttpPost]
+    [ProducesResponseType(StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> Invoke()
+    {
+        var scheduledTaskService = EngineContext.Resolve<IScheduleTaskService>();
+
+        var rs = typeof(IScheduleTaskService)?.GetMethod(nameof(IScheduleTaskService.SaveProductData))
+                                            ?.Invoke(scheduledTaskService, new object[] { });
+        await Task.CompletedTask;
+        return Ok();
+    }
+
 }
