@@ -297,14 +297,22 @@ public partial class MachineService : IMachineService
 
     public async Task<(bool Success, int Data)> GetProductNumberMachine(string ipAddress)
     {
-        var result = await Get(GetProductNumberUrl(ipAddress));
-        var dict = JsonConvert.DeserializeObject<Dictionary<string, int>>(result.ResponseBody);
-        int number = 0;
+        try
+        {
+            var result = await Get(GetProductNumberUrl(ipAddress));
+            var dict = JsonConvert.DeserializeObject<Dictionary<string, int>>(result.ResponseBody);
+            int number = 0;
 
-        if (dict is not null)
-            dict.TryGetValue("Data", out number);
+            if (dict is not null)
+                dict.TryGetValue("Data", out number);
 
-        return (result.Success, number);
+            return (result.Success, number);
+        }
+        catch (Exception ex)
+        {
+            System.Console.WriteLine("==== GetProductNumberMachine: " + ex.Message);
+            return (false, 0);
+        }
     }
 
     private string GetProductNumberUrl(string machineIp, bool isEndWithSlash = false)

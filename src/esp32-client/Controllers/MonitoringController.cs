@@ -7,20 +7,28 @@ namespace esp32_client.Controllers;
 public class MonitoringController : BaseController
 {
     private readonly IFactoryService _departmentService;
-    private readonly ILineService _lineService;
+    private readonly IScheduleTaskService _scheduleTaskService;
 
-    public MonitoringController(LinqToDb linq2db, IFactoryService departmentService, ILineService lineService)
+    public MonitoringController(LinqToDb linq2db, IFactoryService departmentService, IScheduleTaskService scheduleTaskService)
     {
         _linq2db = linq2db;
         _departmentService = departmentService;
-        _lineService = lineService;
+        _scheduleTaskService = scheduleTaskService;
     }
 
 
     public async Task<IActionResult> Index(int factoryId = 0)
     {
         ViewBag.FactoryId = factoryId;
-        await Task.CompletedTask;
+        try
+        {
+            await _scheduleTaskService.SaveProductData();
+        }
+        catch (Exception ex)
+        {
+            System.Console.WriteLine("==== SaveProductData: " + Newtonsoft.Json.JsonConvert.SerializeObject(ex));
+        }
+        
         return View();
     }
 

@@ -8,6 +8,9 @@
     var lines = data.DistinctBy(s => s.LineId).Where(s => s.LineId != 0).Select(s => s.LineId).ToList();
 
     var factories = await _factoryService.GetAll();
+
+    var listMachine = await _machineService.GetAll();
+
 }
 <div class="m-3">
     @using (Html.BeginForm("Index", "Monitoring", FormMethod.Post, new { @enctype = "multipart/form-data", @id = "searchByFactoryId" }))
@@ -64,8 +67,9 @@
                     <td style="border: 0;"></td>
                     @for (var index = 0; index < lineData.Count; index++)
                     {
+                        var dataReport = await _dataReportService.GetLastDataByStationId(lineData[index].StationId);
                         <td style="border: 0;"></td>
-                        <td style="text-align: right;"><small>--</small></td>
+                        <td style="text-align: right;"><small>@dataReport.ProductNumber</small></td>
                     }
                 </tr>
                 <tr>
@@ -202,6 +206,7 @@
         }
     </style>
     <script>
+        /*
         document.addEventListener("DOMContentLoaded", function () {
             const cells = document.getElementsByTagName("td");
 
@@ -211,6 +216,14 @@
                     cell.classList.add("notfound");
                 }
             }
-        });
+        }); 
+        */
+
+        setTimeout("location.reload();", 120000);
+
+        // Call the function every 1 minute (60,000 milliseconds)
+        // setInterval(fetchDataForMachines, 60000);
+
+
     </script>
 }

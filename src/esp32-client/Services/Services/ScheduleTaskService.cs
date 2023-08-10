@@ -21,8 +21,6 @@ public partial class ScheduleTaskService : IScheduleTaskService
 
     public async Task SaveProductData()
     {
-        System.Console.WriteLine("SaveProductData: " + DateTime.UtcNow);
-
         var listDataReport = new List<DataReport>();
         var queryData = await (from machine in _linq2Db.Machine
                                join station in _linq2Db.Station on machine.StationId equals station.Id
