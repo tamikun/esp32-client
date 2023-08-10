@@ -39,10 +39,23 @@ public class AssigningController : BaseController
     [HttpPost]
     public async Task<IActionResult> AssignStationProcess(AssignStationProcessModel model)
     {
-        return await HandleActionAsync(async () =>
+        var listAlert = new List<AlertModel>();
+        try
         {
-            await _lineService.AssignStationProcess(model);
-        }, RedirectToAction("StationProcess", new { factoryId = model.FactoryId, lineId = model.LineId }));
+            var result = await _lineService.AssignStationProcess(model);
+            foreach (var item in result)
+            {
+                listAlert.Add(new AlertModel { AlertType = item.Value == "Success" ? Alert.Success : Alert.Danger, AlertMessage = item.Value });
+            }
+        }
+        catch (Exception ex)
+        {
+            listAlert.Add(new AlertModel { AlertType = Alert.Danger, AlertMessage = ex.Message });
+        }
+
+        TempData["AlertMessage"] = JsonConvert.SerializeObject(listAlert);
+
+        return RedirectToAction("StationProcess", new { factoryId = model.FactoryId, lineId = model.LineId });
     }
 
     public async Task<IActionResult> ProductLine(int factoryId = 0, bool edit = false)
@@ -56,10 +69,23 @@ public class AssigningController : BaseController
     [HttpPost]
     public async Task<IActionResult> AssignProductLine(AssignProductLineModel model)
     {
-        return await HandleActionAsync(async () =>
+        var listAlert = new List<AlertModel>();
+        try
         {
-            await _lineService.AssignProductLine(model);
-        }, RedirectToAction("ProductLine", new { factoryId = model.FactoryId }));
+            var result = await _lineService.AssignProductLine(model);
+            foreach (var item in result)
+            {
+                listAlert.Add(new AlertModel { AlertType = item.Value == "Success" ? Alert.Success : Alert.Danger, AlertMessage = item.Value });
+            }
+        }
+        catch (Exception ex)
+        {
+            listAlert.Add(new AlertModel { AlertType = Alert.Danger, AlertMessage = ex.Message });
+        }
+
+        TempData["AlertMessage"] = JsonConvert.SerializeObject(listAlert);
+
+        return RedirectToAction("ProductLine", new { factoryId = model.FactoryId });
     }
 
     public async Task<IActionResult> MachineLine(int factoryId = 0, int lineId = 0, bool edit = false)

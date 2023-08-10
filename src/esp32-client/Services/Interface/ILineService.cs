@@ -15,9 +15,9 @@ namespace esp32_client.Services
         
         Task<List<GetInfoProductLineModel>> GetInfoProductLine(int factoryId);
 
-        Task AssignProductLine(AssignProductLineModel model);
+        Task<Dictionary<string, string>> AssignProductLine(AssignProductLineModel model);
 
-        Task AssignStationProcess(AssignStationProcessModel model);
+        Task<Dictionary<string, string>> AssignStationProcess(AssignStationProcessModel model);
 
         Task<List<GetStationAndProcessModel>> GetStationAndProcess(int lineId);
         

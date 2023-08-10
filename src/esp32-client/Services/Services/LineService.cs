@@ -104,7 +104,7 @@ public partial class LineService : ILineService
         return result;
     }
 
-    public async Task AssignProductLine(AssignProductLineModel model)
+    public async Task<Dictionary<string, string>> AssignProductLine(AssignProductLineModel model)
     {
         var queryListUpdate = _linq2Db.Line.Where(s => s.FactoryId == model.FactoryId);
 
@@ -128,23 +128,42 @@ public partial class LineService : ILineService
         await _linq2Db.Station.Where(s => listLineId.Contains(s.LineId)).Set(s => s.ProcessId, 0).UpdateAsync();
 
         // Update Pattern for machine (Set ProcessId to 0 => Delete pattern)
-        var listMachine = await _linq2Db.Machine.Where(s=> listUpdate.Select(s => s.Id).Contains(s.LineId)).Select(s => s.Id).ToListAsync();
-        await _machineService.AssignPatternMachine(listMachine);
+        var listMachine = await _linq2Db.Machine.Where(s => listUpdate.Select(s => s.Id).Contains(s.LineId)).Select(s => s.Id).ToListAsync();
+        var response = await _machineService.AssignPatternMachine(listMachine);
+        return response;
     }
 
-    public async Task AssignStationProcess(AssignStationProcessModel model)
+    public async Task<Dictionary<string, string>> AssignStationProcess(AssignStationProcessModel model)
     {
         // Validation
         // Duplicate process in line
         if (model.ListStationProcess.Where(s => s.ProcessId != 0).GroupBy(s => s.ProcessId).Any(s => s.Count() > 1))
             throw new Exception("A process cannot be used for more than one station.");
 
+        // Get list station change
+        var queryListUpdate = _linq2Db.Station.Where(s => true);
+
+        foreach (var item in model.ListStationProcess)
+        {
+            queryListUpdate = queryListUpdate.Where(s => !(s.Id == item.StationId && s.ProcessId == item.ProcessId));
+        }
+
+        var listStationUpdate = await queryListUpdate.ToListAsync();
+
+        // Update station data
         foreach (var item in model.ListStationProcess)
         {
             await _linq2Db.Station.Where(s => s.Id == item.StationId)
                        .Set(s => s.ProcessId, item.ProcessId)
                        .UpdateAsync();
         }
+
+        // Get list machine that is in StationId
+        var listMachine = await _linq2Db.Machine.Where(s => listStationUpdate.Select(s => s.Id).Contains(s.StationId)).Select(s => s.Id).ToListAsync();
+
+        // Update pattern for machine
+        var response = await _machineService.AssignPatternMachine(listMachine);
+        return response;
     }
 
     public async Task<List<GetStationAndProcessModel>> GetStationAndProcess(int lineId)
