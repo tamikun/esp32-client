@@ -15,9 +15,10 @@ namespace esp32_client.Services
         Task<Machine> Create(MachineCreateModel model);
         Task<Machine> Update(MachineUpdateModel model);
         Task DeleteById(int id);
-        Task AssignMachineLine(ListAssignMachineLineModel model);
+        Task<Dictionary<string, string>> AssignMachineLine(ListAssignMachineLineModel model);
         Task UpdateById(int id, int departmentId, int lineId, int processId);
         Task UpdateByListId(IEnumerable<int> listId, int departmentId, int lineId, int processId);
-        Task Delete(int id);
+        Task<Dictionary<string, string>> AssignPatternMachine(IEnumerable<int> machineId);
+        Task<List<EspFileModel>> GetDefaultListFile(string machineIp);
     }
 }

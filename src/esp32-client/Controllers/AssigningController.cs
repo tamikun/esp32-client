@@ -2,6 +2,7 @@
 using esp32_client.Services;
 using esp32_client.Builder;
 using esp32_client.Models;
+using Newtonsoft.Json;
 
 namespace esp32_client.Controllers;
 
@@ -74,10 +75,23 @@ public class AssigningController : BaseController
     public async Task<IActionResult> AssignMachineLine(ListAssignMachineLineModel model)
     {
 
-        return await HandleActionAsync(async () =>
+        var listAlert = new List<AlertModel>();
+        try
         {
-            await _machineService.AssignMachineLine(model);
-        }, RedirectToAction("MachineLine", new { factoryId = model.FactoryId, lineId = model.LineId }));
+            var result = await _machineService.AssignMachineLine(model);
+            foreach (var item in result)
+            {
+                listAlert.Add(new AlertModel { AlertType = item.Value == "Success" ? Alert.Success : Alert.Danger, AlertMessage = item.Value });
+            }
+        }
+        catch (Exception ex)
+        {
+            listAlert.Add(new AlertModel { AlertType = Alert.Danger, AlertMessage = ex.Message });
+        }
+
+        TempData["AlertMessage"] = JsonConvert.SerializeObject(listAlert);
+
+        return RedirectToAction("MachineLine", new { factoryId = model.FactoryId, lineId = model.LineId });
     }
 
 }

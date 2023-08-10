@@ -9,11 +9,13 @@ public class TestApiController : ControllerBase
 {
     private readonly ILogger<HomeController> _logger;
     private readonly Settings _settings;
+    private readonly IMachineService _machineService;
 
-    public TestApiController(ILogger<HomeController> logger, Settings settings)
+    public TestApiController(ILogger<HomeController> logger, Settings settings, IMachineService machineService)
     {
         _logger = logger;
         _settings = settings;
+        _machineService = machineService;
     }
 
     [HttpPost]

@@ -161,7 +161,7 @@ public partial class MachineService : IMachineService
         await _linq2Db.DeleteAsync(machine);
     }
 
-    public async Task AssignMachineLine(ListAssignMachineLineModel model)
+    public async Task<Dictionary<string, string>> AssignMachineLine(ListAssignMachineLineModel model)
     {
         // Validation
         // Duplicate machine in line
@@ -176,18 +176,23 @@ public partial class MachineService : IMachineService
         }
 
         var listUpdate = await queryListUpdate.ToListAsync();
-        
-        listUpdate.ForEach(s =>{
-            // Update file
-        });
 
         foreach (var item in model.ListAssignMachine)
         {
-            await queryListUpdate.Where(s => s.Id == item.MachineId)
-                       .Set(s => s.LineId, model.LineId)
-                       .Set(s => s.StationId, item.StationId)
-                       .UpdateAsync();
+            // Select machine that is changed
+            await queryListUpdate
+                                .Where(s => s.Id == item.MachineId)
+                                // Update machine that recieve file successfully
+                                // .Where(s => assignPattern.Where(s => s.Value == "Success").Select(s => s.Key).Contains(s.IpAddress))
+                                .Set(s => s.LineId, model.LineId)
+                                .Set(s => s.StationId, item.StationId)
+                                .UpdateAsync();
         }
+
+        // Update file
+        var assignPattern = await AssignPatternMachine(listUpdate.Select(s => s.Id));
+
+        return assignPattern;
     }
 
     public async Task UpdateById(int id, int departmentId, int lineId, int processId)
@@ -216,13 +221,78 @@ public partial class MachineService : IMachineService
         return model;
     }
 
-    public async Task Delete(int id)
+    public async Task<Dictionary<string, string>> AssignPatternMachine(IEnumerable<int> machineId)
     {
-        var machine = await GetById(id);
-        if (machine is null) throw new Exception("Machine is not found");
-        if (machine.LineId != 0 || machine.StationId != 0) throw new Exception("Machine is in use");
 
-        await _linq2Db.DeleteAsync(machine);
+        var result = new Dictionary<string, string>();
+
+        // Machine => Station => Process => Pattern
+        var data = await (from machine in _linq2Db.Machine.Where(s => machineId.Contains(s.Id))
+                          join station in _linq2Db.Station on machine.StationId equals station.Id
+                          join process1 in _linq2Db.Process on station.ProcessId equals process1.Id into process2
+                          from process in process2.DefaultIfEmpty()
+                          select new { machine.IpAddress, process.PatternDirectory, process.PatternNo }
+                        ).ToListAsync();
+
+        var tasks = data.Select(async s =>
+        {
+            bool stepSuccess = true;
+
+            // Change state to server
+            var changeState = await ChangeState(s.IpAddress, ServerState.Server);
+            stepSuccess &= changeState.Success;
+
+            if (!stepSuccess)
+            {
+                result.Add(s.IpAddress, "Cannot change to server state");
+                return;
+            }
+
+            // Delete if File exists
+            var listCurrentFile = await GetDefaultListFile(s.IpAddress);
+            foreach (var file in listCurrentFile)
+            {
+                var deleteFile = await DeleteFile(s.IpAddress, file.FileName);
+                stepSuccess &= deleteFile.Success;
+            }
+
+            if (!stepSuccess)
+            {
+                result.Add(s.IpAddress, "Cannot delete old file");
+                return;
+            }
+
+            // Upload new file
+            if (!String.IsNullOrEmpty(s.PatternDirectory))
+            {
+                var file = File.ReadAllBytes(s.PatternDirectory);
+                var postFile = await Post(file, s.IpAddress, s.PatternNo);
+                stepSuccess &= postFile.Success;
+            }
+
+            if (!stepSuccess)
+            {
+                result.Add(s.IpAddress, "Cannot upload new file");
+                return;
+            }
+
+            // Change state back to machine
+            changeState = await ChangeState(s.IpAddress, ServerState.Machine);
+            stepSuccess &= changeState.Success;
+
+            if (!stepSuccess)
+            {
+                result.Add(s.IpAddress, "Cannot change state to machine");
+                return;
+            }
+
+            result.Add(s.IpAddress, "Success");
+        });
+
+        await Task.WhenAll(tasks);
+
+        return result;
+
     }
 
     private string GetChangeMachineStateUrl(string machineIp, bool isEndWithSlash = false)
@@ -259,64 +329,70 @@ public partial class MachineService : IMachineService
         return rs;
     }
 
-    public async Task<string> GetAsyncApi(string requestUri)
+    public async Task<(bool Success, string ResponseBody)> Get(string requestUri)
     {
         using (HttpClient client = new HttpClient())
         {
+            string responseBody;
             client.Timeout = TimeSpan.FromMilliseconds(_settings.GetApiTimeOut);
 
             HttpResponseMessage response = await client.GetAsync(requestUri);
 
             if (!response.IsSuccessStatusCode)
-                throw new Exception(response.StatusCode.ToString());
+            {
+                responseBody = response.StatusCode.ToString();
+                return (false, responseBody);
+            }
 
-            string responseBody = await response.Content.ReadAsStringAsync();
-            return responseBody;
+            responseBody = await response.Content.ReadAsStringAsync();
+            return (true, responseBody);
         }
     }
 
     public async Task<List<EspFileModel>> GetListFile(string apiUrl)
     {
-        string node = _settings.NodeListEspFile;
-        var pageData = await GetAsyncApi(apiUrl);
-
-        string html = pageData;
-
         List<EspFileModel> fileDataList = new List<EspFileModel>();
 
-        HtmlDocument htmlDoc = new HtmlDocument();
-        htmlDoc.LoadHtml(html);
+        string node = _settings.NodeListEspFile;
+        var response = await Get(apiUrl);
 
-        HtmlNodeCollection tableRows = htmlDoc.DocumentNode.SelectNodes(node);
-        if (tableRows != null && tableRows.Count > 0)
+        if (response.Success)
         {
-            foreach (HtmlNode row in tableRows)
+            string html = response.ResponseBody;
+
+            HtmlDocument htmlDoc = new HtmlDocument();
+            htmlDoc.LoadHtml(html);
+
+            HtmlNodeCollection tableRows = htmlDoc.DocumentNode.SelectNodes(node);
+            if (tableRows != null && tableRows.Count > 0)
             {
-                HtmlNodeCollection tableCells = row.SelectNodes("td");
-                if (tableCells != null && tableCells.Count >= 4)
+                foreach (HtmlNode row in tableRows)
                 {
-                    EspFileModel fileData = new EspFileModel();
-                    fileData.FileName = tableCells[0].InnerText.Trim();
-                    fileData.FileType = tableCells[1].InnerText.Trim();
-                    fileData.FileSize = long.Parse(tableCells[2].InnerText.Trim());
-                    fileDataList.Add(fileData);
+                    HtmlNodeCollection tableCells = row.SelectNodes("td");
+                    if (tableCells != null && tableCells.Count >= 4)
+                    {
+                        EspFileModel fileData = new EspFileModel();
+                        fileData.FileName = tableCells[0].InnerText.Trim();
+                        fileData.FileType = tableCells[1].InnerText.Trim();
+                        fileData.FileSize = long.Parse(tableCells[2].InnerText.Trim());
+                        fileDataList.Add(fileData);
+                    }
                 }
             }
         }
+
         return fileDataList;
     }
 
-    public async Task<List<EspFileModel>> GetDefaultListFile(string machineIp)
-    {
-        return await GetListFile(GetListFileUrl(machineIp));
-    }
-
-    public async Task<HttpResponseMessage> PostAsyncApi(string? requestBody, string apiUrl)
+    public async Task<(bool Success, string ResponseBody)> Post(string? requestBody, string apiUrl)
     {
         using (HttpClient httpClient = new HttpClient())
         {
+            string responseBody;
+
             httpClient.Timeout = TimeSpan.FromMilliseconds(_settings.PostApiTimeOut);
             HttpResponseMessage response;
+
             if (requestBody is null)
             {
                 response = await httpClient.PostAsync(apiUrl, null);
@@ -327,25 +403,18 @@ public partial class MachineService : IMachineService
                 response = await httpClient.PostAsync(apiUrl, content);
             }
 
-            return response;
+            if (!response.IsSuccessStatusCode)
+            {
+                responseBody = response.StatusCode.ToString();
+                return (false, responseBody);
+            }
+
+            responseBody = await response.Content.ReadAsStringAsync();
+            return (true, responseBody);
         }
     }
 
-    public async Task<HttpResponseMessage> PostAsyncFile(byte[] byteContent, string machineIp, string fileName)
-    {
-        var url = GetPostFileUrl(machineIp, fileName);
-
-        using (var httpClient = new HttpClient())
-        {
-            httpClient.Timeout = TimeSpan.FromMilliseconds(_settings.PostFileTimeOut);
-
-            var fileContent = new ByteArrayContent(byteContent);
-            var response = await httpClient.PostAsync(url, fileContent);
-            return response;
-        }
-    }
-
-    public async Task ChangeState(string machinIp, ServerState state)
+    public async Task<(bool Success, string ResponseBody)> ChangeState(string machinIp, ServerState state)
     {
         var url = "";
 
@@ -355,17 +424,49 @@ public partial class MachineService : IMachineService
         if (state == ServerState.Server)
             url = GetChangeServerStateUrl(machinIp);
 
-        await GetAsyncApi(url);
+        var result = await Get(url);
         await Task.Delay(_settings.ChangeStateDelay);
+        return result;
     }
 
-    public async Task<HttpResponseMessage> DeleteFile(string ipAddress, string fileName)
+    public async Task<List<EspFileModel>> GetDefaultListFile(string machineIp)
     {
+        return await GetListFile(GetListFileUrl(machineIp, isEndWithSlash: true));
+    }
+
+    public async Task<(bool Success, string ResponseBody)> DeleteFile(string ipAddress, string? fileName)
+    {
+        if (fileName is null) return (true, "");
+
         string url = GetDeleteFileUrl(ipAddress, fileName);
 
-        var response = await PostAsyncApi(requestBody: null, apiUrl: url);
+        var response = await Post(requestBody: null, apiUrl: url);
 
         return response;
     }
 
+    public async Task<(bool Success, string ResponseBody)> Post(byte[] byteContent, string machineIp, string fileName)
+    {
+        var url = GetPostFileUrl(machineIp, fileName);
+
+        using (var httpClient = new HttpClient())
+        {
+            string responseBody;
+
+            httpClient.Timeout = TimeSpan.FromMilliseconds(_settings.PostFileTimeOut);
+
+            var fileContent = new ByteArrayContent(byteContent);
+            var response = await httpClient.PostAsync(url, fileContent);
+
+
+            if (!response.IsSuccessStatusCode)
+            {
+                responseBody = response.StatusCode.ToString();
+                return (false, responseBody);
+            }
+
+            responseBody = await response.Content.ReadAsStringAsync();
+            return (true, responseBody);
+        }
+    }
 }
