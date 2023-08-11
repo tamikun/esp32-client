@@ -3,13 +3,18 @@
 
     int factoryId = ViewBag.FactoryId;
 
+    int pageIndex = ViewBag.PageIndex;
+    int pageSize = ViewBag.PageSize;
+
     var data = await _lineService.GetProcessAndMachineOfLine(factoryId);
 
-    var lines = data.DistinctBy(s => s.LineId).Where(s => s.LineId != 0).Select(s => s.LineId).ToList();
+    var lines = data.DistinctBy(s => s.LineId).Where(s => s.LineId != 0).ToList().ToPagedListModel(pageIndex, pageSize);
 
     var factories = await _factoryService.GetAll();
 
     var listMachine = await _machineService.GetAll();
+
+    var listSelectPageSize = new List<int>{1,2,3,5,10,15,20};
 
 }
 <div class="m-3">
@@ -17,14 +22,6 @@
     {
         <label for="factoryId" class="form-label">Factory name:</label>
         <select data-val="true" data-val-required="The Number field is required." id="factoryId" name="factoryId" onchange="submitById('searchByFactoryId')">
-            @* @if (factoryId == 0)
-            {
-                <option value='' selected="selected">Choose factory</option>
-            }
-            else
-            {
-                <option value=''>Choose factory</option>
-            } *@
 
             @foreach (var item in factories)
             {
@@ -38,14 +35,53 @@
                 }
             }
         </select>
+
+        <label for="factoryId" class="form-label">PageSize:</label>
+        <select data-val="true" data-val-required="The Number field is required." id="pageSize" name="pageSize" onchange="submitById('searchByFactoryId')">
+
+            @foreach (var item in listSelectPageSize)
+            {
+                @if (pageSize == item)
+                {
+                    <option value='@item' selected="selected">@item</option>
+                }
+                else
+                {
+                    <option value='@item'>@item</option>
+                }
+            }
+        </select>
     }
 </div>
 
-@if (lines.Count > 0)
-{
-    @for (var i = 0; i < lines.Count; i++)
+<div class="pagination">
+    @if(lines.HasPreviousPage)
     {
-        var lineData = data.Where(s => s.LineId == lines[i]).ToList();
+        int previousPage= pageIndex - 1;
+        <a href='@Url.Action("Index", "Monitoring", new {factoryId =  @factoryId, pageIndex = @previousPage, pageSize = @pageSize})'>&laquo;</a>
+    }
+
+    @for(int i = 0; i < lines.TotalPage; i++){
+        int pageDisplay = i + 1;
+        if(i == pageIndex){
+            <a class="active" href="">@pageDisplay</a>
+        }else{
+            <a href='@Url.Action("Index", "Monitoring", new {factoryId =  @factoryId, pageIndex = @i, pageSize = @pageSize})'>@pageDisplay</a>
+        }
+    }
+
+    @if(lines.HasNextPage)
+    {
+        int nextPage = pageIndex + 1;
+        <a href='@Url.Action("Index", "Monitoring", new {factoryId =  @factoryId, pageIndex = @nextPage, pageSize = @pageSize})'>&raquo;</a>
+    }
+</div>
+
+@if (lines.Data.Count > 0)
+{
+    @for (var i = 0; i < lines.Data.Count; i++)
+    {
+        var lineData = data.Where(s => s.LineId == lines.Data[i].LineId).ToList();
         var lineDataCount = lineData.Count;
         if(lineDataCount > 0)
         {

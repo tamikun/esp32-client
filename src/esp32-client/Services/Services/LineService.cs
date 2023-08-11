@@ -225,6 +225,7 @@ public partial class LineService : ILineService
                                 MachineNo = string.IsNullOrEmpty(machine.MachineNo) ? "MachineNo: {Empty}" : machine.MachineNo,
                                 MachineIp = machine.IpAddress,
                             }).OrderBy(s => s.LineId).ThenBy(s => s.StationId).ToListAsync();
+
         return result;
     }
 

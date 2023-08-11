@@ -18,7 +18,7 @@ public class MonitoringController : BaseController
     }
 
 
-    public async Task<IActionResult> Index(int factoryId = 0)
+    public async Task<IActionResult> Index(int factoryId = 0, int pageIndex = 0, int pageSize = 5)
     {
         if (factoryId == 0)
         {
@@ -27,6 +27,8 @@ public class MonitoringController : BaseController
         }
 
         ViewBag.FactoryId = factoryId;
+        ViewBag.PageIndex = pageIndex;
+        ViewBag.PageSize = pageSize;
 
         // try
         // {
