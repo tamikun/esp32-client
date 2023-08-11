@@ -164,34 +164,55 @@ public partial class MachineService : IMachineService
 
     public async Task<Dictionary<string, string>> AssignMachineLine(ListAssignMachineLineModel model)
     {
+        System.Console.WriteLine("====  model: " + Newtonsoft.Json.JsonConvert.SerializeObject(model));
         // Validation
         // Duplicate machine in line
         if (model.ListAssignMachine.Where(s => s.MachineId != 0).GroupBy(s => s.MachineId).Any(s => s.Count() > 1))
             throw new Exception("A machine cannot be used for more than one station.");
 
-        var queryListUpdate = _linq2Db.Machine.Where(s => s.FactoryId == model.FactoryId);
+        var listUpdateMachineId = new List<int>();
 
         foreach (var item in model.ListAssignMachine)
         {
-            queryListUpdate = queryListUpdate.Where(s => !(s.Id == item.MachineId && s.StationId == item.StationId && s.LineId == model.LineId));
-        }
+            if (item.MachineId == 0)
+            {
+                var machine = await _linq2Db.Machine
+                            .Where(s => s.StationId == item.StationId)
+                            .Where(s => s.LineId != 0 || s.StationId != 0)
+                            .FirstOrDefaultAsync();
+                if (machine is not null)
+                {
+                    await _linq2Db.Machine
+                            .Where(s => s.StationId == item.StationId)
+                            .Set(s => s.LineId, 0)
+                            .Set(s => s.StationId, 0)
+                            .UpdateAsync();
 
-        var listUpdate = await queryListUpdate.ToListAsync();
+                    listUpdateMachineId.Add(machine.Id);
+                }
+            }
+            else
+            {
+                var machine = await _linq2Db.Machine
+                            .Where(s => s.Id == item.MachineId)
+                            .Where(s => s.LineId != model.LineId || s.StationId != item.StationId)
+                            .FirstOrDefaultAsync();
 
-        foreach (var item in model.ListAssignMachine)
-        {
-            // Select machine that is changed
-            await queryListUpdate
+                if (machine is not null)
+                {
+                    await _linq2Db.Machine
                                 .Where(s => s.Id == item.MachineId)
-                                // Update machine that recieve file successfully
-                                // .Where(s => assignPattern.Where(s => s.Value == "Success").Select(s => s.Key).Contains(s.IpAddress))
                                 .Set(s => s.LineId, model.LineId)
                                 .Set(s => s.StationId, item.StationId)
                                 .UpdateAsync();
+                    listUpdateMachineId.Add(machine.Id);
+                }
+            }
         }
 
+
         // Update file
-        var assignPattern = await AssignPatternMachine(listUpdate.Select(s => s.Id));
+        var assignPattern = await AssignPatternMachine(listUpdateMachineId);
 
         return assignPattern;
     }
@@ -229,7 +250,8 @@ public partial class MachineService : IMachineService
 
         // Machine => Station => Process => Pattern
         var data = await (from machine in _linq2Db.Machine.Where(s => machineId.Contains(s.Id))
-                          join station in _linq2Db.Station on machine.StationId equals station.Id
+                          join station1 in _linq2Db.Station on machine.StationId equals station1.Id into station2
+                          from station in station2.DefaultIfEmpty()
                           join process1 in _linq2Db.Process on station.ProcessId equals process1.Id into process2
                           from process in process2.DefaultIfEmpty()
                           select new { machine.IpAddress, process.PatternDirectory, process.PatternNo }
@@ -237,57 +259,64 @@ public partial class MachineService : IMachineService
 
         var tasks = data.Select(async s =>
         {
-            bool stepSuccess = true;
-
-            // Change state to server
-            var changeState = await ChangeState(s.IpAddress, ServerState.Server);
-            stepSuccess &= changeState.Success;
-
-            if (!stepSuccess)
+            try
             {
-                result.Add(s.IpAddress, "Cannot change to server state");
-                return;
-            }
+                bool stepSuccess = true;
 
-            // Delete if File exists
-            var listCurrentFile = await GetDefaultListFile(s.IpAddress);
-            foreach (var file in listCurrentFile)
+                // Change state to server
+                var changeState = await ChangeState(s.IpAddress, ServerState.Server);
+                stepSuccess &= changeState.Success;
+
+                if (!stepSuccess)
+                {
+                    result.Add(s.IpAddress, "Cannot change to server state");
+                    return;
+                }
+
+                // Delete if File exists
+                var listCurrentFile = await GetDefaultListFile(s.IpAddress);
+                foreach (var file in listCurrentFile)
+                {
+                    var deleteFile = await DeleteFile(s.IpAddress, file.FileName);
+                    stepSuccess &= deleteFile.Success;
+                }
+
+                if (!stepSuccess)
+                {
+                    result.Add(s.IpAddress, "Cannot delete old file");
+                    return;
+                }
+
+                // Upload new file
+                if (!String.IsNullOrEmpty(s.PatternDirectory))
+                {
+                    var file = File.ReadAllBytes(s.PatternDirectory);
+                    var postFile = await Post(file, s.IpAddress, s.PatternNo);
+                    stepSuccess &= postFile.Success;
+                }
+
+                if (!stepSuccess)
+                {
+                    result.Add(s.IpAddress, "Cannot upload new file");
+                    return;
+                }
+
+                // Change state back to machine
+                changeState = await ChangeState(s.IpAddress, ServerState.Machine);
+                stepSuccess &= changeState.Success;
+
+                if (!stepSuccess)
+                {
+                    result.Add(s.IpAddress, "Cannot change state to machine");
+                    return;
+                }
+
+                result.Add(s.IpAddress, "Success");
+            }
+            catch (Exception ex)
             {
-                var deleteFile = await DeleteFile(s.IpAddress, file.FileName);
-                stepSuccess &= deleteFile.Success;
+                result.Add(s.IpAddress, ex.Message);
             }
-
-            if (!stepSuccess)
-            {
-                result.Add(s.IpAddress, "Cannot delete old file");
-                return;
-            }
-
-            // Upload new file
-            if (!String.IsNullOrEmpty(s.PatternDirectory))
-            {
-                var file = File.ReadAllBytes(s.PatternDirectory);
-                var postFile = await Post(file, s.IpAddress, s.PatternNo);
-                stepSuccess &= postFile.Success;
-            }
-
-            if (!stepSuccess)
-            {
-                result.Add(s.IpAddress, "Cannot upload new file");
-                return;
-            }
-
-            // Change state back to machine
-            changeState = await ChangeState(s.IpAddress, ServerState.Machine);
-            stepSuccess &= changeState.Success;
-
-            if (!stepSuccess)
-            {
-                result.Add(s.IpAddress, "Cannot change state to machine");
-                return;
-            }
-
-            result.Add(s.IpAddress, "Success");
         });
 
         await Task.WhenAll(tasks);
@@ -299,7 +328,7 @@ public partial class MachineService : IMachineService
     {
         try
         {
-            var result = await Get(GetProductNumberUrl(ipAddress));
+            var result = await Get(GetProductNumberUrl(ipAddress), _settings.GetApiProductNumberTimeOut);
             var dict = JsonConvert.DeserializeObject<Dictionary<string, int>>(result.ResponseBody);
             int number = 0;
 
@@ -355,12 +384,12 @@ public partial class MachineService : IMachineService
         return rs;
     }
 
-    public async Task<(bool Success, string ResponseBody)> Get(string requestUri)
+    public async Task<(bool Success, string ResponseBody)> Get(string requestUri, long? timeOut = null)
     {
         using (HttpClient client = new HttpClient())
         {
             string responseBody;
-            client.Timeout = TimeSpan.FromMilliseconds(_settings.GetApiTimeOut);
+            client.Timeout = TimeSpan.FromMilliseconds(timeOut ?? _settings.GetApiTimeOut);
 
             HttpResponseMessage response = await client.GetAsync(requestUri);
 

@@ -45,7 +45,7 @@ public class AssigningController : BaseController
             var result = await _lineService.AssignStationProcess(model);
             foreach (var item in result)
             {
-                listAlert.Add(new AlertModel { AlertType = item.Value == "Success" ? Alert.Success : Alert.Danger, AlertMessage = item.Value });
+                listAlert.Add(new AlertModel { AlertType = item.Value == "Success" ? Alert.Success : Alert.Info, AlertMessage = $"{item.Key}: {item.Value}" });
             }
         }
         catch (Exception ex)
@@ -75,7 +75,7 @@ public class AssigningController : BaseController
             var result = await _lineService.AssignProductLine(model);
             foreach (var item in result)
             {
-                listAlert.Add(new AlertModel { AlertType = item.Value == "Success" ? Alert.Success : Alert.Danger, AlertMessage = item.Value });
+                listAlert.Add(new AlertModel { AlertType = item.Value == "Success" ? Alert.Success : Alert.Info, AlertMessage = $"{item.Key}: {item.Value}" });
             }
         }
         catch (Exception ex)
@@ -107,7 +107,7 @@ public class AssigningController : BaseController
             var result = await _machineService.AssignMachineLine(model);
             foreach (var item in result)
             {
-                listAlert.Add(new AlertModel { AlertType = item.Value == "Success" ? Alert.Success : Alert.Danger, AlertMessage = item.Value });
+                listAlert.Add(new AlertModel { AlertType = item.Value == "Success" ? Alert.Success : Alert.Info, AlertMessage = $"{item.Key}: {item.Value}" });
             }
         }
         catch (Exception ex)

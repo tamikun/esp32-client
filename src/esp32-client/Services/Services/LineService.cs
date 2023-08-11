@@ -125,11 +125,14 @@ public partial class LineService : ILineService
 
         // Update process of Station (Set ProcessId to 0)
         var listLineId = listUpdate.Select(s => s.Id);
-        await _linq2Db.Station.Where(s => listLineId.Contains(s.LineId)).Set(s => s.ProcessId, 0).UpdateAsync();
 
-        // Update Pattern for machine (Set ProcessId to 0 => Delete pattern)
-        var listMachine = await _linq2Db.Machine.Where(s => listUpdate.Select(s => s.Id).Contains(s.LineId)).Select(s => s.Id).ToListAsync();
-        var response = await _machineService.AssignPatternMachine(listMachine);
+        var listStationQuery = _linq2Db.Station.Where(s => listLineId.Contains(s.LineId));
+        await listStationQuery.Set(s => s.ProcessId, 0).UpdateAsync();
+
+        // Update Pattern for machine (Set LineId = 0, ProcessId to 0 => Delete pattern)
+        var listMachineId =  _linq2Db.Machine.Where(s => listLineId.Contains(s.LineId)).Select(s => s.Id);
+
+        var response = await _machineService.AssignPatternMachine(listMachineId);
         return response;
     }
 

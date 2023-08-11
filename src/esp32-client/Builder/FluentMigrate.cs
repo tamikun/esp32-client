@@ -265,3 +265,22 @@ public class AddInitData : AutoReversingMigration
     }
 }
 
+[Migration(20230811162700)]
+public class AddTimeOutSetting : AutoReversingMigration
+{
+    private readonly LinqToDb _linq2Db;
+    public AddTimeOutSetting(LinqToDb linq2Db)
+    {
+        _linq2Db = linq2Db;
+    }
+    public override void Up()
+    {
+        var settings = new List<Setting>{
+            new Setting{Name = "GetApiProductNumberTimeOut", Value = "5000"},
+        };
+
+        _linq2Db.BulkInsert(settings).Wait();
+
+    }
+}
+

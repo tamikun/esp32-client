@@ -32,6 +32,7 @@ namespace esp32_client.Services
         public string Port { get; set; }
         public long ConnectionTimeOut { get; set; }
         public long GetApiTimeOut { get; set; }
+        public long GetApiProductNumberTimeOut { get; set; }
         public long PostFileTimeOut { get; set; }
         public long PostApiTimeOut { get; set; }
         public string FileDataDirectory { get; set; }
