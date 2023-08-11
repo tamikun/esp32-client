@@ -85,7 +85,7 @@ builder.Services.AddLinqToDBContext<LinqToDb>((provider, options)
             // .UseDefaultLogging(provider)
             , ServiceLifetime.Scoped);
 
-// builder.Services.AddHostedService<ScheduledTaskService>();
+builder.Services.AddHostedService<ScheduledTaskService>();
 
 
 var app = builder.Build();
