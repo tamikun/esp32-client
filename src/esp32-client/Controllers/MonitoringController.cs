@@ -25,15 +25,17 @@ public class MonitoringController : BaseController
             var getFirst = await _linq2db.Factory.FirstOrDefaultAsync();
             if (getFirst is not null) factoryId = getFirst.Id;
         }
+
         ViewBag.FactoryId = factoryId;
-        try
-        {
-            await _scheduleTaskService.SaveProductData();
-        }
-        catch (Exception ex)
-        {
-            System.Console.WriteLine("==== SaveProductData: " + Newtonsoft.Json.JsonConvert.SerializeObject(ex));
-        }
+
+        // try
+        // {
+        //     await _scheduleTaskService.SaveProductData();
+        // }
+        // catch (Exception ex)
+        // {
+        //     System.Console.WriteLine("==== SaveProductData: " + Newtonsoft.Json.JsonConvert.SerializeObject(ex));
+        // }
 
         return View();
     }

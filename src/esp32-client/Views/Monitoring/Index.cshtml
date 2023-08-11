@@ -17,14 +17,14 @@
     {
         <label for="factoryId" class="form-label">Factory name:</label>
         <select data-val="true" data-val-required="The Number field is required." id="factoryId" name="factoryId" onchange="submitById('searchByFactoryId')">
-            @if (factoryId == 0)
+            @* @if (factoryId == 0)
             {
                 <option value='' selected="selected">Choose factory</option>
             }
             else
             {
                 <option value=''>Choose factory</option>
-            }
+            } *@
 
             @foreach (var item in factories)
             {
@@ -173,6 +173,6 @@
         
     </style>
     <script>
-        setTimeout("location.reload();", 120000);
+        @* setTimeout("location.reload();", 120000); *@
     </script>
 }
