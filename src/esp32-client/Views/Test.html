@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Popup Form Example</title>
+    <link rel="stylesheet" href="../../wwwroot/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="../../wwwroot/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="../../wwwroot/css/fontawesome/css/all.css">
+    <script src="../../wwwroot/js/site.js" asp-append-version="true"></script>
+</head>
+<style>
+    .arrow {
+        font-size: 20px;
+        line-height: 1;
+        margin-inline: 10px;
+    }
+    .line-container{
+        display: flex;
+        margin-block: 30px;
+        margin-inline: 10px;
+    }
+    .line-info-body{
+        display: flex;
+    }
+    .line-info-header{
+        margin-right: 50px;
+    }
+
+    .line-info-header-main, .line-info-header-expanse{
+        width: 150px;
+    }
+
+    .line-info-header-main{
+        
+        border: 1px solid rgb(0, 0, 0);
+        border-radius: 0px;
+        height: 50%;
+        text-align: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .line-info-header-expanse{
+        border: 1px solid rgb(0, 0, 0);
+        height: 50%;
+    }
+    .line-info-detail-main{
+       
+        border: 1px solid rgb(0, 0, 0);
+        border-radius: 0px;
+    }
+    .line-info-detail-expanse{
+        border: 1px solid rgb(0, 0, 0);
+    }
+    .line-container ul{
+        margin-block-start: 0em;
+        margin-block-end: 0em;
+        margin-inline-start: 0px;
+        margin-inline-end: 0px;
+        padding-inline-start: 20px;
+    }
+
+    .line-container:nth-child(3n+1) .line-info-header-main {
+        background-color: rgb(192, 214, 155);
+    }
+    .line-container:nth-child(3n+1) .line-info-detail-main {
+        background-color: rgb(235, 241, 222)
+    }
+    .line-container:nth-child(3n+2) .line-info-header-main {
+        background-color: rgb(149, 179, 215);
+    }
+    .line-container:nth-child(3n+2) .line-info-detail-main {
+        background-color: rgb(198, 217, 241);
+    }
+    .line-container:nth-child(3n) .line-info-header-main {
+        background-color: rgb(179, 162, 199);
+    }
+    .line-container:nth-child(3n) .line-info-detail-main {
+        background-color: rgb(204, 193, 218);
+    }
+    
+</style>
+
+<body>
+    <div class="line-container">
+        <div class="line-info-header">
+            <div class="line-info-header-main">
+                <div>
+                    <div><strong>Line 1</strong></div>
+                    <div>Product 1</div>
+                </div>
+            </div>
+            <div class="line-info-header-expanse">
+                <ul>
+                    <li>LineNo: Line 001</li>
+                    <li>Product 001</li>
+                </ul>
+            </div>
+        </div>
+        <div class="line-info-body">
+            <div class="line-info-detail">
+                <div class="line-info-detail-main">
+                    <div>Station name</div>
+                    <div>Machine name</div>
+                    <div>Process name</div>
+                    <div>Pattern no</div>
+                </div>
+                <div class="line-info-detail-expanse">
+                    <ul>
+                        <li>Product number</li>
+                    </ul>
+                </div>
+                <div class="line-info-detail-expanse">
+                    <ul>
+                        <li>Station no</li>
+                        <li>Machine no</li>
+                        <li>Process no</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="arrow"><br>&#8594;</div>
+            <div class="line-info-detail">
+                <div class="line-info-detail-main">
+                    <div>Station name</div>
+                    <div>Machine name</div>
+                    <div>Process name</div>
+                    <div>Pattern no</div>
+                </div>
+                <div class="line-info-detail-expanse">
+                    <ul>
+                        <li>Product number</li>
+                    </ul>
+                </div>
+                <div class="line-info-detail-expanse">
+                    <ul>
+                        <li>Station no</li>
+                        <li>Machine no</li>
+                        <li>Process no</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="arrow"><br>&#8594;</div>
+            <div class="line-info-detail">
+                <div class="line-info-detail-main">
+                    <div>Station name</div>
+                    <div>Machine name</div>
+                    <div>Process name</div>
+                    <div>Pattern no</div>
+                </div>
+                <div class="line-info-detail-expanse">
+                    <ul>
+                        <li>Product number</li>
+                    </ul>
+                </div>
+                <div class="line-info-detail-expanse">
+                    <ul>
+                        <li>Station no</li>
+                        <li>Machine no</li>
+                        <li>Process no</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+</body>
+
+</html>

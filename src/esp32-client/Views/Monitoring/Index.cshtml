@@ -43,187 +43,136 @@
 
 @if (lines.Count > 0)
 {
-    <div class="overview-line">
-        @for (var i = 0; i < lines.Count; i++)
+    @for (var i = 0; i < lines.Count; i++)
+    {
+        var lineData = data.Where(s => s.LineId == lines[i]).ToList();
+        var lineDataCount = lineData.Count;
+        if(lineDataCount > 0)
         {
-            var lineData = data.Where(s => s.LineId == lines[i]).ToList();
+            <div class="line-container">
+                <div class="line-info-header">
+                    <div class="line-info-header-main">
+                        <div>
+                            <div><strong>@lineData[0].LineName</strong></div>
+                            <div>@lineData[0].ProductName</div>
+                        </div>
+                    </div>
+                    <div class="line-info-header-expanse">
+                        <ul>
+                            <li>@lineData[0].LineNo</li>
+                            <li>@lineData[0].ProductNo</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="line-info-body">
+                    @for(int j = 0; j < lineDataCount; j++){
+                        <div class="line-info-detail">
+                            <div class="line-info-detail-main">
+                                <div>@lineData[j].StationName</div>
+                                <div>@lineData[j].MachineName</div>
+                                <div>@lineData[j].ProcessName</div>
+                                <div>@lineData[j].PatternNo</div>
+                            </div>
+                            <div class="line-info-detail-expanse">
+                                <ul>
+                                    @{ var dataReport = await _dataReportService.GetLastDataByStationId(lineData[j].StationId);}
+                                    <li>@dataReport.ProductNumber</li>
+                                </ul>
+                            </div>
+                            <div class="line-info-detail-expanse">
+                                <ul>
+                                    <li>@lineData[j].StationNo</li>
+                                    <li>@lineData[j].MachineNo</li>
+                                    <li>@lineData[j].ProcessNo</li>
+                                </ul>
+                            </div>
+                        </div>
 
-            <table>
-                <tr>
-                    <td style="border: 0;"></td>
-                    @for (var index = 0; index < lineData.Count; index++)
-                    {
-                        string machineName = String.IsNullOrEmpty(lineData[index].MachineName) ? "null" : lineData[index].MachineName;
-                        string machineNo = String.IsNullOrEmpty(lineData[index].MachineNo) ? "null" : lineData[index].MachineNo;
-                        <td style="border: 0;"></td>
-                        <td>
-                            <small>Machine No: @machineNo</small>
-                            <br>
-                            <small>Machine name: @machineName</small>
-                        </td>
-                    }
-                </tr>
-                <tr>
-                    <td style="border: 0;"></td>
-                    @for (var index = 0; index < lineData.Count; index++)
-                    {
-                        var dataReport = await _dataReportService.GetLastDataByStationId(lineData[index].StationId);
-                        <td style="border: 0;"></td>
-                        <td style="text-align: right;"><small>@dataReport.ProductNumber</small></td>
-                    }
-                </tr>
-                <tr>
-                    <td style="white-space: nowrap; width: 100px;">
-                        Line No: @lineData[0].LineNo
-                        <br>
-                        Line name: @lineData[0].LineName
-                    </td>
-                    <td style="white-space: nowrap; border: 0;"></td>
-                    @for (var index = 0; index < lineData.Count; index++)
-                    {
-                        string stationName = String.IsNullOrEmpty(lineData[index].StationName) ? "null" : lineData[index].StationName;
-                        string stationNo = String.IsNullOrEmpty(lineData[index].StationNo) ? "null" : lineData[index].StationNo;
-
-                        <td style="white-space: nowrap;">
-                            Station No: @stationNo
-                            <br>
-                            Station name: @stationName
-                        </td>
-                        @if (index < lineData.Count - 1)
-                        {
-                            <td style="white-space: nowrap; border: 0;">
-                                <div class="arrow">&#8594;</div>
-                            </td>
+                        @if(j != lineDataCount - 1){
+                            <div class="arrow"><br>&#8594;</div>
                         }
                     }
-                </tr>
-                <tr>
-                    @{
-                        string productName = String.IsNullOrEmpty(lineData[0].ProductName) ? "null" : lineData[0].ProductName;
-                        string productNo = String.IsNullOrEmpty(lineData[0].ProductNo) ? "null" : lineData[0].ProductNo;
-                    }
-                    <td style="white-space: nowrap;">
-                        <small>Product No: @productNo</small>
-                        <br>
-                        <small>Product name: @productName</small>
-                    </td>
-                    @for (var index = 0; index < lineData.Count; index++)
-                    {
-                        string processNo = String.IsNullOrEmpty(lineData[index].ProcessNo) ? "null" : lineData[index].ProcessNo;
-                        string processName = String.IsNullOrEmpty(lineData[index].ProcessName) ? "null" : lineData[index].ProcessName;
-                        string patternNo = String.IsNullOrEmpty(lineData[index].PatternNo) ? "null" : lineData[index].PatternNo;
-
-                        <td style="border: 0;"></td>
-                        <td>
-                            <small>Process No: @processNo</small>
-                            <br>
-                            <small>Process name: @processName</small>
-                            <br>
-                            <small>Pattern No: @patternNo</small>
-                            <br>
-                            <small>@lineData[index].PatterDescription</small>
-                        </td>
-                    }
-                </tr>
-            </table>
+                </div>
+            </div>
         }
-    </div>
+    }
 }
 
 
 @section Scripts{
     <style>
-        .overview-line table {
-            border-collapse: unset;
-            margin: 20px;
-        }
-
-        .overview-line th,
-        .overview-line td {
-            border: 1px solid rgb(0, 0, 0);
-            border-radius: 5px;
-            min-width: 40px;
-        }
-
-        .overview-line table {
-            margin: 10px 10px 0px 10px;
-        }
-
-        .overview-line .arrow {
-            font-size: 30px;
+        .arrow {
+            font-size: 20px;
             line-height: 1;
+            margin-inline: 10px;
+        }
+        .line-container{
+            display: flex;
+            margin-block: 30px;
+            margin-inline: 10px;
+        }
+        .line-info-body{
+            display: flex;
+        }
+        .line-info-header{
+            margin-right: 50px;
         }
 
-        .overview-line table:nth-child(3n+1) {
-            color: rgb(65, 79, 43);
+        .line-info-header-main, .line-info-header-expanse{
+            width: 150px;
         }
 
-        .overview-line table:nth-child(3n+1) {
-            color: rgb(104, 133, 54);
+        .line-info-header-main{
+            
+            border: 1px solid rgb(0, 0, 0);
+            border-radius: 0px;
+            height: 50%;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .line-info-header-expanse{
+            border: 1px solid rgb(0, 0, 0);
+            height: 50%;
+        }
+        .line-info-detail-main{
+        
+            border: 1px solid rgb(0, 0, 0);
+            border-radius: 0px;
+        }
+        .line-info-detail-expanse{
+            border: 1px solid rgb(0, 0, 0);
+        }
+        .line-container ul{
+            margin-block-start: 0em;
+            margin-block-end: 0em;
+            margin-inline-start: 0px;
+            margin-inline-end: 0px;
+            padding-inline-start: 20px;
         }
 
-        .overview-line table:nth-child(3n+1) tr:nth-child(3) td:nth-child(1) {
+        .line-container:nth-child(3n+1) .line-info-header-main {
             background-color: rgb(192, 214, 155);
-            color: #000;
         }
-
-        .overview-line table:nth-child(3n+1) tr:nth-child(3) td:nth-child(2n+3) {
-            background-color: rgb(235, 241, 222);
-            color: #000;
+        .line-container:nth-child(3n+1) .line-info-detail-main {
+            background-color: rgb(235, 241, 222)
         }
-
-        .overview-line table:nth-child(3n+2) {
-            color: rgb(46, 72, 104);
-        }
-
-        .overview-line table:nth-child(3n+2) tr:nth-child(3) td:nth-child(1) {
+        .line-container:nth-child(3n+2) .line-info-header-main {
             background-color: rgb(149, 179, 215);
-            color: #000;
         }
-
-        .overview-line table:nth-child(3n+2) tr:nth-child(3) td:nth-child(2n+3) {
+        .line-container:nth-child(3n+2) .line-info-detail-main {
             background-color: rgb(198, 217, 241);
-            color: #000;
         }
-
-        .overview-line table:nth-child(3n) {
-            color: rgb(63, 40, 90);
-        }
-
-        .overview-line table:nth-child(3n) tr:nth-child(3) td:nth-child(1) {
+        .line-container:nth-child(3n) .line-info-header-main {
             background-color: rgb(179, 162, 199);
-            color: #000;
         }
-
-        .overview-line table:nth-child(3n) tr:nth-child(3) td:nth-child(2n+3) {
+        .line-container:nth-child(3n) .line-info-detail-main {
             background-color: rgb(204, 193, 218);
-            color: #000;
         }
-
-        .notfound {
-            background-color: rgb(197, 197, 197);
-            color: #000;
-        }
+        
     </style>
     <script>
-        /*
-        document.addEventListener("DOMContentLoaded", function () {
-            const cells = document.getElementsByTagName("td");
-
-            for (let i = 0; i < cells.length; i++) {
-                const cell = cells[i];
-                if (cell.textContent === "Not found") {
-                    cell.classList.add("notfound");
-                }
-            }
-        }); 
-        */
-
         setTimeout("location.reload();", 120000);
-
-        // Call the function every 1 minute (60,000 milliseconds)
-        // setInterval(fetchDataForMachines, 60000);
-
-
     </script>
 }

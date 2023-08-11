@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using esp32_client.Services;
 using esp32_client.Builder;
+using LinqToDB;
 
 namespace esp32_client.Controllers;
 [CustomAuthenticationFilter]
@@ -19,6 +20,11 @@ public class MonitoringController : BaseController
 
     public async Task<IActionResult> Index(int factoryId = 0)
     {
+        if (factoryId == 0)
+        {
+            var getFirst = await _linq2db.Factory.FirstOrDefaultAsync();
+            if (getFirst is not null) factoryId = getFirst.Id;
+        }
         ViewBag.FactoryId = factoryId;
         try
         {
@@ -28,7 +34,7 @@ public class MonitoringController : BaseController
         {
             System.Console.WriteLine("==== SaveProductData: " + Newtonsoft.Json.JsonConvert.SerializeObject(ex));
         }
-        
+
         return View();
     }
 
