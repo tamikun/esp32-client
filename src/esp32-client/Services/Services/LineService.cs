@@ -130,7 +130,7 @@ public partial class LineService : ILineService
         await listStationQuery.Set(s => s.ProcessId, 0).UpdateAsync();
 
         // Update Pattern for machine (Set LineId = 0, ProcessId to 0 => Delete pattern)
-        var listMachineId =  _linq2Db.Machine.Where(s => listLineId.Contains(s.LineId)).Select(s => s.Id);
+        var listMachineId = _linq2Db.Machine.Where(s => listLineId.Contains(s.LineId)).Select(s => s.Id);
 
         var response = await _machineService.AssignPatternMachine(listMachineId);
         return response;
@@ -241,7 +241,15 @@ public partial class LineService : ILineService
         await _linq2Db.DeleteAsync(line);
 
         // Delete station
-        await _linq2Db.Station.Where(s => s.LineId == line.Id).DeleteAsync();
+        var stationQuery = _linq2Db.Station.Where(s => s.LineId == line.Id);
+
+        var stationIdsToDelete = await stationQuery.Select(s => s.Id).ToListAsync();
+
+        await stationQuery.DeleteAsync();
+        
+        // Delete data report related to stations
+        await _linq2Db.DataReport.Where(s => stationIdsToDelete.Contains(s.StationId))
+                                .DeleteAsync();
 
         // Release machine
         await _linq2Db.Machine.Where(s => s.LineId == line.Id)
@@ -279,6 +287,10 @@ public partial class LineService : ILineService
 
                 // Delete station
                 await _linq2Db.Station.Where(s => stationIdsToDelete.Contains(s.Id))
+                                        .DeleteAsync();
+
+                // Delete data report related to stations
+                await _linq2Db.DataReport.Where(s => stationIdsToDelete.Contains(s.StationId))
                                         .DeleteAsync();
             }
         }

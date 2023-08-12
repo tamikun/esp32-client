@@ -245,6 +245,7 @@ public partial class MachineService : IMachineService
 
     public async Task<Dictionary<string, string>> AssignPatternMachine(IEnumerable<int> machineId)
     {
+        System.Console.WriteLine("==== AssignPatternMachine: " + Newtonsoft.Json.JsonConvert.SerializeObject(machineId));
 
         var result = new Dictionary<string, string>();
 
