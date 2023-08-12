@@ -12,5 +12,7 @@ namespace esp32_client.Services
         Task<List<Station>> GetByLineId(int lineId);
 
         Task UpdateStationName(StationUpdateModel model);
+
+        Task DeleteListStation(List<Station> listStation);
     }
 }

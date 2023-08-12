@@ -15,15 +15,17 @@ public partial class LineService : ILineService
 
     private readonly LinqToDb _linq2Db;
     private readonly IMachineService _machineService;
+    private readonly IStationService _stationService;
     private readonly IMapper _mapper;
     private readonly Settings _settings;
 
-    public LineService(LinqToDb linq2Db, IMapper mapper, IMachineService machineService, Settings settings)
+    public LineService(LinqToDb linq2Db, IMapper mapper, IMachineService machineService, Settings settings, IStationService stationService)
     {
         _linq2Db = linq2Db;
         _mapper = mapper;
         _machineService = machineService;
         _settings = settings;
+        _stationService = stationService;
     }
 
     public async Task<Line?> GetById(int id)
@@ -241,21 +243,9 @@ public partial class LineService : ILineService
         await _linq2Db.DeleteAsync(line);
 
         // Delete station
-        var stationQuery = _linq2Db.Station.Where(s => s.LineId == line.Id);
+        var stationQuery = await _linq2Db.Station.Where(s => s.LineId == line.Id).ToListAsync();
 
-        var stationIdsToDelete = await stationQuery.Select(s => s.Id).ToListAsync();
-
-        await stationQuery.DeleteAsync();
-        
-        // Delete data report related to stations
-        await _linq2Db.DataReport.Where(s => stationIdsToDelete.Contains(s.StationId))
-                                .DeleteAsync();
-
-        // Release machine
-        await _linq2Db.Machine.Where(s => s.LineId == line.Id)
-                                .Set(s => s.LineId, 0)
-                                .Set(s => s.StationId, 0)
-                                .UpdateAsync();
+        await _stationService.DeleteListStation(stationQuery);
     }
 
     public async Task UpdateNameAndStationNo(LineUpdateModel model)
@@ -279,19 +269,13 @@ public partial class LineService : ILineService
             }
             else
             {
-                var stationIdsToDelete = await _linq2Db.Station.Where(s => s.LineId == line.Id)
+                var stationDelete = await _linq2Db.Station.Where(s => s.LineId == line.Id)
                                                                 .OrderBy(s => s.Id)
                                                                 .Skip(model.NumberOfStation)
-                                                                .Select(s => s.Id)
                                                                 .ToListAsync();
 
                 // Delete station
-                await _linq2Db.Station.Where(s => stationIdsToDelete.Contains(s.Id))
-                                        .DeleteAsync();
-
-                // Delete data report related to stations
-                await _linq2Db.DataReport.Where(s => stationIdsToDelete.Contains(s.StationId))
-                                        .DeleteAsync();
+                await _stationService.DeleteListStation(stationDelete);
             }
         }
         await _linq2Db.Update(line);

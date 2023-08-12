@@ -41,5 +41,24 @@ public partial class StationService : IStationService
     {
         var department = await _linq2Db.Station.Where(s => s.Id == model.Id).Set(s => s.StationName, model.StationName).UpdateAsync();
     }
-    
+
+    public async Task DeleteListStation(List<Station> listStation)
+    {
+        var stationIdsToDelete = listStation.Select(s => s.Id);
+        
+        // Delete station
+        await _linq2Db.Station.Where(s => stationIdsToDelete.Contains(s.Id))
+                                .DeleteAsync();
+
+        // Release Related Machine
+        await _linq2Db.Machine.Where(s => stationIdsToDelete.Contains(s.StationId))
+                                .Set(s => s.StationId, 0)
+                                .Set(s => s.LineId, 0)
+                                .UpdateAsync();
+
+        // Delete data report related to stations
+        await _linq2Db.DataReport.Where(s => stationIdsToDelete.Contains(s.StationId))
+                                .DeleteAsync();
+    }
+
 }
