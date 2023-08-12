@@ -164,7 +164,6 @@ public partial class MachineService : IMachineService
 
     public async Task<Dictionary<string, string>> AssignMachineLine(ListAssignMachineLineModel model)
     {
-        System.Console.WriteLine("====  model: " + Newtonsoft.Json.JsonConvert.SerializeObject(model));
         // Validation
         // Duplicate machine in line
         if (model.ListAssignMachine.Where(s => s.MachineId != 0).GroupBy(s => s.MachineId).Any(s => s.Count() > 1))
