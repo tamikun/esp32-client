@@ -109,7 +109,7 @@ public class AssigningController : BaseController
             var result = await _machineService.AssignMachineLine(model);
             foreach (var item in result)
             {
-                listAlert.Add(new AlertModel { AlertType = item.Value == "Success" ? Alert.Success : Alert.Info, AlertMessage = $"{item.Key}: {item.Value}" });
+                listAlert.Add(new AlertModel { AlertType = item.Value == "Success" ? Alert.Success : Alert.Warning, AlertMessage = $"{item.Key}: {item.Value}" });
             }
         }
         catch (Exception ex)

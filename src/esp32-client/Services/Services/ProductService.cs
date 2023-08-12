@@ -31,7 +31,7 @@ public partial class ProductService : IProductService
 
     public async Task<Product?> GetByProductNo(string productNo, int factoryId)
     {
-        var product = await _linq2Db.Product.Where(s => s.ProductNo == productNo && s.FactoryId ==factoryId).FirstOrDefaultAsync();
+        var product = await _linq2Db.Product.Where(s => s.ProductNo == productNo && s.FactoryId == factoryId).FirstOrDefaultAsync();
         return product;
     }
 
@@ -143,5 +143,18 @@ public partial class ProductService : IProductService
         if (await IsProductInUse(id)) throw new Exception("Product is in use");
 
         await _linq2Db.DeleteAsync(product);
+
+        // Delete Process
+        var listProcessQuery = _linq2Db.Process.Where(s => s.ProductId == product.Id);
+        var listProcess = await listProcessQuery.ToListAsync();
+
+        await listProcessQuery.DeleteAsync();
+
+        // Delete file
+        var taskDeleteFile = listProcess.Select(async s =>
+        {
+            await Utils.Utils.DeleteFile(s.PatternDirectory);
+        });
+        await Task.WhenAll(taskDeleteFile);
     }
 }

@@ -22,6 +22,12 @@
                 <div class="close-alert"><i class="fa fa-xmark" style="font-size:18px;cursor:pointer;"></i></div>
             </div>
             break;
+        case Alert.Warning:
+            <div class="alert alert-warning alert-dismissible">
+                <div class="alert-content"><strong>Error: </strong> @Model.AlertMessage</div>
+                <div class="close-alert"><i class="fa fa-xmark" style="font-size:18px;cursor:pointer;"></i></div>
+            </div>
+            break;
         default:
             break;
     }
