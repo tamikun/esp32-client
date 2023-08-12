@@ -21,7 +21,6 @@ public static class PagedList
 
         response.TotalCount = dataCount;
         response.TotalPage = dataCount / pageSize + (dataCount % pageSize > 0 ? 1 : 0);
-        System.Console.WriteLine("==== response.TotalPage: " + Newtonsoft.Json.JsonConvert.SerializeObject(response.TotalPage));
         response.HasPreviousPage = pageIndex > 0;
         response.HasNextPage = pageIndex < response.TotalPage - 1;
         response.Data = data.Skip(pageIndex * pageSize).Take(pageSize).ToList();

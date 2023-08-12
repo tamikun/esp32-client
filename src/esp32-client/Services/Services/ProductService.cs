@@ -101,11 +101,8 @@ public partial class ProductService : IProductService
             }
             else
             {
-                var listDeleteProcess = listProcess.TakeLast(listProcess.Count - model.NumberOfProcess);
-                foreach (var item in listDeleteProcess)
-                {
-                    await _linq2Db.DeleteAsync(item);
-                }
+                var listDeleteProcess = listProcess.TakeLast(listProcess.Count - model.NumberOfProcess).ToList();
+                await DeleteListProcess(listDeleteProcess);
             }
         }
         await _linq2Db.Update(product);
@@ -145,12 +142,13 @@ public partial class ProductService : IProductService
         await _linq2Db.DeleteAsync(product);
 
         // Delete Process
-        var listProcessQuery = _linq2Db.Process.Where(s => s.ProductId == product.Id);
-        var listProcess = await listProcessQuery.ToListAsync();
+        var listProcess = await _linq2Db.Process.Where(s => s.ProductId == product.Id).ToListAsync();
+        await DeleteListProcess(listProcess);
+    }
 
-        await listProcessQuery.DeleteAsync();
-
-        // Delete file
+    public async Task DeleteListProcess(List<Process> listProcess)
+    {
+        await _linq2Db.Process.Where(s => listProcess.Select(s => s.Id).Contains(s.Id)).DeleteAsync();
         var taskDeleteFile = listProcess.Select(async s =>
         {
             await Utils.Utils.DeleteFile(s.PatternDirectory);
