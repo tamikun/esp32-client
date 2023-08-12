@@ -239,6 +239,8 @@ public partial class LineService : ILineService
         var line = await GetById(lineId);
         if (line is null) throw new Exception("Line is not found");
 
+        if (await IsLineInUse(line)) throw new Exception("Cannot delete line: Product exists");
+
         // Delete line
         await _linq2Db.DeleteAsync(line);
 
@@ -260,7 +262,7 @@ public partial class LineService : ILineService
         if (numberOfStation != model.NumberOfStation)
         {
             // Check line is in use
-            if (line.ProductId != 0) throw new Exception("Cannot change number of station: Product exists");
+            if (await IsLineInUse(line)) throw new Exception("Cannot change number of station: Product exists");
 
             if (numberOfStation < model.NumberOfStation)
             {
@@ -295,6 +297,12 @@ public partial class LineService : ILineService
             });
         }
         await _linq2Db.BulkInsert(listStation);
+    }
+
+    public async Task<bool> IsLineInUse(Line line)
+    {
+        await Task.CompletedTask;
+        return line.ProductId != 0;
     }
 
 }
