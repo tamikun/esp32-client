@@ -10,7 +10,7 @@ using LinqToDB;
 
 namespace esp32_client.Builder;
 
-[Migration(20180430122500)]
+[Migration(20180430122501)]
 public class AddTable : Migration
 {
     public override void Up()
@@ -172,6 +172,17 @@ public class AddTable : Migration
                 .WithColumn(nameof(DataReport.StationId)).AsInt32()
                 .WithColumn(nameof(DataReport.ProductNumber)).AsInt32()
                 .WithColumn(nameof(DataReport.DateTimeUtc)).AsDateTime2().NotNullable()
+            ;
+        }
+
+        if (!Schema.Table(nameof(Log)).Exists())
+        {
+            Create
+            .Table(nameof(Log))
+                .WithColumn(nameof(Log.Id)).AsInt32().PrimaryKey().Identity()
+                .WithColumn(nameof(Log.Name)).AsString()
+                .WithColumn(nameof(Log.Message)).AsString()
+                .WithColumn(nameof(Log.DateTimeUtc)).AsDateTime2().NotNullable()
             ;
         }
     }
