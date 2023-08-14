@@ -1,12 +1,6 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Threading.Tasks;
 using esp32_client.Domain;
 using esp32_client.Services;
 using FluentMigrator;
-using LinqToDB;
 
 namespace esp32_client.Builder;
 
