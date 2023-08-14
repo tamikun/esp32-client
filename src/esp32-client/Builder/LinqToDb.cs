@@ -26,6 +26,7 @@ public class LinqToDb : DataConnection
     public ITable<UserRole> UserRole => this.GetTable<UserRole>();
     public ITable<ScheduleTask> ScheduleTask => this.GetTable<ScheduleTask>();
     public ITable<DataReport> DataReport => this.GetTable<DataReport>();
+    public ITable<Log> Log => this.GetTable<Log>();
 
     public async Task BulkInsert<T>(IEnumerable<T> source) where T : BaseEntity
     {

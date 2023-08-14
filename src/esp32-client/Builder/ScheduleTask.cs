@@ -12,6 +12,8 @@ public class ScheduledTaskService : BackgroundService
         var linq2Db = EngineContext.Resolve<LinqToDb>();
         var scheduledTaskService = EngineContext.Resolve<IScheduleTaskService>();
         var logService = EngineContext.Resolve<ILogService>();
+        int minDelay = await linq2Db.ScheduleTask.MinAsync(s => s.Seconds);
+        minDelay = minDelay < 60 ? 60 : minDelay;
 
         while (!stoppingToken.IsCancellationRequested)
         {
@@ -39,7 +41,7 @@ public class ScheduledTaskService : BackgroundService
             });
 
             await Task.WhenAll(tasks);
-            await Task.Delay(TimeSpan.FromSeconds(60), stoppingToken); // Introduce a delay between batches
+            await Task.Delay(TimeSpan.FromSeconds(minDelay), stoppingToken);
         }
     }
 }

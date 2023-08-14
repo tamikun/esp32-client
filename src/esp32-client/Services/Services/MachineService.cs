@@ -18,14 +18,16 @@ public partial class MachineService : IMachineService
     private readonly LinqToDb _linq2Db;
     private readonly IMapper _mapper;
     private readonly IProcessService _processService;
+    private readonly ILogService _logService;
     private readonly Settings _settings;
 
-    public MachineService(LinqToDb linq2Db, IMapper mapper, IProcessService processService, Settings settings)
+    public MachineService(LinqToDb linq2Db, IMapper mapper, IProcessService processService, Settings settings, ILogService logService)
     {
         _linq2Db = linq2Db;
         _mapper = mapper;
         _processService = processService;
         _settings = settings;
+        _logService = logService;
     }
 
     public async Task<Machine?> GetById(int id)
@@ -244,8 +246,6 @@ public partial class MachineService : IMachineService
 
     public async Task<Dictionary<string, string>> AssignPatternMachine(IEnumerable<int> machineId)
     {
-        System.Console.WriteLine("==== AssignPatternMachine: " + Newtonsoft.Json.JsonConvert.SerializeObject(machineId));
-
         var result = new Dictionary<string, string>();
 
         // Machine => Station => Process => Pattern
@@ -339,7 +339,7 @@ public partial class MachineService : IMachineService
         }
         catch (Exception ex)
         {
-            System.Console.WriteLine("==== GetProductNumberMachine: " + ex.Message);
+            await _logService.AddLog(ex);
             return (false, 0);
         }
     }

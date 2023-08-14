@@ -10,7 +10,7 @@ using LinqToDB;
 
 namespace esp32_client.Builder;
 
-[Migration(20180430122501)]
+[Migration(20180430122502)]
 public class AddTable : Migration
 {
     public override void Up()
@@ -181,7 +181,7 @@ public class AddTable : Migration
             .Table(nameof(Log))
                 .WithColumn(nameof(Log.Id)).AsInt32().PrimaryKey().Identity()
                 .WithColumn(nameof(Log.Message)).AsString()
-                .WithColumn(nameof(Log.FullMessage)).AsString()
+                .WithColumn(nameof(Log.FullMessage)).AsString(int.MaxValue)
                 .WithColumn(nameof(Log.DateTimeUtc)).AsDateTime2().NotNullable()
             ;
         }
