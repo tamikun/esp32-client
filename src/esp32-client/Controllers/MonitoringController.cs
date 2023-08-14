@@ -30,15 +30,6 @@ public class MonitoringController : BaseController
         ViewBag.PageIndex = pageIndex;
         ViewBag.PageSize = pageSize;
 
-        // try
-        // {
-        //     await _scheduleTaskService.SaveProductData();
-        // }
-        // catch (Exception ex)
-        // {
-        //     System.Console.WriteLine("==== SaveProductData: " + Newtonsoft.Json.JsonConvert.SerializeObject(ex));
-        // }
-
         return View();
     }
 

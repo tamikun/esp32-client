@@ -21,7 +21,7 @@ namespace esp32_client.Controllers
                 listAlert.Add(new AlertModel { AlertType = Alert.Success, AlertMessage = "Action successful." });
                 TempData["AlertMessage"] = JsonConvert.SerializeObject(listAlert);
 
-                _linq2db.CommitTransaction();
+                await _linq2db.CommitTransactionAsync();
             }
             catch (Exception ex)
             {

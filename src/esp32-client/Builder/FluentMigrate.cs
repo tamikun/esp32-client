@@ -180,8 +180,8 @@ public class AddTable : Migration
             Create
             .Table(nameof(Log))
                 .WithColumn(nameof(Log.Id)).AsInt32().PrimaryKey().Identity()
-                .WithColumn(nameof(Log.Name)).AsString()
                 .WithColumn(nameof(Log.Message)).AsString()
+                .WithColumn(nameof(Log.FullMessage)).AsString()
                 .WithColumn(nameof(Log.DateTimeUtc)).AsDateTime2().NotNullable()
             ;
         }

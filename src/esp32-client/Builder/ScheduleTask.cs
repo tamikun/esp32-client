@@ -11,6 +11,7 @@ public class ScheduledTaskService : BackgroundService
     {
         var linq2Db = EngineContext.Resolve<LinqToDb>();
         var scheduledTaskService = EngineContext.Resolve<IScheduleTaskService>();
+        var logService = EngineContext.Resolve<ILogService>();
 
         while (!stoppingToken.IsCancellationRequested)
         {
@@ -29,24 +30,12 @@ public class ScheduledTaskService : BackgroundService
                         await invoke.ConfigureAwait(true);
 
                     s.LastSuccessUtc = DateTime.UtcNow;
-                }
-                catch (Exception ex)
-                {
-                    // Properly log the error using a logging framework
-                    System.Console.WriteLine($"{s.Method} Invoke - {ex}");
-
-                }
-
-                try
-                {
                     await linq2Db.Update(s);
                 }
                 catch (Exception ex)
                 {
-                    // Properly log the error using a logging framework
-                    System.Console.WriteLine($"{s.Method} Update - {ex}");
+                    await logService.AddLog(ex);
                 }
-
             });
 
             await Task.WhenAll(tasks);

@@ -54,6 +54,7 @@ builder.Services.AddScoped<IUserRightService, UserRightService>();
 builder.Services.AddScoped<IStationService, StationService>();
 builder.Services.AddScoped<IScheduleTaskService, ScheduleTaskService>();
 builder.Services.AddScoped<IDataReportService, DataReportService>();
+builder.Services.AddScoped<ILogService, LogService>();
 
 builder.Services.AddSingleton<Settings>();
 
