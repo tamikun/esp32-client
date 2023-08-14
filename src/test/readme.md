@@ -1,0 +1,4 @@
+- `dotnet test`
+- `dotnet test --filter Name=Test1`
+- `dotnet test --filter "FullyQualifiedName~TestOne1"`
+- `dotnet test --filter "FullyQualifiedName~TestOne1 | FullyQualifiedName~TestOne2"`
