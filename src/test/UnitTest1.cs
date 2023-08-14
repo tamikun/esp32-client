@@ -21,8 +21,8 @@ public class Tests
         _linq2Db = BaseTest.GetService<LinqToDb>();
 
         var settings = new List<Setting>{
-            new Setting{Id = 1, Name = "GetApiTimeOut", Value = "1000"},
-            new Setting{Id = 2, Name = "PostFileTimeOut", Value = "1000"},
+            new Setting{Name = "GetApiTimeOut", Value = "1000"},
+            new Setting{Name = "PostFileTimeOut", Value = "1000"},
         };
 
         _linq2Db.BulkInsert(settings).Wait();
@@ -65,6 +65,7 @@ public class Tests
         System.Console.WriteLine("==== Setting: " + Newtonsoft.Json.JsonConvert.SerializeObject(await _linq2Db.Setting.ToListAsync()));
         System.Console.WriteLine("==== UserAccount: " + Newtonsoft.Json.JsonConvert.SerializeObject(await _linq2Db.UserAccount.ToListAsync()));
         System.Console.WriteLine("==== Factory: " + Newtonsoft.Json.JsonConvert.SerializeObject(await _linq2Db.Factory.ToListAsync()));
+        System.Console.WriteLine("==== userRole: " + Newtonsoft.Json.JsonConvert.SerializeObject(await _linq2Db.UserRole.ToListAsync()));
         Assert.Pass();
     }
 }
