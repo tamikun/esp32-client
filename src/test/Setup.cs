@@ -5,11 +5,12 @@ using FluentMigrator.Runner;
 using LinqToDB.AspNet;
 using Microsoft.Extensions.DependencyInjection;
 using esp32_client.Services;
+using LinqToDB.Data;
 
 namespace test;
 
 [SetUpFixture]
-public static class BaseTest //: IDisposable
+public class BaseTest
 {
 #nullable disable
     private static IServiceProvider _serviceProvider;
@@ -20,6 +21,8 @@ public static class BaseTest //: IDisposable
     public static void OneTimeSetUp()
     {
         var services = new ServiceCollection();
+
+        services.AddEntityFrameworkInMemoryDatabase();
 
         services.AddFluentMigratorCore()
             .ConfigureRunner(rb => rb
@@ -39,7 +42,6 @@ public static class BaseTest //: IDisposable
         => options
             .UseSQLite(connectionString)
         , ServiceLifetime.Scoped);
-
 
 
         services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
@@ -66,33 +68,27 @@ public static class BaseTest //: IDisposable
     }
 
     [OneTimeTearDown]
-    public static void OneTimeTearDown()
+    public void OneTimeTearDown()
     {
         var linq2Db = GetService<LinqToDb>();
-        linq2Db.Close();
-        linq2Db.Dispose();
-    }
 
-    // public void Dispose()
-    // {
-    //     // if (_serviceProvider is IDisposable disposable)
-    //     // {
-    //     //     disposable.Dispose();
-    //     // }
-    // }
+        var tables = linq2Db.DataProvider.GetSchemaProvider().GetSchema(new DataConnection(linq2Db.DataProvider, connectionString, linq2Db.MappingSchema)).Tables;
+        foreach (var table in tables)
+        {
+            // Drop the table by executing raw SQL
+            linq2Db.Execute($"DROP TABLE IF EXISTS {table.TableName}");
+        }
+
+    }
 
     public static void InitData()
     {
         var linq2Db = GetService<LinqToDb>();
+
         var runner = GetService<IMigrationRunner>();
 
         var addTable = new AddTable();
         runner.Up(addTable);
-
-        // var addInitData = new AddInitData(linq2Db);
-        // runner.Up(addInitData);
-
-
     }
 
     public static T GetService<T>()
