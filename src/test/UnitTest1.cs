@@ -1,5 +1,6 @@
 using esp32_client.Builder;
 using esp32_client.Domain;
+using esp32_client.Models;
 using esp32_client.Services;
 using FluentMigrator.Runner;
 using LinqToDB;
@@ -12,22 +13,46 @@ public class Tests
 #nullable disable
     private Settings _setting;
     private IMigrationRunner _runner;
-    private LinqToDb _linq2Db;
+    private IMachineService _machineService;
     [SetUp]
     public void Setup()
     {
         _setting = BaseTest.GetService<Settings>();
         _runner = BaseTest.GetService<IMigrationRunner>();
-        _linq2Db = BaseTest.GetService<LinqToDb>();
+        _machineService = BaseTest.GetService<IMachineService>();
     }
 
     [Test]
-    public async Task Test1()
+    public async Task ShouldUpdateMachine()
     {
-        System.Console.WriteLine("==== Setting: " + Newtonsoft.Json.JsonConvert.SerializeObject(await _linq2Db.Setting.ToListAsync()));
-        System.Console.WriteLine("==== UserAccount: " + Newtonsoft.Json.JsonConvert.SerializeObject(await _linq2Db.UserAccount.ToListAsync()));
-        System.Console.WriteLine("==== Factory: " + Newtonsoft.Json.JsonConvert.SerializeObject(await _linq2Db.Factory.ToListAsync()));
-        System.Console.WriteLine("==== userRole: " + Newtonsoft.Json.JsonConvert.SerializeObject(await _linq2Db.UserRole.ToListAsync()));
-        Assert.Pass();
+        var machineAdd = new MachineCreateModel
+        {
+            MachineName = "Machine name 1",
+            IpAddress = "0",
+            FactoryId = 0,
+            MachineNo = 1,
+        };
+
+        Exception ex = Assert.ThrowsAsync<Exception>(
+           async () => await _machineService.Create(machineAdd));
+
+        Assert.That(ex.Message, Is.EqualTo("Invalid factory"));
+
+        machineAdd.FactoryId = 1;
+
+        await _machineService.Create(machineAdd);
+
+        var model = new MachineUpdateModel
+        {
+            MachineId = 1,
+            MachineName = "Machine update",
+            IpAddress = "1",
+        };
+
+        await _machineService.Update(model);
+
+        var machineUpdate = await _machineService.GetById(1);
+
+        Assert.That(machineUpdate.MachineName, Is.EqualTo(model.MachineName));
     }
 }

@@ -14,7 +14,6 @@ public class BaseTest
 {
 #nullable disable
     private static IServiceProvider _serviceProvider;
-    // private static readonly string connectionString = "Data Source=:memory:";
     private static readonly string connectionString = "Data Source=database.sqlite;Mode=Memory;New=True;";
 
     [OneTimeSetUp]
