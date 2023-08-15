@@ -285,7 +285,6 @@ public class AddTimeOutSetting : AutoReversingMigration
         };
 
         _linq2Db.BulkInsert(settings).Wait();
-
     }
 }
 

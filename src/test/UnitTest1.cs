@@ -19,44 +19,6 @@ public class Tests
         _setting = BaseTest.GetService<Settings>();
         _runner = BaseTest.GetService<IMigrationRunner>();
         _linq2Db = BaseTest.GetService<LinqToDb>();
-
-        var settings = new List<Setting>{
-            new Setting{Name = "GetApiTimeOut", Value = "1000"},
-            new Setting{Name = "PostFileTimeOut", Value = "1000"},
-        };
-
-        _linq2Db.BulkInsert(settings).Wait();
-
-        var department = new List<Factory>{
-            new Factory { FactoryName = "Juki", FactoryNo = "Factory 001"},
-        };
-        _linq2Db.BulkInsert(department).Wait();
-
-        var userAccount = new List<UserAccount>{
-            new UserAccount { LoginName = "admin", Password = "MM08+DTe5SgJ/abCwZW2oRlH+g8mO1XyQxStxGwTetI=", SalfKey = "YSguanX0gfFpM9t6Cn711Q==", UserName = "QuanTM" },
-        };
-        _linq2Db.BulkInsert(userAccount).Wait();
-
-        var userRole = new List<UserRole>{
-            new UserRole{RoleName = "Administrator"},
-            new UserRole{RoleName = "Operator"},
-            new UserRole{RoleName = "View"},
-        };
-        _linq2Db.BulkInsert(userRole).Wait();
-
-        var roleOfUser = new List<RoleOfUser>{
-            new RoleOfUser{UserId = 1, RoleId = 1},
-            new RoleOfUser{UserId = 1, RoleId = 2},
-            new RoleOfUser{UserId = 1, RoleId = 3},
-        };
-        _linq2Db.BulkInsert(roleOfUser).Wait();
-
-        var userRight = new List<UserRight>{
-            new UserRight{RoleId = 1, ControllerName = "*", ActionName = "*"},
-            new UserRight{RoleId = 2, ControllerName = "*", ActionName = "Index"},
-            new UserRight{RoleId = 3, ControllerName = "*", ActionName = "Index"},
-        };
-        _linq2Db.BulkInsert(userRight).Wait();
     }
 
     [Test]

@@ -18,7 +18,7 @@ public class BaseTest
     private static readonly string connectionString = "Data Source=database.sqlite;Mode=Memory;New=True;";
 
     [OneTimeSetUp]
-    public static void OneTimeSetUp()
+    public void OneTimeSetUp()
     {
         var services = new ServiceCollection();
 
@@ -35,7 +35,7 @@ public class BaseTest
             // Enable logging to console in the FluentMigrator way
             .AddLogging(lb => lb.AddFluentMigratorConsole())
             // Build the service provider
-            // .BuildServiceProvider(false)
+            // .BuildServiceProvider(true)
             ;
 
         services.AddLinqToDBContext<LinqToDb>((provider, options)
@@ -81,7 +81,7 @@ public class BaseTest
 
     }
 
-    public static void InitData()
+    public void InitData()
     {
         var linq2Db = GetService<LinqToDb>();
 
@@ -89,6 +89,12 @@ public class BaseTest
 
         var addTable = new AddTable();
         runner.Up(addTable);
+
+        var addInitData = new AddInitData(GetService<LinqToDb>());
+        addInitData.Up();
+
+        var addTimeOutSetting = new AddTimeOutSetting(linq2Db);
+        addTimeOutSetting.Up();
     }
 
     public static T GetService<T>()
