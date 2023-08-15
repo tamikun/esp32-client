@@ -55,18 +55,13 @@ public partial class UserAccountService : IUserAccountService
         userAccount.SalfKey = salf;
         userAccount.Password = await HashPassword(userAccount.Password, salf);
 
-        await _linq2Db.InsertAsync(userAccount);
+        userAccount = await _linq2Db.Insert(userAccount);
 
-        userAccount = await GetByLoginName(model.LoginName);
-
-        if (userAccount is not null)
+        await _roleOfUser.Create(new RoleOfUserCreateModel
         {
-            await _roleOfUser.Create(new RoleOfUserCreateModel
-            {
-                UserId = userAccount.Id,
-                RoleId = model.RoleId,
-            });
-        }
+            UserId = userAccount.Id,
+            RoleId = model.RoleId,
+        });
 
         return model;
     }

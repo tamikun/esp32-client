@@ -62,7 +62,7 @@ public partial class FactoryService : IFactoryService
 
         factory.FactoryNo = string.Format(_settings.FactoryFormat, formattedNumber);
 
-        await _linq2Db.InsertAsync(factory);
+        factory = await _linq2Db.Insert(factory);
         return factory;
     }
 

@@ -27,14 +27,17 @@ public class LinqToDb : DataConnection
     public ITable<ScheduleTask> ScheduleTask => this.GetTable<ScheduleTask>();
     public ITable<DataReport> DataReport => this.GetTable<DataReport>();
     public ITable<Log> Log => this.GetTable<Log>();
+}
 
-    public async Task BulkInsert<T>(IEnumerable<T> source) where T : BaseEntity
+public static class LinqToDbExtension
+{
+    public static async Task BulkInsert<T>(this LinqToDb _linq2db, IEnumerable<T> source) where T : BaseEntity
     {
         var copyOptions = new BulkCopyOptions(TableOptions: TableOptions.CreateIfNotExists, BulkCopyType: BulkCopyType.MultipleRows, CheckConstraints: true);
-        var temp = await this.BulkCopyAsync<T>(copyOptions, source);
+        var temp = await _linq2db.BulkCopyAsync<T>(copyOptions, source);
     }
 
-    public async Task<T?> Update<T>(T source) where T : BaseEntity
+    public static async Task<T?> Update<T>(this LinqToDb _linq2db, T source) where T : BaseEntity
     {
 #nullable disable
         if (source is null) return null;
@@ -51,7 +54,7 @@ public class LinqToDb : DataConnection
         if (id == 0) return null;
 
         // update query
-        IUpdatable<T> updateQuery = this.GetTable<T>().Where(p => p.Id == id).AsUpdatable();
+        IUpdatable<T> updateQuery = _linq2db.GetTable<T>().Where(p => p.Id == id).AsUpdatable();
 
         foreach (var prop in propertyInfos.Where(s => s.Name != nameof(BaseEntity.Id)))
         {
@@ -76,33 +79,29 @@ public class LinqToDb : DataConnection
 
         return source;
     }
-
-#nullable enable
-    public async Task<T?> Insert<T>(T source) where T : BaseEntity
+    public static async Task<T> Insert<T>(this LinqToDb _linq2db, T source) where T : BaseEntity
     {
-        if (source is null) return null;
+        if (source is null) throw new Exception("Cannot insert value null");
 
-        source.Id = await this.InsertWithInt32IdentityAsync(source);
+        source.Id = await _linq2db.InsertWithInt32IdentityAsync(source);
 
         return source;
     }
 
-    public async Task Delete<T>(T source) where T : BaseEntity
+    public static async Task Delete<T>(this LinqToDb _linq2db, T source) where T : BaseEntity
     {
         if (source is null) return;
 
-        await this.DeleteAsync(source);
+        await _linq2db.DeleteAsync(source);
     }
 
-    public async Task Delete<T>(IQueryable<T> query) where T : BaseEntity
+    public static async Task DeleteQuery<T>(this IQueryable<T> query) where T : BaseEntity
     {
         await query.DeleteAsync();
     }
-   
-    public async Task Update<T>(IUpdatable<T> query) where T : BaseEntity
+
+    public static async Task UpdateQuery<T>(this IUpdatable<T> query) where T : BaseEntity
     {
         await query.UpdateAsync();
     }
-
-
 }

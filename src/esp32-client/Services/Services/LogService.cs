@@ -27,7 +27,7 @@ public partial class LogService : ILogService
         log.FullMessage = ex.ToString();
         log.DateTimeUtc = DateTime.UtcNow;
 
-        await _linq2Db.InsertAsync(log);
+        await _linq2Db.Insert(log);
     }
 
 }

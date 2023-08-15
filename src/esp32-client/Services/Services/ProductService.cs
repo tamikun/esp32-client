@@ -51,10 +51,7 @@ public partial class ProductService : IProductService
         string formattedNumber = model.ProductNo.ToString($"D{_settings.MinCharProductFormat}");
         product.ProductNo = string.Format(_settings.ProductFormat, formattedNumber);
 
-        await _linq2Db.InsertAsync(product);
-
-        // Get product id
-        product = await GetByProductNo(product.ProductNo, model.FactoryId) ?? new Product();
+        product = await _linq2Db.Insert(product);
 
         // Create process
         var listProcess = new List<Process>();
@@ -148,8 +145,7 @@ public partial class ProductService : IProductService
 
     public async Task DeleteListProcess(List<Process> listProcess)
     {
-        var query =  _linq2Db.Process.Where(s => listProcess.Select(s => s.Id).Contains(s.Id));
-        await _linq2Db.Delete(query);
+        await  _linq2Db.Process.Where(s => listProcess.Select(s => s.Id).Contains(s.Id)).DeleteQuery();
         
         var taskDeleteFile = listProcess.Select(async s =>
         {

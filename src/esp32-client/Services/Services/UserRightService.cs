@@ -41,7 +41,7 @@ public partial class UserRightService : IUserRightService
             ActionName = model.ActionName,
         };
 
-        await _linq2Db.InsertAsync(UserRight);
+        UserRight = await _linq2Db.Insert(UserRight);
 
         return UserRight;
     }

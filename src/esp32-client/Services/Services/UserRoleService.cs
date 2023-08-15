@@ -36,7 +36,7 @@ public partial class UserRoleService : IUserRoleService
     {
         var userRole = new UserRole { RoleName = model.RoleName };
 
-        await _linq2Db.InsertAsync(userRole);
+        userRole = await _linq2Db.Insert(userRole);
 
         return userRole;
     }
@@ -45,7 +45,7 @@ public partial class UserRoleService : IUserRoleService
     {
         var userRole = await GetById(model.Id);
         if (userRole is null) throw new Exception("UserRole is not found");
-        
+
         userRole.RoleName = model.RoleName;
         await _linq2Db.Update(userRole);
 

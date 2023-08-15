@@ -39,10 +39,8 @@ public partial class StationService : IStationService
 
     public async Task UpdateStationName(StationUpdateModel model)
     {
-        await _linq2Db.Update(
-           _linq2Db.Station.Where(s => s.Id == model.Id)
-               .Set(s => s.StationName, model.StationName)
-       );
+        await _linq2Db.Station.Where(s => s.Id == model.Id)
+                          .Set(s => s.StationName, model.StationName).UpdateQuery();
     }
 
     public async Task DeleteListStation(List<Station> listStation)
@@ -50,20 +48,15 @@ public partial class StationService : IStationService
         var stationIdsToDelete = listStation.Select(s => s.Id);
 
         // Delete station
-        var queryStation = _linq2Db.Station.Where(s => stationIdsToDelete.Contains(s.Id));
-
-        await _linq2Db.Delete(queryStation);
+        await _linq2Db.Station.Where(s => stationIdsToDelete.Contains(s.Id)).DeleteQuery();
 
         // Release Related Machine
-        await _linq2Db.Update(
-           _linq2Db.Machine.Where(s => stationIdsToDelete.Contains(s.StationId))
+        await _linq2Db.Machine.Where(s => stationIdsToDelete.Contains(s.StationId))
                 .Set(s => s.StationId, 0)
-                .Set(s => s.LineId, 0)
-       );
+                .Set(s => s.LineId, 0).UpdateQuery();
 
         // Delete data report related to stations
-        var queryDataReport = _linq2Db.DataReport.Where(s => stationIdsToDelete.Contains(s.StationId));
-        await _linq2Db.Delete(queryDataReport);
+        await _linq2Db.DataReport.Where(s => stationIdsToDelete.Contains(s.StationId)).DeleteQuery();
     }
 
 }

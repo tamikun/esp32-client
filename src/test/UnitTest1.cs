@@ -14,6 +14,7 @@ public class Tests
     private Settings _setting;
     private IMigrationRunner _runner;
     private IMachineService _machineService;
+    private ILineService _lineService;
     private LinqToDb _linq2db;
     [SetUp]
     public void Setup()
@@ -22,6 +23,7 @@ public class Tests
         _runner = BaseTest.GetService<IMigrationRunner>();
         _machineService = BaseTest.GetService<IMachineService>();
         _linq2db = BaseTest.GetService<LinqToDb>();
+        _lineService = BaseTest.GetService<ILineService>();
     }
 
     [Test]
@@ -82,12 +84,34 @@ public class Tests
         Assert.That(fact4.Id, Is.EqualTo(4));
 
         # region Test delete query
-        var query = _linq2db.Factory.Where(s => s.Id > 1);
-        await _linq2db.Delete(query);
+
+        await _linq2db.Factory.Where(s => s.Id > 1).DeleteQuery();
 
         var listFac = await _linq2db.Factory.ToListAsync();
         Assert.That(listFac.Count, Is.EqualTo(1));
-        # endregion
+
+        #endregion
+    }
+
+    [Test]
+    [Order(3)]
+    public async Task ShouldCreateLine()
+    {
+        var model = new LineCreateModel
+        {
+            FactoryId = 1,
+            LineName = "line 1",
+            LineNo = 1,
+            NumberOfStation = 2,
+        };
+
+        await _lineService.Create(model);
+
+        var line = await _linq2db.Line.Where(s => s.LineNo == "Line 001").FirstOrDefaultAsync();
+        Assert.That(line.Id, Is.EqualTo(1));
+
+        var stations = await _linq2db.Station.Where(s => s.LineId == 1).ToListAsync();
+        Assert.That(stations.Count, Is.EqualTo(2));
     }
 
 }

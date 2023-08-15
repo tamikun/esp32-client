@@ -1,4 +1,3 @@
-using System.Linq.Expressions;
 using AutoMapper;
 using esp32_client.Builder;
 using esp32_client.Domain;
@@ -78,10 +77,7 @@ public partial class LineService : ILineService
 
         line.LineNo = string.Format(_settings.LineFormat, formattedNumber);
 
-        await _linq2Db.InsertAsync(line);
-
-        // Get line id
-        line = await GetByLineNo(line.LineNo, model.FactoryId) ?? new Line();
+        line = await _linq2Db.Insert(line);
 
         // Create station
         await AddStation(line.Id, model.NumberOfStation);
@@ -120,10 +116,8 @@ public partial class LineService : ILineService
         // Update product of Line
         foreach (var item in model.ListProductLine)
         {
-            await _linq2Db.Update(
-                queryListUpdate.Where(s => s.Id == item.LineId)
-                       .Set(s => s.ProductId, item.ProductId)
-            );
+            await queryListUpdate.Where(s => s.Id == item.LineId)
+                   .Set(s => s.ProductId, item.ProductId).UpdateQuery();
         }
 
         // Update process of Station (Set ProcessId to 0)
@@ -131,9 +125,7 @@ public partial class LineService : ILineService
 
         var listStationQuery = _linq2Db.Station.Where(s => listLineId.Contains(s.LineId));
 
-        await _linq2Db.Update(
-                listStationQuery.Set(s => s.ProcessId, 0)
-            );
+        await listStationQuery.Set(s => s.ProcessId, 0).UpdateQuery();
 
         // Update Pattern for machine (Set LineId = 0, ProcessId to 0 => Delete pattern)
         var listMachineId = _linq2Db.Machine.Where(s => listLineId.Contains(s.LineId)).Select(s => s.Id);
@@ -162,10 +154,8 @@ public partial class LineService : ILineService
         // Update station data
         foreach (var item in model.ListStationProcess)
         {
-            await _linq2Db.Update(
-                _linq2Db.Station.Where(s => s.Id == item.StationId)
-                       .Set(s => s.ProcessId, item.ProcessId)
-            );
+               await _linq2Db.Station.Where(s => s.Id == item.StationId)
+                       .Set(s => s.ProcessId, item.ProcessId).UpdateQuery();
         }
 
         // Get list machine that is in StationId

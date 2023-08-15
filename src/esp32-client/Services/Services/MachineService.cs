@@ -135,7 +135,7 @@ public partial class MachineService : IMachineService
         string formattedNumber = model.MachineNo.ToString($"D{_settings.MinCharMachineFormat}");
         machine.MachineNo = string.Format(_settings.MachineFormat, formattedNumber);
 
-        await _linq2Db.InsertAsync(machine);
+        machine = await _linq2Db.Insert(machine);
         return machine;
     }
 
@@ -183,12 +183,10 @@ public partial class MachineService : IMachineService
                             .FirstOrDefaultAsync();
                 if (machine is not null)
                 {
-                    await _linq2Db.Update(
-                        _linq2Db.Machine
+                    await _linq2Db.Machine
                             .Where(s => s.StationId == item.StationId)
                             .Set(s => s.LineId, 0)
-                            .Set(s => s.StationId, 0)
-                    );
+                            .Set(s => s.StationId, 0).UpdateQuery();
 
                     listUpdateMachineId.Add(machine.Id);
                 }
@@ -203,12 +201,10 @@ public partial class MachineService : IMachineService
                 if (machine is not null)
                 {
 
-                    await _linq2Db.Update(
-                        _linq2Db.Machine
-                            .Where(s => s.Id == item.MachineId)
-                            .Set(s => s.LineId, model.LineId)
-                            .Set(s => s.StationId, item.StationId)
-                    );
+                    await _linq2Db.Machine
+                        .Where(s => s.Id == item.MachineId)
+                        .Set(s => s.LineId, model.LineId)
+                        .Set(s => s.StationId, item.StationId).UpdateQuery();
 
                     listUpdateMachineId.Add(machine.Id);
                 }
@@ -224,23 +220,19 @@ public partial class MachineService : IMachineService
 
     public async Task UpdateById(int id, int departmentId, int lineId, int processId)
     {
-        await _linq2Db.Update(
-            _linq2Db.Machine.Where(s => s.Id == id)
+        await _linq2Db.Machine.Where(s => s.Id == id)
                 .Set(s => s.FactoryId, departmentId)
                 .Set(s => s.LineId, lineId)
-                .Set(s => s.StationId, processId)
-        );
+                .Set(s => s.StationId, processId).UpdateQuery();
     }
 
     public async Task UpdateByListId(IEnumerable<int> listId, int departmentId, int lineId, int processId)
     {
 
-         await _linq2Db.Update(
-            _linq2Db.Machine.Where(s => listId.Contains(s.Id))
-                .Set(s => s.FactoryId, departmentId)
-                .Set(s => s.LineId, lineId)
-                .Set(s => s.StationId, processId)
-        );
+        await _linq2Db.Machine.Where(s => listId.Contains(s.Id))
+               .Set(s => s.FactoryId, departmentId)
+               .Set(s => s.LineId, lineId)
+               .Set(s => s.StationId, processId).UpdateQuery();
     }
 
     public async Task<Machine> Update(Machine model)
