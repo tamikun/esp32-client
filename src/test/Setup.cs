@@ -4,8 +4,8 @@ using System.Reflection;
 using FluentMigrator.Runner;
 using LinqToDB.AspNet;
 using Microsoft.Extensions.DependencyInjection;
-using esp32_client.Services;
 using LinqToDB.Data;
+using Microsoft.AspNetCore.Builder;
 
 namespace test;
 
@@ -20,49 +20,27 @@ public class BaseTest
     [OneTimeSetUp]
     public void OneTimeSetUp()
     {
-        var services = new ServiceCollection();
+        var builder = WebApplication.CreateBuilder();
 
-        services.AddEntityFrameworkInMemoryDatabase();
+        builder.Services.AddEntityFrameworkInMemoryDatabase();
 
-        services.AddFluentMigratorCore()
+        builder.Services.AddFluentMigratorCore()
             .ConfigureRunner(rb => rb
-                // Add SQLite support to FluentMigrator
                 .AddSQLite()
-                // Set the connection string
                 .WithGlobalConnectionString(connectionString)
-                // Define the assembly containing the migrations
                 .ScanIn(Assembly.GetExecutingAssembly()).For.Migrations())
-            // Enable logging to console in the FluentMigrator way
-            .AddLogging(lb => lb.AddFluentMigratorConsole())
-            // Build the service provider
-            // .BuildServiceProvider(true)
             ;
 
-        services.AddLinqToDBContext<LinqToDb>((provider, options)
+        builder.Services.AddLinqToDBContext<LinqToDb>((provider, options)
         => options
             .UseSQLite(connectionString)
         , ServiceLifetime.Scoped);
 
+        builder.ConfigureServices();
 
-        services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+        _serviceProvider = builder.Services.BuildServiceProvider();
 
-        services.AddScoped<IFactoryService, FactoryService>();
-        services.AddScoped<ILineService, LineService>();
-        services.AddScoped<IProductService, ProductService>();
-        services.AddScoped<IProcessService, ProcessService>();
-        services.AddScoped<IMachineService, MachineService>();
-        services.AddScoped<IUserAccountService, UserAccountService>();
-        services.AddScoped<IUserRoleService, UserRoleService>();
-        services.AddScoped<IRoleOfUserService, RoleOfUserService>();
-        services.AddScoped<IUserRightService, UserRightService>();
-        services.AddScoped<IStationService, StationService>();
-        services.AddScoped<IScheduleTaskService, ScheduleTaskService>();
-        services.AddScoped<IDataReportService, DataReportService>();
-        services.AddScoped<ILogService, LogService>();
-
-        services.AddSingleton<Settings>();
-
-        _serviceProvider = services.BuildServiceProvider();
+        EngineContext.SetServiceProvider(_serviceProvider);
 
         InitData();
     }
