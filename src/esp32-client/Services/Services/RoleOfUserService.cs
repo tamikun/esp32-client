@@ -58,7 +58,7 @@ public partial class RoleOfUserService : IRoleOfUserService
     {
         var RoleOfUser = await GetById(id);
         if (RoleOfUser is not null)
-            await _linq2Db.DeleteAsync(RoleOfUser);
+            await _linq2Db.Delete(RoleOfUser);
     }
 
 }

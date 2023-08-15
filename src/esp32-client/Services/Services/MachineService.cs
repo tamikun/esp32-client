@@ -161,7 +161,7 @@ public partial class MachineService : IMachineService
         var machine = await GetById(id);
         if (machine is null) throw new Exception("Machine is not found");
         if (machine.LineId != 0 || machine.StationId != 0) throw new Exception("Machine is in use");
-        await _linq2Db.DeleteAsync(machine);
+        await _linq2Db.Delete(machine);
     }
 
     public async Task<Dictionary<string, string>> AssignMachineLine(ListAssignMachineLineModel model)
@@ -183,11 +183,12 @@ public partial class MachineService : IMachineService
                             .FirstOrDefaultAsync();
                 if (machine is not null)
                 {
-                    await _linq2Db.Machine
+                    await _linq2Db.Update(
+                        _linq2Db.Machine
                             .Where(s => s.StationId == item.StationId)
                             .Set(s => s.LineId, 0)
                             .Set(s => s.StationId, 0)
-                            .UpdateAsync();
+                    );
 
                     listUpdateMachineId.Add(machine.Id);
                 }
@@ -201,11 +202,14 @@ public partial class MachineService : IMachineService
 
                 if (machine is not null)
                 {
-                    await _linq2Db.Machine
-                                .Where(s => s.Id == item.MachineId)
-                                .Set(s => s.LineId, model.LineId)
-                                .Set(s => s.StationId, item.StationId)
-                                .UpdateAsync();
+
+                    await _linq2Db.Update(
+                        _linq2Db.Machine
+                            .Where(s => s.Id == item.MachineId)
+                            .Set(s => s.LineId, model.LineId)
+                            .Set(s => s.StationId, item.StationId)
+                    );
+
                     listUpdateMachineId.Add(machine.Id);
                 }
             }
@@ -220,22 +224,23 @@ public partial class MachineService : IMachineService
 
     public async Task UpdateById(int id, int departmentId, int lineId, int processId)
     {
-
-        await _linq2Db.Machine.Where(s => s.Id == id)
-                    .Set(s => s.FactoryId, departmentId)
-                    .Set(s => s.LineId, lineId)
-                    .Set(s => s.StationId, processId)
-                    .UpdateAsync();
+        await _linq2Db.Update(
+            _linq2Db.Machine.Where(s => s.Id == id)
+                .Set(s => s.FactoryId, departmentId)
+                .Set(s => s.LineId, lineId)
+                .Set(s => s.StationId, processId)
+        );
     }
 
     public async Task UpdateByListId(IEnumerable<int> listId, int departmentId, int lineId, int processId)
     {
 
-        await _linq2Db.Machine.Where(s => listId.Contains(s.Id))
-                    .Set(s => s.FactoryId, departmentId)
-                    .Set(s => s.LineId, lineId)
-                    .Set(s => s.StationId, processId)
-                    .UpdateAsync();
+         await _linq2Db.Update(
+            _linq2Db.Machine.Where(s => listId.Contains(s.Id))
+                .Set(s => s.FactoryId, departmentId)
+                .Set(s => s.LineId, lineId)
+                .Set(s => s.StationId, processId)
+        );
     }
 
     public async Task<Machine> Update(Machine model)

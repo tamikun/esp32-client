@@ -109,7 +109,7 @@ public partial class UserAccountService : IUserAccountService
         var user = await GetById(id);
 
         if (user is null) return;
-        await _linq2Db.DeleteAsync(user);
+        await _linq2Db.Delete(user);
     }
 
     public async Task<bool> CheckUserRight(string? loginName, string? controllerName, string? actionName)

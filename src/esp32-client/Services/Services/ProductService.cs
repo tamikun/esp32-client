@@ -139,7 +139,7 @@ public partial class ProductService : IProductService
         // Check produce is in use
         if (await IsProductInUse(id)) throw new Exception("Product is in use");
 
-        await _linq2Db.DeleteAsync(product);
+        await _linq2Db.Delete(product);
 
         // Delete Process
         var listProcess = await _linq2Db.Process.Where(s => s.ProductId == product.Id).ToListAsync();
@@ -148,7 +148,9 @@ public partial class ProductService : IProductService
 
     public async Task DeleteListProcess(List<Process> listProcess)
     {
-        await _linq2Db.Process.Where(s => listProcess.Select(s => s.Id).Contains(s.Id)).DeleteAsync();
+        var query =  _linq2Db.Process.Where(s => listProcess.Select(s => s.Id).Contains(s.Id));
+        await _linq2Db.Delete(query);
+        
         var taskDeleteFile = listProcess.Select(async s =>
         {
             await Utils.Utils.DeleteFile(s.PatternDirectory);

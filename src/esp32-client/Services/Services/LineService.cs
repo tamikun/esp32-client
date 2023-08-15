@@ -120,16 +120,20 @@ public partial class LineService : ILineService
         // Update product of Line
         foreach (var item in model.ListProductLine)
         {
-            await queryListUpdate.Where(s => s.Id == item.LineId)
+            await _linq2Db.Update(
+                queryListUpdate.Where(s => s.Id == item.LineId)
                        .Set(s => s.ProductId, item.ProductId)
-                       .UpdateAsync();
+            );
         }
 
         // Update process of Station (Set ProcessId to 0)
         var listLineId = listUpdate.Select(s => s.Id);
 
         var listStationQuery = _linq2Db.Station.Where(s => listLineId.Contains(s.LineId));
-        await listStationQuery.Set(s => s.ProcessId, 0).UpdateAsync();
+
+        await _linq2Db.Update(
+                listStationQuery.Set(s => s.ProcessId, 0)
+            );
 
         // Update Pattern for machine (Set LineId = 0, ProcessId to 0 => Delete pattern)
         var listMachineId = _linq2Db.Machine.Where(s => listLineId.Contains(s.LineId)).Select(s => s.Id);
@@ -158,9 +162,10 @@ public partial class LineService : ILineService
         // Update station data
         foreach (var item in model.ListStationProcess)
         {
-            await _linq2Db.Station.Where(s => s.Id == item.StationId)
+            await _linq2Db.Update(
+                _linq2Db.Station.Where(s => s.Id == item.StationId)
                        .Set(s => s.ProcessId, item.ProcessId)
-                       .UpdateAsync();
+            );
         }
 
         // Get list machine that is in StationId
@@ -242,7 +247,7 @@ public partial class LineService : ILineService
         if (await IsLineInUse(line)) throw new Exception("Cannot delete line: Product exists");
 
         // Delete line
-        await _linq2Db.DeleteAsync(line);
+        await _linq2Db.Delete(line);
 
         // Delete station
         var stationQuery = await _linq2Db.Station.Where(s => s.LineId == line.Id).ToListAsync();

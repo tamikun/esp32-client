@@ -44,14 +44,16 @@ public class LinqToDb : DataConnection
         if (propertyInfos is null) return null;
 
         // Get Id
-        PropertyInfo pId = propertyInfos.FirstOrDefault(s => s.Name == "Id");
+        PropertyInfo pId = propertyInfos.FirstOrDefault(s => s.Name == nameof(BaseEntity.Id));
 
         int id = Int32.Parse(pId?.GetValue(source)?.ToString() ?? "0");
+
+        if (id == 0) return null;
 
         // update query
         IUpdatable<T> updateQuery = this.GetTable<T>().Where(p => p.Id == id).AsUpdatable();
 
-        foreach (var prop in propertyInfos.Where(s => s.Name != "Id"))
+        foreach (var prop in propertyInfos.Where(s => s.Name != nameof(BaseEntity.Id)))
         {
             // Create the member access expression for the property
             var parameter = Expression.Parameter(typeof(T), "p");
@@ -73,6 +75,33 @@ public class LinqToDb : DataConnection
         await updateQuery.UpdateAsync();
 
         return source;
+    }
+
+#nullable enable
+    public async Task<T?> Insert<T>(T source) where T : BaseEntity
+    {
+        if (source is null) return null;
+
+        source.Id = await this.InsertWithInt32IdentityAsync(source);
+
+        return source;
+    }
+
+    public async Task Delete<T>(T source) where T : BaseEntity
+    {
+        if (source is null) return;
+
+        await this.DeleteAsync(source);
+    }
+
+    public async Task Delete<T>(IQueryable<T> query) where T : BaseEntity
+    {
+        await query.DeleteAsync();
+    }
+   
+    public async Task Update<T>(IUpdatable<T> query) where T : BaseEntity
+    {
+        await query.UpdateAsync();
     }
 
 

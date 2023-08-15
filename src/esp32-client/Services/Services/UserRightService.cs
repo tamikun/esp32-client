@@ -64,7 +64,7 @@ public partial class UserRightService : IUserRightService
     {
         var UserRight = await GetById(id);
         if (UserRight is not null)
-            await _linq2Db.DeleteAsync(UserRight);
+            await _linq2Db.Delete(UserRight);
     }
 
 }

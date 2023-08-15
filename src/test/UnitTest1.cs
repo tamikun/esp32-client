@@ -14,15 +14,18 @@ public class Tests
     private Settings _setting;
     private IMigrationRunner _runner;
     private IMachineService _machineService;
+    private LinqToDb _linq2db;
     [SetUp]
     public void Setup()
     {
         _setting = BaseTest.GetService<Settings>();
         _runner = BaseTest.GetService<IMigrationRunner>();
         _machineService = BaseTest.GetService<IMachineService>();
+        _linq2db = BaseTest.GetService<LinqToDb>();
     }
 
     [Test]
+    [Order(1)]
     public async Task ShouldUpdateMachine()
     {
         var machineAdd = new MachineCreateModel
@@ -55,4 +58,36 @@ public class Tests
 
         Assert.That(machineUpdate.MachineName, Is.EqualTo(model.MachineName));
     }
+
+    [Test]
+    [Order(2)]
+    public async Task ShouldInsertWithIdentity()
+    {
+        var fact = new Factory
+        {
+            FactoryNo = "Factory No.2",
+            FactoryName = "Factory name",
+        };
+        var fact2 = await _linq2db.Insert(fact);
+        Assert.That(fact2.Id, Is.EqualTo(2));
+
+        fact.FactoryNo = "Factory No.3";
+
+        var fact3 = await _linq2db.Insert(fact);
+        Assert.That(fact3.Id, Is.EqualTo(3));
+
+        await _linq2db.Delete(fact3);
+
+        var fact4 = await _linq2db.Insert(fact);
+        Assert.That(fact4.Id, Is.EqualTo(4));
+
+        # region Test delete query
+        var query = _linq2db.Factory.Where(s => s.Id > 1);
+        await _linq2db.Delete(query);
+
+        var listFac = await _linq2db.Factory.ToListAsync();
+        Assert.That(listFac.Count, Is.EqualTo(1));
+        # endregion
+    }
+
 }

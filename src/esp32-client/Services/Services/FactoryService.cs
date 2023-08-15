@@ -82,7 +82,7 @@ public partial class FactoryService : IFactoryService
             await _lineService.Delete(line.Id);
         }
 
-        await _linq2Db.DeleteAsync(factory);
+        await _linq2Db.Delete(factory);
     }
 
     public async Task UpdateName(int id, string name)
