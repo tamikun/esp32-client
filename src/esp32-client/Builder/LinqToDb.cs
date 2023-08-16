@@ -104,4 +104,16 @@ public static class LinqToDbExtension
     {
         await query.UpdateAsync();
     }
+
+    // public static async Task Truncate<T>(this LinqToDb _linq2db, bool restartIdentity = false) where T : BaseEntity
+    // {
+    //     if (restartIdentity)
+    //     {
+    //         // await _linq2db.ExecuteAsync($"TRUNCATE TABLE {typeof(T).Name}");
+    //     }
+    //     else
+    //     {
+    //         await _linq2db.GetTable<T>().DeleteAsync();
+    //     }
+    // }
 }

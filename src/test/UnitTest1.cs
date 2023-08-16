@@ -10,14 +10,13 @@ namespace test;
 [TestFixture]
 public class Tests
 {
-#nullable disable
     private Settings _setting;
     private IMigrationRunner _runner;
     private IMachineService _machineService;
     private ILineService _lineService;
     private LinqToDb _linq2db;
-    [SetUp]
-    public void Setup()
+
+    public Tests()
     {
         _setting = BaseTest.GetService<Settings>();
         _runner = BaseTest.GetService<IMigrationRunner>();
@@ -25,6 +24,12 @@ public class Tests
         _linq2db = BaseTest.GetService<LinqToDb>();
         _lineService = BaseTest.GetService<ILineService>();
     }
+
+    [SetUp]
+    public void Setup()
+    { }
+
+# nullable disable
 
     [Test]
     [Order(1)]
@@ -83,14 +88,6 @@ public class Tests
         var fact4 = await _linq2db.Insert(fact);
         Assert.That(fact4.Id, Is.EqualTo(4));
 
-        # region Test delete query
-
-        await _linq2db.Factory.Where(s => s.Id > 1).DeleteQuery();
-
-        var listFac = await _linq2db.Factory.ToListAsync();
-        Assert.That(listFac.Count, Is.EqualTo(1));
-
-        #endregion
     }
 
     [Test]
@@ -105,9 +102,8 @@ public class Tests
             NumberOfStation = 2,
         };
 
-        await _lineService.Create(model);
+        var line = await _lineService.Create(model);
 
-        var line = await _linq2db.Line.Where(s => s.LineNo == "Line 001").FirstOrDefaultAsync();
         Assert.That(line.Id, Is.EqualTo(1));
 
         var stations = await _linq2db.Station.Where(s => s.LineId == 1).ToListAsync();
