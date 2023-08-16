@@ -1,5 +1,6 @@
 using System.Reflection;
 using esp32_client.Builder;
+using esp32_client.Utils;
 using LinqToDB;
 
 namespace esp32_client.Services
@@ -22,8 +23,10 @@ namespace esp32_client.Services
             {
                 PropertyInfo? pinfo = settingType.GetProperty(property.Name);
                 if (pinfo is not null)
-                    // pinfo.SetValue(this, Utils.Utils.ChangeType(_linqToDb[$"Settings:{property.Name}"], pinfo.PropertyType), null);
-                    pinfo.SetValue(this, Utils.Utils.ChangeType(listSetting.Where(s => s.Name == property.Name).Select(s => s.Value).FirstOrDefault(), pinfo.PropertyType), null);
+                    pinfo.SetValue(
+                        this,
+                        listSetting.Where(s => s.Name == property.Name).Select(s => s.Value).FirstOrDefault().ChangeType(pinfo.PropertyType),
+                        null);
             }
         }
 #nullable disable

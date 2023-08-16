@@ -9,182 +9,37 @@
     <script src="../../wwwroot/js/site.js" asp-append-version="true"></script>
 </head>
 <style>
-    .arrow {
-        font-size: 20px;
-        line-height: 1;
-        margin-inline: 10px;
+    #div1 {
+      width: 350px;
+      height: 70px;
+      padding: 10px;
+      border: 1px solid #aaaaaa;
     }
-    .line-container{
-        display: flex;
-        margin-block: 30px;
-        margin-inline: 10px;
-    }
-    .line-info-body{
-        display: flex;
-    }
-    .line-info-header{
-        margin-right: 50px;
-    }
-
-    .line-info-header-main, .line-info-header-expanse{
-        width: 150px;
-    }
-
-    .line-info-header-main{
-        
-        border: 1px solid rgb(0, 0, 0);
-        border-radius: 0px;
-        height: 50%;
-        text-align: center;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-    .line-info-header-expanse{
-        border: 1px solid rgb(0, 0, 0);
-        height: 50%;
-    }
-    .line-info-detail-main{
-       
-        border: 1px solid rgb(0, 0, 0);
-        border-radius: 0px;
-    }
-    .line-info-detail-expanse{
-        border: 1px solid rgb(0, 0, 0);
-    }
-    .line-container ul{
-        margin-block-start: 0em;
-        margin-block-end: 0em;
-        margin-inline-start: 0px;
-        margin-inline-end: 0px;
-        padding-inline-start: 20px;
-    }
-
-    .line-container:nth-child(3n+1) .line-info-header-main {
-        background-color: rgb(192, 214, 155);
-    }
-    .line-container:nth-child(3n+1) .line-info-detail-main {
-        background-color: rgb(235, 241, 222)
-    }
-    .line-container:nth-child(3n+2) .line-info-header-main {
-        background-color: rgb(149, 179, 215);
-    }
-    .line-container:nth-child(3n+2) .line-info-detail-main {
-        background-color: rgb(198, 217, 241);
-    }
-    .line-container:nth-child(3n) .line-info-header-main {
-        background-color: rgb(179, 162, 199);
-    }
-    .line-container:nth-child(3n) .line-info-detail-main {
-        background-color: rgb(204, 193, 218);
-    }
-
-    .pagination a {
-        color: black;
-        float: left;
-        padding: 8px 16px;
-        text-decoration: none;
-        transition: background-color .3s;
-    }
-      
-    .pagination a.active {
-        background-color: dodgerblue;
-        color: white;
-    }
-      
 </style>
-
+<script>
+    function allowDrop(ev) {
+      ev.preventDefault();
+    }
+    
+    function drag(ev) {
+      ev.dataTransfer.setData("Text", ev.target.id);
+    }
+    
+    function drop(ev) {
+      let data = ev.dataTransfer.getData("Text");
+      ev.target.appendChild(document.getElementById(data));
+      ev.preventDefault();
+    }
+</script>
 <body>
-    <div class="line-container">
-        <div class="line-info-header">
-            <div class="line-info-header-main">
-                <div>
-                    <div><strong>Line 1</strong></div>
-                    <div>Product 1</div>
-                </div>
-            </div>
-            <div class="line-info-header-expanse">
-                <ul>
-                    <li>LineNo: Line 001</li>
-                    <li>Product 001</li>
-                </ul>
-            </div>
-        </div>
-        <div class="line-info-body">
-            <div class="line-info-detail">
-                <div class="line-info-detail-main">
-                    <div>Station name</div>
-                    <div>Machine name</div>
-                    <div>Process name</div>
-                    <div>Pattern no</div>
-                </div>
-                <div class="line-info-detail-expanse">
-                    <ul>
-                        <li>Product number</li>
-                    </ul>
-                </div>
-                <div class="line-info-detail-expanse">
-                    <ul>
-                        <li>Station no</li>
-                        <li>Machine no</li>
-                        <li>Process no</li>
-                    </ul>
-                </div>
-            </div>
-            <div class="arrow"><br>&#8594;</div>
-            <div class="line-info-detail">
-                <div class="line-info-detail-main">
-                    <div>Station name</div>
-                    <div>Machine name</div>
-                    <div>Process name</div>
-                    <div>Pattern no</div>
-                </div>
-                <div class="line-info-detail-expanse">
-                    <ul>
-                        <li>Product number</li>
-                    </ul>
-                </div>
-                <div class="line-info-detail-expanse">
-                    <ul>
-                        <li>Station no</li>
-                        <li>Machine no</li>
-                        <li>Process no</li>
-                    </ul>
-                </div>
-            </div>
-            <div class="arrow"><br>&#8594;</div>
-            <div class="line-info-detail">
-                <div class="line-info-detail-main">
-                    <div>Station name</div>
-                    <div>Machine name</div>
-                    <div>Process name</div>
-                    <div>Pattern no</div>
-                </div>
-                <div class="line-info-detail-expanse">
-                    <ul>
-                        <li>Product number</li>
-                    </ul>
-                </div>
-                <div class="line-info-detail-expanse">
-                    <ul>
-                        <li>Station no</li>
-                        <li>Machine no</li>
-                        <li>Process no</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="pagination">
-        <a href="#">&laquo;</a>
-        <a href="#">1</a>
-        <a class="active" href="#">2</a>
-        <a href="#">3</a>
-        <a href="#">4</a>
-        <a href="#">5</a>
-        <a href="#">6</a>
-        <a href="#">&raquo;</a>
-      </div>
+    <div id="div1" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+    <br>
+    <div id="div1" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+    <br>
+    <p id="drag1" draggable="true" ondragstart="drag(event)">This is a draggable paragraph. Drag this element into the rectangle.</p>
+    <br>
+    <input type="number" class="form-control" id="LineNo" name="LineNo" draggable="true" ondragstart="drag(event)">
+    <input type="color" name="" id="">
 </body>
 
 </html>
