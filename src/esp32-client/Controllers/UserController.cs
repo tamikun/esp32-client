@@ -34,6 +34,9 @@ public class UserController : BaseController
     [HttpPost]
     public async Task<IActionResult> Login(string loginName, string password)
     {
+        if (!String.IsNullOrEmpty(_httpContextAccessor?.HttpContext?.Session.GetString("LoginName")))
+            return RedirectToAction("Index");
+
         var userAccount = await _userAccountService.GetByLoginName(loginName);
         if (userAccount is not null)
         {

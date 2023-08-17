@@ -22,15 +22,7 @@ public class JWTTest
     {
         var token = generateJwtToken();
         System.Console.WriteLine("==== token: " + token);
-        // bool isExpired = IsTokenExpired(token);
-        // if (isExpired)
-        // {
-        //     Console.WriteLine("Token has expired.");
-        // }
-        // else
-        // {
-        //     Console.WriteLine("Token is still valid.");
-        // }
+        
         await Task.Delay(5000);
         getDataFromToken(token);
         await Task.CompletedTask;
