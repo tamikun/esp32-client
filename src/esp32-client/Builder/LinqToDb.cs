@@ -11,7 +11,9 @@ public class LinqToDb : DataConnection
 {
     public LinqToDb(DataOptions<LinqToDb> options)
        : base(options.Options)
-    { }
+    {
+        CommandTimeout = 10; // Timeout in seconds
+    }
 
     public ITable<Factory> Factory => this.GetTable<Factory>();
     public ITable<Line> Line => this.GetTable<Line>();
