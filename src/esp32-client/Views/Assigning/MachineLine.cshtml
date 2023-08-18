@@ -5,6 +5,8 @@
     bool edit = ViewBag.Edit;
     
     var factories = await _factoryService.GetAll();
+
+    factoryId = (factoryId == 0) ? factories.Select(s => s.Id).FirstOrDefault() : factoryId;
     
     var lineData = await _lineService.GetByFactoryId(factoryId);
 
@@ -48,14 +50,14 @@
                 @using (Html.BeginForm("MachineLine", "Assigning", FormMethod.Get, new { @enctype = "multipart/form-data",  @id = "searchByFactoryId" }))
                 {
                     <select data-val="true" data-val-required="The Number field is required." id="factoryId"  name="factoryId" onchange="submitById('searchByFactoryId')">
-                        @if (factoryId == 0)
+                        @* @if (factoryId == 0)
                         {
                             <option value='' selected="selected">Choose factory</option>
                         }
                         else
                         {
                             <option value=''>Choose factory</option>
-                        }
+                        } *@
 
                         @foreach (var item in factories)
                         {

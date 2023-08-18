@@ -252,6 +252,7 @@ public class AddInitData : AutoReversingMigration
             new Setting{Name = "MinCharFactoryFormat", Value = "3"},
             new Setting{Name = "MachineFormat", Value = "Machine {0}"},
             new Setting{Name = "MinCharMachineFormat", Value = "3"},
+            new Setting{Name = "GetApiProductNumberTimeOut", Value = "5000"},
         };
 
         _linq2Db.BulkInsert(settings).Wait();
@@ -270,7 +271,7 @@ public class AddInitData : AutoReversingMigration
     }
 }
 
-[Migration(20230811162700)]
+[Migration(20230811162701)]
 public class AddTimeOutSetting : AutoReversingMigration
 {
     private readonly LinqToDb _linq2Db;
@@ -281,7 +282,8 @@ public class AddTimeOutSetting : AutoReversingMigration
     public override void Up()
     {
         var settings = new List<Setting>{
-            new Setting{Name = "GetApiProductNumberTimeOut", Value = "5000"},
+            new Setting{Name = "AcceptedFile", Value = ".VDT,.PMD"},
+            
         };
 
         _linq2Db.BulkInsert(settings).Wait();

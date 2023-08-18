@@ -4,6 +4,8 @@
 
     var factories = await _factoryService.GetAll();
 
+    factoryId = (factoryId == 0) ? factories.Select(s => s.Id).FirstOrDefault() : factoryId;
+
     var machineData = await _machineService.GetByFactoryId(factoryId);
 
 }
@@ -40,14 +42,14 @@
                     <select data-val="true" data-val-required="The Number field is required." id="factoryId"
                         name="factoryId" onchange="submitById('searchByFactoryId')">
 
-                        @if (factoryId == 0)
+                        @* @if (factoryId == 0)
                         {
                             <option value='' selected="selected">Choose factory</option>
                         }
                         else
                         {
                             <option value=''>Choose factory</option>
-                        }
+                        } *@
 
                         @foreach (var item in factories)
                         {

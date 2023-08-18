@@ -62,5 +62,6 @@ namespace esp32_client.Services
         public string MachineFormat { get; set; }
         public int MinCharMachineFormat { get; set; }
         public string GetProductNumberFormat { get; set; }
+        public string AcceptedFile { get; set; }
     }
 }
