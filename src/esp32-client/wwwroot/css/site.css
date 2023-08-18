@@ -290,3 +290,7 @@ input[type="checkbox"] {
   color: #007bc7;
   margin: 5px;
 }
+.setting-header a{
+  color: #007bc7;
+  text-decoration: none;
+}
