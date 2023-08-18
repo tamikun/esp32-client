@@ -35,7 +35,7 @@ public class UserController : BaseController
     public async Task<IActionResult> Login(string loginName, string password)
     {
         if (!String.IsNullOrEmpty(_httpContextAccessor?.HttpContext?.Session.GetString("LoginName")))
-            return RedirectToAction("Index");
+            return RedirectToAction("Index", "Home");
 
         var userAccount = await _userAccountService.GetByLoginName(loginName);
         if (userAccount is not null)
