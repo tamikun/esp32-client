@@ -21,8 +21,18 @@ public class OpenApiController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> SaveproductData()
     {
-        var ip = _httpContextAccessor?.HttpContext?.Connection.RemoteIpAddress;
-        System.Console.WriteLine("==== ip: " + ip?.ToString());
+        // Access the HttpContext to get the client's IP address
+        var ipAddress = _httpContextAccessor.HttpContext.Connection.RemoteIpAddress;
+
+        if (ipAddress != null)
+        {
+            // IPv4 is stored as an instance of IPAddress, so convert it to a string
+            if (ipAddress.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork)
+            {
+                System.Console.WriteLine($"ipAddress {ipAddress.ToString()}");
+            }
+        }
+
 
         return Ok(await _dataReportService.RandomCreate());
     }
