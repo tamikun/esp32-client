@@ -26,6 +26,18 @@ public partial class DataReportService : IDataReportService
         return await _linq2Db.DataReport.ToListAsync();
     }
 
+    public async Task<DataReport> RandomCreate()
+    {
+        var data = new DataReport
+        {
+            StationId = 1,
+            ProductNumber = DateTime.UtcNow.Second,
+            DateTimeUtc = DateTime.UtcNow,
+        };
+
+        return await _linq2Db.Insert(data);
+    }
+
     public async Task<DataReport> GetLastDataByStationId(int stationId)
     {
         if (await _linq2Db.DataReport.Where(s => s.StationId == stationId).AnyAsync())
@@ -35,7 +47,6 @@ public partial class DataReportService : IDataReportService
             return result;
         }
         return new DataReport();
-
     }
 
 }

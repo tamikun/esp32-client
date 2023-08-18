@@ -294,3 +294,8 @@ input[type="checkbox"] {
   color: #007bc7;
   text-decoration: none;
 }
+
+.setting-header a:hover{
+  text-decoration: underline;
+  font-weight: 700;
+}
