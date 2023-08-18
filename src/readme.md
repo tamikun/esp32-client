@@ -12,3 +12,12 @@ publish.bat
 
 - Run offline: from src run once 
 docker load -i aspnet6.tar
+
+- Requirements:
+    - Chỉnh sửa hiển thị trang Monitoring
+    - Link các đối tượng monitoring đến trang Setting
+    - Sửa thứ tự hiển thị các cột trong setting
+    - Thêm nhãn cho mỗi trang
+    - Thêm chức năng filter cho trang monitoring
+    - Dùng MQTT để lấy dữ liệu sản xuất
+    - Render riêng các số liệu sản xuất
