@@ -40,7 +40,15 @@ services:
     command:
       - "mysqld"
       - "--binlog_expire_logs_seconds=259200"
-      - "--max_connections=1000"
+      - "--max_connections=2000"
+      # Default (--innodb-buffer-pool-size = --innodb-buffer-pool-chunk-size * --innodb-buffer-pool-instances)
+      # - "--innodb-buffer-pool-size=134217728"
+      # - "--innodb-buffer-pool-chunk-size=134217728"
+      # - "--innodb-buffer-pool-instances=1"
+      # Change to
+      - "--innodb-buffer-pool-size=268435456"
+      - "--innodb-buffer-pool-chunk-size=134217728"
+      - "--innodb-buffer-pool-instances=2"
 
   phpmyadmin:
     image: phpmyadmin
