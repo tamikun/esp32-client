@@ -63,5 +63,6 @@ namespace esp32_client.Services
         public int MinCharMachineFormat { get; set; }
         public string GetProductNumberFormat { get; set; }
         public string AcceptedFile { get; set; }
+        public int MinutesPerSession { get; set; }
     }
 }

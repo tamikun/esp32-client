@@ -10,12 +10,14 @@ public class UserController : BaseController
 {
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly IUserAccountService _userAccountService;
+    private readonly Settings _settings;
 
-    public UserController(LinqToDb linq2db, IHttpContextAccessor httpContextAccessor, IUserAccountService userAccountService)
+    public UserController(LinqToDb linq2db, IHttpContextAccessor httpContextAccessor, IUserAccountService userAccountService, Settings settings)
     {
         _linq2db = linq2db;
         _httpContextAccessor = httpContextAccessor;
         _userAccountService = userAccountService;
+        _settings = settings;
     }
 
     [CustomAuthenticationFilter]
@@ -47,8 +49,8 @@ public class UserController : BaseController
                 _httpContextAccessor?.HttpContext?.Session.SetString("LoginName", loginName);
                 _httpContextAccessor?.HttpContext?.Session.SetString("UserName", userAccount.UserName);
 
-                // Set user session for 30 minutes
-                var expiredTime = DateTime.UtcNow.AddMinutes(30).ToString("o");
+                // Set user session for _settings.MinutesPerSession minutes
+                var expiredTime = DateTime.UtcNow.AddMinutes(_settings.MinutesPerSession).ToString("o");
                 _httpContextAccessor?.HttpContext?.Session.SetString("ExpiredTime", expiredTime);
 
                 // Store the role in session
