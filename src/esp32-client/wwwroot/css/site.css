@@ -285,3 +285,8 @@ input[type="checkbox"] {
 }
 
 .pagination a:hover:not(.active) {background-color: #ddd;}
+
+.setting-header{
+  color: #007bc7;
+  margin: 5px;
+}
