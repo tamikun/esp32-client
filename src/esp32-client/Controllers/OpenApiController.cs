@@ -22,7 +22,7 @@ public class OpenApiController : ControllerBase
     public async Task<IActionResult> SaveproductData()
     {
         var ip = _httpContextAccessor?.HttpContext?.Connection.RemoteIpAddress;
-        System.Console.WriteLine("==== ip: " + Newtonsoft.Json.JsonConvert.SerializeObject(ip));
+        System.Console.WriteLine("==== ip: " + ip?.ToString());
 
         return Ok(await _dataReportService.RandomCreate());
     }

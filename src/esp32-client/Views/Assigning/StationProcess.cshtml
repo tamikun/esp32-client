@@ -48,12 +48,16 @@
     @if(stationData.Count > 0){
         <tr>
             <th colspan="100%">
-                Line: @stationData[0].LineName - @stationData[0].LineNo
+                Line name: @stationData[0].LineName
+                <br> 
+                Line no: @stationData[0].LineNo
             </th>
         </tr>
         <tr>
             <th colspan="100%">
-                Product: @stationData[0].ProductName - @stationData[0].ProductNo
+                Product name: @stationData[0].ProductName 
+                <br>
+                Product no: @stationData[0].ProductNo
             </th>
         </tr>
         <tr>
