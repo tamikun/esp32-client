@@ -47,8 +47,8 @@ services:
       # - "--innodb-buffer-pool-instances=1"
       # Change to
       - "--innodb-buffer-pool-size=268435456"
-      - "--innodb-buffer-pool-chunk-size=134217728"
-      - "--innodb-buffer-pool-instances=2"
+      - "--innodb-buffer-pool-chunk-size=268435456"
+      - "--innodb-buffer-pool-instances=1" # Variable 'innodb_buffer_pool_instances' is a read only variable
 
   phpmyadmin:
     image: phpmyadmin
