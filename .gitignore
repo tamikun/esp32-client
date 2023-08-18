@@ -4,5 +4,6 @@
 x64/
 [Bb]in/
 [Oo]bj/
+src/publish.bat
 
 src/ShareFiles/esp32-client/publish
