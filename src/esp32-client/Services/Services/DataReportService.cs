@@ -40,6 +40,7 @@ public partial class DataReportService : IDataReportService
 
     public async Task<DataReport> GetLastDataByStationId(int stationId)
     {
+        if (stationId <= 0) return new DataReport();
         if (await _linq2Db.DataReport.Where(s => s.StationId == stationId).AnyAsync())
         {
             int maxId = await _linq2Db.DataReport.Where(s => s.StationId == stationId).MaxAsync(s => s.Id);
