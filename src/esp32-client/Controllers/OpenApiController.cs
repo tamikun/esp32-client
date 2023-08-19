@@ -25,17 +25,21 @@ public class OpenApiController : ControllerBase
     }
 
     [HttpGet]
-    [CustomAuthenticationFilter]
+    //[CustomAuthenticationFilter]
     [Route("{id}")]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> GetProductNumber(int id)
     {
-        var result = await _dataReportService.GetLastDataByStationId(id);
+        // var result = await _dataReportService.GetLastDataByStationId(id);
+
+        // Get value by cache instead
+
         var response = new
         {
-            result = result.ProductNumber
+            result = 0
         };
+        await Task.CompletedTask;
         return Ok(response);
     }
 }

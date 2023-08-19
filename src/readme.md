@@ -21,5 +21,4 @@ Or
   - [x] Load test cho web (500 request / 1s; 1000 request / 5s)
   - [ ] Thêm param IoT cho Machine
   - [ ] Thêm chức năng filter cho trang monitoring
-  - [ ] Dùng MQTT để lấy dữ liệu sản xuất
   - [ ] Render riêng các số liệu sản xuất
