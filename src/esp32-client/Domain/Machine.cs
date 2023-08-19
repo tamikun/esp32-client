@@ -13,5 +13,6 @@ namespace esp32_client.Domain
         public int LineId { get; set; }
         public int StationId { get; set; }
         public string COPartNo { get; set; } = string.Empty;
+        public bool IoTMachine { get; set; }
     }
 }

@@ -294,3 +294,19 @@ public class AddTimeOutSetting : AutoReversingMigration
     }
 }
 
+[Migration(20230819111100)]
+public class AddColunm : AutoReversingMigration
+{
+    public override void Up()
+    {
+
+        if (!Schema.Table(nameof(Machine)).Column(nameof(Machine.IoTMachine)).Exists())
+        {
+            Alter
+            .Table(nameof(Machine))
+                .AddColumn(nameof(Machine.IoTMachine)).AsBoolean().NotNullable()
+            ;
+        }
+    }
+}
+
