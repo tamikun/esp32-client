@@ -3,6 +3,7 @@ using esp32_client.Models;
 using esp32_client.Services;
 using Newtonsoft.Json;
 using esp32_client.Builder;
+using esp32_client.Models.Singleton;
 
 namespace esp32_client.Controllers;
 

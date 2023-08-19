@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using esp32_client.Models;
+using esp32_client.Models.Singleton;
 using esp32_client.Services;
 using esp32_client.Builder;
 

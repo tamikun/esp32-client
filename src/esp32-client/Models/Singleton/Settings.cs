@@ -1,9 +1,8 @@
 using System.Reflection;
 using esp32_client.Builder;
 using esp32_client.Utils;
-using LinqToDB;
 
-namespace esp32_client.Services
+namespace esp32_client.Models.Singleton
 {
     public class Settings
     {

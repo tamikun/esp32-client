@@ -3,6 +3,7 @@ using AutoMapper;
 using esp32_client.Builder;
 using esp32_client.Domain;
 using esp32_client.Models;
+using esp32_client.Models.Singleton;
 using HtmlAgilityPack;
 using LinqToDB;
 using Newtonsoft.Json;

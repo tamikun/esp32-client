@@ -1,13 +1,10 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Threading.Tasks;
 using esp32_client.Services;
 using FluentMigrator.Runner;
 using LinqToDB;
 using LinqToDB.AspNet;
 using Microsoft.OpenApi.Models;
+using esp32_client.Models.Singleton;
 
 namespace esp32_client.Builder
 {

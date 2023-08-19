@@ -1,5 +1,6 @@
 ﻿using esp32_client.Services;
 using Microsoft.AspNetCore.Mvc;
+using esp32_client.Models.Singleton;
 
 namespace esp32_client.Controllers;
 

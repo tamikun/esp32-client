@@ -2,6 +2,7 @@ using AutoMapper;
 using esp32_client.Builder;
 using esp32_client.Domain;
 using esp32_client.Models;
+using esp32_client.Models.Singleton;
 using LinqToDB;
 
 namespace esp32_client.Services;
