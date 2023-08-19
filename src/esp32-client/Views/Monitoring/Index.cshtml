@@ -7,10 +7,7 @@
     int pageIndex = ViewBag.PageIndex;
     int pageSize = ViewBag.PageSize;
 
-    bool iotMachine = ViewBag.IoTMachine;
-    bool normalMachine = ViewBag.NormalMachine;
-
-    var data = await _lineService.GetProcessAndMachineOfLine(factoryId, iotMachine, normalMachine);
+    var data = await _lineService.GetProcessAndMachineOfLine(factoryId, Model.IoTMachine, Model.NormalMachine);
 
     var lines = data.DistinctBy(s => s.LineId).Where(s => s.LineId != 0).ToList().ToPagedListModel(pageIndex, pageSize);
 
