@@ -17,6 +17,8 @@
     var listSelectPageSize = new List<int>{1,2,3,5,10,15,20};
 
 }
+<h4 class="setting-header">Monitoring screen</h4>
+
 <div class="m-3">
     @using (Html.BeginForm("Index", "Monitoring", FormMethod.Post, new { @enctype = "multipart/form-data", @id = "searchByFactoryId" }))
     {
@@ -89,13 +91,13 @@
                 <div class="line-info-header">
                     <div class="line-info-header-main">
                         <div>
-                            <div><strong>@lineData[0].LineName</strong></div>
+                            <div><strong>@lineData[0].LineNo</strong></div>
                             <div>@lineData[0].ProductName</div>
                         </div>
                     </div>
                     <div class="line-info-header-expanse">
                         <ul>
-                            <li>@lineData[0].LineNo</li>
+                            <li>@lineData[0].LineName</li>
                             <li>@lineData[0].ProductNo</li>
                         </ul>
                     </div>
@@ -104,10 +106,8 @@
                     @for(int j = 0; j < lineDataCount; j++){
                         <div class="line-info-detail">
                             <div class="line-info-detail-main">
-                                <div>@lineData[j].StationName</div>
-                                <div>@lineData[j].MachineName</div>
+                                <div>@lineData[j].StationNo</div>
                                 <div>@lineData[j].ProcessName</div>
-                                <div>@lineData[j].PatternNo</div>
                             </div>
                             <div class="line-info-detail-expanse">
                                 <ul>
@@ -117,8 +117,7 @@
                             </div>
                             <div class="line-info-detail-expanse">
                                 <ul>
-                                    <li>@lineData[j].StationNo</li>
-                                    <li>@lineData[j].MachineNo</li>
+                                    <li>@lineData[j].MachineName</li>
                                     <li>@lineData[j].ProcessNo</li>
                                 </ul>
                             </div>
