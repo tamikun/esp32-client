@@ -64,7 +64,7 @@
         @if(lines.HasPreviousPage)
         {
             int previousPage= pageIndex - 1;
-            <a href='@Url.Action("Index", "Monitoring", new {factoryId =  @factoryId, pageIndex = @previousPage, pageSize = @pageSize, iotMachine = @iotMachine, normalMachine = @normalMachine})'>&laquo;</a>
+            <a href='@Url.Action("Index", "Monitoring", new {factoryId =  @factoryId, pageIndex = @previousPage, pageSize = @pageSize, iotMachine = @Model.IoTMachine, normalMachine = @Model.NormalMachine})'>&laquo;</a>
         }
 
         @for(int i = 0; i < lines.TotalPage; i++){
@@ -72,14 +72,14 @@
             if(i == pageIndex){
                 <a class="active" href="">@pageDisplay</a>
             }else{
-                <a href='@Url.Action("Index", "Monitoring", new {factoryId =  @factoryId, pageIndex = @i, pageSize = @pageSize, iotMachine = @iotMachine, normalMachine = @normalMachine})'>@pageDisplay</a>
+                <a href='@Url.Action("Index", "Monitoring", new {factoryId =  @factoryId, pageIndex = @i, pageSize = @pageSize, iotMachine = @Model.IoTMachine, normalMachine = @Model.NormalMachine})'>@pageDisplay</a>
             }
         }
 
         @if(lines.HasNextPage)
         {
             int nextPage = pageIndex + 1;
-            <a href='@Url.Action("Index", "Monitoring", new {factoryId =  @factoryId, pageIndex = @nextPage, pageSize = @pageSize, iotMachine = @iotMachine, normalMachine = @normalMachine})'>&raquo;</a>
+            <a href='@Url.Action("Index", "Monitoring", new {factoryId =  @factoryId, pageIndex = @nextPage, pageSize = @pageSize, iotMachine = @Model.IoTMachine, normalMachine = @Model.NormalMachine})'>&raquo;</a>
         }
     </div>
 </div>
