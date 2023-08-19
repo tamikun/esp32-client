@@ -26,7 +26,7 @@ public class OpenApiController : ControllerBase
 
     [HttpGet]
     [CustomAuthenticationFilter]
-    [Route("api/[controller]/[action]/{id?}")]
+    [Route("{id?}")]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> GetProductNumber(int? id)
