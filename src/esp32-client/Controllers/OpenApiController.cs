@@ -26,9 +26,10 @@ public class OpenApiController : ControllerBase
 
     [HttpGet]
     [CustomAuthenticationFilter]
+    [Route("api/[controller]/[action]/{id?}")]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> GetProductNumber(int stationId)
+    public async Task<IActionResult> GetProductNumber(int? id)
     {
         await Task.CompletedTask;
         return Ok(DateTime.UtcNow.Second);
