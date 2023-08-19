@@ -235,13 +235,15 @@
             updateProductNumbers(startIndex, batchSize);
             startIndex += batchSize;
 
-            if (startIndex < document.querySelectorAll('.line-info-detail').length) {
-                setTimeout(processBatch, requestDelay);
+            if (startIndex >= document.querySelectorAll('.line-info-detail').length) {
+                startIndex = 0;
             }
         }
 
         // Call the function initially
         processBatch();
+
+        setInterval(processBatch, requestDelay);
 
     </script>
 }
