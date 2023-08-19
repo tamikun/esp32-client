@@ -7,7 +7,11 @@
     int pageIndex = ViewBag.PageIndex;
     int pageSize = ViewBag.PageSize;
 
-    var data = await _lineService.GetProcessAndMachineOfLine(factoryId, Model.IoTMachine, Model.NormalMachine);
+    var data = await _lineService.GetProcessAndMachineOfLine(factoryId);
+
+    if(!Model.IoTMachine) data = data.Where(s => s.IoTMachine != true).ToList();
+    if(!Model.NormalMachine) data = data.Where(s => s.IoTMachine != false).ToList();
+    if(!Model.EmptyMachine) data = data.Where(s => s.MachineNo != "{MachineNo}").ToList();
 
     var lines = data.DistinctBy(s => s.LineId).Where(s => s.LineId != 0).ToList().ToPagedListModel(pageIndex, pageSize);
 
@@ -57,6 +61,7 @@
             </select>
             @Html.HiddenFor(s => s.IoTMachine);
             @Html.HiddenFor(s => s.NormalMachine);
+            @Html.HiddenFor(s => s.EmptyMachine);
         }
     </div>
 
@@ -64,7 +69,7 @@
         @if(lines.HasPreviousPage)
         {
             int previousPage= pageIndex - 1;
-            <a href='@Url.Action("Index", "Monitoring", new {factoryId =  @factoryId, pageIndex = @previousPage, pageSize = @pageSize, iotMachine = @Model.IoTMachine, normalMachine = @Model.NormalMachine})'>&laquo;</a>
+            <a href='@Url.Action("Index", "Monitoring", new {factoryId =  @factoryId, pageIndex = @previousPage, pageSize = @pageSize, iotMachine = @Model.IoTMachine, normalMachine = @Model.NormalMachine, emptyMachine = @Model.EmptyMachine})'>&laquo;</a>
         }
 
         @for(int i = 0; i < lines.TotalPage; i++){
@@ -72,14 +77,14 @@
             if(i == pageIndex){
                 <a class="active" href="">@pageDisplay</a>
             }else{
-                <a href='@Url.Action("Index", "Monitoring", new {factoryId =  @factoryId, pageIndex = @i, pageSize = @pageSize, iotMachine = @Model.IoTMachine, normalMachine = @Model.NormalMachine})'>@pageDisplay</a>
+                <a href='@Url.Action("Index", "Monitoring", new {factoryId =  @factoryId, pageIndex = @i, pageSize = @pageSize, iotMachine = @Model.IoTMachine, normalMachine = @Model.NormalMachine, emptyMachine = @Model.EmptyMachine})'>@pageDisplay</a>
             }
         }
 
         @if(lines.HasNextPage)
         {
             int nextPage = pageIndex + 1;
-            <a href='@Url.Action("Index", "Monitoring", new {factoryId =  @factoryId, pageIndex = @nextPage, pageSize = @pageSize, iotMachine = @Model.IoTMachine, normalMachine = @Model.NormalMachine})'>&raquo;</a>
+            <a href='@Url.Action("Index", "Monitoring", new {factoryId =  @factoryId, pageIndex = @nextPage, pageSize = @pageSize, iotMachine = @Model.IoTMachine, normalMachine = @Model.NormalMachine, emptyMachine = @Model.EmptyMachine})'>&raquo;</a>
         }
     </div>
 </div>
@@ -95,6 +100,8 @@
         @Html.CheckBoxFor(s => s.IoTMachine, new {@onchange="submitById('filter')"})
         <label for="normalMachine" class="form-label">Normal Machine</label>
         @Html.CheckBoxFor(s => s.NormalMachine, new {@onchange="submitById('filter')"})
+        <label for="emptyMachine" class="form-label">Empty Machine</label>
+        @Html.CheckBoxFor(s => s.EmptyMachine, new {@onchange="submitById('filter')"})
         <input type="number" class="form-control" id="pageSize" name="pageSize" style="display: none;" value='@pageSize'>
         <input type="number" class="form-control" id="factoryId" name="factoryId" style="display: none;" value='@factoryId'>
         

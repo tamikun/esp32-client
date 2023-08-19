@@ -193,13 +193,8 @@ public partial class LineService : ILineService
         return result;
     }
 
-    public async Task<List<GetProcessAndMachineOfLineModel>> GetProcessAndMachineOfLine(int factoryId, bool iotMachine = false, bool normalMachine = false)
+    public async Task<List<GetProcessAndMachineOfLineModel>> GetProcessAndMachineOfLine(int factoryId)
     {
-        var machineQuery = _linq2Db.Machine.AsQueryable();
-
-        if (iotMachine) machineQuery = machineQuery.Where(s => s.IoTMachine == true);
-        if (normalMachine) machineQuery = machineQuery.Where(s => s.IoTMachine == false);
-
         var result = await (from line in _linq2Db.Line.Where(s => s.FactoryId == factoryId)
                             join station1 in _linq2Db.Station on line.Id equals station1.LineId into station2
                             from station in station2.DefaultIfEmpty()
@@ -207,7 +202,7 @@ public partial class LineService : ILineService
                             from product in product2.DefaultIfEmpty()
                             join process1 in _linq2Db.Process on station.ProcessId equals process1.Id into process2
                             from process in process2.DefaultIfEmpty()
-                            from machine in machineQuery.Where(s =>
+                            from machine in _linq2Db.Machine.Where(s =>
                                 s.FactoryId == factoryId
                                 && s.LineId == line.Id
                                 && s.StationId == station.Id
@@ -228,7 +223,7 @@ public partial class LineService : ILineService
                                 PatterDescription = process.Description,
                                 MachineName = string.IsNullOrEmpty(machine.MachineName) ? "{MachineName}" : machine.MachineName,
                                 MachineNo = string.IsNullOrEmpty(machine.MachineNo) ? "{MachineNo}" : machine.MachineNo,
-                                MachineIp = machine.IpAddress,
+                                IoTMachine = machine.IoTMachine,
                             }).OrderBy(s => s.LineId).ThenBy(s => s.StationId).ToListAsync();
 
         return result;
