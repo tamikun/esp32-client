@@ -23,4 +23,14 @@ public class OpenApiController : ControllerBase
     {
         return Ok(await _dataReportService.RandomCreate());
     }
+
+    [HttpGet]
+    [CustomAuthenticationFilter]
+    [ProducesResponseType(StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> GetProductNumber(int stationId)
+    {
+        await Task.CompletedTask;
+        return Ok(DateTime.UtcNow.Second);
+    }
 }

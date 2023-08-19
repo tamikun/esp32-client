@@ -110,9 +110,8 @@
                                 <div>@lineData[j].ProcessName</div>
                             </div>
                             <div class="line-info-detail-expanse">
-                                <ul>
-                                    @{ var dataReport = await _dataReportService.GetLastDataByStationId(lineData[j].StationId);}
-                                    <li>@dataReport.ProductNumber</li>
+                                <ul class="productNumber" id="@lineData[j].StationId">
+                                    <li></li>
                                 </ul>
                             </div>
                             <div class="line-info-detail-expanse">
@@ -208,6 +207,31 @@
         
     </style>
     <script>
-        setTimeout("location.reload();", 60000);
+
+        async function updateProductNumbers() {
+            var lineInfoDetailElements = document.querySelectorAll('.line-info-detail');
+
+            for (const detailElement of lineInfoDetailElements) {
+                var stationId = detailElement.querySelector('.productNumber').id;
+                var productNumberList = detailElement.querySelector(`.productNumber li`);
+
+                try {
+                    const response = await fetch(`/api/OpenApi/GetProductNumber/${stationId}`);
+                    console.log(response);
+                    const data = await response.json();
+                    console.log(data);
+                    productNumberList.textContent = data;
+                } catch (error) {
+                    console.error('Error fetching data:', error);
+                }
+            }
+        }
+
+        // Call the function initially
+        updateProductNumbers();
+
+        // Call the function every 5 seconds
+        setInterval(updateProductNumbers, 5000); // 5000 milliseconds = 5 seconds
+
     </script>
 }
