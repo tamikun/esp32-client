@@ -66,5 +66,6 @@ namespace esp32_client.Services
         public string AcceptedFile { get; set; }
         public int MinutesPerSession { get; set; }
         public bool DeleteOnUploadingEmptyFile { get; set; }
+        public int ReloadMonitoringMilliseconds { get; set; }
     }
 }
