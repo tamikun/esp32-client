@@ -64,5 +64,6 @@ namespace esp32_client.Services
         public string GetProductNumberFormat { get; set; }
         public string AcceptedFile { get; set; }
         public int MinutesPerSession { get; set; }
+        public bool DeleteOnUploadingEmptyFile { get; set; }
     }
 }

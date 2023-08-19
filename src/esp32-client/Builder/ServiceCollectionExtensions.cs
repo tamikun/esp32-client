@@ -53,7 +53,7 @@ namespace esp32_client.Builder
 
             builder.ConfigureLinqToDB();
 
-            builder.Services.AddHostedService<ScheduledTaskService>();
+            // builder.Services.AddHostedService<ScheduledTaskService>();
         }
 
         public static void ConfigureServices(this WebApplicationBuilder builder)

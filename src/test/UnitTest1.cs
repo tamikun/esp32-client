@@ -110,4 +110,12 @@ public class Tests
         Assert.That(stations.Count, Is.EqualTo(2));
     }
 
+    [Test]
+    [Order(3)]
+    public async Task ShouldGetSettings()
+    {
+        Assert.That(_setting.DeleteOnUploadingEmptyFile, Is.EqualTo(true));
+        await Task.CompletedTask;
+    }
+
 }

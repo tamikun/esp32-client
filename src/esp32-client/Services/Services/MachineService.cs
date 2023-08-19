@@ -272,10 +272,24 @@ public partial class MachineService : IMachineService
 
                 // Delete if File exists
                 var listCurrentFile = await GetDefaultListFile(s.IpAddress);
-                foreach (var file in listCurrentFile)
+                if (String.IsNullOrEmpty(s.PatternDirectory))
                 {
-                    var deleteFile = await DeleteFile(s.IpAddress, file.FileName);
-                    stepSuccess &= deleteFile.Success;
+                    if (_settings.DeleteOnUploadingEmptyFile)
+                    {
+                        foreach (var file in listCurrentFile)
+                        {
+                            var deleteFile = await DeleteFile(s.IpAddress, file.FileName);
+                            stepSuccess &= deleteFile.Success;
+                        }
+                    }
+                }
+                else
+                {
+                    foreach (var file in listCurrentFile)
+                    {
+                        var deleteFile = await DeleteFile(s.IpAddress, file.FileName);
+                        stepSuccess &= deleteFile.Success;
+                    }
                 }
 
                 if (!stepSuccess)

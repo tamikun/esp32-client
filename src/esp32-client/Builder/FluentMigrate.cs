@@ -141,6 +141,7 @@ public class AddTable : Migration
                 .WithColumn(nameof(Setting.Id)).AsInt32().PrimaryKey().Identity()
                 .WithColumn(nameof(Setting.Name)).AsString().NotNullable()
                 .WithColumn(nameof(Setting.Value)).AsString().NotNullable()
+                .WithColumn(nameof(Setting.Description)).AsString(100).Nullable()
             ;
         }
 
@@ -253,22 +254,23 @@ public class AddInitData : AutoReversingMigration
             new Setting{Name = "MachineFormat", Value = "Machine {0}"},
             new Setting{Name = "MinCharMachineFormat", Value = "3"},
             new Setting{Name = "GetApiProductNumberTimeOut", Value = "5000"},
-             new Setting{Name = "AcceptedFile", Value = ".VDT,.PMD"},
+            new Setting{Name = "AcceptedFile", Value = ".VDT,.PMD"},
+            new Setting{Name = "MinutesPerSession", Value = "60"},
         };
 
         _linq2Db.BulkInsert(settings).Wait();
 
-        var scheduleTask = new List<ScheduleTask>{
-            new ScheduleTask{
-                Name = "Save product data",
-                Seconds = 120,
-                Method = $"{nameof(ScheduleTaskService.SaveProductData)}",
-                Enabled = true,
-            },
+        // var scheduleTask = new List<ScheduleTask>{
+        //     new ScheduleTask{
+        //         Name = "Save product data",
+        //         Seconds = 120,
+        //         Method = $"{nameof(ScheduleTaskService.SaveProductData)}",
+        //         Enabled = true,
+        //     },
 
-        };
+        // };
 
-        _linq2Db.BulkInsert(scheduleTask).Wait();
+        // _linq2Db.BulkInsert(scheduleTask).Wait();
     }
 }
 
@@ -283,8 +285,7 @@ public class AddTimeOutSetting : AutoReversingMigration
     public override void Up()
     {
         var settings = new List<Setting>{
-            new Setting{Name = "MinutesPerSession", Value = "60"},
-            
+            new Setting{Name = "DeleteOnUploadingEmptyFile", Value = "true"},
         };
 
         _linq2Db.BulkInsert(settings).Wait();
