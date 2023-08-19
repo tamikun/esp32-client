@@ -267,8 +267,14 @@ input[type="checkbox"] {
   cursor: pointer;
 }
 
+.pagination-container{
+  display: flex;
+  align-items: center;
+}
+
 .pagination{
-  justify-content: flex-end;
+  position: absolute;
+  right: 0;
 }
 
 .pagination a {

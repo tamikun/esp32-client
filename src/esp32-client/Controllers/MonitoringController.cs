@@ -18,8 +18,12 @@ public class MonitoringController : BaseController
     }
 
 
-    public async Task<IActionResult> Index(int factoryId = 0, int pageIndex = 0, int pageSize = 5)
+    public async Task<IActionResult> Index(int factoryId = 0, int pageIndex = 0, int pageSize = 5, bool iotMachine = true, bool normalMachine = true)
     {
+        var filterModel = new MonitoringFilterModel();
+        filterModel.IoTMachine = iotMachine;
+        filterModel.NormalMachine = normalMachine;
+
         if (factoryId == 0)
         {
             var getFirst = await _linq2db.Factory.FirstOrDefaultAsync();
@@ -30,7 +34,13 @@ public class MonitoringController : BaseController
         ViewBag.PageIndex = pageIndex;
         ViewBag.PageSize = pageSize;
 
-        return View();
+        return View(filterModel);
+    }
+
+    public class MonitoringFilterModel
+    {
+        public bool IoTMachine { get; set; }
+        public bool NormalMachine { get; set; }
     }
 
 }

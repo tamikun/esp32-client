@@ -1,3 +1,4 @@
+@model esp32_client.Controllers.MonitoringController.MonitoringFilterModel
 @{
     ViewData["Title"] = "Monitoring";
 
@@ -6,7 +7,10 @@
     int pageIndex = ViewBag.PageIndex;
     int pageSize = ViewBag.PageSize;
 
-    var data = await _lineService.GetProcessAndMachineOfLine(factoryId);
+    bool iotMachine = ViewBag.IoTMachine;
+    bool normalMachine = ViewBag.NormalMachine;
+
+    var data = await _lineService.GetProcessAndMachineOfLine(factoryId, iotMachine, normalMachine);
 
     var lines = data.DistinctBy(s => s.LineId).Where(s => s.LineId != 0).ToList().ToPagedListModel(pageIndex, pageSize);
 
@@ -14,70 +18,91 @@
 
     var listMachine = await _machineService.GetAll();
 
-    var listSelectPageSize = new List<int>{1,2,3,5,10,15,20};
+    var listSelectPageSize = new List<int>{1,2,3,5,10};
 
 }
 <h4 class="setting-header" style="text-align: center;">Monitoring screen</h4>
 
-<div class="m-3">
-    @using (Html.BeginForm("Index", "Monitoring", FormMethod.Post, new { @enctype = "multipart/form-data", @id = "searchByFactoryId" }))
-    {
-        <label for="factoryId" class="form-label">Factory name:</label>
-        <select data-val="true" data-val-required="The Number field is required." id="factoryId" name="factoryId" onchange="submitById('searchByFactoryId')">
+<div class="pagination-container">
+    <div class="m-3">
+        @using (Html.BeginForm("Index", "Monitoring", FormMethod.Post, new { @enctype = "multipart/form-data", @id = "searchByFactoryId" }))
+        {
+            <label for="factoryId" class="form-label">Factory name:</label>
+            <select data-val="true" data-val-required="The Number field is required." id="factoryId" name="factoryId" onchange="submitById('searchByFactoryId')">
 
-            @foreach (var item in factories)
-            {
-                @if (factoryId == item.Id)
+                @foreach (var item in factories)
                 {
-                    <option value='@item.Id' selected="selected">@item.FactoryName</option>
+                    @if (factoryId == item.Id)
+                    {
+                        <option value='@item.Id' selected="selected">@item.FactoryName</option>
+                    }
+                    else
+                    {
+                        <option value='@item.Id'>@item.FactoryName</option>
+                    }
                 }
-                else
+            </select>
+
+            <label for="factoryId" class="form-label">PageSize:</label>
+            <select data-val="true" data-val-required="The Number field is required." id="pageSize" name="pageSize" onchange="submitById('searchByFactoryId')">
+
+                @foreach (var item in listSelectPageSize)
                 {
-                    <option value='@item.Id'>@item.FactoryName</option>
+                    @if (pageSize == item)
+                    {
+                        <option value='@item' selected="selected">@item</option>
+                    }
+                    else
+                    {
+                        <option value='@item'>@item</option>
+                    }
                 }
-            }
-        </select>
-
-        <label for="factoryId" class="form-label">PageSize:</label>
-        <select data-val="true" data-val-required="The Number field is required." id="pageSize" name="pageSize" onchange="submitById('searchByFactoryId')">
-
-            @foreach (var item in listSelectPageSize)
-            {
-                @if (pageSize == item)
-                {
-                    <option value='@item' selected="selected">@item</option>
-                }
-                else
-                {
-                    <option value='@item'>@item</option>
-                }
-            }
-        </select>
-    }
-</div>
-
-<div class="pagination">
-    @if(lines.HasPreviousPage)
-    {
-        int previousPage= pageIndex - 1;
-        <a href='@Url.Action("Index", "Monitoring", new {factoryId =  @factoryId, pageIndex = @previousPage, pageSize = @pageSize})'>&laquo;</a>
-    }
-
-    @for(int i = 0; i < lines.TotalPage; i++){
-        int pageDisplay = i + 1;
-        if(i == pageIndex){
-            <a class="active" href="">@pageDisplay</a>
-        }else{
-            <a href='@Url.Action("Index", "Monitoring", new {factoryId =  @factoryId, pageIndex = @i, pageSize = @pageSize})'>@pageDisplay</a>
+            </select>
+            @Html.HiddenFor(s => s.IoTMachine);
+            @Html.HiddenFor(s => s.NormalMachine);
         }
-    }
+    </div>
 
-    @if(lines.HasNextPage)
-    {
-        int nextPage = pageIndex + 1;
-        <a href='@Url.Action("Index", "Monitoring", new {factoryId =  @factoryId, pageIndex = @nextPage, pageSize = @pageSize})'>&raquo;</a>
-    }
+    <div class="pagination m-3">
+        @if(lines.HasPreviousPage)
+        {
+            int previousPage= pageIndex - 1;
+            <a href='@Url.Action("Index", "Monitoring", new {factoryId =  @factoryId, pageIndex = @previousPage, pageSize = @pageSize, iotMachine = @iotMachine, normalMachine = @normalMachine})'>&laquo;</a>
+        }
+
+        @for(int i = 0; i < lines.TotalPage; i++){
+            int pageDisplay = i + 1;
+            if(i == pageIndex){
+                <a class="active" href="">@pageDisplay</a>
+            }else{
+                <a href='@Url.Action("Index", "Monitoring", new {factoryId =  @factoryId, pageIndex = @i, pageSize = @pageSize, iotMachine = @iotMachine, normalMachine = @normalMachine})'>@pageDisplay</a>
+            }
+        }
+
+        @if(lines.HasNextPage)
+        {
+            int nextPage = pageIndex + 1;
+            <a href='@Url.Action("Index", "Monitoring", new {factoryId =  @factoryId, pageIndex = @nextPage, pageSize = @pageSize, iotMachine = @iotMachine, normalMachine = @normalMachine})'>&raquo;</a>
+        }
+    </div>
 </div>
+
+@using (Html.BeginForm("Index", "Monitoring", FormMethod.Get, new
+{
+    @enctype = "multipart/form-data",
+    @id = "filter"
+}))
+{
+     <div class="m-3">
+        <label for="iotMachine" class="form-label">IoT Machine</label>
+        @Html.CheckBoxFor(s => s.IoTMachine)
+        <label for="normalMachine" class="form-label">Normal Machine</label>
+        @Html.CheckBoxFor(s => s.NormalMachine)
+        <input type="number" class="form-control" id="pageSize" name="pageSize" style="display: none;" value='@pageSize'>
+        <input type="number" class="form-control" id="factoryId" name="factoryId" style="display: none;" value='@factoryId'>
+        
+    </div>
+}
 
 @if (lines.Data.Count > 0)
 {

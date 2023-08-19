@@ -193,8 +193,13 @@ public partial class LineService : ILineService
         return result;
     }
 
-    public async Task<List<GetProcessAndMachineOfLineModel>> GetProcessAndMachineOfLine(int factoryId)
+    public async Task<List<GetProcessAndMachineOfLineModel>> GetProcessAndMachineOfLine(int factoryId, bool iotMachine = true, bool normalMachine = true)
     {
+        var machineQuery = _linq2Db.Machine.AsQueryable();
+
+        if (!iotMachine) machineQuery = machineQuery.Where(s => s.IoTMachine == false);
+        if (!normalMachine) machineQuery = machineQuery.Where(s => s.IoTMachine == true);
+
         var result = await (from line in _linq2Db.Line.Where(s => s.FactoryId == factoryId)
                             join station1 in _linq2Db.Station on line.Id equals station1.LineId into station2
                             from station in station2.DefaultIfEmpty()

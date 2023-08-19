@@ -68,5 +68,6 @@ namespace esp32_client.Services
         public bool DeleteOnUploadingEmptyFile { get; set; }
         public int ReloadMonitoringMilliseconds { get; set; }
         public int ReloadMonitoringBatchSize { get; set; }
+        public bool EnableLog { get; set; }
     }
 }

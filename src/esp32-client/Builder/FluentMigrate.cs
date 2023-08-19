@@ -87,6 +87,7 @@ public class AddTable : Migration
                 .WithColumn(nameof(Machine.LineId)).AsInt32()
                 .WithColumn(nameof(Machine.StationId)).AsInt32()
                 .WithColumn(nameof(Machine.COPartNo)).AsString()
+                .WithColumn(nameof(Machine.IoTMachine)).AsBoolean().NotNullable()
             ;
 
             Create.UniqueConstraint("UC_Machine").OnTable(nameof(Machine)).Columns(nameof(Machine.FactoryId), nameof(Machine.MachineNo));
@@ -142,6 +143,7 @@ public class AddTable : Migration
                 .WithColumn(nameof(Setting.Name)).AsString().NotNullable()
                 .WithColumn(nameof(Setting.Value)).AsString().NotNullable()
                 .WithColumn(nameof(Setting.Description)).AsString(100).Nullable()
+                .WithColumn(nameof(Setting.EnableEditing)).AsBoolean().NotNullable()
             ;
         }
 
@@ -258,6 +260,7 @@ public class AddInitData : AutoReversingMigration
             new Setting{Name = "MinutesPerSession", Value = "60"},
             new Setting{Name = "DeleteOnUploadingEmptyFile", Value = "true"},
             new Setting{Name = "ReloadMonitoringMilliseconds", Value = "5000"},
+            new Setting{Name = "ReloadMonitoringBatchSize", Value = "20"},
         };
 
         _linq2Db.BulkInsert(settings).Wait();
@@ -287,7 +290,7 @@ public class AddTimeOutSetting : AutoReversingMigration
     public override void Up()
     {
         var settings = new List<Setting>{
-            new Setting{Name = "ReloadMonitoringBatchSize", Value = "20"},
+            new Setting{Name = "EnableLog", Value = "false"},
         };
 
         _linq2Db.BulkInsert(settings).Wait();
