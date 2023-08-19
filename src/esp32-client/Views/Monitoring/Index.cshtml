@@ -92,9 +92,9 @@
 {
      <div class="m-3">
         <label for="iotMachine" class="form-label">IoT Machine</label>
-        @Html.CheckBoxFor(s => s.IoTMachine)
+        @Html.CheckBoxFor(s => s.IoTMachine, new {@onchange="submitById('filter')"})
         <label for="normalMachine" class="form-label">Normal Machine</label>
-        @Html.CheckBoxFor(s => s.NormalMachine)
+        @Html.CheckBoxFor(s => s.NormalMachine, new {@onchange="submitById('filter')"})
         <input type="number" class="form-control" id="pageSize" name="pageSize" style="display: none;" value='@pageSize'>
         <input type="number" class="form-control" id="factoryId" name="factoryId" style="display: none;" value='@factoryId'>
         
