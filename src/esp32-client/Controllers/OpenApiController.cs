@@ -31,7 +31,11 @@ public class OpenApiController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> GetProductNumber(int? id)
     {
+        var response = new
+        {
+            result = DateTime.UtcNow.Second
+        };
         await Task.CompletedTask;
-        return Ok(DateTime.UtcNow.Second);
+        return Ok(response);
     }
 }
