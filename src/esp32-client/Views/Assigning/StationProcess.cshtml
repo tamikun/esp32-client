@@ -61,8 +61,8 @@
             </th>
         </tr>
         <tr>
-            <th>Station name</th>
             <th>Station No</th>
+            <th>Station name</th>
             <th>Process name</th>
             <th>Process No</th>
         </tr>
@@ -72,8 +72,8 @@
     @if(!edit){
         @for(int i = 0; i < stationData.Count ; i++){
             <tr>
-                <td>@stationData[i].StationName</td>
                 <td>@stationData[i].StationNo</td>
+                <td>@stationData[i].StationName</td>
                 <td>@stationData[i].ProcessName</td>
                 <td>@stationData[i].ProcessNo</td>
             </tr>
@@ -98,8 +98,8 @@
                 strName = $"ListStationProcess[{i}].ProcessId";
                 
                 <tr>
-                    <td>@stationData[i].StationName</td>
                     <td>@stationData[i].StationNo</td>
+                    <td>@stationData[i].StationName</td>
                     <td>
                         <select data-val="true" data-val-required="The Number field is required." id="@strId" name="@strName">
                             @if (stationData[i].ProcessId == 0){

@@ -98,8 +98,8 @@
             @foreach (var item in stationData)
             {
                 <tr>
-                    <td>@item.StationName</td>
                     <td>@item.StationNo</td>
+                    <td>@item.StationName</td>
                 </tr>
             }
         }
@@ -123,9 +123,9 @@
                     strName = $"ListStationUpdate[{i}].StationName";
 
                     <tr>
+                        <td>@stationData[i].StationNo</td>
                         <td><input type="text" class="form-control" id="@strId" name="@strName" value='@stationData[i].StationName'>
                         </td>
-                        <td>@stationData[i].StationNo</td>
                     </tr>
                 }
 

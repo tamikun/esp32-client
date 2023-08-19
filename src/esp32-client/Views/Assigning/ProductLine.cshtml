@@ -77,8 +77,8 @@
     </thead>
     <thead>
         <tr>
-            <th>Line name</th>
             <th>Line No</th>
+            <th>Line name</th>
             <th>ProductName</th>
         </tr>
 
@@ -91,10 +91,10 @@
                 <tr>
                     <td>
                         <a href='@Url.Action("StationProcess", "Assigning", new {factoryId =  @factoryId, lineId = @item.LineId})'>
-                            <strong>@item.LineName</strong>
+                            <strong>@item.LineNo</strong>
                         </a>
                     </td>
-                    <td>@item.LineNo</td>
+                    <td>@item.LineName</td>
                     <td>@item.ProductName</td>
                 </tr>
             }
@@ -117,8 +117,8 @@
                     strName = $"ListProductLine[{i}].ProductId";
 
                     <tr>
-                        <td>@lineData[i].LineName</td>
                         <td>@lineData[i].LineNo</td>
+                        <td>@lineData[i].LineName</td>
                         <td>
                             <select data-val="true" data-val-required="The Number field is required." id="@strId" name="@strName">
                                

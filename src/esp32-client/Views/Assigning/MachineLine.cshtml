@@ -120,8 +120,8 @@
     </thead>
     <thead>
         <tr>
-            <th>Station name</th>
             <th>Station No</th>
+            <th>Station name</th>
             <th>Machine name</th>
         </tr>
 
@@ -134,8 +134,8 @@
                 var machine = machineData.Where(s => s.StationId == item.Id).FirstOrDefault();
 
                 <tr>
-                    <td>@item.StationName</td>
                     <td>@item.StationNo</td>
+                    <td>@item.StationName</td>
                     <td>@machine?.MachineName</td>
                 </tr>
             }
@@ -162,8 +162,8 @@
                     strName = $"ListAssignMachine[{i}].MachineId";
 
                     <tr>
-                        <td>@stationData[i].StationName</td>
                         <td>@stationData[i].StationNo</td>
+                        <td>@stationData[i].StationName</td>
                         <td>
                             <select data-val="true" data-val-required="The Number field is required." id="@strId" name="@strName">
 

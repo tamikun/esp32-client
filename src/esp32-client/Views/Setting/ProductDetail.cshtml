@@ -94,9 +94,9 @@
             <tr>
                 <th>Process name</th>
                 <th>Process No</th>
-                <th>CO attachment</th>
-                <th>Operation data</th>
                 <th>Pattern No</th>
+                <th>Operation data</th>
+                <th>CO attachment</th>
                 <th>Description</th>
             </tr>
         }
@@ -105,9 +105,9 @@
             <tr>
                 <th>Process name</th>
                 <th>Process No</th>
-                <th>CO attachment</th>
-                <th>Operation data</th>
                 <th>Pattern No</th>
+                <th>Operation data</th>
+                <th>CO attachment</th>
                 <th>Change pattern</th>
                 <th>Description</th>
             </tr>
@@ -121,14 +121,14 @@
                 <tr>
                     <td>@item.ProcessName</td>
                     <td>@item.ProcessNo</td>
-                    <td>@item.COAttachment</td>
-                    <td>@item.OperationData</td>
                     <td>
                         <a href='@Url.Action("DownloadFile", "Setting", new {path =  @item.PatternDirectory})'
                             class="download-file">
                             <strong>@item.PatternNo</strong>
                         </a>
                     </td>
+                    <td>@item.OperationData</td>
+                    <td>@item.COAttachment</td>
                     <td>@item.Description</td>
                 </tr>
             }
@@ -158,9 +158,9 @@
                         <td><input type="text" class="form-control" id="@strId" name="@strName" value='@processData[i].ProcessName'>
                         </td>
                         <td>@processData[i].ProcessNo</td>
-                        <td>@processData[i].COAttachment</td>
-                        <td>@processData[i].OperationData</td>
                         <td>@processData[i].PatternNo</td>
+                        <td>@processData[i].OperationData</td>
+                        <td>@processData[i].COAttachment</td>
 
                         @{
                             strId = $"ListProcessUpdate_{i}__FileData";

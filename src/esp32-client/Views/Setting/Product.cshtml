@@ -68,8 +68,8 @@
     </thead>
     <thead>
         <tr>
-            <th>Product name</th>
             <th>Product No</th>
+            <th>Product name</th>
             <th>Number of process</th>
             <th></th>
         </tr>
@@ -79,9 +79,9 @@
         {
             <tr>
                 <td><a href='@Url.Action("ProductDetail", "Setting", new {factoryId =  @item.FactoryId, productId = @item.ProductId})'>
-                            <strong>@item.ProductName</strong>
+                            <strong>@item.ProductNo</strong>
                         </a></td>
-                <td>@item.ProductNo</td>
+                <td>@item.ProductName</td>
                 <td>@item.NumberOfProcess</td>
                 <td>
                     <div style="display: flex; justify-content: space-around; align-items: center;">
