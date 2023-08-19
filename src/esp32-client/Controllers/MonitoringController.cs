@@ -18,7 +18,7 @@ public class MonitoringController : BaseController
     }
 
 
-    public async Task<IActionResult> Index(int factoryId = 0, int pageIndex = 0, int pageSize = 5, bool iotMachine = true, bool normalMachine = true)
+    public async Task<IActionResult> Index(int factoryId = 0, int pageIndex = 0, int pageSize = 5, bool iotMachine = false, bool normalMachine = false)
     {
         var filterModel = new MonitoringFilterModel();
         filterModel.IoTMachine = iotMachine;
@@ -41,6 +41,7 @@ public class MonitoringController : BaseController
     {
         public bool IoTMachine { get; set; }
         public bool NormalMachine { get; set; }
+        public bool EmptyMachine { get; set; }
     }
 
 }
