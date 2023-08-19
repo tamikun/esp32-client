@@ -10,84 +10,20 @@
 </head>
 
 <body>
-  <h4 class="setting-header">
-    <a href="">Product setting</a>
-    <svg class=" a-s-fa-Ha-pa c-qd" width="24px" height="24px" viewBox="0 0 24 24" focusable="false" fill="currentColor"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"></path></svg>
-    Process
-</h4>
-  <table class="normal-table table-hover">
-    <thead>
-        <tr>
-            <th colspan="100%">
-                <div style="display: flex;justify-content: space-between;">
-                    <div>
-                        Line table
-                    </div>
-                    <div style="text-align: right;">
-                        <button type="button" class="btn btn-info btn-sm" style="color: white;"
-                            onclick="openPopup('addNewLine')">
-                            <i class="fa fa-circle-plus" style="color: white;"></i>
-                            Add new line
-                        </button>
-                    </div>
-                </div>
-            </th>
-        </tr>
-        <tr>
-            <th>
-                Factory:
-            </th>
-            <th colspan="100%">
-<form action="/Setting/Line" enctype="multipart/form-data" id="searchByFactoryId" method="get">                    <select data-val="true" data-val-required="The Number field is required." id="factoryId"
-                        name="factoryId" onchange="submitById('searchByFactoryId')">
-
-
-                                <option value='1' selected="selected">Juki</option>
-                    </select>
-                    <button type="submit" style="border: none; display: none;">
-                        <i class="fa fa-magnifying-glass" style="cursor: pointer;"></i> Search</button>
-</form>            </th>
-        </tr>
-    </thead>
-    <thead>
-        <tr>
-            <th>Line name</th>
-            <th>Line No</th>
-            <th>Number of station</th>
-            <th>Product name</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-            <tr>
-                <td><a
-                        href='/Setting/LineDetail?factoryId=1&amp;lineId=1'>
-                        <strong>H&#xE0;ng 1</strong>
-                    </a></td>
-                <td>Line 001</td>
-                <td>3</td>
-                <td>Product1</td>
-                <td>
-                    <div style="display: flex; justify-content: space-around; align-items: center;">
-                        <div id="update">
-                            <button type="button" class="btn btn-info btn-sm" style="color: white;"
-                                onclick="openUpdatePopup('updateLine', {&quot;FactoryId&quot;:1,&quot;FactoryName&quot;:&quot;Juki&quot;,&quot;LineId&quot;:1,&quot;LineName&quot;:&quot;H&#xE0;ng 1&quot;,&quot;LineNo&quot;:&quot;Line 001&quot;,&quot;ProductId&quot;:1,&quot;ProductName&quot;:&quot;Product1&quot;,&quot;NumberOfStation&quot;:3})">
-                                <i class="fa fa-light fa-pen-to-square" style="color: rgb(0, 73, 128);"></i>
-                                Edit
-                            </button>
-                        </div>
-                        <div id="delete">
-                            <button type="button" class="btn btn-danger btn-sm" style="color: white;"
-                                onclick="openDeletePopup('deleteLine', '1', 'H&#xE0;ng 1')">
-                                <i class="fa fa-light fa-trash" style="color: white;"></i>
-                                Delete
-                            </button>
-                        </div>
-                    </div>
-                </td>
-            </tr>
-    </tbody>
-  </table>
+    <form action="/action_page.php">
+        <fieldset>
+         <legend>Filter:</legend>
+         <label for="fname">First name:</label>
+         <input type="text" id="fname" name="fname"><br><br>
+         <label for="lname">Last name:</label>
+         <input type="text" id="lname" name="lname"><br><br>
+         <label for="email">Email:</label>
+         <input type="email" id="email" name="email"><br><br>
+         <label for="birthday">Birthday:</label>
+         <input type="date" id="birthday" name="birthday"><br><br>
+         <input type="submit" value="Submit">
+        </fieldset>
+    </form>       
 
 </body>
 

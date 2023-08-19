@@ -307,6 +307,13 @@ public class AddColunm : AutoReversingMigration
                 .AddColumn(nameof(Machine.IoTMachine)).AsBoolean().NotNullable()
             ;
         }
+        if (!Schema.Table(nameof(Setting)).Column(nameof(Setting.EnableEditing)).Exists())
+        {
+            Alter
+            .Table(nameof(Setting))
+                .AddColumn(nameof(Setting.EnableEditing)).AsBoolean().NotNullable()
+            ;
+        }
     }
 }
 
