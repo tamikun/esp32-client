@@ -154,8 +154,8 @@ public partial class LineService : ILineService
         // Update station data
         foreach (var item in model.ListStationProcess)
         {
-               await _linq2Db.Station.Where(s => s.Id == item.StationId)
-                       .Set(s => s.ProcessId, item.ProcessId).UpdateQuery();
+            await _linq2Db.Station.Where(s => s.Id == item.StationId)
+                    .Set(s => s.ProcessId, item.ProcessId).UpdateQuery();
         }
 
         // Get list machine that is in StationId
@@ -210,19 +210,19 @@ public partial class LineService : ILineService
                             select new GetProcessAndMachineOfLineModel
                             {
                                 LineId = line.Id,
-                                LineName = string.IsNullOrEmpty(line.LineName) ? "LineName: {Empty}" : line.LineName,
+                                LineName = string.IsNullOrEmpty(line.LineName) ? "{LineName}" : line.LineName,
                                 LineNo = line.LineNo,
                                 StationId = station.Id,
-                                StationName = string.IsNullOrEmpty(station.StationName) ? "StationName: {Empty}" : station.StationName,
-                                StationNo = string.IsNullOrEmpty(station.StationNo) ? "StationNo: {Empty}" : station.StationNo,
-                                ProductName = string.IsNullOrEmpty(product.ProductName) ? "ProductName: {Empty}" : product.ProductName,
-                                ProductNo = string.IsNullOrEmpty(product.ProductNo) ? "ProductNo: {Empty}" : product.ProductNo,
-                                ProcessName = string.IsNullOrEmpty(process.ProcessName) ? "ProcessName: {Empty}" : process.ProcessName,
-                                ProcessNo = string.IsNullOrEmpty(process.ProcessNo) ? "ProcessNo: {Empty}" : process.ProcessNo,
-                                PatternNo = string.IsNullOrEmpty(process.PatternNo) ? "PatternNo: {Empty}" : process.PatternNo,
+                                StationName = string.IsNullOrEmpty(station.StationName) ? "{StationName}" : station.StationName,
+                                StationNo = string.IsNullOrEmpty(station.StationNo) ? "{StationNo}" : station.StationNo,
+                                ProductName = string.IsNullOrEmpty(product.ProductName) ? "{ProductName}" : product.ProductName,
+                                ProductNo = string.IsNullOrEmpty(product.ProductNo) ? "{ProductNo}" : product.ProductNo,
+                                ProcessName = string.IsNullOrEmpty(process.ProcessName) ? "{ProcessName}" : process.ProcessName,
+                                ProcessNo = string.IsNullOrEmpty(process.ProcessNo) ? "{ProcessNo}" : process.ProcessNo,
+                                PatternNo = string.IsNullOrEmpty(process.PatternNo) ? "{PatternNo}" : process.PatternNo,
                                 PatterDescription = process.Description,
-                                MachineName = string.IsNullOrEmpty(machine.MachineName) ? "MachineName: {Empty}" : machine.MachineName,
-                                MachineNo = string.IsNullOrEmpty(machine.MachineNo) ? "MachineNo: {Empty}" : machine.MachineNo,
+                                MachineName = string.IsNullOrEmpty(machine.MachineName) ? "{MachineName}" : machine.MachineName,
+                                MachineNo = string.IsNullOrEmpty(machine.MachineNo) ? "{MachineNo}" : machine.MachineNo,
                                 MachineIp = machine.IpAddress,
                             }).OrderBy(s => s.LineId).ThenBy(s => s.StationId).ToListAsync();
 

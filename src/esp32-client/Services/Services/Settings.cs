@@ -13,12 +13,13 @@ namespace esp32_client.Services
         public Settings(LinqToDb linqToDb)
         {
             _linqToDb = linqToDb;
+            Reload();
+        }
+        public void Reload()
+        {
             var listSetting = _linqToDb.Setting.ToList();
-
             var settingType = this.GetType();
-
             var propertyInfos = settingType.GetProperties();
-
             foreach (var property in propertyInfos)
             {
                 PropertyInfo? pinfo = settingType.GetProperty(property.Name);
