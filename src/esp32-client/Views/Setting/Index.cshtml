@@ -6,7 +6,7 @@
 <p>Current count: @currentCount</p>
 
 <p>
-  <button onclick="@IncrementCount">Click me</button>
+  <button onclick="@(() => IncrementCount())">Click me</button>
 </p>
 
 @functions {
