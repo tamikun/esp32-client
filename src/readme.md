@@ -23,5 +23,4 @@ Or
   - [ ] Thêm chức năng filter cho trang monitoring (SimpleSearch, AdvancedSearch)
   - [x] Render riêng các số liệu sản xuất
   - [ ] Thêm setting screen
-  - [ ] Get Client IP
   - [ ] Thêm chức năng quản lí User Session

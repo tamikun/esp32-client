@@ -13,13 +13,13 @@
     var listSelectPageSize = new List<int>{1,2,3,5,10,20};
 } 
 
-<h4 class="setting-header">System setting</h4>
+<div class="pagination-container m-1">
+    <h4 class="setting-header">System setting</h4>
 
-<div class="pagination-container">
     <div class="pagination m-3">
         @using (Html.BeginForm("Setting", "System", FormMethod.Post, new { @enctype = "multipart/form-data", @id = "changePageSize" }))
         {
-            <label for="factoryId" class="form-label">PageSize:</label>
+            <label for="pageSize">PageSize:</label>
             <select data-val="true" id="pageSize" name="pageSize" onchange="submitById('changePageSize')">
 
                 @foreach (var item in listSelectPageSize)

@@ -30,14 +30,17 @@ public class SystemController : BaseController
         ViewBag.PageSize = pageSize;
         ViewBag.Edit = edit;
         await Task.CompletedTask;
-        return View();
+        return View(new List<Setting>());
     }
 
     [HttpPost]
-    public async Task<IActionResult> Setting(List<Setting> model)
+    public async Task<IActionResult> Setting(List<Setting> model, int pageIndex = 0, int pageSize = 5)
     {
         await _settingService.UpdateListSetting(model);
-        return View(new { pageIndex = ViewBag.PageIndex, pageSize = ViewBag.PageSize });
+        ViewBag.PageIndex = pageIndex;
+        ViewBag.PageSize = pageSize;
+        ViewBag.Edit = false;
+        return View(new List<Setting>());
     }
 
 

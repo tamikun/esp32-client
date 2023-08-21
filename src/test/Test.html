@@ -7,126 +7,32 @@
     <link rel="stylesheet" href="../../../esp32-client/wwwroot/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="../../../esp32-client/wwwroot/css/fontawesome/css/all.css">
     <script src="../../../esp32-client/wwwroot/js/site.js" asp-append-version="true"></script>
-    <script>
-        function openInNewTab(url) {
-            window.open(url, '_blank').focus();
-        }
-    </script>
-    <style>
-        .arrow {
-            font-size: 20px;
-            line-height: 1;
-            margin-inline: 10px;
-        }
-        .line-container{
-            display: flex;
-            margin-block: 30px;
-            margin-inline: 10px;
-        }
-        .line-info-body{
-            display: flex;
-        }
-        .line-info-header{
-            margin-right: 50px;
-        }
-
-        .line-info-header-main, .line-info-header-expanse{
-            width: 150px;
-        }
-
-        .line-info-header-main{
-            
-            border: 1px solid rgb(0, 0, 0);
-            border-radius: 0px;
-            height: 50%;
-            text-align: center;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .line-info-header-expanse{
-            border: 1px solid rgb(0, 0, 0);
-            height: 50%;
-        }
-        .line-info-detail-main{
-        
-            border: 1px solid rgb(0, 0, 0);
-            border-radius: 0px;
-        }
-        .line-info-detail-expanse{
-            border: 1px solid rgb(0, 0, 0);
-        }
-        .line-container ul{
-            margin-block-start: 0em;
-            margin-block-end: 0em;
-            margin-inline-start: 0px;
-            margin-inline-end: 0px;
-            padding-inline-start: 20px;
-        }
-
-        .line-container:nth-child(3n+1) .line-info-header-main {
-            background-color: rgb(192, 214, 155);
-        }
-        .line-container:nth-child(3n+1) .line-info-detail-main {
-            background-color: rgb(235, 241, 222)
-        }
-        .line-container:nth-child(3n+2) .line-info-header-main {
-            background-color: rgb(149, 179, 215);
-        }
-        .line-container:nth-child(3n+2) .line-info-detail-main {
-            background-color: rgb(198, 217, 241);
-        }
-        .line-container:nth-child(3n) .line-info-header-main {
-            background-color: rgb(179, 162, 199);
-        }
-        .line-container:nth-child(3n) .line-info-detail-main {
-            background-color: rgb(204, 193, 218);
-        }
-        .line-container{
-            cursor: pointer;
-        }
-        .line-container:hover{
-            background-color: rgb(233, 233, 233);
-        }
-    </style>
 </head>
 
 <body>
+    
+    <div class="pagination-container m-1">
+        <h4 class="setting-header" style="text-align: center;">Monitoring screen</h4>
+    
+        <div class="pagination m-3">
+                <form action="/Monitoring" enctype="multipart/form-data" id="searchByFactoryId" method="post">            
+                    <label for="factoryId">Factory name:</label>
+                    <select data-val="true" data-val-required="The Number field is required." id="factoryId" name="factoryId" onchange="submitById('searchByFactoryId')">
+                        <option value="1" selected="selected">Juki</option>
+                    </select>
+                    <label for="factoryId">PageSize:</label>
+                    <select data-val="true" data-val-required="The Number field is required." id="pageSize" name="pageSize" onchange="submitById('searchByFactoryId')">
+            
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="5" selected="selected">5</option>
+                        <option value="10">10</option>
+                    </select>
+                </form>
 
-    <div class="line-container" onclick="openInNewTab('https://google.com.vn')">
-        <div class="line-info-header">
-            <div class="line-info-header-main">
-                <div>
-                    <div><strong>@Model[0].LineNo</strong></div>
-                    <div>@Model[0].ProductName</div>
-                </div>
-            </div>
-            <div class="line-info-header-expanse">
-                <ul>
-                    <li>@Model[0].LineName</li>
-                    <li>@Model[0].ProductNo</li>
-                </ul>
-            </div>
-        </div>
-        <div class="line-info-body">
-            <div class="line-info-detail">
-                <div class="line-info-detail-main">
-                    <div>@Model[j].StationNo</div>
-                    <div>@Model[j].ProcessName</div>
-                </div>
-                <div class="line-info-detail-expanse">
-                    <ul class="productNumber" id="@Model[j].StationId">
-                        <li></li>
-                    </ul>
-                </div>
-                <div class="line-info-detail-expanse">
-                    <ul>
-                        <li>@Model[j].MachineName</li>
-                        <li>@Model[j].ProcessNo</li>
-                    </ul>
-                </div>
-            </div>
-
+            <a class="active" href="#">1</a>
+    
         </div>
     </div>
 </body>
