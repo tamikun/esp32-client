@@ -1,0 +1,126 @@
+@model List<Setting>
+@{
+    ViewData["Title"] = "System setting";
+    
+    int pageIndex = ViewBag.PageIndex;
+    int pageSize = ViewBag.PageSize;
+    bool edit = ViewBag.Edit;
+
+    var settingData = await _settingService.GetAll(pageIndex, pageSize, isEditable: true);
+
+    Model.AddRange(settingData.Data);
+    
+    var listSelectPageSize = new List<int>{1,2,3,5,10,20};
+} 
+
+<h4 class="setting-header">System setting</h4>
+
+<div class="pagination-container">
+    <div class="pagination m-3">
+        @using (Html.BeginForm("Setting", "System", FormMethod.Post, new { @enctype = "multipart/form-data", @id = "changePageSize" }))
+        {
+            <label for="factoryId" class="form-label">PageSize:</label>
+            <select data-val="true" id="pageSize" name="pageSize" onchange="submitById('changePageSize')">
+
+                @foreach (var item in listSelectPageSize)
+                {
+                    @if (pageSize == item)
+                    {
+                        <option value='@item' selected="selected">@item</option>
+                    }
+                    else
+                    {
+                        <option value='@item'>@item</option>
+                    }
+                }
+            </select>
+        }
+
+        @if(settingData.HasPreviousPage)
+        {
+            int previousPage= pageIndex - 1;
+            <a href='@Url.Action("Setting", "System", new {pageIndex = @previousPage, pageSize = @pageSize})'>&laquo;</a>
+        }
+
+        @for(int i = 0; i < settingData.TotalPage; i++){
+            int pageDisplay = i + 1;
+            if(i == pageIndex){
+                <a class="active" href="">@pageDisplay</a>
+            }else{
+                <a href='@Url.Action("Setting", "System", new {pageIndex = @i, pageSize = @pageSize})'>@pageDisplay</a>
+            }
+        }
+
+        @if(settingData.HasNextPage)
+        {
+            int nextPage = pageIndex + 1;
+            <a href='@Url.Action("Setting", "System", new {pageIndex = @nextPage, pageSize = @pageSize})'>&raquo;</a>
+        }
+    </div>
+</div>
+
+<table class="normal-table table-hover">
+    <thead>
+        <th colspan="100%">
+            <div style="display: flex;justify-content: space-between;">
+                <div>
+                    System setting
+                </div>
+                <div style="text-align: right;">
+                    @if (!edit)
+                    {
+                        <a
+                            href='@Url.Action("Setting", "System", new {pageIndex = @pageIndex, pageSize = @pageSize, edit = true})'>
+                            <i class="fa fa-light fa-pen-to-square"></i>
+                        </a>
+                    }
+                    else
+                    {
+                        <a
+                            href='@Url.Action("Setting", "System", new {pageIndex = @pageIndex, pageSize = @pageSize, edit = false})'>
+                            <i class="fa fa-light fa-eye"></i>
+                        </a>
+                    }
+                </div>
+            </div>
+        </th>
+    </thead>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Value</th>
+            <th>Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if(!edit){
+            @foreach (var item in settingData.Data)
+            {
+                <tr>
+                    <td>@item.Name</td>
+                    <td>@item.Value</td>
+                    <td>@item.Description</td>
+                </tr>
+            }
+        }else{
+            @using (Html.BeginForm("Setting", "System", FormMethod.Post, new { @enctype = "multipart/form-data" }))
+            {
+                @for (int i = 0; i < Model.Count; i++)
+                {
+                    <input type="number" class="form-control" id="pageIndex" name="pageIndex" value='@pageIndex' style="display: none;">
+                    <input type="number" class="form-control" id="pageSize" name="pageSize" value='@pageSize' style="display: none;">
+                    @Html.HiddenFor(s => s[i].Id)
+                    @Html.HiddenFor(s => s[i].EnableEditing)
+                    <tr>
+                        <td>@Html.DisplayFor(s => s[i].Name)</td>
+                        <td>@Html.EditorFor(s => s[i].Value)</td>
+                        <td>@Html.DisplayFor(s => s[i].Description)</td>
+                    </tr>
+                }
+                <tr>
+                    <td colspan="100%"><input type="submit" class="btn btn-primary" value="Save"> </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>

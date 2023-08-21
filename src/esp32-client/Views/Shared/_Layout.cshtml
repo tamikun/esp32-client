@@ -65,6 +65,13 @@
                                     assigning</a>
                             </div>
                         </li>
+                        <li class="dropdown">
+                            <a class="juki-list-menu-header dropbtn" asp-area="" asp-controller="System"
+                                asp-action="Index">System</a>
+                            <div class="dropdown-content">
+                                <a asp-area="" asp-controller="System" asp-action="Setting">System setting</a>
+                            </div>
+                        </li>
                         @{
                             var userName = _httpContextAccessor?.HttpContext?.Session.GetString("UserName");
                         }

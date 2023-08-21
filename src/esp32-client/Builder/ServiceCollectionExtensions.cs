@@ -73,6 +73,7 @@ namespace esp32_client.Builder
             builder.Services.AddScoped<IScheduleTaskService, ScheduleTaskService>();
             builder.Services.AddScoped<IDataReportService, DataReportService>();
             builder.Services.AddScoped<ILogService, LogService>();
+            builder.Services.AddScoped<ISettingService, SettingService>();
             builder.Services.AddSingleton<Settings>();
         }
 

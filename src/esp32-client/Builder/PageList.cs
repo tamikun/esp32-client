@@ -1,3 +1,5 @@
+using LinqToDB;
+
 namespace esp32_client.Builder;
 
 public class PagedListModel<T> where T : class
@@ -24,6 +26,23 @@ public static class PagedList
         response.HasPreviousPage = pageIndex > 0;
         response.HasNextPage = pageIndex < response.TotalPage - 1;
         response.Data = data.Skip(pageIndex * pageSize).Take(pageSize).ToList();
+
+        return response;
+    }
+    
+    public static async Task<PagedListModel<T>> ToPagedListModel<T>(this IQueryable<T> data, int pageIndex = 0, int pageSize = int.MaxValue) where T : class
+    {
+        var response = new PagedListModel<T>();
+
+        if (pageSize == 0) return response;
+
+        int dataCount = await data.CountAsync();
+
+        response.TotalCount = dataCount;
+        response.TotalPage = dataCount / pageSize + (dataCount % pageSize > 0 ? 1 : 0);
+        response.HasPreviousPage = pageIndex > 0;
+        response.HasNextPage = pageIndex < response.TotalPage - 1;
+        response.Data = await data.Skip(pageIndex * pageSize).Take(pageSize).ToListAsync();
 
         return response;
     }

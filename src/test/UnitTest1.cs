@@ -12,6 +12,7 @@ namespace test;
 public class Tests
 {
     private Settings _setting;
+    private ISettingService _settingService;
     private IMigrationRunner _runner;
     private IMachineService _machineService;
     private ILineService _lineService;
@@ -20,6 +21,7 @@ public class Tests
     public Tests()
     {
         _setting = BaseTest.GetService<Settings>();
+        _settingService = BaseTest.GetService<ISettingService>();
         _runner = BaseTest.GetService<IMigrationRunner>();
         _machineService = BaseTest.GetService<IMachineService>();
         _linq2db = BaseTest.GetService<LinqToDb>();
@@ -117,6 +119,31 @@ public class Tests
     {
         Assert.That(_setting.DeleteOnUploadingEmptyFile, Is.EqualTo(true));
         await Task.CompletedTask;
+    }
+
+    [Test]
+    [Order(4)]
+    public async Task ShouldGetSettingPagedList()
+    {
+        var result = await _linq2db.Setting.ToPagedListModel(0, 5);
+        Assert.That(result.Data.Count, Is.EqualTo(5));
+    }
+
+    [Test]
+    [Order(5)]
+    public async Task ShouldUpdateListSetting()
+    {
+        Assert.That(_setting.GetApiTimeOut, Is.EqualTo(1000));
+        Assert.That(_setting.PostFileTimeOut, Is.EqualTo(1000));
+
+        var listUpdate = new List<Setting>{
+            new Setting{Id = 1, Name = "GetApiTimeOut", Value = "2000"},
+            new Setting{Id = 2, Name = "PostFileTimeOut", Value = "3000"},
+        };
+
+        await _settingService.UpdateListSetting(listUpdate);
+        Assert.That(_setting.GetApiTimeOut, Is.EqualTo(2000));
+        Assert.That(_setting.PostFileTimeOut, Is.EqualTo(3000));
     }
 
 }
