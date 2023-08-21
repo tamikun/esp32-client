@@ -194,9 +194,12 @@ public partial class LineService : ILineService
         return result;
     }
 
-    public async Task<List<GetProcessAndMachineOfLineModel>> GetProcessAndMachineOfLine(int factoryId)
+    public async Task<List<GetProcessAndMachineOfLineModel>> GetProcessAndMachineOfLine(int factoryId, int? lineId = null)
     {
-        var result = await (from line in _linq2Db.Line.Where(s => s.FactoryId == factoryId)
+        var lineQuery = _linq2Db.Line.Where(s => s.FactoryId == factoryId);
+        if (lineId is not null) lineQuery = lineQuery.Where(s => s.Id == lineId);
+
+        var result = await (from line in lineQuery
                             join station1 in _linq2Db.Station on line.Id equals station1.LineId into station2
                             from station in station2.DefaultIfEmpty()
                             join product1 in _linq2Db.Product on line.ProductId equals product1.Id into product2

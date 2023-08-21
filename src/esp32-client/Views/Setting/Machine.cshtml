@@ -135,9 +135,8 @@
                     <input type="number" class="form-control" id="MachineNo" name="MachineNo">
                 </div>
                 <div class="mb-3">
-                    <label for="MachineNo" class="form-label">IoT Machine:</label>
-                    <input type="checkbox" class="form-control" id="MachineNo" name="MachineNo">
-                    <td>@Html.CheckBox("MachineNo", false, new {@class  = "form-control"})</td>
+                    <label for="IoTMachine" class="form-label">IoT Machine:</label>
+                    <td>@Html.CheckBox("IoTMachine", false, new{@id = "IoTMachine"})</td>
                 </div>
                 <div class="d-grid">
                     <input type="submit" class="btn btn-primary" value="Save">
@@ -169,7 +168,7 @@
                 </div>
                 <div class="mb-3">
                     <label for="IoTMachine" class="form-label">IoT Machine:</label>
-                    <td>@Html.CheckBox("IoTMachine", false, new{@id = "IoTMachine", @class = "form-control"})</td>
+                    <td>@Html.CheckBox("IoTMachine", false, new{@id = "IoTMachine"})</td>
                 </div>
                 <div class="d-grid">
                     <input type="submit" class="btn btn-primary" value="Save">

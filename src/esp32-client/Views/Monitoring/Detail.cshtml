@@ -1,0 +1,121 @@
+@model List<GetProcessAndMachineOfLineModel>
+@{
+    ViewData["Title"] = "Detail Monitoring";
+    var lineDataCount = Model.Count;
+    var factoryId = ViewBag.FactoryId;
+    var lineId = ViewBag.LineId;
+}
+
+<h4 class="setting-header">
+    <a href='@Url.Action("Index", "Monitoring", new {factoryId =  @factoryId})'>Monitoring screen</a>
+    <svg class=" a-s-fa-Ha-pa c-qd" width="24px" height="24px" viewBox="0 0 24 24" focusable="false" fill="currentColor"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"></path></svg>
+    @Model[0].LineNo
+</h4>
+
+@if(lineDataCount > 0)
+{
+    <div class="line-container">
+        <div class="line-info-header">
+            <div class="line-info-header-main">
+                <div>
+                    <div><strong>@Model[0].LineNo</strong></div>
+                    <div>@Model[0].ProductName</div>
+                </div>
+            </div>
+            <div class="line-info-header-expanse">
+                <ul>
+                    <li>@Model[0].LineName</li>
+                    <li>@Model[0].ProductNo</li>
+                </ul>
+            </div>
+        </div>
+        <div class="line-info-body">
+            @for(int j = 0; j < lineDataCount; j++){
+                <div class="line-info-detail">
+                    <div class="line-info-detail-main">
+                        <div>@Model[j].StationNo</div>
+                        <div>@Model[j].ProcessName</div>
+                    </div>
+                    <div class="line-info-detail-expanse">
+                        <ul class="productNumber" id="@Model[j].StationId">
+                            <li></li>
+                        </ul>
+                    </div>
+                    <div class="line-info-detail-expanse">
+                        <ul>
+                            <li>@Model[j].MachineName</li>
+                            <li>@Model[j].ProcessNo</li>
+                        </ul>
+                    </div>
+                </div>
+
+                @if(j != lineDataCount - 1){
+                    <div class="arrow"><br>&#8594;</div>
+                }
+            }
+        </div>
+    </div>
+}
+
+@section Scripts{
+    <style>
+        .arrow {
+            font-size: 20px;
+            line-height: 1;
+            margin-inline: 10px;
+        }
+        .line-container{
+            display: flex;
+            margin-block: 30px;
+            margin-inline: 10px;
+        }
+        .line-info-body{
+            display: flex;
+        }
+        .line-info-header{
+            margin-right: 50px;
+        }
+
+        .line-info-header-main, .line-info-header-expanse{
+            width: 150px;
+        }
+
+        .line-info-header-main{
+            
+            border: 1px solid rgb(0, 0, 0);
+            border-radius: 0px;
+            height: 50%;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .line-info-header-expanse{
+            border: 1px solid rgb(0, 0, 0);
+            height: 50%;
+        }
+        .line-info-detail-main{
+        
+            border: 1px solid rgb(0, 0, 0);
+            border-radius: 0px;
+        }
+        .line-info-detail-expanse{
+            border: 1px solid rgb(0, 0, 0);
+        }
+        .line-container ul{
+            margin-block-start: 0em;
+            margin-block-end: 0em;
+            margin-inline-start: 0px;
+            margin-inline-end: 0px;
+            padding-inline-start: 20px;
+        }
+
+        .line-container .line-info-header-main {
+            background-color: #3085d6ab;
+        }
+        .line-container .line-info-detail-main {
+            background-color: #0a58ca38;
+        }
+        
+    </style>
+}

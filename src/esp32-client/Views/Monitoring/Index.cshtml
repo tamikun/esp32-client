@@ -134,7 +134,7 @@
         var lineDataCount = lineData.Count;
         if(lineDataCount > 0)
         {
-            <div class="line-container">
+            <div class="line-container" onclick="openTab('@Url.Action("Detail", "Monitoring", new {factoryId =  @factoryId, lineId = @lines.Data[i].LineId})')">
                 <div class="line-info-header">
                     <div class="line-info-header-main">
                         <div>
@@ -250,6 +250,12 @@
         }
         .line-container:nth-child(3n) .line-info-detail-main {
             background-color: rgb(204, 193, 218);
+        }
+        .line-container{
+            cursor: pointer;
+        }
+        .line-container:hover{
+            background-color: rgb(233, 233, 233);
         }
         
     </style>

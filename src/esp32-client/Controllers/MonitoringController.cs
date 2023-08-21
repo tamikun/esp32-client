@@ -2,19 +2,18 @@
 using esp32_client.Services;
 using esp32_client.Builder;
 using LinqToDB;
+using esp32_client.Models;
 
 namespace esp32_client.Controllers;
 [CustomAuthenticationFilter]
 public class MonitoringController : BaseController
 {
-    private readonly IFactoryService _departmentService;
-    private readonly IScheduleTaskService _scheduleTaskService;
+    private readonly ILineService _lineService;
 
-    public MonitoringController(LinqToDb linq2db, IFactoryService departmentService, IScheduleTaskService scheduleTaskService)
+    public MonitoringController(LinqToDb linq2db, ILineService lineService)
     {
         _linq2db = linq2db;
-        _departmentService = departmentService;
-        _scheduleTaskService = scheduleTaskService;
+        _lineService = lineService;
     }
 
 
@@ -39,6 +38,14 @@ public class MonitoringController : BaseController
         ViewBag.PageSize = pageSize;
 
         return View(filterModel);
+    }
+
+    public async Task<IActionResult> Detail(int factoryId, int lineId)
+    {
+        var data = await _lineService.GetProcessAndMachineOfLine(factoryId, lineId);
+        ViewBag.FactoryId = factoryId;
+        ViewBag.LineId = lineId;
+        return View(data);
     }
 
     public class MonitoringFilterModel

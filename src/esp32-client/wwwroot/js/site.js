@@ -75,3 +75,11 @@ function closePopup(id) {
 function submitById(id) {
     document.getElementById(id).submit();
 }
+
+function openInNewTab(url) {
+    window.open(url, '_blank').focus();
+}
+
+function openTab(url) {
+    window.open(url, '_self').focus();
+}
