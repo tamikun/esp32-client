@@ -6,6 +6,8 @@
 
     var lineData = await _lineService.GetByFactoryId(factoryId);
 
+    string lineNo = lineData.Where(s => s.Id == lineId).Select(s => s.LineNo).FirstOrDefault(String.Empty);
+
     // Process data: Get by product id
     var stationData = await _stationService.GetByLineId(lineId);
 }
@@ -13,7 +15,7 @@
 <h4 class="setting-header">
     <a href='@Url.Action("Line", "Setting", new {factoryId =  @factoryId})'>Line setting</a>
     <svg class=" a-s-fa-Ha-pa c-qd" width="24px" height="24px" viewBox="0 0 24 24" focusable="false" fill="currentColor"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"></path></svg>
-    Station
+    @lineNo
 </h4>
 
 <table class="normal-table table-hover">

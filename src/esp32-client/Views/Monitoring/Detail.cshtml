@@ -15,7 +15,7 @@
 @if(lineDataCount > 0)
 {
     <div class="line-container">
-        <div class="line-info-header">
+        <div class="line-info-header" onclick="openTab('@Url.Action("Line", "Setting", new {factoryId =  @factoryId})')">
             <div class="line-info-header-main">
                 <div>
                     <div><strong>@Model[0].LineNo</strong></div>
@@ -29,7 +29,7 @@
                 </ul>
             </div>
         </div>
-        <div class="line-info-body">
+        <div class="line-info-body" onclick="openTab('@Url.Action("LineDetail", "Setting", new {factoryId =  @factoryId, lineId = @lineId})')">
             @for(int j = 0; j < lineDataCount; j++){
                 <div class="line-info-detail">
                     <div class="line-info-detail-main">
@@ -115,6 +115,13 @@
         }
         .line-container .line-info-detail-main {
             background-color: #0a58ca38;
+        }
+
+        .line-info-header, .line-info-body{
+            cursor: pointer;
+        }
+        .line-info-header:hover, .line-info-body:hover{
+           color: blue;
         }
         
     </style>

@@ -8,6 +8,8 @@
 
     var productData = await _productService.GetProductByFactoryId(factoryId);
 
+    var productNo = productData.Where(s => s.ProductId == productId).Select(s => s.ProductNo).FirstOrDefault(String.Empty);
+
     // Process data: Get by product id
     var processData = await _processService.GetByProductId(productId);
 }
@@ -15,7 +17,7 @@
 <h4 class="setting-header">
     <a href='@Url.Action("Product", "Setting", new {factoryId =  @factoryId})'>Product setting</a>
     <svg class=" a-s-fa-Ha-pa c-qd" width="24px" height="24px" viewBox="0 0 24 24" focusable="false" fill="currentColor"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"></path></svg>
-    Process
+    @productNo
 </h4>
 
 <table class="normal-table table-hover">
