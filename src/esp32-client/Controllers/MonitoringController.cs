@@ -18,12 +18,15 @@ public class MonitoringController : BaseController
     }
 
 
-    public async Task<IActionResult> Index(int factoryId = 0, int pageIndex = 0, int pageSize = 5, bool iotMachine = true, bool normalMachine = true, bool emptyMachine = true)
+    public async Task<IActionResult> Index(int factoryId = 0, int pageIndex = 0, int pageSize = 5,
+        bool iotMachine = false, bool normalMachine = false, bool emptyMachine = false, bool notEmptyMachine = false)
     {
         var filterModel = new MonitoringFilterModel();
         filterModel.IoTMachine = iotMachine;
         filterModel.NormalMachine = normalMachine;
         filterModel.EmptyMachine = emptyMachine;
+        filterModel.EmptyMachine = emptyMachine;
+        filterModel.NotEmptyMachine = notEmptyMachine;
 
         if (factoryId == 0)
         {
@@ -43,6 +46,7 @@ public class MonitoringController : BaseController
         public bool IoTMachine { get; set; }
         public bool NormalMachine { get; set; }
         public bool EmptyMachine { get; set; }
+        public bool NotEmptyMachine { get; set; }
     }
 
 }

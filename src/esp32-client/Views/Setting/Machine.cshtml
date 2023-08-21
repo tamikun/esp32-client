@@ -76,6 +76,7 @@
             <th>Machine name</th>
             <th>Machine No</th>
             <th>IP Address</th>
+            <th>IoT Machine</th>
             <th>CO part No</th>
             <th></th>
         </tr>
@@ -87,6 +88,7 @@
                 <td>@item.MachineName</td>
                 <td>@item.MachineNo</td>
                 <td>@item.IpAddress</td>
+                <td>@Html.CheckBox(nameof(item.IoTMachine),item.IoTMachine, new {@disabled  = "true"})</td>
                 <td>@item.COPartNo</td>
                 <td>
                     <div style="display: flex; justify-content: space-around; align-items: center;">
@@ -115,7 +117,7 @@
     <div class="popup-dialog">
         <div class="popup-content">
             <span class="close-button" onclick="closePopup('addNewMachine')">&times;</span>
-            <h2>Add new line</h2>
+            <h2>Add new machine</h2>
             @using (Html.BeginForm("AddMachine", "Setting", FormMethod.Post, new { @enctype = "multipart/form-data" }))
             {
                 <div class="mb-3">
@@ -131,6 +133,11 @@
                 <div class="mb-3">
                     <label for="MachineNo" class="form-label">Machine no:</label>
                     <input type="number" class="form-control" id="MachineNo" name="MachineNo">
+                </div>
+                <div class="mb-3">
+                    <label for="MachineNo" class="form-label">IoT Machine:</label>
+                    <input type="checkbox" class="form-control" id="MachineNo" name="MachineNo">
+                    <td>@Html.CheckBox("MachineNo", false, new {@class  = "form-control"})</td>
                 </div>
                 <div class="d-grid">
                     <input type="submit" class="btn btn-primary" value="Save">
@@ -159,6 +166,10 @@
                 <div class="mb-3">
                     <label for="IpAddress" class="form-label">Ip address:</label>
                     <input type="text" class="form-control" id="IpAddress" name="IpAddress">
+                </div>
+                <div class="mb-3">
+                    <label for="IoTMachine" class="form-label">IoT Machine:</label>
+                    <td>@Html.CheckBox("IoTMachine", false, new{@id = "IoTMachine", @class = "form-control"})</td>
                 </div>
                 <div class="d-grid">
                     <input type="submit" class="btn btn-primary" value="Save">
@@ -199,11 +210,18 @@
             var pMachineId = document.querySelector('[id=updateMachine] [id=MachineId]');
             var pMachineName = document.querySelector('[id=updateMachine] [id=MachineName]');
             var pIpAddress = document.querySelector('[id=updateMachine] [id=IpAddress]');
+            var pIoT = document.querySelector('[id=updateMachine] [id=IoTMachine]');
 
             // Set the values using the properties from the param object
             pMachineId.value = param.MachineId;
             pMachineName.value = param.MachineName;
             pIpAddress.value = param.IpAddress;
+
+            if(param.IoTMachine){
+                pIoT.setAttribute("checked", true)
+            }else{
+                pIoT.removeAttribute("checked", true)
+            }
 
             if(param.LineId !== 0 || param.StationId !== 0){
                 pIpAddress.setAttribute("disabled", true);

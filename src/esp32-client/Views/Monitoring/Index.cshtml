@@ -9,9 +9,17 @@
 
     var data = await _lineService.GetProcessAndMachineOfLine(factoryId);
 
-    if(!Model.IoTMachine) data = data.Where(s => s.IoTMachine != true).ToList();
-    if(!Model.NormalMachine) data = data.Where(s => s.IoTMachine != false).ToList();
-    if(!Model.EmptyMachine) data = data.Where(s => s.MachineNo != "{MachineNo}").ToList();
+    if(Model.EmptyMachine || Model.NotEmptyMachine || Model.IoTMachine || Model.NormalMachine)
+    {
+        data = data.Where(s => {
+            bool result = false;
+            result |= (s.MachineNo == "{MachineNo}") && Model.EmptyMachine;
+            result |= (s.MachineNo != "{MachineNo}") && Model.NotEmptyMachine;
+            result |= (s.IoTMachine == true) && Model.IoTMachine; 
+            result |= (s.IoTMachine == false) && Model.NormalMachine;
+            return result;
+        }).ToList();
+    }
 
     var lines = data.DistinctBy(s => s.LineId).Where(s => s.LineId != 0).ToList().ToPagedListModel(pageIndex, pageSize);
 
@@ -62,6 +70,7 @@
             @Html.HiddenFor(s => s.IoTMachine);
             @Html.HiddenFor(s => s.NormalMachine);
             @Html.HiddenFor(s => s.EmptyMachine);
+            @Html.HiddenFor(s => s.NotEmptyMachine);
         }
     </div>
 
@@ -69,7 +78,9 @@
         @if(lines.HasPreviousPage)
         {
             int previousPage= pageIndex - 1;
-            <a href='@Url.Action("Index", "Monitoring", new {factoryId =  @factoryId, pageIndex = @previousPage, pageSize = @pageSize, iotMachine = @Model.IoTMachine, normalMachine = @Model.NormalMachine, emptyMachine = @Model.EmptyMachine})'>&laquo;</a>
+            <a href='@Url.Action("Index", "Monitoring", new {factoryId =  @factoryId, pageIndex = @previousPage, pageSize = @pageSize, 
+                iotMachine = @Model.IoTMachine, normalMachine = @Model.NormalMachine, 
+                emptyMachine = @Model.EmptyMachine, notEmptyMachine = @Model.NotEmptyMachine})'>&laquo;</a>
         }
 
         @for(int i = 0; i < lines.TotalPage; i++){
@@ -77,14 +88,19 @@
             if(i == pageIndex){
                 <a class="active" href="">@pageDisplay</a>
             }else{
-                <a href='@Url.Action("Index", "Monitoring", new {factoryId =  @factoryId, pageIndex = @i, pageSize = @pageSize, iotMachine = @Model.IoTMachine, normalMachine = @Model.NormalMachine, emptyMachine = @Model.EmptyMachine})'>@pageDisplay</a>
+                <a href='@Url.Action("Index", "Monitoring", new {factoryId =  @factoryId, pageIndex = @i, pageSize = @pageSize, 
+                    iotMachine = @Model.IoTMachine, normalMachine = @Model.NormalMachine, 
+                    emptyMachine = @Model.EmptyMachine, notEmptyMachine = @Model.NotEmptyMachine})'>@pageDisplay</a>
             }
         }
 
         @if(lines.HasNextPage)
         {
             int nextPage = pageIndex + 1;
-            <a href='@Url.Action("Index", "Monitoring", new {factoryId =  @factoryId, pageIndex = @nextPage, pageSize = @pageSize, iotMachine = @Model.IoTMachine, normalMachine = @Model.NormalMachine, emptyMachine = @Model.EmptyMachine})'>&raquo;</a>
+            <a href='@Url.Action("Index", "Monitoring", 
+                new {factoryId =  @factoryId, pageIndex = @nextPage, pageSize = @pageSize, 
+                iotMachine = @Model.IoTMachine, normalMachine = @Model.NormalMachine, 
+                emptyMachine = @Model.EmptyMachine, notEmptyMachine = @Model.NotEmptyMachine})'>&raquo;</a>
         }
     </div>
 </div>
@@ -98,6 +114,8 @@
      <div class="m-3">
         <label for="emptyMachine" class="form-label">Empty Machine</label>
         @Html.CheckBoxFor(s => s.EmptyMachine, new {@onchange="submitById('filter')"})
+        <label for="notEmptyMachine" class="form-label">Not Empty Machine</label>
+        @Html.CheckBoxFor(s => s.NotEmptyMachine, new {@onchange="submitById('filter')"})
         <label for="iotMachine" class="form-label">IoT Machine</label>
         @Html.CheckBoxFor(s => s.IoTMachine, new {@onchange="submitById('filter')"})
         <label for="normalMachine" class="form-label">Normal Machine</label>

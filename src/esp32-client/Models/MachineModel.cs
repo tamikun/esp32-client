@@ -7,6 +7,7 @@ public class MachineCreateModel
     public int MachineNo { get; set; }
     public string IpAddress { get; set; }
     public int FactoryId { get; set; }
+    public bool IoTMachine { get; set; }
 }
 
 public class MachineUpdateModel
@@ -15,6 +16,7 @@ public class MachineUpdateModel
     public string MachineName { get; set; }
     public string IpAddress { get; set; }
     public int FactoryId { get; set; }
+    public bool IoTMachine { get; set; }
 }
 
 public class AssignMachineLineModel
@@ -41,4 +43,5 @@ public class MachineResponseModel
     public string LineName { get; set; }
     public string ProcessName { get; set; }
     public string COPartNo { get; set; }
+    public bool IoTMachine { get; set; }
 }
