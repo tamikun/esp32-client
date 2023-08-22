@@ -251,7 +251,7 @@ public partial class MachineService : IMachineService
         var result = new Dictionary<string, string>();
 
         // Machine => Station => Process => Pattern
-        var data = await (from machine in _linq2Db.Machine.Where(s => machineId.Contains(s.Id))
+        var data = await (from machine in _linq2Db.Machine.Where(s => machineId.Contains(s.Id) && s.IoTMachine == true)
                           join station1 in _linq2Db.Station on machine.StationId equals station1.Id into station2
                           from station in station2.DefaultIfEmpty()
                           join process1 in _linq2Db.Process on station.ProcessId equals process1.Id into process2
