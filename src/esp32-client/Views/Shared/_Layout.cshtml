@@ -1,4 +1,10 @@
-﻿<!DOCTYPE html>
+﻿@{
+    var token = _httpContextAccessor?.HttpContext?.Session.GetString("Token");
+    var user = JwtToken.GetDataFromToken(token);
+    var userName = user.UserName;
+}
+
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -72,9 +78,6 @@
                                 <a asp-area="" asp-controller="System" asp-action="Setting">System setting</a>
                             </div>
                         </li>
-                        @{
-                            var userName = _httpContextAccessor?.HttpContext?.Session.GetString("UserName");
-                        }
                         <li class="dropdown">
                             <a class="juki-list-menu-header dropbtn" asp-area="" asp-controller="User"
                                 asp-action="Index">@userName</a>

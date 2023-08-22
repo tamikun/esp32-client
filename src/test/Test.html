@@ -1,40 +1,53 @@
+
 <!DOCTYPE html>
 <html>
 
 <head>
-    <title>Popup Form Example</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+    <title>Login</title>
     <link rel="stylesheet" href="../../../esp32-client/wwwroot/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="../../../esp32-client/wwwroot/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="../../../esp32-client/wwwroot/css/fontawesome/css/all.css">
     <script src="../../../esp32-client/wwwroot/js/site.js" asp-append-version="true"></script>
 </head>
+</head>
 
 <body>
-    
-    <div class="pagination-container m-1">
-        <h4 class="setting-header" style="text-align: center;">Monitoring screen</h4>
-    
-        <div class="pagination m-3">
-                <form action="/Monitoring" enctype="multipart/form-data" id="searchByFactoryId" method="post">            
-                    <label for="factoryId">Factory name:</label>
-                    <select data-val="true" data-val-required="The Number field is required." id="factoryId" name="factoryId" onchange="submitById('searchByFactoryId')">
-                        <option value="1" selected="selected">Juki</option>
-                    </select>
-                    <label for="factoryId">PageSize:</label>
-                    <select data-val="true" data-val-required="The Number field is required." id="pageSize" name="pageSize" onchange="submitById('searchByFactoryId')">
-            
-                        <option value="1">1</option>
-                        <option value="2">2</option>
-                        <option value="3">3</option>
-                        <option value="5" selected="selected">5</option>
-                        <option value="10">10</option>
-                    </select>
-                </form>
-
-            <a class="active" href="#">1</a>
-    
+    <div class="alert-message" style="z-index: 2;">
+        <div class="alert alert-success alert-dismissible" >
+            <div class="alert-content"><strong>Success</strong><br> @Model.AlertMessage</div>
+            <div class="close-alert"><i class="fa fa-xmark" style="font-size:18px;cursor:pointer;"></i></div>
         </div>
     </div>
+    <form>
+        <div class="popup-container" style="display: block;">
+            <div class="popup-dialog">
+                <div class="popup-content">
+                        <div class="mb-3 d-grid">
+                            <h2 style="color: #005F99; text-align: center;"><strong>Sign in</strong></h2>
+                        </div>
+                        <div class="mb-3 d-grid">
+                            <label for="loginName" class="form-label"><strong>Login name</strong></label>
+                            <input id="loginName" name="loginName" type="text" placeholder="Login name">
+                        </div>
+                        
+                        <div class="mb-3 d-grid">
+                            <label for="password" class="form-label"><Strong>Password</Strong></label>
+                            <input id="password" name="password" type="password" placeholder="Password">
+                        </div>
+                        
+                        <div class="mb-3 d-grid text-danger">
+                        </div>
+            
+                        <div class="d-grid">
+                            <input type="submit" class="btn btn-primary" value="SIGN IN">
+                        </div>
+                </div>
+            </div>
+        </div>
+    </form>
 </body>
 
 </html>

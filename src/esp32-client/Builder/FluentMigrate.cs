@@ -4,7 +4,7 @@ using FluentMigrator;
 
 namespace esp32_client.Builder;
 
-[Migration(20180430122502)]
+[Migration(20180430122503)]
 public class AddTable : Migration
 {
     public override void Up()
@@ -182,6 +182,16 @@ public class AddTable : Migration
                 .WithColumn(nameof(Log.DateTimeUtc)).AsDateTime2().NotNullable()
             ;
         }
+
+        if (!Schema.Table(nameof(UserSession)).Exists())
+        {
+            Create
+            .Table(nameof(UserSession))
+                .WithColumn(nameof(UserSession.Id)).AsInt32().PrimaryKey().Identity()
+                .WithColumn(nameof(UserSession.UserId)).AsInt32()
+                .WithColumn(nameof(UserSession.Token)).AsString(500).Unique()
+            ;
+        }
     }
 
 
@@ -231,36 +241,37 @@ public class AddInitData : AutoReversingMigration
         _linq2Db.BulkInsert(userRight).Wait();
 
         var settings = new List<Setting>{
-            new Setting{Name = "GetApiTimeOut", Value = "1000"},
-            new Setting{Name = "PostFileTimeOut", Value = "1000"},
-            new Setting{Name = "PostApiTimeOut", Value = "1000"},
-            new Setting{Name = "FileDataDirectory", Value = "/app/FileData/"},
-            new Setting{Name = "NodeListEspFile", Value = "//table[@class='fixed']/tbody/tr"},
-            new Setting{Name = "NodeServerState", Value = "//p[@id='result']"},
-            new Setting{Name = "UploadFileFormat", Value = "http://{0}/upload/VDATA/{1}"},
-            new Setting{Name = "ChangeMachineStateFormat", Value = "http://{0}/selectedMachine"},
-            new Setting{Name = "ChangeServerStateFormat", Value = "http://{0}/selectedServer"},
-            new Setting{Name = "GetProductNumberFormat", Value = "http://{0}/data_prod"},
-            new Setting{Name = "ChangeStateDelay", Value = "500"},
-            new Setting{Name = "DeleteFileFormat", Value = "http://{0}/delete/VDATA/{1}"},
-            new Setting{Name = "PostFileFormat", Value = "http://{0}/upload/VDATA/{1}"},
-            new Setting{Name = "GetListFileFormat", Value = "http://{0}/VDATA"},
-            new Setting{Name = "StationFormat", Value = "Station {0}"},
-            new Setting{Name = "MinCharStationFormat", Value = "3"},
-            new Setting{Name = "ProductFormat", Value = "Product {0}"},
-            new Setting{Name = "MinCharProductFormat", Value = "3"},
-            new Setting{Name = "LineFormat", Value = "Line {0}"},
-            new Setting{Name = "MinCharLineFormat", Value = "3"},
-            new Setting{Name = "FactoryFormat", Value = "Factory {0}"},
-            new Setting{Name = "MinCharFactoryFormat", Value = "3"},
-            new Setting{Name = "MachineFormat", Value = "Machine {0}"},
-            new Setting{Name = "MinCharMachineFormat", Value = "3"},
-            new Setting{Name = "GetApiProductNumberTimeOut", Value = "5000"},
-            new Setting{Name = "AcceptedFile", Value = ".VDT,.PMD"},
-            new Setting{Name = "MinutesPerSession", Value = "60"},
-            new Setting{Name = "DeleteOnUploadingEmptyFile", Value = "true"},
-            new Setting{Name = "ReloadMonitoringMilliseconds", Value = "5000"},
-            new Setting{Name = "ReloadMonitoringBatchSize", Value = "20"},
+            new Setting{Name = "GetApiTimeOut", Value = "1000", EnableEditing = true},
+            new Setting{Name = "PostFileTimeOut", Value = "1000", EnableEditing = true},
+            new Setting{Name = "PostApiTimeOut", Value = "1000", EnableEditing = true},
+            new Setting{Name = "FileDataDirectory", Value = "/app/FileData/", EnableEditing = true},
+            new Setting{Name = "NodeListEspFile", Value = "//table[@class='fixed']/tbody/tr", EnableEditing = true},
+            new Setting{Name = "NodeServerState", Value = "//p[@id='result']", EnableEditing = true},
+            new Setting{Name = "UploadFileFormat", Value = "http://{0}/upload/VDATA/{1}", EnableEditing = true},
+            new Setting{Name = "ChangeMachineStateFormat", Value = "http://{0}/selectedMachine", EnableEditing = true},
+            new Setting{Name = "ChangeServerStateFormat", Value = "http://{0}/selectedServer", EnableEditing = true},
+            new Setting{Name = "GetProductNumberFormat", Value = "http://{0}/data_prod", EnableEditing = true},
+            new Setting{Name = "ChangeStateDelay", Value = "500", EnableEditing = true},
+            new Setting{Name = "DeleteFileFormat", Value = "http://{0}/delete/VDATA/{1}", EnableEditing = true},
+            new Setting{Name = "PostFileFormat", Value = "http://{0}/upload/VDATA/{1}", EnableEditing = true},
+            new Setting{Name = "GetListFileFormat", Value = "http://{0}/VDATA", EnableEditing = true},
+            new Setting{Name = "StationFormat", Value = "Station {0}", EnableEditing = true},
+            new Setting{Name = "MinCharStationFormat", Value = "3", EnableEditing = true},
+            new Setting{Name = "ProductFormat", Value = "Product {0}", EnableEditing = true},
+            new Setting{Name = "MinCharProductFormat", Value = "3", EnableEditing = true},
+            new Setting{Name = "LineFormat", Value = "Line {0}", EnableEditing = true},
+            new Setting{Name = "MinCharLineFormat", Value = "3", EnableEditing = true},
+            new Setting{Name = "FactoryFormat", Value = "Factory {0}", EnableEditing = true},
+            new Setting{Name = "MinCharFactoryFormat", Value = "3", EnableEditing = true},
+            new Setting{Name = "MachineFormat", Value = "Machine {0}", EnableEditing = true},
+            new Setting{Name = "MinCharMachineFormat", Value = "3", EnableEditing = true},
+            new Setting{Name = "GetApiProductNumberTimeOut", Value = "5000", EnableEditing = true},
+            new Setting{Name = "AcceptedFile", Value = ".VDT,.PMD", EnableEditing = true},
+            new Setting{Name = "MinutesPerSession", Value = "60", EnableEditing = true},
+            new Setting{Name = "DeleteOnUploadingEmptyFile", Value = "true", EnableEditing = true},
+            new Setting{Name = "ReloadMonitoringMilliseconds", Value = "5000", EnableEditing = true},
+            new Setting{Name = "ReloadMonitoringBatchSize", Value = "20", EnableEditing = true},
+            new Setting{Name = "EnableLog", Value = "false", EnableEditing = true},
         };
 
         _linq2Db.BulkInsert(settings).Wait();
@@ -279,7 +290,7 @@ public class AddInitData : AutoReversingMigration
     }
 }
 
-[Migration(20230811162704)]
+[Migration(20230811162705)]
 public class AddTimeOutSetting : AutoReversingMigration
 {
     private readonly LinqToDb _linq2Db;
@@ -290,7 +301,8 @@ public class AddTimeOutSetting : AutoReversingMigration
     public override void Up()
     {
         var settings = new List<Setting>{
-            new Setting{Name = "EnableLog", Value = "false"},
+            new Setting{Name = "JwtTokenSecret", Value = "Secret at least 128 bit for HmacSha256 SecurityAlgorithms", EnableEditing = false},
+            new Setting{Name = "SessionExpiredTimeInSecond", Value = "3600", EnableEditing = true},
         };
 
         _linq2Db.BulkInsert(settings).Wait();

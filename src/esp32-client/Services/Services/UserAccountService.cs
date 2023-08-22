@@ -117,12 +117,10 @@ public partial class UserAccountService : IUserAccountService
 
         if (userRights.Count == 0) return false;
 
-        // Full rights
-        if (userRights.Any(s => s.ControllerName == "*" && s.ActionName == "*")) return true;
-        // Have a right
-        if (userRights.Any(s => s.ControllerName == controllerName && s.ActionName == actionName)) return true;
-
-        return false;
+        return userRights.Any(s => (s.ControllerName == "*" && s.ActionName == "*")
+                            || (s.ControllerName == "*" && s.ActionName == actionName)
+                            || (s.ControllerName == controllerName && s.ActionName == "*")
+                            || (s.ControllerName == controllerName && s.ActionName == actionName));
     }
 
     public async Task<List<UserRight>> GetUserRight(string? loginName)

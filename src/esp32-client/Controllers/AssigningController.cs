@@ -6,7 +6,7 @@ using Newtonsoft.Json;
 
 namespace esp32_client.Controllers;
 
-[CustomAuthenticationFilter]
+[Authentication]
 public class AssigningController : BaseController
 {
     private readonly IFactoryService _departmentService;

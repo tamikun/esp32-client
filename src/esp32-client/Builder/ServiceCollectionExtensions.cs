@@ -74,6 +74,7 @@ namespace esp32_client.Builder
             builder.Services.AddScoped<IDataReportService, DataReportService>();
             builder.Services.AddScoped<ILogService, LogService>();
             builder.Services.AddScoped<ISettingService, SettingService>();
+            builder.Services.AddScoped<IUserSessionService, UserSessionService>();
             builder.Services.AddSingleton<Settings>();
         }
 
@@ -95,7 +96,7 @@ namespace esp32_client.Builder
                             // .BuildServiceProvider(false)
                             ;
         }
-       
+
         public static void ConfigureLinqToDB(this WebApplicationBuilder builder)
         {
             var connectionString = builder.Configuration["Settings:ConnectionString"].ToString();

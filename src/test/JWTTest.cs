@@ -22,10 +22,11 @@ public class JWTTest
     {
         var token = generateJwtToken();
         System.Console.WriteLine("==== token: " + token);
-        
-        await Task.Delay(5000);
-        getDataFromToken(token);
-        await Task.CompletedTask;
+        System.Console.WriteLine("==== token: " + token.Length);
+
+        // await Task.Delay(5000);
+        // getDataFromToken(token);
+        // await Task.CompletedTask;
     }
 
     private string generateJwtToken()

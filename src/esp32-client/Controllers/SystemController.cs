@@ -7,7 +7,7 @@ using esp32_client.Builder;
 using esp32_client.Domain;
 
 namespace esp32_client.Controllers;
-[CustomAuthenticationFilter]
+[Authentication]
 public class SystemController : BaseController
 {
     private readonly ISettingService _settingService;

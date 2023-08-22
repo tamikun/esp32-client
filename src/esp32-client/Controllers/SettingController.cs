@@ -4,7 +4,7 @@ using esp32_client.Builder;
 using esp32_client.Models;
 
 namespace esp32_client.Controllers;
-[CustomAuthenticationFilter]
+[Authentication]
 public class SettingController : BaseController
 {
     private readonly IFactoryService _factoryService;

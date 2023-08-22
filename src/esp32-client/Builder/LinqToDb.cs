@@ -29,6 +29,7 @@ public class LinqToDb : DataConnection
     public ITable<ScheduleTask> ScheduleTask => this.GetTable<ScheduleTask>();
     public ITable<DataReport> DataReport => this.GetTable<DataReport>();
     public ITable<Log> Log => this.GetTable<Log>();
+    public ITable<UserSession> UserSession => this.GetTable<UserSession>();
 }
 
 public static class LinqToDbExtension

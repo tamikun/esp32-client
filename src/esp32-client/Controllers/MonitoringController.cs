@@ -5,7 +5,7 @@ using LinqToDB;
 using esp32_client.Models;
 
 namespace esp32_client.Controllers;
-[CustomAuthenticationFilter]
+[Authentication]
 public class MonitoringController : BaseController
 {
     private readonly ILineService _lineService;

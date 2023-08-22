@@ -68,5 +68,7 @@ namespace esp32_client.Models.Singleton
         public int ReloadMonitoringMilliseconds { get; set; }
         public int ReloadMonitoringBatchSize { get; set; }
         public bool EnableLog { get; set; }
+        public string JwtTokenSecret { get; set; }
+        public int SessionExpiredTimeInSecond { get; set; }
     }
 }

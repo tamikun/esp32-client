@@ -6,7 +6,7 @@ using esp32_client.Services;
 using esp32_client.Builder;
 
 namespace esp32_client.Controllers;
-[CustomAuthenticationFilter]
+
 public class HomeController : BaseController
 {
     private readonly ILogger<HomeController> _logger;
@@ -18,7 +18,8 @@ public class HomeController : BaseController
         _logger = logger;
         _settings = settings;
     }
-
+    
+    [Authentication]
     public async Task<IActionResult> Index()
     {
         await Task.CompletedTask;
