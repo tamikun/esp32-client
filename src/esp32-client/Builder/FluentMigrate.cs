@@ -190,6 +190,7 @@ public class AddTable : Migration
                 .WithColumn(nameof(UserSession.Id)).AsInt32().PrimaryKey().Identity()
                 .WithColumn(nameof(UserSession.UserId)).AsInt32()
                 .WithColumn(nameof(UserSession.Token)).AsString(500).Unique()
+                .WithColumn(nameof(UserSession.ExpiredTime)).AsDateTime2()
             ;
         }
     }

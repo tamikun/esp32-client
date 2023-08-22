@@ -1,6 +1,7 @@
 using esp32_client.Builder;
 using esp32_client.Domain;
 using esp32_client.Models;
+using esp32_client.Models.Singleton;
 using LinqToDB;
 
 namespace esp32_client.Services;
@@ -12,10 +13,12 @@ public partial class UserSessionService : IUserSessionService
 {
 
     private readonly LinqToDb _linq2Db;
+    private readonly Settings _settings;
 
-    public UserSessionService(LinqToDb linq2Db)
+    public UserSessionService(LinqToDb linq2Db, Settings settings)
     {
         _linq2Db = linq2Db;
+        _settings = settings;
     }
 
     public async Task<UserSession?> GetById(int id)
@@ -34,12 +37,18 @@ public partial class UserSessionService : IUserSessionService
         return await _linq2Db.UserSession.ToListAsync();
     }
 
+    public async Task<List<UserSession>> GetByUserId(int userId)
+    {
+        return await _linq2Db.UserSession.Where(s => s.UserId == userId).ToListAsync();
+    }
+
     public async Task<UserSession> Create(UserSessionCreateModel model)
     {
         var userSession = new UserSession
         {
             UserId = model.UserId,
             Token = model.Token,
+            ExpiredTime = DateTime.Now.AddSeconds(_settings.SessionExpiredTimeInSecond)
         };
 
         userSession = await _linq2Db.Insert(userSession);
@@ -50,6 +59,11 @@ public partial class UserSessionService : IUserSessionService
     public async Task Delete(string token)
     {
         await _linq2Db.UserSession.Where(s => s.Token == token).DeleteQuery();
+    }
+   
+    public async Task Delete(int id)
+    {
+        await _linq2Db.UserSession.Where(s => s.Id == id).DeleteQuery();
     }
 
 }

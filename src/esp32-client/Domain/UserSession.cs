@@ -8,5 +8,6 @@ namespace esp32_client.Domain
 #nullable disable
         public int UserId { get; set; }
         public string Token { get; set; }
+        public DateTime ExpiredTime { get; set; }
     }
 }

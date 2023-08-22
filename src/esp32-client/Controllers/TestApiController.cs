@@ -71,4 +71,16 @@ public class TestApiController : ControllerBase
         return Ok();
     }
 
+    [HttpGet]
+    [ProducesResponseType(StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> GetClientIp()
+    {
+        var dict = new Dictionary<string, string>();
+
+        dict.Add("RemoteIpAddress", HttpContext?.Connection?.RemoteIpAddress?.ToString() ?? "");
+        await Task.CompletedTask;
+
+        return Ok(dict);
+    }
 }

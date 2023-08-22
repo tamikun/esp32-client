@@ -147,6 +147,30 @@ public class UserController : BaseController
         }, RedirectToAction("Index"));
     }
 
+    [Authentication]
+    public async Task<IActionResult> Session()
+    {
+        var token = _httpContextAccessor?.HttpContext?.Session.GetString("Token");
+        var user = JwtToken.GetDataFromToken(token);
+
+        ViewBag.UserId = user.UserId;
+        ViewBag.Token = token;
+        
+        await Task.CompletedTask;
+
+        return View();
+    }
+
+    [HttpPost]
+    [Authentication]
+    public async Task<IActionResult> DeleteSession(int sessionId)
+    {
+
+        return await HandleActionAsync(async () =>
+        {
+            await _userSessionService.Delete(sessionId);
+        }, RedirectToAction("Session"));
+    }
     public async Task<IActionResult> Logout()
     {
         var token = _httpContextAccessor?.HttpContext?.Session.GetString("Token");

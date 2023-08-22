@@ -7,6 +7,8 @@ namespace esp32_client.Services
     {
         Task<UserSession?> GetById(int id);
 
+        Task<List<UserSession>> GetByUserId(int userId);
+
         Task<bool> CheckToken(string token);
 
         Task<List<UserSession>> GetAll();
@@ -14,5 +16,7 @@ namespace esp32_client.Services
         Task<UserSession> Create(UserSessionCreateModel model);
 
         Task Delete(string token);
+
+        Task Delete(int id);
     }
 }
