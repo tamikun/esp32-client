@@ -34,6 +34,13 @@ public partial class LineService : ILineService
         return line;
     }
 
+    public async Task<PagedListModel<Line>> GetAll(int pageIndex, int pageSize)
+    {
+        pageSize = pageSize == 0 ? int.MaxValue : pageSize;
+        var lines = await _linq2Db.Line.ToListAsync();
+        return lines.ToPagedListModel(pageIndex, pageSize);
+    }
+
     public async Task<List<Line>> GetByFactoryId(int factoryId)
     {
         return await _linq2Db.Line.Where(s => s.FactoryId == factoryId).ToListAsync();
@@ -194,41 +201,51 @@ public partial class LineService : ILineService
         return result;
     }
 
-    public async Task<List<GetProcessAndMachineOfLineModel>> GetProcessAndMachineOfLine(int factoryId, int? lineId = null)
+    public async Task<List<GetProcessAndMachineOfLineModel>> GetProcessAndMachineOfLine(int factoryId, List<int>? listLineId = null,
+                                                                bool iotMachine = false, bool hasProduct = false, bool hasMachine = true)
     {
         var lineQuery = _linq2Db.Line.Where(s => s.FactoryId == factoryId);
-        if (lineId is not null) lineQuery = lineQuery.Where(s => s.Id == lineId);
 
-        var result = await (from line in lineQuery
-                            join station1 in _linq2Db.Station on line.Id equals station1.LineId into station2
-                            from station in station2.DefaultIfEmpty()
-                            join product1 in _linq2Db.Product on line.ProductId equals product1.Id into product2
-                            from product in product2.DefaultIfEmpty()
-                            join process1 in _linq2Db.Process on station.ProcessId equals process1.Id into process2
-                            from process in process2.DefaultIfEmpty()
-                            from machine in _linq2Db.Machine.Where(s =>
-                                s.FactoryId == factoryId
-                                && s.LineId == line.Id
-                                && s.StationId == station.Id
-                            ).DefaultIfEmpty()
-                            select new GetProcessAndMachineOfLineModel
-                            {
-                                LineId = line.Id,
-                                LineName = string.IsNullOrEmpty(line.LineName) ? "{LineName}" : line.LineName,
-                                LineNo = line.LineNo,
-                                StationId = station.Id,
-                                StationName = string.IsNullOrEmpty(station.StationName) ? "{StationName}" : station.StationName,
-                                StationNo = string.IsNullOrEmpty(station.StationNo) ? "{StationNo}" : station.StationNo,
-                                ProductName = string.IsNullOrEmpty(product.ProductName) ? "{ProductName}" : product.ProductName,
-                                ProductNo = string.IsNullOrEmpty(product.ProductNo) ? "{ProductNo}" : product.ProductNo,
-                                ProcessName = string.IsNullOrEmpty(process.ProcessName) ? "{ProcessName}" : process.ProcessName,
-                                ProcessNo = string.IsNullOrEmpty(process.ProcessNo) ? "{ProcessNo}" : process.ProcessNo,
-                                PatternNo = string.IsNullOrEmpty(process.PatternNo) ? "{PatternNo}" : process.PatternNo,
-                                PatterDescription = process.Description,
-                                MachineName = string.IsNullOrEmpty(machine.MachineName) ? "{MachineName}" : machine.MachineName,
-                                MachineNo = string.IsNullOrEmpty(machine.MachineNo) ? "{MachineNo}" : machine.MachineNo,
-                                IoTMachine = machine.IoTMachine,
-                            }).OrderBy(s => s.LineId).ThenBy(s => s.StationId).ToListAsync();
+        if (listLineId?.Count > 0) lineQuery = lineQuery.Where(s => listLineId.Contains(s.Id));
+        if (hasProduct) lineQuery = lineQuery.Where(s => s.ProductId != 0);
+
+        var query = (from line in lineQuery
+                     join station in _linq2Db.Station on line.Id equals station.LineId
+                     join product1 in _linq2Db.Product on line.ProductId equals product1.Id into product2
+                     from product in product2.DefaultIfEmpty()
+                     join process1 in _linq2Db.Process on station.ProcessId equals process1.Id into process2
+                     from process in process2.DefaultIfEmpty()
+                     from machine in _linq2Db.Machine.Where(s =>
+                         s.FactoryId == factoryId
+                         && s.LineId == line.Id
+                         && s.StationId == station.Id
+                     ).DefaultIfEmpty()
+                     select new GetProcessAndMachineOfLineModel
+                     {
+                         LineId = line.Id,
+                         LineName = line.LineName,
+                         LineNo = line.LineNo,
+                         StationId = station.Id,
+                         StationName = station.StationName,
+                         StationNo = station.StationNo,
+                         ProductName = product.ProductName,
+                         ProductNo = product.ProductNo,
+                         ProcessName = process.ProcessName,
+                         ProcessNo = process.ProcessNo,
+                         PatternNo = process.PatternNo,
+                         PatterDescription = process.Description,
+                         MachineId = machine.Id,
+                         MachineName = machine.MachineName,
+                         MachineNo = machine.MachineNo,
+                         IoTMachine = machine.IoTMachine,
+                     });
+
+        if (hasMachine) query = query.Where(s => s.MachineId != 0);
+        if (iotMachine) query = query.Where(s => s.IoTMachine == true);
+
+        query = query.OrderBy(s => s.LineId).ThenBy(s => s.StationId);
+
+        var result = await query.ToListAsync();
 
         return result;
     }

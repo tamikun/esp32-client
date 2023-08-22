@@ -7,25 +7,12 @@
     int pageIndex = ViewBag.PageIndex;
     int pageSize = ViewBag.PageSize;
 
-    var data = await _lineService.GetProcessAndMachineOfLine(factoryId);
 
-    if(Model.EmptyMachine || Model.NotEmptyMachine || Model.IoTMachine || Model.NormalMachine)
-    {
-        data = data.Where(s => {
-            bool result = false;
-            result |= (s.MachineNo == "{MachineNo}") && Model.EmptyMachine;
-            result |= (s.MachineNo != "{MachineNo}") && Model.NotEmptyMachine;
-            result |= (s.IoTMachine == true) && Model.IoTMachine; 
-            result |= (s.IoTMachine == false) && Model.NormalMachine;
-            return result;
-        }).ToList();
-    }
-
-    var lines = data.DistinctBy(s => s.LineId).Where(s => s.LineId != 0).ToList().ToPagedListModel(pageIndex, pageSize);
+    var lines = await _lineService.GetAll(pageIndex, pageSize);
+    
+    var data = await _lineService.GetProcessAndMachineOfLine(factoryId, lines.Data.Select(s => s.Id).ToList(), Model.IoTMachine, Model.HasProduct, Model.HasMachine);
 
     var factories = await _factoryService.GetAll();
-
-    var listMachine = await _machineService.GetAll();
 
     var listSelectPageSize = new List<int>{1,2,3,5,10};
 
@@ -34,7 +21,7 @@
 <div class="pagination-container m-1">
     <h4 class="setting-header" style="text-align: center;">Monitoring screen</h4>
     <div class="m-3">
-        @using (Html.BeginForm("Index", "Monitoring", FormMethod.Post, new { @enctype = "multipart/form-data", @id = "searchByFactoryId" }))
+        @using (Html.BeginForm("Index", "Monitoring", FormMethod.Get, new { @enctype = "multipart/form-data", @id = "searchByFactoryId" }))
         {
             <label for="factoryId">Factory name:</label>
             <select data-val="true" data-val-required="The Number field is required." id="factoryId" name="factoryId" onchange="submitById('searchByFactoryId')">
@@ -68,9 +55,8 @@
                 }
             </select>
             @Html.HiddenFor(s => s.IoTMachine);
-            @Html.HiddenFor(s => s.NormalMachine);
-            @Html.HiddenFor(s => s.EmptyMachine);
-            @Html.HiddenFor(s => s.NotEmptyMachine);
+            @Html.HiddenFor(s => s.HasProduct);
+            @Html.HiddenFor(s => s.HasMachine);
         }
     </div>
 
@@ -79,8 +65,8 @@
         {
             int previousPage= pageIndex - 1;
             <a href='@Url.Action("Index", "Monitoring", new {factoryId =  @factoryId, pageIndex = @previousPage, pageSize = @pageSize, 
-                iotMachine = @Model.IoTMachine, normalMachine = @Model.NormalMachine, 
-                emptyMachine = @Model.EmptyMachine, notEmptyMachine = @Model.NotEmptyMachine})'>&laquo;</a>
+                iotMachine = @Model.IoTMachine, hasProduct = @Model.HasProduct, 
+                hasMachine = @Model.HasMachine})'>&laquo;</a>
         }
 
         @for(int i = 0; i < lines.TotalPage; i++){
@@ -89,8 +75,8 @@
                 <a class="active" href="">@pageDisplay</a>
             }else{
                 <a href='@Url.Action("Index", "Monitoring", new {factoryId =  @factoryId, pageIndex = @i, pageSize = @pageSize, 
-                    iotMachine = @Model.IoTMachine, normalMachine = @Model.NormalMachine, 
-                    emptyMachine = @Model.EmptyMachine, notEmptyMachine = @Model.NotEmptyMachine})'>@pageDisplay</a>
+                    iotMachine = @Model.IoTMachine, hasProduct = @Model.HasProduct, 
+                    hasMachine = @Model.HasMachine})'>@pageDisplay</a>
             }
         }
 
@@ -99,8 +85,8 @@
             int nextPage = pageIndex + 1;
             <a href='@Url.Action("Index", "Monitoring", 
                 new {factoryId =  @factoryId, pageIndex = @nextPage, pageSize = @pageSize, 
-                iotMachine = @Model.IoTMachine, normalMachine = @Model.NormalMachine, 
-                emptyMachine = @Model.EmptyMachine, notEmptyMachine = @Model.NotEmptyMachine})'>&raquo;</a>
+                iotMachine = @Model.IoTMachine, hasProduct = @Model.HasProduct, 
+                hasMachine = @Model.HasMachine})'>&raquo;</a>
         }
     </div>
 </div>
@@ -112,70 +98,66 @@
 }))
 {
      <div class="m-3">
-        <label for="emptyMachine" class="form-label">Empty Machine</label>
-        @Html.CheckBoxFor(s => s.EmptyMachine, new {@onchange="submitById('filter')"})
-        <label for="notEmptyMachine" class="form-label">Not Empty Machine</label>
-        @Html.CheckBoxFor(s => s.NotEmptyMachine, new {@onchange="submitById('filter')"})
+        <label for="emptyMachine" class="form-label">Has Machine</label>
+        @Html.CheckBoxFor(s => s.HasMachine, new {@onchange="submitById('filter')"})
         <label for="iotMachine" class="form-label">IoT Machine</label>
         @Html.CheckBoxFor(s => s.IoTMachine, new {@onchange="submitById('filter')"})
-        <label for="normalMachine" class="form-label">Normal Machine</label>
-        @Html.CheckBoxFor(s => s.NormalMachine, new {@onchange="submitById('filter')"})
+        <label for="normalMachine" class="form-label">Has Product</label>
+        @Html.CheckBoxFor(s => s.HasProduct, new {@onchange="submitById('filter')"})
         <input type="number" class="form-control" id="pageSize" name="pageSize" style="display: none;" value='@pageSize'>
+        <input type="number" class="form-control" id="pageIndex" name="pageIndex" style="display: none;" value='@pageIndex'>
         <input type="number" class="form-control" id="factoryId" name="factoryId" style="display: none;" value='@factoryId'>
         
     </div>
 }
 
-@if (lines.Data.Count > 0)
+@for (var i = 0; i < lines.Data.Count; i++)
 {
-    @for (var i = 0; i < lines.Data.Count; i++)
+    var lineData = data.Where(s => s.LineId == lines.Data[i].Id).ToList();
+    var lineDataCount = lineData.Count;
+    if(lineDataCount > 0)
     {
-        var lineData = data.Where(s => s.LineId == lines.Data[i].LineId).ToList();
-        var lineDataCount = lineData.Count;
-        if(lineDataCount > 0)
-        {
-            <div class="line-container" onclick="openTab('@Url.Action("Detail", "Monitoring", new {factoryId =  @factoryId, lineId = @lines.Data[i].LineId})')">
-                <div class="line-info-header">
-                    <div class="line-info-header-main">
-                        <div>
-                            <div><strong>@lineData[0].LineNo</strong></div>
-                            <div>@lineData[0].ProductName</div>
-                        </div>
-                    </div>
-                    <div class="line-info-header-expanse">
-                        <ul>
-                            <li>@lineData[0].LineName</li>
-                            <li>@lineData[0].ProductNo</li>
-                        </ul>
+        <div class="line-container" onclick="openTab('@Url.Action("Detail", "Monitoring", new {factoryId =  @factoryId, lineId = @lines.Data[i].Id})')">
+            <div class="line-info-header">
+                <div class="line-info-header-main">
+                    <div>
+                        <div><strong>@lineData[0].LineNo</strong></div>
+                        <div>@lineData[0].ProductName</div>
                     </div>
                 </div>
-                <div class="line-info-body">
-                    @for(int j = 0; j < lineDataCount; j++){
-                        <div class="line-info-detail">
-                            <div class="line-info-detail-main">
-                                <div>@lineData[j].StationNo</div>
-                                <div>@lineData[j].ProcessName</div>
-                            </div>
-                            <div class="line-info-detail-expanse">
-                                <ul class="productNumber" id="@lineData[j].StationId">
-                                    <li></li>
-                                </ul>
-                            </div>
-                            <div class="line-info-detail-expanse">
-                                <ul>
-                                    <li>@lineData[j].MachineName</li>
-                                    <li>@lineData[j].ProcessNo</li>
-                                </ul>
-                            </div>
-                        </div>
-
-                        @if(j != lineDataCount - 1){
-                            <div class="arrow"><br>&#8594;</div>
-                        }
-                    }
+                <div class="line-info-header-expanse">
+                    <ul>
+                        <li>@lineData[0].LineName</li>
+                        <li>@lineData[0].ProductNo</li>
+                    </ul>
                 </div>
             </div>
-        }
+            <div class="line-info-body">
+                @for(int j = 0; j < lineDataCount; j++){
+                    <div class="line-info-detail">
+                        <div class="line-info-detail-main">
+                            <div>@lineData[j].StationNo</div>
+                            <div>@lineData[j].ProcessName</div>
+                        </div>
+                        <div class="line-info-detail-expanse">
+                            <ul class="productNumber" id="@lineData[j].StationId">
+                                <li></li>
+                            </ul>
+                        </div>
+                        <div class="line-info-detail-expanse">
+                            <ul>
+                                <li>@lineData[j].MachineName</li>
+                                <li>@lineData[j].ProcessNo</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    @if(j != lineDataCount - 1){
+                        <div class="arrow"><br>&#8594;</div>
+                    }
+                }
+            </div>
+        </div>
     }
 }
 

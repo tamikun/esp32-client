@@ -9,6 +9,7 @@ namespace esp32_client.Services
 {
     public class Authentication : ActionFilterAttribute
     {
+        // public override void OnActionExecuting(ActionExecutingContext context)
         public override async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {
             var token = context.HttpContext.Session.GetString("Token");
@@ -83,8 +84,10 @@ namespace esp32_client.Services
             }
             else
             {
-                controller.TempData["AlertMessage"] = JsonConvert.SerializeObject(listAlert);
+                controller.TempData["AlertMessageAuthentication"] = JsonConvert.SerializeObject(listAlert);
             }
+
+            // base.OnActionExecuting(context);
         }
 
     }

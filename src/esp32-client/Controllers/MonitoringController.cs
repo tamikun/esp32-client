@@ -18,14 +18,12 @@ public class MonitoringController : BaseController
 
 
     public async Task<IActionResult> Index(int factoryId = 0, int pageIndex = 0, int pageSize = 5,
-        bool iotMachine = false, bool normalMachine = false, bool emptyMachine = false, bool notEmptyMachine = false)
+        bool iotMachine = false, bool hasProduct = false, bool hasMachine = false)
     {
         var filterModel = new MonitoringFilterModel();
         filterModel.IoTMachine = iotMachine;
-        filterModel.NormalMachine = normalMachine;
-        filterModel.EmptyMachine = emptyMachine;
-        filterModel.EmptyMachine = emptyMachine;
-        filterModel.NotEmptyMachine = notEmptyMachine;
+        filterModel.HasProduct = hasProduct;
+        filterModel.HasMachine = hasMachine;
 
         if (factoryId == 0)
         {
@@ -42,7 +40,9 @@ public class MonitoringController : BaseController
 
     public async Task<IActionResult> Detail(int factoryId, int lineId)
     {
-        var data = await _lineService.GetProcessAndMachineOfLine(factoryId, lineId);
+        var listId = new List<int>();
+        listId.Add(lineId);
+        var data = await _lineService.GetProcessAndMachineOfLine(factoryId, listId);
         ViewBag.FactoryId = factoryId;
         ViewBag.LineId = lineId;
         return View(data);
@@ -51,9 +51,8 @@ public class MonitoringController : BaseController
     public class MonitoringFilterModel
     {
         public bool IoTMachine { get; set; }
-        public bool NormalMachine { get; set; }
-        public bool EmptyMachine { get; set; }
-        public bool NotEmptyMachine { get; set; }
+        public bool HasProduct { get; set; }
+        public bool HasMachine { get; set; }
     }
 
 }

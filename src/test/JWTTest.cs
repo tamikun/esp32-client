@@ -24,9 +24,9 @@ public class JWTTest
         System.Console.WriteLine("==== token: " + token);
         System.Console.WriteLine("==== token: " + token.Length);
 
-        // await Task.Delay(5000);
-        // getDataFromToken(token);
-        // await Task.CompletedTask;
+        await Task.Delay(5000);
+        getDataFromToken(token);
+        await Task.CompletedTask;
     }
 
     private string generateJwtToken()
@@ -37,7 +37,7 @@ public class JWTTest
         var tokenDescriptor = new SecurityTokenDescriptor
         {
             Subject = new ClaimsIdentity(new[] { new Claim("UserId", "1") }),
-            Expires = DateTime.UtcNow.AddSeconds(5),
+            Expires = DateTime.UtcNow.AddSeconds(50000),
             SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256)
         };
         var token = tokenHandler.CreateToken(tokenDescriptor);

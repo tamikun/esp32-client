@@ -42,6 +42,7 @@ public class GetProcessAndMachineOfLineModel
     public string ProcessNo { get; set; }
     public string PatternNo { get; set; }
     public string PatterDescription { get; set; }
+    public int MachineId { get; set; }
     public string MachineName { get; set; }
     public string MachineNo { get; set; }
     public bool IoTMachine { get; set; }

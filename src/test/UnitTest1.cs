@@ -91,6 +91,7 @@ public class Tests
         var fact4 = await _linq2db.Insert(fact);
         Assert.That(fact4.Id, Is.EqualTo(4));
 
+        await _linq2db.Factory.AsQueryable().DeleteQuery();
     }
 
     [Test]
@@ -111,6 +112,9 @@ public class Tests
 
         var stations = await _linq2db.Station.Where(s => s.LineId == 1).ToListAsync();
         Assert.That(stations.Count, Is.EqualTo(2));
+
+        await _linq2db.Line.AsQueryable().DeleteQuery();
+        await _linq2db.Station.AsQueryable().DeleteQuery();
     }
 
     [Test]
@@ -144,6 +148,161 @@ public class Tests
         await _settingService.UpdateListSetting(listUpdate);
         Assert.That(_setting.GetApiTimeOut, Is.EqualTo(2000));
         Assert.That(_setting.PostFileTimeOut, Is.EqualTo(3000));
+    }
+
+    [Test]
+    [Order(6)]
+    public async Task ShouldSimpleSearchMonitoring()
+    {
+        // Prepare data
+        await _linq2db.Insert(new Factory { FactoryNo = "Factory 1", FactoryName = "Factory 1" });
+
+        await _lineService.Create(new LineCreateModel { FactoryId = 1, LineName = "line 1", LineNo = 1, NumberOfStation = 3, });
+
+        await _lineService.Create(new LineCreateModel { FactoryId = 1, LineName = "line 2", LineNo = 1, NumberOfStation = 3, });
+
+        var machine1 = await _machineService.Create(new MachineCreateModel { FactoryId = 1, IoTMachine = true, IpAddress = "1", MachineNo = 1, MachineName = "Machine1" });
+        var machine2 = await _machineService.Create(new MachineCreateModel { FactoryId = 1, IoTMachine = true, IpAddress = "2", MachineNo = 2, MachineName = "Machine2" });
+        var machine3 = await _machineService.Create(new MachineCreateModel { FactoryId = 1, IoTMachine = true, IpAddress = "3", MachineNo = 3, MachineName = "Machine3" });
+
+        machine1.StationId = 1;
+        machine1.LineId = 1;
+        await _linq2db.Update(machine1);
+
+        // Simple Search
+        string searchText = "Machine1";
+
+        int factoryId = 1;
+        var listLineId = new List<int>() { };
+
+        var lineQuery = _linq2db.Line.Where(s => s.FactoryId == factoryId);
+        if (listLineId.Count > 0) lineQuery = lineQuery.Where(s => listLineId.Contains(s.Id));
+
+        var result = await (from line in lineQuery
+                            join station in _linq2db.Station on line.Id equals station.LineId
+                            join product1 in _linq2db.Product on line.ProductId equals product1.Id into product2
+                            from product in product2.DefaultIfEmpty()
+                            join process1 in _linq2db.Process on station.ProcessId equals process1.Id into process2
+                            from process in process2.DefaultIfEmpty()
+                            from machine in _linq2db.Machine.Where(s =>
+                                s.FactoryId == factoryId
+                                && s.LineId == line.Id
+                                && s.StationId == station.Id
+                            ).DefaultIfEmpty()
+                            where line.LineName.Contains(searchText, StringComparison.OrdinalIgnoreCase)
+                            || line.LineNo.Contains(searchText, StringComparison.OrdinalIgnoreCase)
+                            || product.ProductName.Contains(searchText, StringComparison.OrdinalIgnoreCase)
+                            || product.ProductNo.Contains(searchText, StringComparison.OrdinalIgnoreCase)
+                            || process.ProcessName.Contains(searchText, StringComparison.OrdinalIgnoreCase)
+                            || process.ProcessNo.Contains(searchText, StringComparison.OrdinalIgnoreCase)
+                            || machine.MachineName.Contains(searchText, StringComparison.OrdinalIgnoreCase)
+                            || station.StationNo.Contains(searchText, StringComparison.OrdinalIgnoreCase)
+                            select new GetProcessAndMachineOfLineModel
+                            {
+                                LineId = line.Id,
+                                LineName = line.LineName,
+                                LineNo = line.LineNo,
+                                StationId = station.Id,
+                                StationName = station.StationName,
+                                StationNo = station.StationNo,
+                                ProductName = product.ProductName,
+                                ProductNo = product.ProductNo,
+                                ProcessName = process.ProcessName,
+                                ProcessNo = process.ProcessNo,
+                                PatternNo = process.PatternNo,
+                                PatterDescription = process.Description,
+                                MachineId = machine.Id,
+                                MachineName = machine.MachineName,
+                                MachineNo = machine.MachineNo,
+                                IoTMachine = machine.IoTMachine,
+                            }).OrderBy(s => s.LineId).ThenBy(s => s.StationId).ToListAsync();
+
+        System.Console.WriteLine("==== result: " + Newtonsoft.Json.JsonConvert.SerializeObject(result));
+
+        var listLine = result.Select(s => s.LineId).Distinct();
+
+        System.Console.WriteLine("==== listLine: " + Newtonsoft.Json.JsonConvert.SerializeObject(listLine));
+    }
+
+    [Test]
+    [Order(6)]
+    public async Task ShouldAdvancedSearchMonitoring()
+    {
+        // Prepare data
+        await _linq2db.Insert(new Factory { FactoryNo = "Factory 1", FactoryName = "Factory 1" });
+
+        await _lineService.Create(new LineCreateModel { FactoryId = 1, LineName = "line 1", LineNo = 1, NumberOfStation = 3, });
+
+        await _lineService.Create(new LineCreateModel { FactoryId = 1, LineName = "line 2", LineNo = 1, NumberOfStation = 3, });
+
+        var machine1 = await _machineService.Create(new MachineCreateModel { FactoryId = 1, IoTMachine = true, IpAddress = "1", MachineNo = 1, MachineName = "Machine1" });
+        var machine2 = await _machineService.Create(new MachineCreateModel { FactoryId = 1, IoTMachine = false, IpAddress = "2", MachineNo = 2, MachineName = "Machine2" });
+        var machine3 = await _machineService.Create(new MachineCreateModel { FactoryId = 1, IoTMachine = true, IpAddress = "3", MachineNo = 3, MachineName = "Machine3" });
+
+        machine1.StationId = 1;
+        machine1.LineId = 1;
+        await _linq2db.Update(machine1);
+
+        machine2.StationId = 4;
+        machine2.LineId = 2;
+        await _linq2db.Update(machine2);
+
+        // Advanced Search
+        bool iotMachine = false;
+        bool hasProduct = false;
+        bool hasMachine = true;
+
+        int factoryId = 1;
+        var listLineId = new List<int>() { };
+
+        var lineQuery = _linq2db.Line.Where(s => s.FactoryId == factoryId);
+
+        if (listLineId.Count > 0) lineQuery = lineQuery.Where(s => listLineId.Contains(s.Id));
+        if (hasProduct) lineQuery = lineQuery.Where(s => s.ProductId != 0);
+
+        var query = (from line in lineQuery
+                     join station in _linq2db.Station on line.Id equals station.LineId
+                     join product1 in _linq2db.Product on line.ProductId equals product1.Id into product2
+                     from product in product2.DefaultIfEmpty()
+                     join process1 in _linq2db.Process on station.ProcessId equals process1.Id into process2
+                     from process in process2.DefaultIfEmpty()
+                     from machine in _linq2db.Machine.Where(s =>
+                         s.FactoryId == factoryId
+                         && s.LineId == line.Id
+                         && s.StationId == station.Id
+                     ).DefaultIfEmpty()
+                     select new GetProcessAndMachineOfLineModel
+                     {
+                         LineId = line.Id,
+                         LineName = line.LineName,
+                         LineNo = line.LineNo,
+                         StationId = station.Id,
+                         StationName = station.StationName,
+                         StationNo = station.StationNo,
+                         ProductName = product.ProductName,
+                         ProductNo = product.ProductNo,
+                         ProcessName = process.ProcessName,
+                         ProcessNo = process.ProcessNo,
+                         PatternNo = process.PatternNo,
+                         PatterDescription = process.Description,
+                         MachineId = machine.Id,
+                         MachineName = machine.MachineName,
+                         MachineNo = machine.MachineNo,
+                         IoTMachine = machine.IoTMachine,
+                     });
+
+        if (hasMachine) query = query.Where(s => s.MachineId != 0);
+        if (iotMachine) query = query.Where(s => s.IoTMachine == true);
+
+        query = query.OrderBy(s => s.LineId).ThenBy(s => s.StationId);
+
+        var result = await query.ToListAsync();
+
+        System.Console.WriteLine("==== result: " + Newtonsoft.Json.JsonConvert.SerializeObject(result));
+
+        var listLine = result.Select(s => s.LineId).Distinct();
+
+        System.Console.WriteLine("==== listLine: " + Newtonsoft.Json.JsonConvert.SerializeObject(listLine));
     }
 
 }

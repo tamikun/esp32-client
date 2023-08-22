@@ -23,9 +23,9 @@
         </div>
     </div>
     <div class="alert-message" style="z-index: 2;">
-        @if (TempData["AlertMessage"] is not null)
+        @if (TempData["AlertMessageAuthentication"] is not null)
         {
-            var alertModel = JsonConvert.DeserializeObject<List<AlertModel>>(TempData["AlertMessage"]?.ToString() ?? "") ??
+            var alertModel = JsonConvert.DeserializeObject<List<AlertModel>>(TempData["AlertMessageAuthentication"]?.ToString() ?? "") ??
             new List<AlertModel>();
 
             foreach (var alert in alertModel)
