@@ -22,5 +22,7 @@ Or
   - [x] Thêm param IoT cho Machine
   - [ ] Thêm chức năng filter cho trang monitoring (SimpleSearch, AdvancedSearch)
   - [x] Render riêng các số liệu sản xuất
-  - [ ] Thêm setting screen
-  - [ ] Thêm chức năng quản lí User Session
+  - [x] Thêm setting screen
+  - [x] Tạo Jwt
+  - [x] Thêm chức năng quản lí User Session
+  - [ ] Thêm màn hình quản lí session
