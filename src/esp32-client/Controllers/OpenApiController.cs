@@ -1,4 +1,5 @@
-﻿using esp32_client.Services;
+﻿using System.Text.Json.Serialization;
+using esp32_client.Services;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
@@ -21,8 +22,10 @@ public class OpenApiController : ControllerBase
     public class SaveProductDataModel
     {
         [JsonProperty("Name")]
+        [JsonPropertyName("Name")]
         public string? Name { get; set; }
         [JsonProperty("product_number")]
+        [JsonPropertyName("product_number")]
         public int ProductNumber { get; set; }
     }
 
