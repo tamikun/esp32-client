@@ -236,6 +236,7 @@ public partial class LineService : ILineService
                          PatternNo = process.PatternNo,
                          PatterDescription = process.Description,
                          MachineId = machine.Id,
+                         MachineIp = machine.IpAddress,
                          MachineName = machine.MachineName,
                          MachineNo = machine.MachineNo,
                          IoTMachine = machine.IoTMachine,

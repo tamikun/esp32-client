@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Right-Click Menu</title>
+</head>
+<body>
+
+<div id="rightClickObject">
+    Right-click me
+</div>
+
+<div id="contextMenu" style="display: none; position: absolute; background-color: white; border: 1px solid #ccc;">
+    <div><a href="#" id="option1">Option 1</a></div>
+    <div><a href="#" id="option2">Option 2</a></div>
+</div>
+
+<script>
+var rightClickObject = document.getElementById("rightClickObject");
+var contextMenu = document.getElementById("contextMenu");
+
+//rightClickObject.addEventListener("contextmenu", function(event) {
+rightClickObject.addEventListener("click", function(event) {
+    event.preventDefault(); // Prevent the default browser context menu from appearing
+    contextMenu.style.display = "block";
+    contextMenu.style.left = event.clientX + "px";
+    contextMenu.style.top = event.clientY + "px";
+});
+
+document.addEventListener("click", function(event) {
+    if (event.target !== rightClickObject) {
+        contextMenu.style.display = "none";
+    }
+});
+
+document.getElementById("option1").addEventListener("click", function() {
+    window.location.href = "https://www.example.com/option1";
+    contextMenu.style.display = "none";
+});
+
+document.getElementById("option2").addEventListener("click", function() {
+    window.location.href = "https://www.example.com/option2";
+    contextMenu.style.display = "none";
+});
+</script>
+
+</body>
+</html>

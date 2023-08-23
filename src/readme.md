@@ -24,7 +24,8 @@ Or
   - [x] Thêm setting screen
   - [x] Tạo Jwt
   - [x] Thêm chức năng quản lí User Session
-  - [ ] Thêm màn hình quản lí session
-  - [ ] Delete all token
+  - [x] Thêm màn hình quản lí session
+  - [x] Delete all token
   - [ ] Back page
   - [ ] Link các đối tượng monitoring đến trang Setting với options (Setting station, Setting Machine)
+  - [ ] Display full param

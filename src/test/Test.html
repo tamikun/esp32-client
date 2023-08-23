@@ -12,42 +12,82 @@
     <link rel="stylesheet" href="../../../esp32-client/wwwroot/css/fontawesome/css/all.css">
     <script src="../../../esp32-client/wwwroot/js/site.js" asp-append-version="true"></script>
 </head>
-</head>
 
 <body>
-    <div class="alert-message" style="z-index: 2;">
-        <div class="alert alert-success alert-dismissible" >
-            <div class="alert-content"><strong>Success</strong><br> @Model.AlertMessage</div>
-            <div class="close-alert"><i class="fa fa-xmark" style="font-size:18px;cursor:pointer;"></i></div>
-        </div>
-    </div>
-    <form>
-        <div class="popup-container" style="display: block;">
-            <div class="popup-dialog">
-                <div class="popup-content">
-                        <div class="mb-3 d-grid">
-                            <h2 style="color: #005F99; text-align: center;"><strong>Sign in</strong></h2>
-                        </div>
-                        <div class="mb-3 d-grid">
-                            <label for="loginName" class="form-label"><strong>Login name</strong></label>
-                            <input id="loginName" name="loginName" type="text" placeholder="Login name">
-                        </div>
-                        
-                        <div class="mb-3 d-grid">
-                            <label for="password" class="form-label"><Strong>Password</Strong></label>
-                            <input id="password" name="password" type="password" placeholder="Password">
-                        </div>
-                        
-                        <div class="mb-3 d-grid text-danger">
-                        </div>
-            
-                        <div class="d-grid">
-                            <input type="submit" class="btn btn-primary" value="SIGN IN">
-                        </div>
+    
+    <div class="line-container">
+        <div class="line-info-header" onclick="openTab('')">
+            <div class="line-info-header-main">
+                <div>
+                    <div><strong>@Model[0].LineNo</strong></div>
+                    <div>@Model[0].ProductName</div>
                 </div>
             </div>
+            <div class="line-info-header-expanse">
+                <ul>
+                    <li>@Model[0].LineName</li>
+                    <li>@Model[0].ProductNo</li>
+                </ul>
+            </div>
         </div>
-    </form>
-</body>
+        <div class="line-info-body" id="line-info-body">
+                <div class="line-info-detail">
+                    <div class="line-info-detail-main">
+                        <div>@Model[j].StationNo</div>
+                        <div>@Model[j].ProcessName</div>
+                    </div>
+                    <div class="line-info-detail-expanse">
+                        <ul class="productNumber" id="@Model[j].StationId">
+                            <li></li>
+                        </ul>
+                    </div>
+                    <div class="line-info-detail-expanse">
+                        <ul>
+                            <li>@Model[j].MachineName</li>
+                            <li>@Model[j].ProcessNo</li>
+                        </ul>
+                    </div>
+                </div>
+        </div>
+    </div>
 
+    <div class="contextMenu" id="contextMenu" style="display: none; position: absolute; background-color: white; border: 1px solid #ccc;">
+        <div><a href="#qe" id="option1">Station setting</a></div>
+        <div><a href="#qeq" id="option2">Machine setting</a></div>
+        <div><a href="#qeq" id="option2">Machine setting</a></div>
+        <div><a href="#qeq" id="option2">Machine setting</a></div>
+    </div>
+
+</body>
+<style>
+    .contextMenu a{
+        text-decoration: none;
+        color: black;
+    }
+    .contextMenu div:hover{
+        background-color: #0060C0;
+    }
+    .contextMenu div:hover a{
+        color: white;
+    }
+</style>
+<script>
+
+    var lineInfoBody = document.getElementById('line-info-body');
+    var contextMenu = document.getElementById('contextMenu');
+
+    lineInfoBody.addEventListener("click", function(event) {
+        event.preventDefault(); // Prevent the default browser context menu from appearing
+        contextMenu.style.display = "block";
+        contextMenu.style.left = event.clientX + "px";
+        contextMenu.style.top = event.clientY + "px";
+    });
+
+    document.addEventListener('click', function(event) {
+        // Check if the clicked element is outside the line-info-body and contextMenu
+        if (!lineInfoBody.contains(event.target) && !contextMenu.contains(event.target)) {
+            contextMenu.style.display = 'none';
+        }
+    });
+</script>
 </html>

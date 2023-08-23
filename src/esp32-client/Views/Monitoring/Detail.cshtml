@@ -17,37 +17,41 @@
 
 @if(lineDataCount > 0)
 {
-    <div class="line-container">
-        <div class="line-info-header" onclick="openTab('@Url.Action("Line", "Setting", new {factoryId =  @factoryId})')">
+    <div class="line-container" id="line-container">
+        <div class="line-info-header">
             <div class="line-info-header-main">
                 <div>
-                    <div><strong>@Model[0].LineNo</strong></div>
-                    <div>@Model[0].ProductName</div>
+                    <div><strong>LineNo: @Model[0].LineNo</strong></div>
+                    <div>ProductName: @Model[0].ProductName</div>
                 </div>
             </div>
             <div class="line-info-header-expanse">
                 <ul>
-                    <li>@Model[0].LineName</li>
-                    <li>@Model[0].ProductNo</li>
+                    <li>LineName: @Model[0].LineName</li>
+                    <li>ProductNo: @Model[0].ProductNo</li>
                 </ul>
             </div>
         </div>
-        <div class="line-info-body" onclick="openTab('@Url.Action("LineDetail", "Setting", new {factoryId =  @factoryId, lineId = @lineId})')">
+        <div class="line-info-body" id="line-info-body">
             @for(int j = 0; j < lineDataCount; j++){
                 <div class="line-info-detail">
                     <div class="line-info-detail-main">
-                        <div>@Model[j].StationNo</div>
-                        <div>@Model[j].ProcessName</div>
+                        <div>StationNo: @Model[j].StationNo</div>
+                        <div>ProcessName: @Model[j].ProcessName</div>
                     </div>
                     <div class="line-info-detail-expanse">
-                        <ul class="productNumber" id="@Model[j].StationId">
+                        <ul class="productNumber" id="StationId: @Model[j].StationId">
                             <li></li>
                         </ul>
                     </div>
                     <div class="line-info-detail-expanse">
                         <ul>
-                            <li>@Model[j].MachineName</li>
-                            <li>@Model[j].ProcessNo</li>
+                            <li>MachineNo: @Model[j].MachineNo</li>
+                            <li>MachineName: @Model[j].MachineName</li>
+                            <li>MachineIP: @Model[j].MachineIp</li>
+                            <li>IotMachine: @Model[j].IoTMachine</li>
+                            <li>ProcessNo: @Model[j].ProcessNo</li>
+                            <li>PatternNo: @Model[j].PatternNo</li>
                         </ul>
                     </div>
                 </div>
@@ -58,10 +62,84 @@
             }
         </div>
     </div>
+
+    <div class="contextMenu" id="contextMenu" style="display: none; position: absolute; background-color: white; border: 1px solid #ccc;">
+        <div><a href="@Url.Action("Line", "Setting", new {factoryId =  @factoryId})" id="option1">Line setting</a></div>
+        <div><a href="@Url.Action("LineDetail", "Setting", new {factoryId =  @factoryId, lineId = @lineId})" id="option2">Station setting</a></div>
+        <div><a href="@Url.Action("Machine", "Setting", new {factoryId =  @factoryId})" id="option3">Machine setting</a></div>
+        <div><a href="@Url.Action("ProductLine", "Assigning", new {factoryId =  @factoryId})" id="option4">Assigning product</a></div>
+        <div><a href="@Url.Action("StationProcess", "Assigning", new {factoryId =  @factoryId, lineId = @lineId})" id="option5">Assigning process</a></div>
+        <div><a href="@Url.Action("MachineLine", "Assigning", new {factoryId =  @factoryId, lineId = @lineId})" id="option5">Assigning Machine</a></div>
+    </div>
 }
 
 @section Scripts{
+    <script>
+        var lineContainer = document.getElementById('line-container');
+        var contextMenu = document.getElementById('contextMenu');
+
+        lineContainer.addEventListener("click", function(event) {
+            event.preventDefault(); // Prevent the default browser context menu from appearing
+            contextMenu.style.display = "block";
+            contextMenu.style.left = event.clientX + "px";
+            contextMenu.style.top = event.clientY + "px";
+        });
+
+        document.addEventListener('click', function(event) {
+            if (!lineContainer.contains(event.target) && !contextMenu.contains(event.target)) {
+                contextMenu.style.display = 'none';
+            }
+        });
+    </script>
+    <script>
+        async function updateProductNumbers(startIndex, batchSize) {
+            var lineInfoDetailElements = document.querySelectorAll('.line-info-detail');
+
+            for (let i = startIndex; i < Math.min(startIndex + batchSize, lineInfoDetailElements.length); i++) {
+                const detailElement = lineInfoDetailElements[i];
+                const stationId = detailElement.querySelector('.productNumber').id;
+                const productNumberList = detailElement.querySelector(`.productNumber li`);
+
+                try {
+                    const response = await fetch(`/api/OpenApi/GetProductNumber/${stationId}`);
+                    const data = await response.json();
+                    productNumberList.textContent = data.result;
+                } catch (error) {
+                    console.error('Error fetching data:', error);
+                }
+            }
+        }
+
+        const batchSize = @_settings.ReloadMonitoringBatchSize; // Number of requests per batch
+        const requestDelay = @_settings.ReloadMonitoringMilliseconds; // Delay in milliseconds between batches
+
+        let startIndex = 0;
+
+        function processBatch() {
+            updateProductNumbers(startIndex, batchSize);
+            startIndex += batchSize;
+
+            if (startIndex >= document.querySelectorAll('.line-info-detail').length) {
+                startIndex = 0;
+            }
+        }
+
+        // Call the function initially
+        processBatch();
+
+        setInterval(processBatch, requestDelay);
+    </script>
     <style>
+        .contextMenu a{
+            text-decoration: none;
+            color: black;
+        }
+        .contextMenu div:hover{
+            background-color: #0060C0;
+        }
+        .contextMenu div:hover a{
+            color: white;
+        }
         .arrow {
             font-size: 20px;
             line-height: 1;
@@ -120,10 +198,10 @@
             background-color: #0a58ca38;
         }
 
-        .line-info-header, .line-info-body{
+        .line-container{
             cursor: pointer;
         }
-        .line-info-header:hover, .line-info-body:hover{
+        .line-container:hover{
            color: blue;
         }
         
