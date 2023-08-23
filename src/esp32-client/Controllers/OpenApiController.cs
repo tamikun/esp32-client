@@ -1,10 +1,12 @@
 ﻿using esp32_client.Services;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 
 namespace esp32_client.Controllers;
 
 [ApiController]
-[Route("api/[controller]/[action]")]
+// [Route("api/[controller]/[action]")]
+[Route("api/test/[action]")]
 public class OpenApiController : ControllerBase
 {
     private readonly IHttpContextAccessor _httpContextAccessor;
@@ -18,7 +20,9 @@ public class OpenApiController : ControllerBase
 
     public class SaveProductDataModel
     {
+        [JsonProperty("Name")]
         public string? Name { get; set; }
+        [JsonProperty("product_number")]
         public int ProductNumber { get; set; }
     }
 
