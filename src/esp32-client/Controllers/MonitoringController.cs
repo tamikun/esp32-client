@@ -42,6 +42,7 @@ public class MonitoringController : BaseController
     {
         var listId = new List<int>();
         listId.Add(lineId);
+
         var data = await _lineService.GetProcessAndMachineOfLine(factoryId, listId);
         ViewBag.FactoryId = factoryId;
         ViewBag.LineId = lineId;

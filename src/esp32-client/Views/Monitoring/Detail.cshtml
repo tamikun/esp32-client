@@ -9,7 +9,10 @@
 <h4 class="setting-header">
     <a href='@Url.Action("Index", "Monitoring", new {factoryId =  @factoryId})'>Monitoring screen</a>
     <svg class=" a-s-fa-Ha-pa c-qd" width="24px" height="24px" viewBox="0 0 24 24" focusable="false" fill="currentColor"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"></path></svg>
-    @Model[0].LineNo
+    @if(lineDataCount > 0)
+    {
+        @Model[0].LineNo
+    }
 </h4>
 
 @if(lineDataCount > 0)
