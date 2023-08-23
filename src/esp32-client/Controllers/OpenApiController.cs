@@ -47,7 +47,7 @@ public class OpenApiController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> GetProductNumber(int id)
     {
-        // var result = await _dataReportService.GetLastDataByStationId(id);
+        var result = await _dataReportService.GetLastDataByStationId(id);
 
         // Get value by cache instead
 
