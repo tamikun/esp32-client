@@ -26,16 +26,22 @@ public partial class DataReportService : IDataReportService
         return await _linq2Db.DataReport.ToListAsync();
     }
 
-    public async Task<DataReport> RandomCreate()
+    public async Task Create(string IPAddress, int productNumber)
     {
-        var data = new DataReport
+        var machine = await _linq2Db.Machine.Where(s => s.IpAddress == IPAddress).FirstOrDefaultAsync();
+        if (machine is not null)
         {
-            StationId = 1,
-            ProductNumber = DateTime.UtcNow.Second,
-            DateTimeUtc = DateTime.UtcNow,
-        };
-
-        return await _linq2Db.Insert(data);
+            if (machine.StationId != 0)
+            {
+                var data = new DataReport
+                {
+                    StationId = machine.StationId,
+                    ProductNumber = productNumber,
+                    DateTimeUtc = DateTime.UtcNow,
+                };
+                await _linq2Db.Insert(data);
+            }
+        }
     }
 
     public async Task<DataReport> GetLastDataByStationId(int stationId)

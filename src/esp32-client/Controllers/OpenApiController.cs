@@ -20,23 +20,23 @@ public class OpenApiController : ControllerBase
 
     public class SaveProductDataModel
     {
-        [JsonProperty("Name")]
-        [JsonPropertyName("Name")]
-        public string? Name { get; set; }
-        [JsonProperty("product_number")]
-        [JsonPropertyName("product_number")]
+#nullable disable
+        [JsonProperty("IPAddress")]
+        [JsonPropertyName("IPAddress")]
+        public string IPAddress { get; set; }
+        [JsonProperty("ProductNumber")]
+        [JsonPropertyName("ProductNumber")]
         public int ProductNumber { get; set; }
     }
 
     [HttpPost]
-    [Route("api/test/[action]")]
+    [Route("data_prod")]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> SaveproductData([FromBody] SaveProductDataModel model)
     {
         System.Console.WriteLine("==== model: " + Newtonsoft.Json.JsonConvert.SerializeObject(model));
-        // await _dataReportService.RandomCreate()
-        await Task.CompletedTask;
+        await _dataReportService.Create(model.IPAddress, model.ProductNumber);
         return Ok(model);
     }
 

@@ -6,7 +6,7 @@ namespace esp32_client.Services
     public interface IDataReportService
     {
         Task<List<DataReport>> GetAll();
-        Task<DataReport> RandomCreate();
+        Task Create(string IPAddress, int productNumber);
         Task<DataReport> GetLastDataByStationId(int stationId);
     }
 }
