@@ -7,7 +7,6 @@ namespace esp32_client.Controllers;
 
 [ApiController]
 // [Route("api/[controller]/[action]")]
-[Route("api/test/[action]")]
 public class OpenApiController : ControllerBase
 {
     private readonly IHttpContextAccessor _httpContextAccessor;
@@ -30,12 +29,13 @@ public class OpenApiController : ControllerBase
     }
 
     [HttpPost]
+    [Route("api/test/[action]")]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> SaveproductData([FromBody] SaveProductDataModel model)
     {
         System.Console.WriteLine("==== model: " + Newtonsoft.Json.JsonConvert.SerializeObject(model));
-        //await _dataReportService.RandomCreate()
+        // await _dataReportService.RandomCreate()
         await Task.CompletedTask;
         return Ok(model);
     }
