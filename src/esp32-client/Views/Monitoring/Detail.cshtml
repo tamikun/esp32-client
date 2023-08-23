@@ -66,7 +66,7 @@
         <div><a href="@Url.Action("Line", "Setting", new {factoryId =  @factoryId})">Line setting</a></div>
         <div><a href="@Url.Action("LineDetail", "Setting", new {factoryId =  @factoryId, lineId = @lineId})">Station setting</a></div>
         <div><a href="@Url.Action("Product", "Setting", new {factoryId =  @factoryId})">Product setting</a></div>
-        <div><a href="@Url.Action("ProductDetail", "Setting", new {factoryId =  @factoryId, productId = @line.ProductId})">Process setting</a></div>
+        <div><a href="@Url.Action("ProductDetail", "Setting", new {factoryId =  @factoryId, productId = @line?.ProductId})">Process setting</a></div>
         <div><a href="@Url.Action("Machine", "Setting", new {factoryId =  @factoryId})">Machine setting</a></div>
         <div><a href="@Url.Action("ProductLine", "Assigning", new {factoryId =  @factoryId})">Assigning product</a></div>
         <div><a href="@Url.Action("StationProcess", "Assigning", new {factoryId =  @factoryId, lineId = @lineId})">Assigning process</a></div>
@@ -159,7 +159,7 @@
         }
 
         .line-info-header-main, .line-info-header-expanse{
-            width: 150px;
+            width: 200px;
         }
 
         .line-info-header-main{
