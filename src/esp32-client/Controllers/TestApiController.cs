@@ -5,6 +5,7 @@ using esp32_client.Models.Singleton;
 namespace esp32_client.Controllers;
 
 [ApiController]
+[Authentication]
 [Route("api/[controller]/[action]")]
 public class TestApiController : ControllerBase
 {
@@ -82,5 +83,23 @@ public class TestApiController : ControllerBase
         await Task.CompletedTask;
 
         return Ok(dict);
+    }
+
+    [HttpGet]
+    [ProducesResponseType(StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> GetTokenHeader()
+    {
+        var auth = HttpContext.Request.Headers["Authorization"].FirstOrDefault();
+        string? token = null;
+        if (!string.IsNullOrEmpty(auth) && auth.StartsWith("Bearer "))
+        {
+            token = auth.Substring("Bearer ".Length);
+            // Now you have the token value without the "Bearer" prefix
+        }
+
+        await Task.CompletedTask;
+
+        return Ok(token);
     }
 }

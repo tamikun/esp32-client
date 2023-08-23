@@ -9,11 +9,27 @@ namespace esp32_client.Services
 {
     public class Authentication : ActionFilterAttribute
     {
+        private string? GetBearerToken(ActionExecutingContext context)
+        {
+            var auth = context.HttpContext.Request.Headers["Authorization"].FirstOrDefault();
+            string? token = null;
+            if (!string.IsNullOrEmpty(auth) && auth.StartsWith("Bearer "))
+            {
+                token = auth.Substring("Bearer ".Length);
+            }
+            return token;
+        }
+
         // public override void OnActionExecuting(ActionExecutingContext context)
         public override async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {
-            var token = context.HttpContext.Session.GetString("Token");
+            var token = GetBearerToken(context);
+            
+            if (token is null)
+                token = context.HttpContext.Session.GetString("Token");
+            
             var listAlert = new List<AlertModel>();
+            
             if (token is null)
             {
                 // Did not log in. Do not show alert

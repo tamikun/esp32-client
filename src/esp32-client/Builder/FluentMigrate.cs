@@ -269,7 +269,7 @@ public class AddInitData : AutoReversingMigration
             new Setting{Name = "GetApiProductNumberTimeOut", Value = "5000", EnableEditing = true},
             new Setting{Name = "AcceptedFile", Value = ".VDT,.PMD", EnableEditing = true},
             new Setting{Name = "MinutesPerSession", Value = "60", EnableEditing = true},
-            new Setting{Name = "DeleteOnUploadingEmptyFile", Value = "true", EnableEditing = true},
+            new Setting{Name = "DeleteOnUploadingEmptyFile", Value = "false", EnableEditing = true},
             new Setting{Name = "ReloadMonitoringMilliseconds", Value = "5000", EnableEditing = true},
             new Setting{Name = "ReloadMonitoringBatchSize", Value = "20", EnableEditing = true},
             new Setting{Name = "EnableLog", Value = "false", EnableEditing = true},
