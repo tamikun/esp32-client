@@ -26,6 +26,5 @@ Or
   - [x] Thêm chức năng quản lí User Session
   - [x] Thêm màn hình quản lí session
   - [x] Delete all token
-  - [ ] Back page
   - [ ] Link các đối tượng monitoring đến trang Setting với options (Setting station, Setting Machine)
   - [ ] Display full param
