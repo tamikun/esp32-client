@@ -18,5 +18,7 @@ namespace esp32_client.Services
         Task Delete(string token);
 
         Task Delete(int id);
+
+        Task DeleteAll(int userId, string token);
     }
 }

@@ -18,6 +18,17 @@
                 <div>
                     Session table
                 </div>
+                <div>
+                    @using (Html.BeginForm("DeleteAllSession", "User", FormMethod.Post, new
+                    {
+                        @enctype = "multipart/form-data"
+                    }))
+                    {
+                        <input type="number" id="userId" name="userId" value='@userId' style="display: none;">
+                        <input type="text" id="token" name="token" value='@token' style="display: none;">
+                        <input type="submit" class="btn btn-danger" value="Delete All">
+                    }
+                </div>
             </div>
         </th>
     </thead>

@@ -15,7 +15,6 @@ Or
 
 - Requirements:
   - [x] Chỉnh sửa hiển thị trang Monitoring
-  - [ ] Link các đối tượng monitoring đến trang Setting
   - [x] Sửa thứ tự hiển thị các cột trong setting
   - [x] Thêm nhãn cho mỗi trang
   - [x] Load test cho web (500 request / 1s; 1000 request / 5s)
@@ -26,3 +25,6 @@ Or
   - [x] Tạo Jwt
   - [x] Thêm chức năng quản lí User Session
   - [ ] Thêm màn hình quản lí session
+  - [ ] Delete all token
+  - [ ] Back page
+  - [ ] Link các đối tượng monitoring đến trang Setting với options (Setting station, Setting Machine)

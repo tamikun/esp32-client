@@ -37,30 +37,14 @@ public class UserController : BaseController
         return View();
     }
 
-
-
     [HttpPost]
     public async Task<IActionResult> Login(string loginName, string password)
     {
         var userAccount = await _userAccountService.GetByLoginName(loginName);
         if (userAccount is not null)
         {
-            // Perform custom authentication logic here
             if (await _userAccountService.IsValidUser(userAccount, password))
             {
-                // // Authentication successful
-                // // Store the username in session
-                // _httpContextAccessor?.HttpContext?.Session.SetString("LoginName", loginName);
-                // _httpContextAccessor?.HttpContext?.Session.SetString("UserName", userAccount.UserName);
-
-                // // Set user session for _settings.MinutesPerSession minutes
-                // var expiredTime = DateTime.UtcNow.AddMinutes(_settings.MinutesPerSession).ToString("o");
-                // _httpContextAccessor?.HttpContext?.Session.SetString("ExpiredTime", expiredTime);
-
-                // // Store the role in session
-                // var userRight = await _userAccountService.GetUserRight(loginName);
-                // if (userRight is not null)
-                //     _httpContextAccessor?.HttpContext?.Session.SetString("UserRight", JsonConvert.SerializeObject(userRight));
                 var token = JwtToken.GenerateJwtToken(userAccount.Id, userAccount.UserName, userAccount.LoginName);
 
                 _httpContextAccessor?.HttpContext?.Session.SetString("Token", token);
@@ -70,7 +54,6 @@ public class UserController : BaseController
                     UserId = userAccount.Id,
                     Token = token
                 });
-
                 return RedirectToAction("Index", "Home");
             }
         }
@@ -155,7 +138,7 @@ public class UserController : BaseController
 
         ViewBag.UserId = user.UserId;
         ViewBag.Token = token;
-        
+
         await Task.CompletedTask;
 
         return View();
@@ -171,6 +154,17 @@ public class UserController : BaseController
             await _userSessionService.Delete(sessionId);
         }, RedirectToAction("Session"));
     }
+
+    [HttpPost]
+    [Authentication]
+    public async Task<IActionResult> DeleteAllSession(int userId, string token)
+    {
+        return await HandleActionAsync(async () =>
+        {
+            await _userSessionService.DeleteAll(userId, token);
+        }, RedirectToAction("Session"));
+    }
+
     public async Task<IActionResult> Logout()
     {
         var token = _httpContextAccessor?.HttpContext?.Session.GetString("Token");

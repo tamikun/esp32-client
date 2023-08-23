@@ -65,5 +65,10 @@ public partial class UserSessionService : IUserSessionService
     {
         await _linq2Db.UserSession.Where(s => s.Id == id).DeleteQuery();
     }
+    
+    public async Task DeleteAll(int userId, string token)
+    {
+        await _linq2Db.UserSession.Where(s => s.UserId == userId && s.Token != token).DeleteQuery();
+    }
 
 }
