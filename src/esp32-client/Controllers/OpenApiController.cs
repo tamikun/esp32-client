@@ -16,12 +16,21 @@ public class OpenApiController : ControllerBase
         _dataReportService = dataReportService;
     }
 
+    public class SaveProductDataModel
+    {
+        public string? Name { get; set; }
+        public int ProductNumber { get; set; }
+    }
+
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> SaveproductData()
+    public async Task<IActionResult> SaveproductData([FromBody] SaveProductDataModel model)
     {
-        return Ok(await _dataReportService.RandomCreate());
+        System.Console.WriteLine("==== model: " + Newtonsoft.Json.JsonConvert.SerializeObject(model));
+        //await _dataReportService.RandomCreate()
+        await Task.CompletedTask;
+        return Ok(model);
     }
 
     [HttpGet]
