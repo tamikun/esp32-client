@@ -53,7 +53,7 @@ public class OpenApiController : ControllerBase
 
         var response = new
         {
-            result = 0
+            result = result.ProductNumber
         };
         await Task.CompletedTask;
         return Ok(response);
