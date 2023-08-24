@@ -5,8 +5,14 @@
     int userId = ViewBag.UserId;
     
     // Do not get current session
-    var sessions = await _userSessionService.GetByUserId(userId);
-    sessions = sessions.Where(s => s.Token != token).ToList();
+    var userSession = await _userSessionService.GetByUserId(userId);
+    var sessions = userSession.Where(s => s.Token != token).ToList();
+
+    var currSession = userSession.Where(s => s.Token == token).FirstOrDefault();
+    var displayCurrToken = new string(currSession?.Token.ToCharArray().TakeLast(50).ToArray());
+
+    System.Console.WriteLine("==== token: " + Newtonsoft.Json.JsonConvert.SerializeObject(token));
+    System.Console.WriteLine("==== currSession: " + Newtonsoft.Json.JsonConvert.SerializeObject(currSession));
 } 
 
 <h4 class="setting-header">User session</h4>
@@ -40,11 +46,16 @@
         </tr>
     </thead>
     <tbody>
+        <tr>
+            <td class="token" onclick="showContextMenu(event, '@currSession?.Token')">...@displayCurrToken</td>
+            <td>@currSession?.ExpiredTime.AddHours(7)</td>
+            <td></td>
+        </tr>
         @foreach (var item in sessions)
         {
             var displayToken = new string(item.Token.ToCharArray().TakeLast(50).ToArray());
             <tr>
-                <td>...@displayToken</td>
+                <td class="token" onclick="showContextMenu(event, '@item.Token')">...@displayToken</td>
                 <td>@item.ExpiredTime.AddHours(7)</td>
                 <td>
                     <div style="display: flex; justify-content: space-around; align-items: center;">
@@ -85,7 +96,38 @@
     </div>
 </div>
 
+<div class="contextMenu" id="contextMenu" style="display: none; position: absolute; background-color: white; border: 1px solid #ccc;">
+    <div onclick="copyToClipBoard()" style="cursor: copy;">Copy<span id="save-token" style="display: none;"></span></div>
+</div>
+
 @section Scripts{
+    <script>
+
+        var token = document.getElementsByClassName('token');
+        var contextMenu = document.getElementById('contextMenu');
+        
+        function showContextMenu(event, token){
+            event.preventDefault();
+            contextMenu.style.display = "block";
+            contextMenu.style.left = event.clientX + "px";
+            contextMenu.style.top = event.clientY + "px";
+            $("#save-token").text(token);
+        }
+
+        document.addEventListener('click', function(event) {
+            if (!$(event.target).hasClass('token') && !contextMenu.contains(event.target)) {
+                contextMenu.style.display = 'none';
+            }
+        });
+
+        function copyToClipBoard(){
+            var saveToken = document.getElementById('save-token').textContent;
+            console.log(saveToken);
+            navigator.clipboard.writeText(saveToken);
+
+            contextMenu.style.display = 'none';
+        }
+    </script>
     <script>
         function openDeletePopup(id, sessionId) {
 

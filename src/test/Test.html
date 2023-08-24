@@ -14,80 +14,113 @@
 </head>
 
 <body>
-    
-    <div class="line-container">
-        <div class="line-info-header" onclick="openTab('')">
-            <div class="line-info-header-main">
-                <div>
-                    <div><strong>@Model[0].LineNo</strong></div>
-                    <div>@Model[0].ProductName</div>
-                </div>
-            </div>
-            <div class="line-info-header-expanse">
-                <ul>
-                    <li>@Model[0].LineName</li>
-                    <li>@Model[0].ProductNo</li>
-                </ul>
-            </div>
-        </div>
-        <div class="line-info-body" id="line-info-body">
-                <div class="line-info-detail">
-                    <div class="line-info-detail-main">
-                        <div>@Model[j].StationNo</div>
-                        <div>@Model[j].ProcessName</div>
-                    </div>
-                    <div class="line-info-detail-expanse">
-                        <ul class="productNumber" id="@Model[j].StationId">
-                            <li></li>
-                        </ul>
-                    </div>
-                    <div class="line-info-detail-expanse">
-                        <ul>
-                            <li>@Model[j].MachineName</li>
-                            <li>@Model[j].ProcessNo</li>
-                        </ul>
-                    </div>
-                </div>
-        </div>
-    </div>
+    <h4 class="setting-header">User session</h4>
 
-    <div class="contextMenu" id="contextMenu" style="display: none; position: absolute; background-color: white; border: 1px solid #ccc;">
-        <div><a href="#qe" id="option1">Station setting</a></div>
-        <div><a href="#qeq" id="option2">Machine setting</a></div>
-        <div><a href="#qeq" id="option2">Machine setting</a></div>
-        <div><a href="#qeq" id="option2">Machine setting</a></div>
-    </div>
+<table class="normal-table table-hover">
+    <thead>
+        <th colspan="100%">
+            <div style="display: flex;justify-content: space-between;">
+                <div>
+                    Session table
+                </div>
+            </div>
+        </th>
+    </thead>
+    <thead>
+        <tr>
+            <th>Token</th>
+            <th>Expired time</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td class="token" onclick="showContextMenu(event, '@item.Token1')">...@displayToken</td>
+            <td>@item.ExpiredTime.AddHours(7)</td>
+            <td>
+                <div style="display: flex; justify-content: space-around; align-items: center;">
+                    <div id="delete">
+                        <button type="button" class="btn btn-danger btn-sm" style="color: white;"
+                            onclick="openDeletePopup('deleteSession', '@item.Id')">
+                            <i class="fa fa-light fa-trash" style="color: white;"></i>
+                            Delete
+                        </button>
+                    </div>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td class="token" onclick="showContextMenu(event, '@item.Token2')">...@displayToken</td>
+            <td>@item.ExpiredTime.AddHours(7)</td>
+            <td>
+                <div style="display: flex; justify-content: space-around; align-items: center;">
+                    <div id="delete">
+                        <button type="button" class="btn btn-danger btn-sm" style="color: white;"
+                            onclick="openDeletePopup('deleteSession', '@item.Id')">
+                            <i class="fa fa-light fa-trash" style="color: white;"></i>
+                            Delete
+                        </button>
+                    </div>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td class="token" onclick="showContextMenu(event, '@item.Token3')">...@displayToken</td>
+            <td>@item.ExpiredTime.AddHours(7)</td>
+            <td>
+                <div style="display: flex; justify-content: space-around; align-items: center;">
+                    <div id="delete">
+                        <button type="button" class="btn btn-danger btn-sm" style="color: white;"
+                            onclick="openDeletePopup('deleteSession', '@item.Id')">
+                            <i class="fa fa-light fa-trash" style="color: white;"></i>
+                            Delete
+                        </button>
+                    </div>
+                </div>
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+<div class="contextMenu" id="contextMenu" style="display: none; position: absolute; background-color: white; border: 1px solid #ccc;">
+    <div onclick="copyToClipBoard()" style="cursor: copy;">Copy<span id="save-token" style="display: none;"></span></div>
+</div>
 
 </body>
-<style>
-    .contextMenu a{
-        text-decoration: none;
-        color: black;
-    }
-    .contextMenu div:hover{
-        background-color: #0060C0;
-    }
-    .contextMenu div:hover a{
-        color: white;
-    }
-</style>
+
+<script src="../esp32-client/wwwroot/lib/jquery/dist/jquery-3.6.0.min.js"></script>
 <script>
 
-    var lineInfoBody = document.getElementById('line-info-body');
+    var token = document.getElementsByClassName('token');
     var contextMenu = document.getElementById('contextMenu');
-
-    lineInfoBody.addEventListener("click", function(event) {
+    
+    function showContextMenu(event, token){
         event.preventDefault(); // Prevent the default browser context menu from appearing
         contextMenu.style.display = "block";
-        contextMenu.style.left = event.clientX + "px";
-        contextMenu.style.top = event.clientY + "px";
-    });
+        // Calculate the adjusted position considering scroll offset
+        var scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
+        var scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        var menuLeft = event.clientX + scrollLeft;
+        var menuTop = event.clientY + scrollTop;
+
+        contextMenu.style.left = menuLeft + "px";
+        contextMenu.style.top = menuTop + "px";
+        $("#save-token").text(token);
+    }
 
     document.addEventListener('click', function(event) {
-        // Check if the clicked element is outside the line-info-body and contextMenu
-        if (!lineInfoBody.contains(event.target) && !contextMenu.contains(event.target)) {
+        if (!$(event.target).hasClass('token') && !contextMenu.contains(event.target)) {
             contextMenu.style.display = 'none';
         }
     });
+
+    function copyToClipBoard(){
+        var saveToken = document.getElementById('save-token').textContent;
+        console.log(saveToken);
+        navigator.clipboard.writeText(saveToken);
+
+        contextMenu.style.display = 'none';
+    }
 </script>
+
 </html>
