@@ -33,8 +33,7 @@
 
 function showSubmitLoadingPopup(event) {
     event.preventDefault();
-    var loadingPopup = document.querySelector('.loading-popup');
-    loadingPopup.style.display = 'flex';
+    showNormalLoadingPopup();
     event.target.form.submit();
 }
 
@@ -82,4 +81,9 @@ function openInNewTab(url) {
 
 function openTab(url) {
     window.open(url, '_self').focus();
+}
+
+function goBack(){
+    var previousURL = document.referrer;
+    openTab(previousURL);
 }
