@@ -47,13 +47,11 @@ public class OpenApiController : ControllerBase
     {
         var result = await _dataReportService.GetLastDataByStationId(id);
 
-        // Get value by cache instead
-
         var response = new
         {
             result = result.ProductNumber
         };
-        await Task.CompletedTask;
+
         return Ok(response);
     }
 }

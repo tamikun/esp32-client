@@ -20,11 +20,14 @@ Or
   - [x] Load test cho web (500 request / 1s; 1000 request / 5s)
   - [x] Thêm param IoT cho Machine
   - [x] Thêm chức năng filter cho trang monitoring
-  - [x] Render riêng các số liệu sản xuất
+  - [x] Render riêng các số liệu product cho trang monitoring
   - [x] Thêm setting screen
   - [x] Tạo Jwt
   - [x] Thêm chức năng quản lí User Session
   - [x] Thêm màn hình quản lí session
-  - [x] Delete all token
+  - [x] Thêm chức năng delete all token
   - [x] Display full param
-  - [ ] Link các đối tượng monitoring đến trang Setting với options (Setting station, Setting Machine)
+  - [x] Link các đối tượng monitoring đến trang Setting với options (Setting station, Setting Machine)
+  - [ ] Reset product number of machine
+- Caching ???
+- Phân trang cho các trang Setting và Assigning ???
