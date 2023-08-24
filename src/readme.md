@@ -26,8 +26,11 @@ Or
   - [x] Thêm chức năng quản lí User Session
   - [x] Thêm màn hình quản lí session
   - [x] Thêm chức năng delete all token
+  - [x] Thêm chức năng copy token, dùng để authorize khi gọi api từ các server khác
   - [x] Display full param
   - [x] Link các đối tượng monitoring đến trang Setting với options (Setting station, Setting Machine)
+  - [ ] Lưu dữ liệu trong bao lâu?
   - [ ] Reset product number of machine
 - Caching ???
 - Phân trang cho các trang Setting và Assigning ???
+- Tách bảng dữ liệu thành 2 bảng chính và phụ (tăng performance)
