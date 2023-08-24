@@ -63,7 +63,6 @@ namespace esp32_client.Models.Singleton
         public int MinCharMachineFormat { get; set; }
         public string GetProductNumberFormat { get; set; }
         public string AcceptedFile { get; set; }
-        public int MinutesPerSession { get; set; }
         public bool DeleteOnUploadingEmptyFile { get; set; }
         public int ReloadMonitoringMilliseconds { get; set; }
         public int ReloadMonitoringBatchSize { get; set; }
