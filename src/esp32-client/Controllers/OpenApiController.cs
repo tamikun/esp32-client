@@ -18,17 +18,6 @@ public class OpenApiController : ControllerBase
         _dataReportService = dataReportService;
     }
 
-    public class SaveProductDataModel
-    {
-#nullable disable
-        [JsonProperty("IPAddress")]
-        [JsonPropertyName("IPAddress")]
-        public string IPAddress { get; set; }
-        [JsonProperty("ProductNumber")]
-        [JsonPropertyName("ProductNumber")]
-        public int ProductNumber { get; set; }
-    }
-
     [HttpPost]
     [Route("data_prod")]
     [ProducesResponseType(StatusCodes.Status201Created)]
@@ -41,6 +30,7 @@ public class OpenApiController : ControllerBase
 
     [HttpGet]
     [Route("api/OpenApi/GetProductNumber/{id}")]
+    [Authentication]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> GetProductNumber(int id)
@@ -53,5 +43,16 @@ public class OpenApiController : ControllerBase
         };
 
         return Ok(response);
+    }
+
+    public class SaveProductDataModel
+    {
+#nullable disable
+        [JsonProperty("IPAddress")]
+        [JsonPropertyName("IPAddress")]
+        public string IPAddress { get; set; }
+        [JsonProperty("ProductNumber")]
+        [JsonPropertyName("ProductNumber")]
+        public int ProductNumber { get; set; }
     }
 }
