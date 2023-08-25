@@ -140,7 +140,9 @@ namespace esp32_client.Builder
             var connectionString = builder.Configuration["Settings:ConnectionString"].ToString();
 
             builder.Services.AddDbContext<Context>(
-                options => options.UseMySQL(connectionString));
+                options => options.UseMySQL(connectionString)
+                .UseLoggerFactory(LoggerFactory.Create(builder => builder.AddFilter(DbLoggerCategory.Database.Command.Name, LogLevel.None)))
+            );
         }
     }
 }

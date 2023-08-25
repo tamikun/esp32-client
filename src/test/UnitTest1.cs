@@ -17,7 +17,6 @@ public class Tests
     private IMachineService _machineService;
     private ILineService _lineService;
     private LinqToDb _linq2db;
-    private Context _context;
 
     public Tests()
     {
@@ -27,7 +26,6 @@ public class Tests
         _machineService = BaseTest.GetService<IMachineService>();
         _linq2db = BaseTest.GetService<LinqToDb>();
         _lineService = BaseTest.GetService<ILineService>();
-        _context = BaseTest.GetService<Context>();
     }
 
     [SetUp]
@@ -94,9 +92,6 @@ public class Tests
 
         var fact4 = await _linq2db.Insert(fact);
         Assert.That(fact4.Id, Is.EqualTo(4));
-
-        // var factories = await _context.Factory.AsQueryable().ToListAsync();
-        // System.Console.WriteLine("==== factories: " + Newtonsoft.Json.JsonConvert.SerializeObject(factories));
 
         await _linq2db.Entity<Factory>().AsQueryable().DeleteQuery();
     }

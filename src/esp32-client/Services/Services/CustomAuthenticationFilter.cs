@@ -24,12 +24,12 @@ namespace esp32_client.Services
         public override async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {
             var token = GetBearerToken(context);
-            
+
             if (token is null)
                 token = context.HttpContext.Session.GetString("Token");
-            
+
             var listAlert = new List<AlertModel>();
-            
+
             if (token is null)
             {
                 // Did not log in. Do not show alert
@@ -94,11 +94,7 @@ namespace esp32_client.Services
             }
 
             var controller = context.Controller as Microsoft.AspNetCore.Mvc.Controller;
-            if (controller is null)
-            {
-                System.Console.WriteLine("Controller is null.......");
-            }
-            else
+            if (controller is not null)
             {
                 controller.TempData["AlertMessageAuthentication"] = JsonConvert.SerializeObject(listAlert);
             }
