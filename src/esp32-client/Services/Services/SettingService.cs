@@ -1,4 +1,3 @@
-using AutoMapper;
 using esp32_client.Builder;
 using esp32_client.Domain;
 using esp32_client.Models.Singleton;
@@ -6,9 +5,6 @@ using LinqToDB;
 
 namespace esp32_client.Services;
 
-/// <summary>
-/// 
-/// </summary>
 public partial class SettingService : ISettingService
 {
 

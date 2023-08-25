@@ -8,9 +8,6 @@ using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 
 namespace esp32_client.Services;
 
-/// <summary>
-/// 
-/// </summary>
 public partial class UserAccountService : IUserAccountService
 {
 

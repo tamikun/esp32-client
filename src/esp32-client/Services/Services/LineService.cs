@@ -7,9 +7,6 @@ using LinqToDB;
 
 namespace esp32_client.Services;
 
-/// <summary>
-/// 
-/// </summary>
 public partial class LineService : ILineService
 {
 

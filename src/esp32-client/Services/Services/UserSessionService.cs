@@ -6,12 +6,8 @@ using LinqToDB;
 
 namespace esp32_client.Services;
 
-/// <summary>
-/// 
-/// </summary>
 public partial class UserSessionService : IUserSessionService
 {
-
     private readonly LinqToDb _linq2db;
     private readonly Settings _settings;
 

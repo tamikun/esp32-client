@@ -37,20 +37,6 @@ public class BaseTest
             => options
                 .UseSQLite(connectionString)
             , ServiceLifetime.Scoped);
-
-
-        // builder.Services.AddSingleton<DbConnection, SqliteConnection>(serviceProvider =>
-        // {
-        //     var connection = new SqliteConnection(connectionString);
-        //     connection.Open();
-        //     return connection;
-        // });
-
-        // builder.Services.AddDbContext<Context>((serviceProvider, options) =>
-        // {
-        //     var connection = serviceProvider.GetRequiredService<DbConnection>();
-        //     options.UseSqlite(connection);
-        // });
         
         builder.Services.AddDbContext<Context>(options =>
             options.UseSqlite(connectionString)

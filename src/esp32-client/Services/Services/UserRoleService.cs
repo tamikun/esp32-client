@@ -6,12 +6,8 @@ using LinqToDB;
 
 namespace esp32_client.Services;
 
-/// <summary>
-/// 
-/// </summary>
 public partial class UserRoleService : IUserRoleService
 {
-
     private readonly LinqToDb _linq2db;
     private readonly IMapper _mapper;
 
