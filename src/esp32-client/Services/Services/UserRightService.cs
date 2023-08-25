@@ -12,24 +12,24 @@ namespace esp32_client.Services;
 public partial class UserRightService : IUserRightService
 {
 
-    private readonly LinqToDb _linq2Db;
+    private readonly LinqToDb _linq2db;
     private readonly IMapper _mapper;
 
     public UserRightService(LinqToDb linq2Db, IMapper mapper)
     {
-        _linq2Db = linq2Db;
+        _linq2db = linq2Db;
         _mapper = mapper;
     }
 
     public async Task<UserRight?> GetById(int id)
     {
-        var UserRight = await _linq2Db.UserRight.Where(s => s.Id == id).FirstOrDefaultAsync();
+        var UserRight = await _linq2db.Entity<UserRight>().Where(s => s.Id == id).FirstOrDefaultAsync();
         return UserRight;
     }
 
     public async Task<List<UserRight>> GetAll()
     {
-        return await _linq2Db.UserRight.ToListAsync();
+        return await _linq2db.Entity<UserRight>().ToListAsync();
     }
 
     public async Task<UserRight> Create(UserRightCreateModel model)
@@ -41,7 +41,7 @@ public partial class UserRightService : IUserRightService
             ActionName = model.ActionName,
         };
 
-        UserRight = await _linq2Db.Insert(UserRight);
+        UserRight = await _linq2db.Insert(UserRight);
 
         return UserRight;
     }
@@ -55,7 +55,7 @@ public partial class UserRightService : IUserRightService
         UserRight.ControllerName = model.ControllerName;
         UserRight.ActionName = model.ActionName;
 
-        await _linq2Db.Update(UserRight);
+        await _linq2db.Update(UserRight);
 
         return UserRight;
     }
@@ -64,7 +64,7 @@ public partial class UserRightService : IUserRightService
     {
         var UserRight = await GetById(id);
         if (UserRight is not null)
-            await _linq2Db.Delete(UserRight);
+            await _linq2db.Delete(UserRight);
     }
 
 }

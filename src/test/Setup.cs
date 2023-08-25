@@ -6,6 +6,7 @@ using LinqToDB.AspNet;
 using Microsoft.Extensions.DependencyInjection;
 using LinqToDB.Data;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.EntityFrameworkCore;
 
 namespace test;
 
@@ -14,7 +15,7 @@ public class BaseTest
 {
 #nullable disable
     private static IServiceProvider _serviceProvider;
-    private static readonly string connectionString = "Data Source=database.sqlite;Mode=Memory;New=True;";
+    private static readonly string connectionString = "Data Source=database.sqlite;Mode=Memory;";
 
     [OneTimeSetUp]
     public void OneTimeSetUp()
@@ -34,6 +35,9 @@ public class BaseTest
         => options
             .UseSQLite(connectionString)
         , ServiceLifetime.Scoped);
+
+        builder.Services.AddDbContext<Context>(
+                options => options.UseSqlite(connectionString), ServiceLifetime.Scoped);
 
         builder.ConfigureServices();
 

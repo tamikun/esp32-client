@@ -16,7 +16,7 @@ namespace esp32_client.Services;
 public partial class MachineService : IMachineService
 {
 
-    private readonly LinqToDb _linq2Db;
+    private readonly LinqToDb _linq2db;
     private readonly IMapper _mapper;
     private readonly IProcessService _processService;
     private readonly ILogService _logService;
@@ -24,7 +24,7 @@ public partial class MachineService : IMachineService
 
     public MachineService(LinqToDb linq2Db, IMapper mapper, IProcessService processService, Settings settings, ILogService logService)
     {
-        _linq2Db = linq2Db;
+        _linq2db = linq2Db;
         _mapper = mapper;
         _processService = processService;
         _settings = settings;
@@ -33,26 +33,26 @@ public partial class MachineService : IMachineService
 
     public async Task<Machine?> GetById(int id)
     {
-        var machine = await _linq2Db.Machine.Where(s => s.Id == id).FirstOrDefaultAsync();
+        var machine = await _linq2db.Entity<Machine>().Where(s => s.Id == id).FirstOrDefaultAsync();
         return machine;
     }
 
     public async Task<List<Machine>> GetByListId(IEnumerable<int> listId)
     {
-        return await _linq2Db.Machine.Where(s => listId.Contains(s.Id)).ToListAsync();
+        return await _linq2db.Entity<Machine>().Where(s => listId.Contains(s.Id)).ToListAsync();
     }
 
     public async Task<List<Machine>> GetAll()
     {
-        return await _linq2Db.Machine.ToListAsync();
+        return await _linq2db.Entity<Machine>().ToListAsync();
     }
 
     public async Task<List<MachineResponseModel>> GetByFactoryId(int factoryId)
     {
-        var response = await (from machine in _linq2Db.Machine.Where(s => s.FactoryId == factoryId)
-                              join line1 in _linq2Db.Line.Where(s => s.FactoryId == factoryId) on machine.LineId equals line1.Id into line2
+        var response = await (from machine in _linq2db.Entity<Machine>().Where(s => s.FactoryId == factoryId)
+                              join line1 in _linq2db.Entity<Line>().Where(s => s.FactoryId == factoryId) on machine.LineId equals line1.Id into line2
                               from line in line2.DefaultIfEmpty()
-                              join process1 in _linq2Db.Process on machine.StationId equals process1.Id into process2
+                              join process1 in _linq2db.Entity<Process>() on machine.StationId equals process1.Id into process2
                               from process in process2.DefaultIfEmpty()
                               select new MachineResponseModel
                               {
@@ -73,9 +73,9 @@ public partial class MachineService : IMachineService
 
     public async Task<List<Machine>> GetInUseMachineByLine(int lineId)
     {
-        var result = await (from line in _linq2Db.Line.Where(s => s.Id == lineId)
-                            join station in _linq2Db.Station on line.Id equals station.LineId
-                            from machine in _linq2Db.Machine.Where(s => s.LineId == lineId && s.StationId == station.Id)
+        var result = await (from line in _linq2db.Entity<Line>().Where(s => s.Id == lineId)
+                            join station in _linq2db.Entity<Station>() on line.Id equals station.LineId
+                            from machine in _linq2db.Entity<Machine>().Where(s => s.LineId == lineId && s.StationId == station.Id)
                             select machine
                             ).ToListAsync();
         return result;
@@ -83,7 +83,7 @@ public partial class MachineService : IMachineService
 
     public async Task<List<Machine>> GetAvalableMachine(int lineId)
     {
-        var result = await _linq2Db.Machine.Where(s => s.LineId == 0 || s.StationId == 0 || s.LineId == lineId).ToListAsync();
+        var result = await _linq2db.Entity<Machine>().Where(s => s.LineId == 0 || s.StationId == 0 || s.LineId == lineId).ToListAsync();
         return result;
     }
 
@@ -138,7 +138,7 @@ public partial class MachineService : IMachineService
         string formattedNumber = model.MachineNo.ToString($"D{_settings.MinCharMachineFormat}");
         machine.MachineNo = string.Format(_settings.MachineFormat, formattedNumber);
 
-        machine = await _linq2Db.Insert(machine);
+        machine = await _linq2db.Insert(machine);
         return machine;
     }
 
@@ -157,7 +157,7 @@ public partial class MachineService : IMachineService
 
         machine.IoTMachine = model.IoTMachine;
 
-        await _linq2Db.Update(machine);
+        await _linq2db.Update(machine);
         return machine;
     }
 
@@ -166,7 +166,7 @@ public partial class MachineService : IMachineService
         var machine = await GetById(id);
         if (machine is null) throw new Exception("Machine is not found");
         if (machine.LineId != 0 || machine.StationId != 0) throw new Exception("Machine is in use");
-        await _linq2Db.Delete(machine);
+        await _linq2db.Delete(machine);
     }
 
     public async Task<Dictionary<string, string>> AssignMachineLine(ListAssignMachineLineModel model)
@@ -182,13 +182,13 @@ public partial class MachineService : IMachineService
         {
             if (item.MachineId == 0)
             {
-                var machine = await _linq2Db.Machine
+                var machine = await _linq2db.Entity<Machine>()
                             .Where(s => s.StationId == item.StationId)
                             .Where(s => s.LineId != 0 || s.StationId != 0)
                             .FirstOrDefaultAsync();
                 if (machine is not null)
                 {
-                    await _linq2Db.Machine
+                    await _linq2db.Entity<Machine>()
                             .Where(s => s.StationId == item.StationId)
                             .Set(s => s.LineId, 0)
                             .Set(s => s.StationId, 0).UpdateQuery();
@@ -198,7 +198,7 @@ public partial class MachineService : IMachineService
             }
             else
             {
-                var machine = await _linq2Db.Machine
+                var machine = await _linq2db.Entity<Machine>()
                             .Where(s => s.Id == item.MachineId)
                             .Where(s => s.LineId != model.LineId || s.StationId != item.StationId)
                             .FirstOrDefaultAsync();
@@ -206,7 +206,7 @@ public partial class MachineService : IMachineService
                 if (machine is not null)
                 {
 
-                    await _linq2Db.Machine
+                    await _linq2db.Entity<Machine>()
                         .Where(s => s.Id == item.MachineId)
                         .Set(s => s.LineId, model.LineId)
                         .Set(s => s.StationId, item.StationId).UpdateQuery();
@@ -225,7 +225,7 @@ public partial class MachineService : IMachineService
 
     public async Task UpdateById(int id, int departmentId, int lineId, int processId)
     {
-        await _linq2Db.Machine.Where(s => s.Id == id)
+        await _linq2db.Entity<Machine>().Where(s => s.Id == id)
                 .Set(s => s.FactoryId, departmentId)
                 .Set(s => s.LineId, lineId)
                 .Set(s => s.StationId, processId).UpdateQuery();
@@ -234,7 +234,7 @@ public partial class MachineService : IMachineService
     public async Task UpdateByListId(IEnumerable<int> listId, int departmentId, int lineId, int processId)
     {
 
-        await _linq2Db.Machine.Where(s => listId.Contains(s.Id))
+        await _linq2db.Entity<Machine>().Where(s => listId.Contains(s.Id))
                .Set(s => s.FactoryId, departmentId)
                .Set(s => s.LineId, lineId)
                .Set(s => s.StationId, processId).UpdateQuery();
@@ -242,7 +242,7 @@ public partial class MachineService : IMachineService
 
     public async Task<Machine> Update(Machine model)
     {
-        await _linq2Db.Update(model);
+        await _linq2db.Update(model);
         return model;
     }
 
@@ -251,10 +251,10 @@ public partial class MachineService : IMachineService
         var result = new Dictionary<string, string>();
 
         // Machine => Station => Process => Pattern
-        var data = await (from machine in _linq2Db.Machine.Where(s => machineId.Contains(s.Id))
-                          join station1 in _linq2Db.Station on machine.StationId equals station1.Id into station2
+        var data = await (from machine in _linq2db.Entity<Machine>().Where(s => machineId.Contains(s.Id))
+                          join station1 in _linq2db.Entity<Station>() on machine.StationId equals station1.Id into station2
                           from station in station2.DefaultIfEmpty()
-                          join process1 in _linq2Db.Process on station.ProcessId equals process1.Id into process2
+                          join process1 in _linq2db.Entity<Process>() on station.ProcessId equals process1.Id into process2
                           from process in process2.DefaultIfEmpty()
                           select new { machine.IpAddress, process.PatternDirectory, process.PatternNo }
                         ).ToListAsync();

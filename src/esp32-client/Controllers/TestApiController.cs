@@ -1,6 +1,7 @@
 ﻿using esp32_client.Services;
 using Microsoft.AspNetCore.Mvc;
 using esp32_client.Models.Singleton;
+using esp32_client.Builder;
 
 namespace esp32_client.Controllers;
 
@@ -12,6 +13,7 @@ public class TestApiController : ControllerBase
     private readonly ILogger<HomeController> _logger;
     private readonly Settings _settings;
     private readonly IMachineService _machineService;
+    // private readonly Context _context;
 
     public TestApiController(ILogger<HomeController> logger, Settings settings, IMachineService machineService)
     {
@@ -102,4 +104,15 @@ public class TestApiController : ControllerBase
 
         return Ok(token);
     }
+
+    // [HttpGet]
+    // [ProducesResponseType(StatusCodes.Status201Created)]
+    // [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    // public async Task<IActionResult> EF()
+    // {
+    //     var factories = await _context.Factory.AsQueryable().ToListAsync();
+    //     System.Console.WriteLine("==== factories: " + Newtonsoft.Json.JsonConvert.SerializeObject(factories));
+
+    //     return Ok(token);
+    // }
 }

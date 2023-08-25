@@ -15,21 +15,11 @@ public class LinqToDb : DataConnection
         CommandTimeout = 10; // Timeout in seconds
     }
 
-    public ITable<Factory> Factory => this.GetTable<Factory>();
-    public ITable<Line> Line => this.GetTable<Line>();
-    public ITable<Machine> Machine => this.GetTable<Machine>();
-    public ITable<Station> Station => this.GetTable<Station>();
-    public ITable<Process> Process => this.GetTable<Process>();
-    public ITable<Product> Product => this.GetTable<Product>();
-    public ITable<RoleOfUser> RoleOfUser => this.GetTable<RoleOfUser>();
-    public ITable<Setting> Setting => this.GetTable<Setting>();
-    public ITable<UserAccount> UserAccount => this.GetTable<UserAccount>();
-    public ITable<UserRight> UserRight => this.GetTable<UserRight>();
-    public ITable<UserRole> UserRole => this.GetTable<UserRole>();
-    public ITable<ScheduleTask> ScheduleTask => this.GetTable<ScheduleTask>();
-    public ITable<DataReport> DataReport => this.GetTable<DataReport>();
-    public ITable<Log> Log => this.GetTable<Log>();
-    public ITable<UserSession> UserSession => this.GetTable<UserSession>();
+    public ITable<T> Entity<T>() where T:BaseEntity
+    {
+        return this.GetTable<T>();
+    }
+
 }
 
 public static class LinqToDbExtension

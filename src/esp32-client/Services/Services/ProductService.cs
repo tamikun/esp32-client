@@ -13,32 +13,32 @@ namespace esp32_client.Services;
 public partial class ProductService : IProductService
 {
 
-    private readonly LinqToDb _linq2Db;
+    private readonly LinqToDb _linq2db;
     private readonly IMapper _mapper;
     private readonly Settings _settings;
 
     public ProductService(LinqToDb linq2Db, IMapper mapper, Settings settings)
     {
-        _linq2Db = linq2Db;
+        _linq2db = linq2Db;
         _mapper = mapper;
         _settings = settings;
     }
 
     public async Task<Product?> GetById(int id)
     {
-        var product = await _linq2Db.Product.Where(s => s.Id == id).FirstOrDefaultAsync();
+        var product = await _linq2db.Entity<Product>().Where(s => s.Id == id).FirstOrDefaultAsync();
         return product;
     }
 
     public async Task<Product?> GetByProductNo(string productNo, int factoryId)
     {
-        var product = await _linq2Db.Product.Where(s => s.ProductNo == productNo && s.FactoryId == factoryId).FirstOrDefaultAsync();
+        var product = await _linq2db.Entity<Product>().Where(s => s.ProductNo == productNo && s.FactoryId == factoryId).FirstOrDefaultAsync();
         return product;
     }
 
     public async Task<List<Product>> GetAll(int factoryId)
     {
-        return await _linq2Db.Product.Where(s => s.FactoryId == factoryId).ToListAsync();
+        return await _linq2db.Entity<Product>().Where(s => s.FactoryId == factoryId).ToListAsync();
     }
 
     public async Task<ProductCreateModel> Create(ProductCreateModel model)
@@ -52,7 +52,7 @@ public partial class ProductService : IProductService
         string formattedNumber = model.ProductNo.ToString($"D{_settings.MinCharProductFormat}");
         product.ProductNo = string.Format(_settings.ProductFormat, formattedNumber);
 
-        product = await _linq2Db.Insert(product);
+        product = await _linq2db.Insert(product);
 
         // Create process
         var listProcess = new List<Process>();
@@ -64,7 +64,7 @@ public partial class ProductService : IProductService
                 ProcessNo = $"{product.ProductNo}.{i}",
             });
         }
-        await _linq2Db.BulkInsert(listProcess);
+        await _linq2db.BulkInsert(listProcess);
 
         return model;
     }
@@ -76,7 +76,7 @@ public partial class ProductService : IProductService
 
         product.ProductName = model.ProductName;
 
-        var listProcess = await _linq2Db.Process.Where(s => s.ProductId == product.Id).OrderBy(s => s.Id).ToListAsync();
+        var listProcess = await _linq2db.Entity<Process>().Where(s => s.ProductId == product.Id).OrderBy(s => s.Id).ToListAsync();
 
         if (model.NumberOfProcess != listProcess.Count)
         {
@@ -95,7 +95,7 @@ public partial class ProductService : IProductService
                         ProcessNo = $"{product.ProductNo}.{i}",
                     });
                 }
-                await _linq2Db.BulkInsert(listProcess);
+                await _linq2db.BulkInsert(listProcess);
             }
             else
             {
@@ -103,13 +103,13 @@ public partial class ProductService : IProductService
                 await DeleteListProcess(listDeleteProcess);
             }
         }
-        await _linq2Db.Update(product);
+        await _linq2db.Update(product);
     }
 
     public async Task<List<ProductResponseModel>> GetProductByFactoryId(int factoryId)
     {
-        var data = await (from factory in _linq2Db.Factory.Where(s => s.Id == factoryId)
-                          from product in _linq2Db.Product.Where(s => s.FactoryId == factoryId)
+        var data = await (from factory in _linq2db.Entity<Factory>().Where(s => s.Id == factoryId)
+                          from product in _linq2db.Entity<Product>().Where(s => s.FactoryId == factoryId)
                           select new ProductResponseModel
                           {
                               FactoryId = factoryId,
@@ -117,7 +117,7 @@ public partial class ProductService : IProductService
                               ProductId = product.Id,
                               ProductName = product.ProductName,
                               ProductNo = product.ProductNo,
-                              NumberOfProcess = _linq2Db.Process.Where(s => s.ProductId == product.Id).Count(),
+                              NumberOfProcess = _linq2db.Entity<Process>().Where(s => s.ProductId == product.Id).Count(),
                           }
                         ).OrderBy(s => s.ProductNo).ToListAsync();
         return data;
@@ -125,7 +125,7 @@ public partial class ProductService : IProductService
 
     public async Task<bool> IsProductInUse(int productId)
     {
-        return await _linq2Db.Line.AnyAsync(s => s.ProductId == productId);
+        return await _linq2db.Entity<Line>().AnyAsync(s => s.ProductId == productId);
     }
 
     public async Task Delete(int id)
@@ -137,17 +137,17 @@ public partial class ProductService : IProductService
         // Check produce is in use
         if (await IsProductInUse(id)) throw new Exception("Product is in use");
 
-        await _linq2Db.Delete(product);
+        await _linq2db.Delete(product);
 
         // Delete Process
-        var listProcess = await _linq2Db.Process.Where(s => s.ProductId == product.Id).ToListAsync();
+        var listProcess = await _linq2db.Entity<Process>().Where(s => s.ProductId == product.Id).ToListAsync();
         await DeleteListProcess(listProcess);
     }
 
     public async Task DeleteListProcess(List<Process> listProcess)
     {
-        await  _linq2Db.Process.Where(s => listProcess.Select(s => s.Id).Contains(s.Id)).DeleteQuery();
-        
+        await _linq2db.Entity<Process>().Where(s => listProcess.Select(s => s.Id).Contains(s.Id)).DeleteQuery();
+
         var taskDeleteFile = listProcess.Select(async s =>
         {
             await Utils.Utils.DeleteFile(s.PatternDirectory);

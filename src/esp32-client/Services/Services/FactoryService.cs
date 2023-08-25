@@ -13,14 +13,14 @@ namespace esp32_client.Services;
 public partial class FactoryService : IFactoryService
 {
 
-    private readonly LinqToDb _linq2Db;
+    private readonly LinqToDb _linq2db;
     private readonly IMapper _mapper;
     private readonly ILineService _lineService;
     private readonly Settings _settings;
 
     public FactoryService(LinqToDb linq2Db, IMapper mapper, ILineService lineService, Settings settings)
     {
-        _linq2Db = linq2Db;
+        _linq2db = linq2Db;
         _mapper = mapper;
         _lineService = lineService;
         _settings = settings;
@@ -28,24 +28,24 @@ public partial class FactoryService : IFactoryService
 
     public async Task<Factory?> GetById(int id)
     {
-        var department = await _linq2Db.Factory.Where(s => s.Id == id).FirstOrDefaultAsync();
+        var department = await _linq2db.Entity<Factory>().Where(s => s.Id == id).FirstOrDefaultAsync();
         return department;
     }
 
     public async Task<List<Factory>> GetAll()
     {
-        return await _linq2Db.Factory.ToListAsync();
+        return await _linq2db.Entity<Factory>().ToListAsync();
     }
 
     public async Task<List<FactoryResponseModel>> GetAllResponse()
     {
-        var result = await (from factory in _linq2Db.Factory
+        var result = await (from factory in _linq2db.Entity<Factory>()
                             select new FactoryResponseModel
                             {
                                 FactoryId = factory.Id,
                                 FactoryName = factory.FactoryName,
                                 FactoryNo = factory.FactoryNo,
-                                NumberOfLine = _linq2Db.Line.Where(s => s.FactoryId == factory.Id).Count(),
+                                NumberOfLine = _linq2db.Entity<Line>().Where(s => s.FactoryId == factory.Id).Count(),
                             }).ToListAsync();
         return result;
     }
@@ -63,7 +63,7 @@ public partial class FactoryService : IFactoryService
 
         factory.FactoryNo = string.Format(_settings.FactoryFormat, formattedNumber);
 
-        factory = await _linq2Db.Insert(factory);
+        factory = await _linq2db.Insert(factory);
         return factory;
     }
 
@@ -73,17 +73,17 @@ public partial class FactoryService : IFactoryService
         if (factory is null) throw new Exception("Factory is not found");
 
         // Check any lines are in use
-        if (await _linq2Db.Line.Where(s => s.FactoryId == id && s.ProductId != 0).AnyAsync())
+        if (await _linq2db.Entity<Line>().Where(s => s.FactoryId == id && s.ProductId != 0).AnyAsync())
             throw new Exception("Line is in use");
 
-        var listDeleteLine = await _linq2Db.Line.Where(s => s.FactoryId == id).ToListAsync();
+        var listDeleteLine = await _linq2db.Entity<Line>().Where(s => s.FactoryId == id).ToListAsync();
 
         foreach (var line in listDeleteLine)
         {
             await _lineService.Delete(line.Id);
         }
 
-        await _linq2Db.Delete(factory);
+        await _linq2db.Delete(factory);
     }
 
     public async Task UpdateName(int id, string name)
@@ -94,7 +94,7 @@ public partial class FactoryService : IFactoryService
         if (factory is null) throw new Exception("Factory is not found");
 
         factory.FactoryName = name;
-        await _linq2Db.Update(factory);
+        await _linq2db.Update(factory);
     }
 
 }

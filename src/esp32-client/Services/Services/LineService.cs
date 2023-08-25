@@ -13,7 +13,7 @@ namespace esp32_client.Services;
 public partial class LineService : ILineService
 {
 
-    private readonly LinqToDb _linq2Db;
+    private readonly LinqToDb _linq2db;
     private readonly IMachineService _machineService;
     private readonly IStationService _stationService;
     private readonly IMapper _mapper;
@@ -21,7 +21,7 @@ public partial class LineService : ILineService
 
     public LineService(LinqToDb linq2Db, IMapper mapper, IMachineService machineService, Settings settings, IStationService stationService)
     {
-        _linq2Db = linq2Db;
+        _linq2db = linq2Db;
         _mapper = mapper;
         _machineService = machineService;
         _settings = settings;
@@ -30,27 +30,27 @@ public partial class LineService : ILineService
 
     public async Task<Line?> GetById(int id)
     {
-        var line = await _linq2Db.Line.Where(s => s.Id == id).FirstOrDefaultAsync();
+        var line = await _linq2db.Entity<Line>().Where(s => s.Id == id).FirstOrDefaultAsync();
         return line;
     }
 
     public async Task<PagedListModel<Line>> GetAll(int pageIndex, int pageSize)
     {
         pageSize = pageSize == 0 ? int.MaxValue : pageSize;
-        var lines = await _linq2Db.Line.ToListAsync();
+        var lines = await _linq2db.Entity<Line>().ToListAsync();
         return lines.ToPagedListModel(pageIndex, pageSize);
     }
 
     public async Task<List<Line>> GetByFactoryId(int factoryId)
     {
-        return await _linq2Db.Line.Where(s => s.FactoryId == factoryId).ToListAsync();
+        return await _linq2db.Entity<Line>().Where(s => s.FactoryId == factoryId).ToListAsync();
     }
 
     public async Task<List<LineResponseModel>> GetAllLineResponse(int factoryId)
     {
-        var result = await (from factory in _linq2Db.Factory.Where(s => s.Id == factoryId)
-                            from line in _linq2Db.Line.Where(s => s.FactoryId == factoryId)
-                            join product1 in _linq2Db.Product on line.ProductId equals product1.Id into product2
+        var result = await (from factory in _linq2db.Entity<Factory>().Where(s => s.Id == factoryId)
+                            from line in _linq2db.Entity<Line>().Where(s => s.FactoryId == factoryId)
+                            join product1 in _linq2db.Entity<Product>() on line.ProductId equals product1.Id into product2
                             from product in product2.DefaultIfEmpty()
                             select new LineResponseModel
                             {
@@ -61,7 +61,7 @@ public partial class LineService : ILineService
                                 LineNo = line.LineNo,
                                 ProductId = line.ProductId,
                                 ProductName = product.ProductName,
-                                NumberOfStation = _linq2Db.Station.Where(s => s.LineId == line.Id).Count()
+                                NumberOfStation = _linq2db.Entity<Station>().Where(s => s.LineId == line.Id).Count()
                             }).OrderBy(s => s.LineNo).ToListAsync();
 
         return result;
@@ -69,7 +69,7 @@ public partial class LineService : ILineService
 
     public async Task<Line?> GetByLineNo(string lineNo, int factoryId)
     {
-        var line = await _linq2Db.Line.Where(s => s.LineNo == lineNo && s.FactoryId == factoryId).FirstOrDefaultAsync();
+        var line = await _linq2db.Entity<Line>().Where(s => s.LineNo == lineNo && s.FactoryId == factoryId).FirstOrDefaultAsync();
         return line;
     }
 
@@ -85,7 +85,7 @@ public partial class LineService : ILineService
 
         line.LineNo = string.Format(_settings.LineFormat, formattedNumber);
 
-        line = await _linq2Db.Insert(line);
+        line = await _linq2db.Insert(line);
 
         // Create station
         await AddStation(line.Id, model.NumberOfStation);
@@ -96,8 +96,8 @@ public partial class LineService : ILineService
 
     public async Task<List<GetInfoProductLineModel>> GetInfoProductLine(int factoryId)
     {
-        var result = await (from line in _linq2Db.Line.Where(s => s.FactoryId == factoryId)
-                            join product1 in _linq2Db.Product on line.ProductId equals product1.Id into product2
+        var result = await (from line in _linq2db.Entity<Line>().Where(s => s.FactoryId == factoryId)
+                            join product1 in _linq2db.Entity<Product>() on line.ProductId equals product1.Id into product2
                             from product in product2.DefaultIfEmpty()
                             select new GetInfoProductLineModel
                             {
@@ -112,7 +112,7 @@ public partial class LineService : ILineService
 
     public async Task<Dictionary<string, string>> AssignProductLine(AssignProductLineModel model)
     {
-        var queryListUpdate = _linq2Db.Line.Where(s => s.FactoryId == model.FactoryId);
+        var queryListUpdate = _linq2db.Entity<Line>().Where(s => s.FactoryId == model.FactoryId);
 
         foreach (var item in model.ListProductLine)
         {
@@ -131,12 +131,12 @@ public partial class LineService : ILineService
         // Update process of Station (Set ProcessId to 0)
         var listLineId = listUpdate.Select(s => s.Id);
 
-        var listStationQuery = _linq2Db.Station.Where(s => listLineId.Contains(s.LineId));
+        var listStationQuery = _linq2db.Entity<Station>().Where(s => listLineId.Contains(s.LineId));
 
         await listStationQuery.Set(s => s.ProcessId, 0).UpdateQuery();
 
         // Update Pattern for machine (Set LineId = 0, ProcessId to 0 => Delete pattern)
-        var listMachineId = _linq2Db.Machine.Where(s => listLineId.Contains(s.LineId)).Select(s => s.Id);
+        var listMachineId = _linq2db.Entity<Machine>().Where(s => listLineId.Contains(s.LineId)).Select(s => s.Id);
 
         var response = await _machineService.AssignPatternMachine(listMachineId);
         return response;
@@ -150,7 +150,7 @@ public partial class LineService : ILineService
             throw new Exception("A process cannot be used for more than one station.");
 
         // Get list station change
-        var queryListUpdate = _linq2Db.Station.Where(s => true);
+        var queryListUpdate = _linq2db.Entity<Station>().Where(s => true);
 
         foreach (var item in model.ListStationProcess)
         {
@@ -162,12 +162,12 @@ public partial class LineService : ILineService
         // Update station data
         foreach (var item in model.ListStationProcess)
         {
-            await _linq2Db.Station.Where(s => s.Id == item.StationId)
+            await _linq2db.Entity<Station>().Where(s => s.Id == item.StationId)
                     .Set(s => s.ProcessId, item.ProcessId).UpdateQuery();
         }
 
         // Get list machine that is in StationId
-        var listMachine = await _linq2Db.Machine.Where(s => listStationUpdate.Select(s => s.Id).Contains(s.StationId)).Select(s => s.Id).ToListAsync();
+        var listMachine = await _linq2db.Entity<Machine>().Where(s => listStationUpdate.Select(s => s.Id).Contains(s.StationId)).Select(s => s.Id).ToListAsync();
 
         // Update pattern for machine
         var response = await _machineService.AssignPatternMachine(listMachine);
@@ -176,12 +176,12 @@ public partial class LineService : ILineService
 
     public async Task<List<GetStationAndProcessModel>> GetStationAndProcess(int lineId)
     {
-        var result = await (from line in _linq2Db.Line.Where(s => s.Id == lineId)
-                            join station1 in _linq2Db.Station on line.Id equals station1.LineId into station2
+        var result = await (from line in _linq2db.Entity<Line>().Where(s => s.Id == lineId)
+                            join station1 in _linq2db.Entity<Station>() on line.Id equals station1.LineId into station2
                             from station in station2.DefaultIfEmpty()
-                            join product1 in _linq2Db.Product on line.ProductId equals product1.Id into product2
+                            join product1 in _linq2db.Entity<Product>() on line.ProductId equals product1.Id into product2
                             from product in product2.DefaultIfEmpty()
-                            join process1 in _linq2Db.Process on station.ProcessId equals process1.Id into process2
+                            join process1 in _linq2db.Entity<Process>() on station.ProcessId equals process1.Id into process2
                             from process in process2.DefaultIfEmpty()
                             select new GetStationAndProcessModel
                             {
@@ -204,19 +204,19 @@ public partial class LineService : ILineService
     public async Task<List<GetProcessAndMachineOfLineModel>> GetProcessAndMachineOfLine(int factoryId, List<int>? listLineId = null,
                                                                 bool iotMachine = false, bool hasProduct = false, bool hasMachine = false)
     {
-        var lineQuery = _linq2Db.Line.Where(s => s.FactoryId == factoryId);
+        var lineQuery = _linq2db.Entity<Line>().Where(s => s.FactoryId == factoryId);
 
         if (listLineId?.Count > 0) lineQuery = lineQuery.Where(s => listLineId.Contains(s.Id));
         if (hasProduct) lineQuery = lineQuery.Where(s => s.ProductId != 0);
 
         var query = (from line in lineQuery
-                     join station1 in _linq2Db.Station on line.Id equals station1.LineId into station2
+                     join station1 in _linq2db.Entity<Station>() on line.Id equals station1.LineId into station2
                      from station in station2.DefaultIfEmpty()
-                     join product1 in _linq2Db.Product on line.ProductId equals product1.Id into product2
+                     join product1 in _linq2db.Entity<Product>() on line.ProductId equals product1.Id into product2
                      from product in product2.DefaultIfEmpty()
-                     join process1 in _linq2Db.Process on station.ProcessId equals process1.Id into process2
+                     join process1 in _linq2db.Entity<Process>() on station.ProcessId equals process1.Id into process2
                      from process in process2.DefaultIfEmpty()
-                     from machine in _linq2Db.Machine.Where(s =>
+                     from machine in _linq2db.Entity<Machine>().Where(s =>
                          s.FactoryId == factoryId
                          && s.LineId == line.Id
                          && s.StationId == station.Id
@@ -260,10 +260,10 @@ public partial class LineService : ILineService
         if (await IsLineInUse(line)) throw new Exception("Cannot delete line: Product exists");
 
         // Delete line
-        await _linq2Db.Delete(line);
+        await _linq2db.Delete(line);
 
         // Delete station
-        var stationQuery = await _linq2Db.Station.Where(s => s.LineId == line.Id).ToListAsync();
+        var stationQuery = await _linq2db.Entity<Station>().Where(s => s.LineId == line.Id).ToListAsync();
 
         await _stationService.DeleteListStation(stationQuery);
     }
@@ -273,7 +273,7 @@ public partial class LineService : ILineService
         var line = await GetById(model.LineId);
         if (line is null) throw new Exception("Line is not found");
 
-        var numberOfStation = await _linq2Db.Station.Where(s => s.LineId == line.Id).CountAsync();
+        var numberOfStation = await _linq2db.Entity<Station>().Where(s => s.LineId == line.Id).CountAsync();
 
         line.LineName = model.LineName;
 
@@ -289,7 +289,7 @@ public partial class LineService : ILineService
             }
             else
             {
-                var stationDelete = await _linq2Db.Station.Where(s => s.LineId == line.Id)
+                var stationDelete = await _linq2db.Entity<Station>().Where(s => s.LineId == line.Id)
                                                                 .OrderBy(s => s.Id)
                                                                 .Skip(model.NumberOfStation)
                                                                 .ToListAsync();
@@ -298,7 +298,7 @@ public partial class LineService : ILineService
                 await _stationService.DeleteListStation(stationDelete);
             }
         }
-        await _linq2Db.Update(line);
+        await _linq2db.Update(line);
     }
 
     public async Task AddStation(int lineId, int numberOfStation, int index = 1)
@@ -314,7 +314,7 @@ public partial class LineService : ILineService
                 StationNo = string.Format(_settings.StationFormat, stationFormat),
             });
         }
-        await _linq2Db.BulkInsert(listStation);
+        await _linq2db.BulkInsert(listStation);
     }
 
     public async Task<bool> IsLineInUse(Line line)

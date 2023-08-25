@@ -5,6 +5,7 @@ using LinqToDB;
 using LinqToDB.AspNet;
 using Microsoft.OpenApi.Models;
 using esp32_client.Models.Singleton;
+using Microsoft.EntityFrameworkCore;
 
 namespace esp32_client.Builder
 {
@@ -73,6 +74,8 @@ namespace esp32_client.Builder
 
             builder.ConfigureLinqToDB();
 
+            builder.ConfigureEfCore();
+
             // builder.Services.AddHostedService<ScheduledTaskService>();
         }
 
@@ -130,6 +133,14 @@ namespace esp32_client.Builder
                         //default logging will log everything using the ILoggerFactory configured in the provider
                         // .UseDefaultLogging(provider)
                         , ServiceLifetime.Scoped);
+        }
+
+        public static void ConfigureEfCore(this WebApplicationBuilder builder)
+        {
+            var connectionString = builder.Configuration["Settings:ConnectionString"].ToString();
+
+            builder.Services.AddDbContext<Context>(
+                options => options.UseMySQL(connectionString));
         }
     }
 }

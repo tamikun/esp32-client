@@ -23,12 +23,12 @@ public partial class DataReportService : IDataReportService
 
     public async Task<List<DataReport>> GetAll()
     {
-        return await _linq2Db.DataReport.ToListAsync();
+        return await _linq2Db.Entity<DataReport>().ToListAsync();
     }
 
     public async Task Create(string IPAddress, int productNumber)
     {
-        var machine = await _linq2Db.Machine.Where(s => s.IpAddress == IPAddress).FirstOrDefaultAsync();
+        var machine = await _linq2Db.Entity<Machine>().Where(s => s.IpAddress == IPAddress).FirstOrDefaultAsync();
         if (machine is not null)
         {
             if (machine.StationId != 0)
@@ -47,10 +47,10 @@ public partial class DataReportService : IDataReportService
     public async Task<DataReport> GetLastDataByStationId(int stationId)
     {
         if (stationId <= 0) return new DataReport();
-        if (await _linq2Db.DataReport.Where(s => s.StationId == stationId).AnyAsync())
+        if (await _linq2Db.Entity<DataReport>().Where(s => s.StationId == stationId).AnyAsync())
         {
-            int maxId = await _linq2Db.DataReport.Where(s => s.StationId == stationId).MaxAsync(s => s.Id);
-            var result = await _linq2Db.DataReport.Where(s => s.Id == maxId).FirstOrDefaultAsync() ?? new DataReport();
+            int maxId = await _linq2Db.Entity<DataReport>().Where(s => s.StationId == stationId).MaxAsync(s => s.Id);
+            var result = await _linq2Db.Entity<DataReport>().Where(s => s.Id == maxId).FirstOrDefaultAsync() ?? new DataReport();
             return result;
         }
         return new DataReport();

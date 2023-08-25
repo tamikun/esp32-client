@@ -13,14 +13,14 @@ namespace esp32_client.Services;
 public partial class ProcessService : IProcessService
 {
 
-    private readonly LinqToDb _linq2Db;
+    private readonly LinqToDb _linq2db;
     private readonly IProductService _productService;
     private readonly IMapper _mapper;
     private readonly Settings _settings;
 
     public ProcessService(LinqToDb linq2Db, IMapper mapper, IProductService productService, Settings settings)
     {
-        _linq2Db = linq2Db;
+        _linq2db = linq2Db;
         _mapper = mapper;
         _productService = productService;
         _settings = settings;
@@ -28,25 +28,25 @@ public partial class ProcessService : IProcessService
 
     public async Task<Process?> GetById(int id)
     {
-        var process = await _linq2Db.Process.Where(s => s.Id == id).FirstOrDefaultAsync();
+        var process = await _linq2db.Entity<Process>().Where(s => s.Id == id).FirstOrDefaultAsync();
         return process;
     }
 
     public async Task<List<Process>> GetByProductId(int id)
     {
-        var process = await _linq2Db.Process.Where(s => s.ProductId == id).ToListAsync();
+        var process = await _linq2db.Entity<Process>().Where(s => s.ProductId == id).ToListAsync();
         return process;
     }
 
     public async Task<Process?> GetByProcessName(string name)
     {
-        var process = await _linq2Db.Process.Where(s => s.ProcessName == name).FirstOrDefaultAsync();
+        var process = await _linq2db.Entity<Process>().Where(s => s.ProcessName == name).FirstOrDefaultAsync();
         return process;
     }
 
     public async Task<List<Process>> GetAll()
     {
-        return await _linq2Db.Process.ToListAsync();
+        return await _linq2db.Entity<Process>().ToListAsync();
     }
 
     public async Task<ProcessUpdateModel> UpdateProcessNamePatternNoById(ProcessUpdateModel model)
@@ -73,7 +73,7 @@ public partial class ProcessService : IProcessService
             await Utils.Utils.WriteFile(model.FileData, directory);
         }
 
-        await _linq2Db.Update(process);
+        await _linq2db.Update(process);
 
         return model;
     }

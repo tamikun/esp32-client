@@ -1,6 +1,8 @@
 using System.Reflection;
 using esp32_client.Builder;
+using esp32_client.Domain;
 using esp32_client.Utils;
+using LinqToDB;
 
 namespace esp32_client.Models.Singleton
 {
@@ -12,11 +14,11 @@ namespace esp32_client.Models.Singleton
         public Settings(LinqToDb linqToDb)
         {
             _linqToDb = linqToDb;
-            Reload();
+            Reload().Wait();
         }
-        public void Reload()
+        public async Task Reload()
         {
-            var listSetting = _linqToDb.Setting.ToList();
+            var listSetting = await _linqToDb.Entity<Setting>().ToListAsync();
             var settingType = this.GetType();
             var propertyInfos = settingType.GetProperties();
             foreach (var property in propertyInfos)

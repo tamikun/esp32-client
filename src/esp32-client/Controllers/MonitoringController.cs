@@ -3,6 +3,7 @@ using esp32_client.Services;
 using esp32_client.Builder;
 using LinqToDB;
 using esp32_client.Models;
+using esp32_client.Domain;
 
 namespace esp32_client.Controllers;
 [Authentication]
@@ -27,7 +28,7 @@ public class MonitoringController : BaseController
 
         if (factoryId == 0)
         {
-            var getFirst = await _linq2db.Factory.FirstOrDefaultAsync();
+            var getFirst = await _linq2db.Entity<Factory>().FirstOrDefaultAsync();
             if (getFirst is not null) factoryId = getFirst.Id;
         }
 

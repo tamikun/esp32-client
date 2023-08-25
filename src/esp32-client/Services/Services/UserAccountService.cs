@@ -14,26 +14,26 @@ namespace esp32_client.Services;
 public partial class UserAccountService : IUserAccountService
 {
 
-    private readonly LinqToDb _linq2Db;
+    private readonly LinqToDb _linq2db;
     private readonly IMapper _mapper;
     private readonly IRoleOfUserService _roleOfUser;
 
     public UserAccountService(LinqToDb linq2Db, IMapper mapper, IRoleOfUserService roleOfUser)
     {
-        _linq2Db = linq2Db;
+        _linq2db = linq2Db;
         _mapper = mapper;
         _roleOfUser = roleOfUser;
     }
 
     public async Task<UserAccount?> GetById(int id)
     {
-        var user = await _linq2Db.UserAccount.Where(s => s.Id == id).FirstOrDefaultAsync();
+        var user = await _linq2db.Entity<UserAccount>().Where(s => s.Id == id).FirstOrDefaultAsync();
         return user;
     }
 
     public async Task<UserAccount?> GetByLoginName(string loginName)
     {
-        var user = await _linq2Db.UserAccount.Where(s => s.LoginName == loginName).FirstOrDefaultAsync();
+        var user = await _linq2db.Entity<UserAccount>().Where(s => s.LoginName == loginName).FirstOrDefaultAsync();
         return user;
     }
 
@@ -45,7 +45,7 @@ public partial class UserAccountService : IUserAccountService
 
     public async Task<UserAccountCreateModel> Create(UserAccountCreateModel model)
     {
-        if (await _linq2Db.UserAccount.AnyAsync(s => s.LoginName == model.LoginName))
+        if (await _linq2db.Entity<UserAccount>().AnyAsync(s => s.LoginName == model.LoginName))
             throw new Exception("Login name has aldready existed");
 
         var userAccount = _mapper.Map<UserAccount>(model);
@@ -55,7 +55,7 @@ public partial class UserAccountService : IUserAccountService
         userAccount.SalfKey = salf;
         userAccount.Password = await HashPassword(userAccount.Password, salf);
 
-        userAccount = await _linq2Db.Insert(userAccount);
+        userAccount = await _linq2db.Insert(userAccount);
 
         await _roleOfUser.Create(new RoleOfUserCreateModel
         {
@@ -75,7 +75,7 @@ public partial class UserAccountService : IUserAccountService
         user.LoginName = model.LoginName;
         user.UserName = model.UserName;
 
-        await _linq2Db.Update(user);
+        await _linq2db.Update(user);
 
         return model;
     }
@@ -94,7 +94,7 @@ public partial class UserAccountService : IUserAccountService
 
         user.Password = await HashPassword(model.NewPassword, user.SalfKey);
 
-        await _linq2Db.Update(user);
+        await _linq2db.Update(user);
 
         return model;
     }
@@ -104,7 +104,7 @@ public partial class UserAccountService : IUserAccountService
         var user = await GetById(id);
 
         if (user is null) return;
-        await _linq2Db.Delete(user);
+        await _linq2db.Delete(user);
     }
 
     public async Task<bool> CheckUserRight(string? loginName, string? controllerName, string? actionName)
@@ -127,10 +127,10 @@ public partial class UserAccountService : IUserAccountService
     {
         if (loginName is null) return new List<UserRight>();
 
-        var userRights = await (from user in _linq2Db.UserAccount.Where(s => s.LoginName == loginName)
-                                join roleOfUser in _linq2Db.RoleOfUser on user.Id equals roleOfUser.UserId into roles
+        var userRights = await (from user in _linq2db.Entity<UserAccount>().Where(s => s.LoginName == loginName)
+                                join roleOfUser in _linq2db.Entity<RoleOfUser>() on user.Id equals roleOfUser.UserId into roles
                                 from role in roles
-                                join userRight in _linq2Db.UserRight on role.RoleId equals userRight.RoleId
+                                join userRight in _linq2db.Entity<UserRight>() on role.RoleId equals userRight.RoleId
                                 select userRight).ToListAsync();
 
         return userRights;

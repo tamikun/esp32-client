@@ -17,6 +17,7 @@ public class Tests
     private IMachineService _machineService;
     private ILineService _lineService;
     private LinqToDb _linq2db;
+    private Context _context;
 
     public Tests()
     {
@@ -26,6 +27,7 @@ public class Tests
         _machineService = BaseTest.GetService<IMachineService>();
         _linq2db = BaseTest.GetService<LinqToDb>();
         _lineService = BaseTest.GetService<ILineService>();
+        _context = BaseTest.GetService<Context>();
     }
 
     [SetUp]
@@ -67,6 +69,8 @@ public class Tests
         var machineUpdate = await _machineService.GetById(1);
 
         Assert.That(machineUpdate.MachineName, Is.EqualTo(model.MachineName));
+
+        await _linq2db.Entity<Machine>().AsQueryable().DeleteQuery();
     }
 
     [Test]
@@ -91,7 +95,10 @@ public class Tests
         var fact4 = await _linq2db.Insert(fact);
         Assert.That(fact4.Id, Is.EqualTo(4));
 
-        await _linq2db.Factory.AsQueryable().DeleteQuery();
+        // var factories = await _context.Factory.AsQueryable().ToListAsync();
+        // System.Console.WriteLine("==== factories: " + Newtonsoft.Json.JsonConvert.SerializeObject(factories));
+
+        await _linq2db.Entity<Factory>().AsQueryable().DeleteQuery();
     }
 
     [Test]
@@ -110,18 +117,18 @@ public class Tests
 
         Assert.That(line.Id, Is.EqualTo(1));
 
-        var stations = await _linq2db.Station.Where(s => s.LineId == 1).ToListAsync();
+        var stations = await _linq2db.Entity<Station>().Where(s => s.LineId == 1).ToListAsync();
         Assert.That(stations.Count, Is.EqualTo(2));
 
-        await _linq2db.Line.AsQueryable().DeleteQuery();
-        await _linq2db.Station.AsQueryable().DeleteQuery();
+        await _linq2db.Entity<Line>().AsQueryable().DeleteQuery();
+        await _linq2db.Entity<Station>().AsQueryable().DeleteQuery();
     }
 
     [Test]
     [Order(3)]
     public async Task ShouldGetSettings()
     {
-        Assert.That(_setting.DeleteOnUploadingEmptyFile, Is.EqualTo(true));
+        Assert.That(_setting.DeleteOnUploadingEmptyFile, Is.EqualTo(false));
         await Task.CompletedTask;
     }
 
@@ -129,7 +136,7 @@ public class Tests
     [Order(4)]
     public async Task ShouldGetSettingPagedList()
     {
-        var result = await _linq2db.Setting.ToPagedListModel(0, 5);
+        var result = await _linq2db.Entity<Setting>().ToPagedListModel(0, 5);
         Assert.That(result.Data.Count, Is.EqualTo(5));
     }
 
@@ -175,16 +182,16 @@ public class Tests
         int factoryId = 1;
         var listLineId = new List<int>() { };
 
-        var lineQuery = _linq2db.Line.Where(s => s.FactoryId == factoryId);
+        var lineQuery = _linq2db.Entity<Line>().Where(s => s.FactoryId == factoryId);
         if (listLineId.Count > 0) lineQuery = lineQuery.Where(s => listLineId.Contains(s.Id));
 
         var result = await (from line in lineQuery
-                            join station in _linq2db.Station on line.Id equals station.LineId
-                            join product1 in _linq2db.Product on line.ProductId equals product1.Id into product2
+                            join station in _linq2db.Entity<Station>() on line.Id equals station.LineId
+                            join product1 in _linq2db.Entity<Product>() on line.ProductId equals product1.Id into product2
                             from product in product2.DefaultIfEmpty()
-                            join process1 in _linq2db.Process on station.ProcessId equals process1.Id into process2
+                            join process1 in _linq2db.Entity<Process>() on station.ProcessId equals process1.Id into process2
                             from process in process2.DefaultIfEmpty()
-                            from machine in _linq2db.Machine.Where(s =>
+                            from machine in _linq2db.Entity<Machine>().Where(s =>
                                 s.FactoryId == factoryId
                                 && s.LineId == line.Id
                                 && s.StationId == station.Id
@@ -222,6 +229,8 @@ public class Tests
         var listLine = result.Select(s => s.LineId).Distinct();
 
         System.Console.WriteLine("==== listLine: " + Newtonsoft.Json.JsonConvert.SerializeObject(listLine));
+
+        await _linq2db.Entity<Machine>().AsQueryable().DeleteQuery();
     }
 
     [Test]
@@ -229,7 +238,7 @@ public class Tests
     public async Task ShouldAdvancedSearchMonitoring()
     {
         // Prepare data
-        await _linq2db.Insert(new Factory { FactoryNo = "Factory 1", FactoryName = "Factory 1" });
+        await _linq2db.Insert(new Factory { FactoryNo = "Factory 1.0", FactoryName = "Factory 1" });
 
         await _lineService.Create(new LineCreateModel { FactoryId = 1, LineName = "line 1", LineNo = 1, NumberOfStation = 3, });
 
@@ -257,6 +266,8 @@ public class Tests
 
         var data = await _lineService.GetProcessAndMachineOfLine(factoryId, listLineId, iotMachine, hasProduct, hasMachine);
         System.Console.WriteLine("==== data: " + Newtonsoft.Json.JsonConvert.SerializeObject(data));
+
+        await _linq2db.Entity<Machine>().AsQueryable().DeleteQuery();
     }
 
 }
