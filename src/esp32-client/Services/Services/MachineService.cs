@@ -492,8 +492,9 @@ public partial class MachineService : IMachineService
     {
         var url = GetResetMachineUrl(machinIp);
 
-        var result = await Get(url);
+        System.Console.WriteLine("==== resetMachineUrl: " + url);
 
+        var result = await Get(url);
         return result;
     }
 

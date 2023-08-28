@@ -104,17 +104,24 @@ public class SettingController : BaseController
     [HttpPost]
     public async Task<IActionResult> ResetMachine(int machineId, int factoryId)
     {
-        var machine = await _machineService.GetById(machineId) ?? new Domain.Machine();
-        var result = await _machineService.ResetMachine(machine.IpAddress);
         var listAlert = new List<AlertModel>();
+        try
+        {
+            var machine = await _machineService.GetById(machineId) ?? new Domain.Machine();
+            var result = await _machineService.ResetMachine(machine.IpAddress);
 
-        if (result.Success)
-        {
-            listAlert.Add(new AlertModel { AlertType = Alert.Success, AlertMessage = $"{result.ResponseBody}" });
+            if (result.Success)
+            {
+                listAlert.Add(new AlertModel { AlertType = Alert.Success, AlertMessage = $"{result.ResponseBody}" });
+            }
+            else
+            {
+                listAlert.Add(new AlertModel { AlertType = Alert.Danger, AlertMessage = $"{result.ResponseBody}" });
+            }
         }
-        else
+        catch (Exception ex)
         {
-            listAlert.Add(new AlertModel { AlertType = Alert.Danger, AlertMessage = $"{result.ResponseBody}" });
+            listAlert.Add(new AlertModel { AlertType = Alert.Danger, AlertMessage = $"{ex.Message}" });
         }
 
         TempData["AlertMessage"] = JsonConvert.SerializeObject(listAlert);
