@@ -1,4 +1,3 @@
-# PHRASE 1
 
 ## 1. Database
 
