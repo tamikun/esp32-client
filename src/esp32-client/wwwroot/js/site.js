@@ -14,12 +14,12 @@
         });
     });
 
-    document.querySelectorAll(`input[type="submit"]`).forEach(
+    document.querySelectorAll(`input[type="submit"]:not(.download-file):not(.no-loading)`).forEach(
         item => {
             item.addEventListener('click', showSubmitLoadingPopup);
         }
     );
-    document.querySelectorAll(`button[type="submit"]`).forEach(
+    document.querySelectorAll(`button[type="submit"]:not(.download-file):not(.no-loading)`).forEach(
         item => {
             item.addEventListener('click', showSubmitLoadingPopup);
         }

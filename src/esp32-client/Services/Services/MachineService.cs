@@ -369,6 +369,12 @@ public partial class MachineService : IMachineService
         if (isEndWithSlash) rs = rs + '/';
         return rs;
     }
+    private string GetResetMachineUrl(string machineIp, bool isEndWithSlash = false)
+    {
+        string rs = string.Format(_settings.ResetMachineFormat, machineIp);
+        if (isEndWithSlash) rs = rs + '/';
+        return rs;
+    }
     private string GetChangeServerStateUrl(string machineIp, bool isEndWithSlash = false)
     {
         string rs = string.Format(_settings.ChangeServerStateFormat, machineIp);
@@ -480,6 +486,15 @@ public partial class MachineService : IMachineService
             responseBody = await response.Content.ReadAsStringAsync();
             return (true, responseBody);
         }
+    }
+
+    public async Task<(bool Success, string ResponseBody)> ResetMachine(string machinIp)
+    {
+        var url = GetResetMachineUrl(machinIp);
+
+        var result = await Get(url);
+
+        return result;
     }
 
     public async Task<(bool Success, string ResponseBody)> ChangeState(string machinIp, ServerState state)

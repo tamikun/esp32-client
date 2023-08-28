@@ -256,6 +256,7 @@ public class AddInitData : AutoReversingMigration
             new Setting{Name = "DeleteFileFormat", Value = "http://{0}/delete/VDATA/{1}", EnableEditing = true},
             new Setting{Name = "PostFileFormat", Value = "http://{0}/upload/VDATA/{1}", EnableEditing = true},
             new Setting{Name = "GetListFileFormat", Value = "http://{0}/VDATA", EnableEditing = true},
+            new Setting{Name = "ResetMachineFormat", Value = "http://{0}/data_reset", EnableEditing = true},
             new Setting{Name = "StationFormat", Value = "Station {0}", EnableEditing = true},
             new Setting{Name = "MinCharStationFormat", Value = "3", EnableEditing = true},
             new Setting{Name = "ProductFormat", Value = "Product {0}", EnableEditing = true},
@@ -272,6 +273,7 @@ public class AddInitData : AutoReversingMigration
             new Setting{Name = "ReloadMonitoringMilliseconds", Value = "5000", EnableEditing = true},
             new Setting{Name = "ReloadMonitoringBatchSize", Value = "20", EnableEditing = true},
             new Setting{Name = "EnableLog", Value = "false", EnableEditing = true},
+            new Setting{Name = "MachineFirmwareFilePath", Value = "/app/FileData/file_server.bin", EnableEditing = true},
         };
 
         _linq2Db.BulkInsert(settings).Wait();

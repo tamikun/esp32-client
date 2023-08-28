@@ -21,5 +21,6 @@ namespace esp32_client.Services
         Task<Dictionary<string, string>> AssignPatternMachine(IEnumerable<int> machineId);
         Task<List<EspFileModel>> GetDefaultListFile(string machineIp);
         Task<(bool Success, int Data)> GetProductNumberMachine(string ipAddress);
+        Task<(bool Success, string ResponseBody)> ResetMachine(string machinIp);
     }
 }

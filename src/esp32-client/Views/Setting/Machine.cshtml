@@ -92,6 +92,13 @@
                 <td>@item.COPartNo</td>
                 <td>
                     <div style="display: flex; justify-content: space-around; align-items: center;">
+                        <div id="reset">
+                            <button type="button" class="btn btn-warning btn-sm"
+                                onclick="openResetPopup('resetMachine', '@item.MachineId', '@item.MachineName'">
+                                <i class="fa fa-broom"></i>
+                                Reset product
+                            </button>
+                        </div>
                         <div id="update">
                             <button type="button" class="btn btn-info btn-sm" style="color: white;"
                                 onclick="openUpdatePopup('updateMachine', @JsonConvert.SerializeObject(item))">
@@ -201,6 +208,29 @@
     </div>
 </div>
 
+<div class="popup-container" id="resetMachine">
+    <div class="popup-dialog">
+        <div class="popup-content">
+            <span class="close-button" onclick="closePopup('resetMachine')">&times;</span>
+            <h2>Delete machine</h2>
+            @using (Html.BeginForm("ResetMachine", "Setting", FormMethod.Post, new
+            {
+                @enctype = "multipart/form-data"
+            }))
+            {
+                <div class="mb-3">
+                    <label for="machineId" class="form-label">Do you want to reset product of machine: <strong></strong>?</label>
+                    <input type="number" class="form-control" id="machineId" name="machineId" style="display: none;">
+                    <input type="number" class="form-control" id="factoryId" name="factoryId" style="display: none;" value='@factoryId'>
+                </div>
+                <div class="d-grid">
+                    <input type="submit" class="btn btn-warning" value="Reset">
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
 @section Scripts{
     <script>
         function openUpdatePopup(id, param) {
@@ -236,6 +266,16 @@
             machineNameElement.innerText = `${machineName}`;
 
             var pMachineId = document.querySelector('[id=deleteMachine] [id=machineId]');
+            pMachineId.value = machineId;
+
+            document.getElementById(id).style.display = "block";
+        }
+        
+        function openResetPopup(id, machineId, machineName) {
+            var machineNameElement = document.querySelector('[id=resetMachine] label strong');
+            machineNameElement.innerText = `${machineName}`;
+
+            var pMachineId = document.querySelector('[id=resetMachine] [id=machineId]');
             pMachineId.value = machineId;
 
             document.getElementById(id).style.display = "block";

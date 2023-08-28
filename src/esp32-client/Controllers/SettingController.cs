@@ -2,6 +2,7 @@
 using esp32_client.Services;
 using esp32_client.Builder;
 using esp32_client.Models;
+using Newtonsoft.Json;
 
 namespace esp32_client.Controllers;
 [Authentication]
@@ -98,6 +99,27 @@ public class SettingController : BaseController
         {
             await _machineService.DeleteById(machineId);
         }, RedirectToAction("Machine", new { factoryId = factoryId }));
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> ResetMachine(int machineId, int factoryId)
+    {
+        var machine = await _machineService.GetById(machineId) ?? new Domain.Machine();
+        var result = await _machineService.ResetMachine(machine.IpAddress);
+        var listAlert = new List<AlertModel>();
+
+        if (result.Success)
+        {
+            listAlert.Add(new AlertModel { AlertType = Alert.Success, AlertMessage = $"{result.ResponseBody}" });
+        }
+        else
+        {
+            listAlert.Add(new AlertModel { AlertType = Alert.Danger, AlertMessage = $"{result.ResponseBody}" });
+        }
+
+        TempData["AlertMessage"] = JsonConvert.SerializeObject(listAlert);
+
+        return RedirectToAction("Machine", new { factoryId = factoryId });
     }
 
     public async Task<ActionResult> Line(int factoryId = 0)

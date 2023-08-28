@@ -1,0 +1,103 @@
+@model IFormFile
+@{
+    ViewData["Title"] = "Machine Firmware";
+    string fileName = ViewBag.FileName;
+    double? fileSizeKB = ViewBag.FileSizeKB;
+    DateTime? creationDateTime = ViewBag.CreationDateTime;
+    string filePath = ViewBag.FilePath;
+}
+
+<h4 class="setting-header">Machine firmware</h4>
+
+@if (!String.IsNullOrEmpty(fileName))
+{
+        <ul>
+        <li>
+            <div style="display: flex;">
+                <div>
+                    File name: @fileName                
+                </div>
+                <div id="download">
+                    <button type="button" class="btn btn-info btn-sm" style="color: white;"
+                        onclick="openPopup('downloadFirmware')">
+                        <i class="fa fa-circle-down"></i>
+                        Download
+                    </button>
+                </div>
+                <div id="delete">
+                    <button type="button" class="btn btn-danger btn-sm" style="color: white;"
+                        onclick="openPopup('deleteMachineFirmware')">
+                        <i class="fa fa-light fa-trash" style="color: white;"></i>
+                        Delete
+                    </button>
+                </div>
+            </div>
+            <div>
+                @using (Html.BeginForm("MachineFirmware", "System", FormMethod.Post, new
+                {
+                    @enctype = "multipart/form-data",
+                }))
+                {
+                        <input type="file" id="file" name="file">
+                        <input type="submit" class="btn btn-primary btn-sm" value="Save">
+                }
+            </div>
+        </li>
+        <li>File size (KB): @fileSizeKB</li>
+        <li>Created at: @creationDateTime</li>
+        </ul>
+}
+else
+{
+    @using (Html.BeginForm("MachineFirmware", "System", FormMethod.Post, new
+    {
+        @enctype = "multipart/form-data",
+    }))
+    {
+                <input type="file" id="file" name="file">
+                <input type="submit" class="btn btn-primary" value="Save">
+    }
+}
+
+<div class="popup-container" id="deleteMachineFirmware">
+    <div class="popup-dialog">
+        <div class="popup-content">
+            <span class="close-button" onclick="closePopup('deleteMachineFirmware')">&times;</span>
+            <h2>Delete session</h2>
+            @using (Html.BeginForm("DeleteMachineFirmware", "System", FormMethod.Post, new
+            {
+                @enctype = "multipart/form-data"
+            }))
+            {
+                    <div class="mb-3">
+                        <label class="form-label">Do you want to delete this firmware?</label>
+                    </div>
+                    <div class="d-grid">
+                        <input type="submit" class="btn btn-danger" value="Delete">
+                    </div>
+            }
+        </div>
+    </div>
+</div>
+
+<div class="popup-container" id="downloadFirmware">
+    <div class="popup-dialog">
+        <div class="popup-content">
+            <span class="close-button" onclick="closePopup('downloadFirmware')">&times;</span>
+            <h2>Delete session</h2>
+            @using (Html.BeginForm("DownloadFile", "Setting", FormMethod.Get, new
+            {
+                @enctype = "multipart/form-data"
+            }))
+            {
+                <div class="mb-3">
+                    <label class="form-label">Do you want to download this firmware?</label>
+                    <input type="text" class="form-control" id="path" name="path" value='@filePath' style="display: none;">
+                </div>
+                <div class="d-grid">
+                    <input type="submit" class="btn btn-info download-file" value="Download" onclick="closePopup('downloadFirmware')">
+                </div>
+            }
+        </div>
+    </div>
+</div>
