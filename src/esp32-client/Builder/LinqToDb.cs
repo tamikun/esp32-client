@@ -1,6 +1,5 @@
 using System.Linq.Expressions;
 using System.Reflection;
-using esp32_client.Domain;
 using LinqToDB;
 using LinqToDB.Data;
 using LinqToDB.Linq;
@@ -19,7 +18,6 @@ public class LinqToDb : DataConnection
     {
         return this.GetTable<T>();
     }
-
 }
 
 public static class LinqToDbExtension
@@ -72,6 +70,7 @@ public static class LinqToDbExtension
 
         return source;
     }
+
     public static async Task<T> Insert<T>(this LinqToDb _linq2db, T source) where T : BaseEntity
     {
         if (source is null) throw new Exception("Cannot insert value null");
@@ -98,15 +97,4 @@ public static class LinqToDbExtension
         await query.UpdateAsync();
     }
 
-    // public static async Task Truncate<T>(this LinqToDb _linq2db, bool restartIdentity = false) where T : BaseEntity
-    // {
-    //     if (restartIdentity)
-    //     {
-    //         // await _linq2db.ExecuteAsync($"TRUNCATE TABLE {typeof(T).Name}");
-    //     }
-    //     else
-    //     {
-    //         await _linq2db.GetTable<T>().DeleteAsync();
-    //     }
-    // }
 }
