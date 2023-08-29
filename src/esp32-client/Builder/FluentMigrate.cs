@@ -1,5 +1,4 @@
 using esp32_client.Domain;
-using esp32_client.Services;
 using FluentMigrator;
 
 namespace esp32_client.Builder;
