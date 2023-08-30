@@ -20,15 +20,11 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
-if (app.Environment.IsDevelopment() || true)
+app.UseSwagger(options =>
 {
-    app.UseSwagger(options =>
-    {
-        options.SerializeAsV2 = true;
-    });
-    app.UseSwaggerUI();
-
-}
+    options.SerializeAsV2 = true;
+});
+app.UseSwaggerUI();
 
 app.UseSession(); // Enable session state
 
