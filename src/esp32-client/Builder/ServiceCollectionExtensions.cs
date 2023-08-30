@@ -76,7 +76,7 @@ namespace esp32_client.Builder
 
             builder.ConfigureEfCore();
 
-            // builder.Services.AddHostedService<ScheduledTaskService>();
+            builder.Services.AddHostedService<ScheduledTask>();
         }
 
         public static void ConfigureServices(this WebApplicationBuilder builder)
