@@ -209,6 +209,8 @@ public class AddInitData : AutoReversingMigration
     }
     public override void Up()
     {
+        #region initialize data
+        
         var department = new List<Factory>{
             new Factory { FactoryName = "Juki", FactoryNo = "Factory 001"},
         };
@@ -239,6 +241,8 @@ public class AddInitData : AutoReversingMigration
             new UserRight{RoleId = 3, ControllerName = "*", ActionName = "Index"},
         };
         _linq2Db.BulkInsert(userRight).Wait();
+
+        #endregion
 
         var settings = new List<Setting>{
             new Setting{Name = "GetApiTimeOut", Value = "1000", EnableEditing = true},

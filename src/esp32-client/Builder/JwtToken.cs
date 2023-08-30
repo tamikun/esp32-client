@@ -1,7 +1,6 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using esp32_client.Domain;
 using esp32_client.Models.Singleton;
 using Microsoft.IdentityModel.Tokens;
 
@@ -19,7 +18,6 @@ namespace esp32_client.Builder
         private static readonly Settings _settings = EngineContext.Resolve<Settings>();
         public static string GenerateJwtToken(int userId, string userName, string loginName)
         {
-            // generate token that is valid for 7 days
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_settings.JwtTokenSecret);
             var tokenDescriptor = new SecurityTokenDescriptor
@@ -44,7 +42,7 @@ namespace esp32_client.Builder
                     IssuerSigningKey = new SymmetricSecurityKey(key),
                     ValidateIssuer = false,
                     ValidateAudience = false,
-                    // set clockskew to zero so tokens expire exactly at token expiration time (instead of 5 minutes later)
+                    // set clockskew to zero so tokens expire exactly at token expiration time
                     ClockSkew = TimeSpan.Zero
                 }, out SecurityToken validatedToken);
 
