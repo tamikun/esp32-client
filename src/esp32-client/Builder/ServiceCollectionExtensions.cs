@@ -81,7 +81,7 @@ namespace esp32_client.Builder
 
         public static void ConfigureServices(this WebApplicationBuilder builder)
         {
-            builder.Services.AddSession(option => option.IdleTimeout = TimeSpan.FromMinutes(1440));
+            builder.Services.AddSession(option => option.IdleTimeout = TimeSpan.FromDays(30)); // Check expired time by token
             builder.Services.AddScoped<IHttpContextAccessor, HttpContextAccessor>();
 
             builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
