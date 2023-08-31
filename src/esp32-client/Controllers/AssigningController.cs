@@ -43,10 +43,6 @@ public class AssigningController : BaseController
         try
         {
             var result = await _lineService.AssignStationProcess(model);
-            // foreach (var item in result)
-            // {
-            //     listAlert.Add(new AlertModel { AlertType = item.Value == "Success" ? Alert.Success : Alert.Info, AlertMessage = $"{item.Key}: {item.Value}" });
-            // }
             listAlert.Add(new AlertModel { AlertType = Alert.Success, AlertMessage = $"Action successful." });
         }
         catch (Exception ex)
