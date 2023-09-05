@@ -7,12 +7,22 @@ namespace esp32_client.Builder;
 public class ScheduledTask : BackgroundService
 {
     private const int BatchSize = 2; // Number of tasks to process in each batch
+    private CancellationTokenSource _cancellationTokenSource = new CancellationTokenSource();
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         var linq2Db = EngineContext.Resolve<LinqToDb>();
         var scheduledTaskService = EngineContext.Resolve<IScheduleTaskService>();
         var logService = EngineContext.Resolve<ILogService>();
+
+        bool anyScheduleTask = await linq2Db.Entity<ScheduleTask>().AnyAsync();
+
+        if (!anyScheduleTask)
+        {
+            _cancellationTokenSource.Cancel();
+            return;
+        }
+
         int minDelay = await linq2Db.Entity<ScheduleTask>().MinAsync(s => s.Seconds);
         minDelay = minDelay < 60 ? 60 : minDelay;
 
@@ -48,6 +58,12 @@ public class ScheduledTask : BackgroundService
 
             await Task.Delay(TimeSpan.FromSeconds(minDelay), stoppingToken);
         }
+    }
+
+    public override void Dispose()
+    {
+        _cancellationTokenSource.Cancel();
+        base.Dispose();
     }
 }
 
