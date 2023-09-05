@@ -20,18 +20,18 @@ public class BaseTest
     [OneTimeSetUp]
     public void OneTimeSetUp()
     {
-        var builder = WebApplication.CreateBuilder();
+        var builder = WebApplication.CreateBuilder(); // Tạo builder
 
-        builder.Services.AddEntityFrameworkInMemoryDatabase();
+        builder.Services.AddEntityFrameworkInMemoryDatabase(); // Thêm Entity Framework
 
-        builder.Services.AddFluentMigratorCore()
+        builder.Services.AddFluentMigratorCore()    // Configure FluentMigrator
             .ConfigureRunner(rb => rb
                 .AddSQLite()
                 .WithGlobalConnectionString(connectionString)
                 .ScanIn(Assembly.GetExecutingAssembly()).For.Migrations())
             ;
 
-        builder.Services.AddLinqToDBContext<LinqToDb>((provider, options)
+        builder.Services.AddLinqToDBContext<LinqToDb>((provider, options)   // Configure LinqToDB
             => options
                 .UseSQLite(connectionString)
             , ServiceLifetime.Scoped);
@@ -40,13 +40,13 @@ public class BaseTest
             options.UseSqlite(connectionString)
         );
 
-        builder.ConfigureServices();
+        builder.ConfigureServices();    // Thêm các khai báo service (Scoped, Singleton,...) ở project esp32-client
 
-        _serviceProvider = builder.Services.BuildServiceProvider();
+        _serviceProvider = builder.Services.BuildServiceProvider(); // Build service
 
-        EngineContext.SetServiceProvider(_serviceProvider);
+        EngineContext.SetServiceProvider(_serviceProvider); // Khởi tạo giá trị cho EngineContext
 
-        InitData();
+        InitData(); // Gọi hàm chạy migration
     }
 
     [OneTimeTearDown]
