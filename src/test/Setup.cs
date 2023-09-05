@@ -36,7 +36,7 @@ public class BaseTest
                 .UseSQLite(connectionString)
             , ServiceLifetime.Scoped);
         
-        builder.Services.AddDbContext<Context>(options =>
+        builder.Services.AddDbContext<Context>(options =>     // Configure EntityFramework
             options.UseSqlite(connectionString)
         );
 
