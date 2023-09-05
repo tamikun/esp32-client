@@ -7,8 +7,6 @@ using Microsoft.Extensions.DependencyInjection;
 using LinqToDB.Data;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Data.Sqlite;
-using System.Data.Common;
 
 namespace test;
 
