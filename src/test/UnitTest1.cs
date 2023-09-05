@@ -110,10 +110,10 @@ public class Tests
 
         var line = await _lineService.Create(model);
 
-        Assert.That(line.Id, Is.EqualTo(1));
+        Assert.That(line.Id, Is.EqualTo(1)); // Insert new Line success, return LineId = 1
 
-        var stations = await _linq2db.Entity<Station>().Where(s => s.LineId == 1).ToListAsync();
-        Assert.That(stations.Count, Is.EqualTo(2));
+        var stations = await _linq2db.Entity<Station>().Where(s => s.LineId == 1).ToListAsync(); // Get Station of LineId 1
+        Assert.That(stations.Count, Is.EqualTo(2)); // Insert 2 Stations sucess
 
         await _linq2db.Entity<Line>().AsQueryable().DeleteQuery();
         await _linq2db.Entity<Station>().AsQueryable().DeleteQuery();
