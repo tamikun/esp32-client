@@ -34,9 +34,9 @@ public partial class MachineService : IMachineService
         return machine;
     }
 
-    public async Task<List<Machine>> GetByListId(IEnumerable<int> listId)
+    public async Task<List<Machine>> GetByLineId(int lineId)
     {
-        return await _linq2db.Entity<Machine>().Where(s => listId.Contains(s.Id)).ToListAsync();
+        return await _linq2db.Entity<Machine>().Where(s => s.LineId == lineId).ToListAsync();
     }
 
     public async Task<List<Machine>> GetAll()
@@ -168,54 +168,50 @@ public partial class MachineService : IMachineService
 
     public async Task<Dictionary<string, string>> AssignMachineLine(ListAssignMachineLineModel model)
     {
-        // Validation
-        // Duplicate machine in line
+        // Validation duplicate machine in line
         if (model.ListAssignMachine.Where(s => s.MachineId != 0).GroupBy(s => s.MachineId).Any(s => s.Count() > 1))
             throw new Exception("A machine cannot be used for more than one station.");
 
-        var listUpdateMachineId = new List<int>();
+        var listOldMachineInLine = await GetByLineId(model.LineId);
 
-        foreach (var item in model.ListAssignMachine)
+        // Get list MachineId affected (existed in line and assigned new)
+        var listMachineId = new List<int>();
+        listMachineId.AddRange(listOldMachineInLine.Select(s => s.Id));
+        listMachineId.AddRange(model.ListAssignMachine.Select(s => s.MachineId));
+        listMachineId = listMachineId.Distinct().ToList();
+
+        //List not updated MachineId
+        var listNotUpdatedMachineId = from oldMachine in listOldMachineInLine
+                                      join newMachine in model.ListAssignMachine on oldMachine.StationId equals newMachine.StationId
+                                      where oldMachine.Id == newMachine.MachineId
+                                      select oldMachine.Id;
+
+        var listUpdatedMachineId = listMachineId.Where(s => !listNotUpdatedMachineId.Contains(s) && s != 0);
+
+        foreach (var machineId in listUpdatedMachineId)
         {
-            if (item.MachineId == 0)
+            var assignMachine = model.ListAssignMachine.Where(s => s.MachineId == machineId).FirstOrDefault();
+            // Station does not have any machine
+            if (assignMachine is null)
             {
-                var machine = await _linq2db.Entity<Machine>()
-                            .Where(s => s.StationId == item.StationId)
-                            .Where(s => s.LineId != 0 || s.StationId != 0)
-                            .FirstOrDefaultAsync();
-                if (machine is not null)
-                {
-                    await _linq2db.Entity<Machine>()
-                            .Where(s => s.StationId == item.StationId)
-                            .Set(s => s.LineId, 0)
-                            .Set(s => s.StationId, 0).UpdateQuery();
-
-                    listUpdateMachineId.Add(machine.Id);
-                }
+                // Update unassigned machine
+                await _linq2db.Entity<Machine>()
+                        .Where(s => s.Id == machineId)
+                        .Set(s => s.LineId, 0)
+                        .Set(s => s.StationId, 0).UpdateQuery();
             }
             else
             {
-                var machine = await _linq2db.Entity<Machine>()
-                            .Where(s => s.Id == item.MachineId)
-                            .Where(s => s.LineId != model.LineId || s.StationId != item.StationId)
-                            .FirstOrDefaultAsync();
-
-                if (machine is not null)
-                {
-
-                    await _linq2db.Entity<Machine>()
-                        .Where(s => s.Id == item.MachineId)
-                        .Set(s => s.LineId, model.LineId)
-                        .Set(s => s.StationId, item.StationId).UpdateQuery();
-
-                    listUpdateMachineId.Add(machine.Id);
-                }
+                await _linq2db.Entity<Machine>()
+                    .Where(s => s.Id == machineId)
+                    .Set(s => s.LineId, model.LineId)
+                    .Set(s => s.StationId, assignMachine.StationId).UpdateQuery();
             }
         }
 
 
         // Update file
-        var assignPattern = await AssignPatternMachine(listUpdateMachineId);
+        var assignPattern = await AssignPatternMachine(listUpdatedMachineId);
 
         return assignPattern;
     }

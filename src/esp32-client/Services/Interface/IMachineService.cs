@@ -6,7 +6,7 @@ namespace esp32_client.Services
     public interface IMachineService
     {
         Task<Machine?> GetById(int id);
-        Task<List<Machine>> GetByListId(IEnumerable<int> listId);
+        Task<List<Machine>> GetByLineId(int lineId);
         Task<List<Machine>> GetAll();
         Task<List<MachineResponseModel>> GetByFactoryId(int factoryId);
         Task<List<Machine>> GetInUseMachineByLine(int lineId);
