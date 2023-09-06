@@ -6,7 +6,7 @@ namespace esp32_client.Services
 {
     public interface ILineService
     {
-        Task<Line?> GetById(int id);
+        Task<Line> GetById(int id);
 
         Task<PagedListModel<Line>> GetAll(int pageIndex, int pageSize);
 
@@ -24,7 +24,7 @@ namespace esp32_client.Services
 
         Task<List<GetStationAndProcessModel>> GetStationAndProcess(int lineId);
 
-        Task<List<GetProcessAndMachineOfLineModel>> GetProcessAndMachineOfLine(int factoryId, List<int>? listLineId = null,
+        Task<List<GetProcessAndMachineOfLineModel>> GetProcessAndMachineOfLine(int factoryId, List<int> listLineId = null,
             bool cncMachine = false, bool hasProduct = false, bool hasMachine = false);
 
         Task Delete(int lineId);

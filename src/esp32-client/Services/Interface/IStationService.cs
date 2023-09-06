@@ -5,7 +5,7 @@ namespace esp32_client.Services
 {
     public interface IStationService
     {
-        Task<Station?> GetById(int id);
+        Task<Station> GetById(int id);
 
         Task<List<Station>> GetAll();
 

@@ -5,7 +5,7 @@ namespace esp32_client.Domain
 {
     public class UserAccount : BaseEntity
     {
-#nullable disable
+
         public string LoginName { get; set; }
         public string Password { get; set; }
         public string SalfKey { get; set; }

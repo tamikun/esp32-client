@@ -10,7 +10,6 @@ namespace esp32_client.Models.Singleton
     {
         private readonly LinqToDb _linqToDb;
 
-#nullable enable
         public Settings(LinqToDb linqToDb)
         {
             _linqToDb = linqToDb;
@@ -23,7 +22,7 @@ namespace esp32_client.Models.Singleton
             var propertyInfos = settingType.GetProperties();
             foreach (var property in propertyInfos)
             {
-                PropertyInfo? pinfo = settingType.GetProperty(property.Name);
+                PropertyInfo pinfo = settingType.GetProperty(property.Name);
                 if (pinfo is not null)
                     pinfo.SetValue(
                         this,
@@ -31,7 +30,7 @@ namespace esp32_client.Models.Singleton
                         null);
             }
         }
-#nullable disable
+
 
         public string Subnet { get; set; }
         public string Port { get; set; }

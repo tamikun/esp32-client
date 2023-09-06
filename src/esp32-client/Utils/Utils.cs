@@ -4,7 +4,7 @@ namespace esp32_client.Utils
 {
     public static class Utils
     {
-        public static string GetBackDirectory(string? OriginDirectory)
+        public static string GetBackDirectory(string OriginDirectory)
         {
             string backDirString = "";
 
@@ -38,11 +38,11 @@ namespace esp32_client.Utils
         /// <param name="value"></param>
         /// <param name="conversion"></param>
         /// <returns></returns>
-        public static object? ChangeType(this object? value, Type conversion)
+        public static object ChangeType(this object value, Type conversion)
         {
             if (value is null) return null;
 
-            Type? t = conversion;
+            Type t = conversion;
             if (t is not null)
             {
                 if (t.IsGenericType && t.GetGenericTypeDefinition().Equals(typeof(Nullable<>)))
@@ -75,7 +75,7 @@ namespace esp32_client.Utils
             return fileBytes;
         }
 
-        public static string GetContentType(string? fileType)
+        public static string GetContentType(string fileType)
         {
             string contentType = "";
             switch (fileType?.ToLower())

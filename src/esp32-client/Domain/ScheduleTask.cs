@@ -5,7 +5,7 @@ namespace esp32_client.Domain
 {
     public class ScheduleTask : BaseEntity
     {
-#nullable disable
+
         public string Name { get; set; }
         public int Seconds { get; set; }
         public string Method { get; set; }

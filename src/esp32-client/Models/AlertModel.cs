@@ -2,9 +2,9 @@ namespace esp32_client.Models;
 
 public class AlertModel
 {
-    public Alert? AlertType { get; set; }
+    public Alert AlertType { get; set; }
 
-    public string? AlertMessage { get; set; }
+    public string AlertMessage { get; set; }
 }
 
 public enum Alert

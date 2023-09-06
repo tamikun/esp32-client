@@ -1,8 +1,8 @@
-@model AlertModel?
+@model AlertModel
 
 @if (Model is not null)
 {
-    @switch (Model?.AlertType)
+    @switch (Model.AlertType)
     {
         case Alert.Success:
             <div class="alert alert-success alert-dismissible">

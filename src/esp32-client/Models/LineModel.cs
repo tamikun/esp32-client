@@ -1,7 +1,7 @@
 namespace esp32_client.Models;
 public class LineCreateModel
 {
-#nullable disable
+
     public int FactoryId { get; set; }
     public string LineName { get; set; }
     public int LineNo { get; set; }

@@ -5,7 +5,7 @@ namespace esp32_client.Services
 {
     public interface IRoleOfUserService
     {
-        Task<RoleOfUser?> GetById(int id);
+        Task<RoleOfUser> GetById(int id);
 
         Task<List<RoleOfUser>> GetAll();
 

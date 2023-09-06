@@ -1,7 +1,7 @@
 namespace esp32_client.Models;
 public class RoleOfUserCreateModel
 {
-#nullable disable
+
     public int UserId { get; set; }
     public int RoleId { get; set; }
 }

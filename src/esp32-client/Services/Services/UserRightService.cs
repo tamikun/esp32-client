@@ -17,7 +17,7 @@ public partial class UserRightService : IUserRightService
         _mapper = mapper;
     }
 
-    public async Task<UserRight?> GetById(int id)
+    public async Task<UserRight> GetById(int id)
     {
         var UserRight = await _linq2db.Entity<UserRight>().Where(s => s.Id == id).FirstOrDefaultAsync();
         return UserRight;

@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
-    <Nullable>enable</Nullable>
+    <Nullable>disable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <RootNamespace>esp32_client</RootNamespace>
     <UserSecretsId>81cb02f0-29c9-4388-bd44-e926876f7a6d</UserSecretsId>

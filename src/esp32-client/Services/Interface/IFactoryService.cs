@@ -5,7 +5,7 @@ namespace esp32_client.Services
 {
     public interface IFactoryService
     {
-        Task<Factory?> GetById(int id);
+        Task<Factory> GetById(int id);
 
         Task<List<Factory>> GetAll();
 

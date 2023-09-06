@@ -21,13 +21,13 @@ public partial class ProductService : IProductService
         _settings = settings;
     }
 
-    public async Task<Product?> GetById(int id)
+    public async Task<Product> GetById(int id)
     {
         var product = await _linq2db.Entity<Product>().Where(s => s.Id == id).FirstOrDefaultAsync();
         return product;
     }
 
-    public async Task<Product?> GetByProductNo(string productNo, int factoryId)
+    public async Task<Product> GetByProductNo(string productNo, int factoryId)
     {
         var product = await _linq2db.Entity<Product>().Where(s => s.ProductNo == productNo && s.FactoryId == factoryId).FirstOrDefaultAsync();
         return product;

@@ -49,7 +49,7 @@ public class SystemController : BaseController
     {
         // Display filename, datetime, size at File IO
         // Change firmware
-        string? fileName = null;
+        string fileName = null;
         double? fileSizeKB = null;
         DateTime? creationDateTime = null;
 

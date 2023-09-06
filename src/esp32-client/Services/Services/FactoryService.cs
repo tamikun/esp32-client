@@ -23,7 +23,7 @@ public partial class FactoryService : IFactoryService
         _settings = settings;
     }
 
-    public async Task<Factory?> GetById(int id)
+    public async Task<Factory> GetById(int id)
     {
         var department = await _linq2db.Entity<Factory>().Where(s => s.Id == id).FirstOrDefaultAsync();
         return department;

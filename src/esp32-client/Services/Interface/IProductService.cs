@@ -5,9 +5,9 @@ namespace esp32_client.Services
 {
     public interface IProductService
     {
-        Task<Product?> GetById(int id);
+        Task<Product> GetById(int id);
 
-        Task<Product?> GetByProductNo(string productNo, int factoryId);
+        Task<Product> GetByProductNo(string productNo, int factoryId);
 
         Task<List<Product>> GetAll(int factoryId);
 

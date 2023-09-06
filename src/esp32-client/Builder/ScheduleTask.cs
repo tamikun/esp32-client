@@ -40,7 +40,7 @@ public class ScheduledTask : BackgroundService
                     s.LastStartUtc = DateTime.UtcNow;
                     try
                     {
-                        var invoke = (Task?)typeof(IScheduleTaskService)?.GetMethod(s.Method)?.Invoke(scheduledTaskService, new object[] { });
+                        var invoke = (Task)typeof(IScheduleTaskService)?.GetMethod(s.Method)?.Invoke(scheduledTaskService, new object[] { });
                         if (invoke is not null)
                             await invoke.ConfigureAwait(true);
 

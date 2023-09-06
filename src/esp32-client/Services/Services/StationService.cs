@@ -18,7 +18,7 @@ public partial class StationService : IStationService
         _mapper = mapper;
     }
 
-    public async Task<Station?> GetById(int id)
+    public async Task<Station> GetById(int id)
     {
         var department = await _linq2db.Entity<Station>().Where(s => s.Id == id).FirstOrDefaultAsync();
         return department;

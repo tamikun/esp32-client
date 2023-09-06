@@ -2,7 +2,7 @@ namespace esp32_client.Models;
 
 public class MachineCreateModel
 {
-#nullable disable
+
     public string MachineName { get; set; }
     public int MachineNo { get; set; }
     public string IpAddress { get; set; }

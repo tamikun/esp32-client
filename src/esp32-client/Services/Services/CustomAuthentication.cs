@@ -9,10 +9,10 @@ namespace esp32_client.Services
 {
     public class Authentication : ActionFilterAttribute
     {
-        private string? GetBearerToken(ActionExecutingContext context)
+        private string GetBearerToken(ActionExecutingContext context)
         {
             var auth = context.HttpContext.Request.Headers["Authorization"].FirstOrDefault();
-            string? token = null;
+            string token = null;
             if (!string.IsNullOrEmpty(auth) && auth.StartsWith("Bearer "))
             {
                 token = auth.Substring("Bearer ".Length);
@@ -48,10 +48,10 @@ namespace esp32_client.Services
                         var userAccountService = EngineContext.Resolve<IUserAccountService>();
 
                         // Get the name of the controller
-                        string? controllerName = context.RouteData.Values["controller"]?.ToString();
+                        string controllerName = context.RouteData.Values["controller"]?.ToString();
 
                         // Get the name of the action method
-                        string? actionName = context.RouteData.Values["action"]?.ToString();
+                        string actionName = context.RouteData.Values["action"]?.ToString();
 
                         //Check ...
                         var checkUserRight = await userAccountService.CheckUserRight(user.LoginName, controllerName, actionName);

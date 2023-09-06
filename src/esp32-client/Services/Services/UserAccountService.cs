@@ -22,13 +22,13 @@ public partial class UserAccountService : IUserAccountService
         _roleOfUser = roleOfUser;
     }
 
-    public async Task<UserAccount?> GetById(int id)
+    public async Task<UserAccount> GetById(int id)
     {
         var user = await _linq2db.Entity<UserAccount>().Where(s => s.Id == id).FirstOrDefaultAsync();
         return user;
     }
 
-    public async Task<UserAccount?> GetByLoginName(string loginName)
+    public async Task<UserAccount> GetByLoginName(string loginName)
     {
         var user = await _linq2db.Entity<UserAccount>().Where(s => s.LoginName == loginName).FirstOrDefaultAsync();
         return user;
@@ -104,7 +104,7 @@ public partial class UserAccountService : IUserAccountService
         await _linq2db.Delete(user);
     }
 
-    public async Task<bool> CheckUserRight(string? loginName, string? controllerName, string? actionName)
+    public async Task<bool> CheckUserRight(string loginName, string controllerName, string actionName)
     {
         if (loginName is null) return false;
         if (controllerName is null) return true;
@@ -120,7 +120,7 @@ public partial class UserAccountService : IUserAccountService
                             || (s.ControllerName == controllerName && s.ActionName == actionName));
     }
 
-    public async Task<List<UserRight>> GetUserRight(string? loginName)
+    public async Task<List<UserRight>> GetUserRight(string loginName)
     {
         if (loginName is null) return new List<UserRight>();
 

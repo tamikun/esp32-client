@@ -3,11 +3,11 @@ using Microsoft.AspNetCore.Mvc;
 using esp32_client.Models.Singleton;
 using esp32_client.Builder;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection;
 
 namespace esp32_client.Controllers;
 
 [ApiController]
-[Authentication]
 [Route("api/[controller]/[action]")]
 public class TestApiController : ControllerBase
 {
@@ -95,7 +95,7 @@ public class TestApiController : ControllerBase
     public async Task<IActionResult> GetTokenHeader()
     {
         var auth = HttpContext.Request.Headers["Authorization"].FirstOrDefault();
-        string? token = null;
+        string token = null;
         if (!string.IsNullOrEmpty(auth) && auth.StartsWith("Bearer "))
         {
             token = auth.Substring("Bearer ".Length);

@@ -2,7 +2,7 @@ namespace esp32_client.Models;
 
 public class ProcessCreateModel
 {
-#nullable disable
+
     public int ProductId { get; set; }
     public string ProcessNo { get; set; }
 }
@@ -12,9 +12,8 @@ public class ProcessUpdateModel
     public int Id { get; set; }
     public string ProcessName { get; set; }
     public string Description { get; set; }
-#nullable enable
-    public IFormFile? FileData { get; set; }
-#nullable disable
+    public IFormFile FileData { get; set; }
+
 
 }
 

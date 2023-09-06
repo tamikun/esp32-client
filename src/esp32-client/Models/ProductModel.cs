@@ -2,7 +2,7 @@ namespace esp32_client.Models;
 
 public class ProductCreateModel
 {
-#nullable disable
+
     public int FactoryId { get; set; }
     public string ProductName { get; set; }
     public int ProductNo { get; set; }

@@ -1,7 +1,7 @@
 namespace esp32_client.Models;
 
 
-#nullable disable
+
 public class StationUpdateModel
 {
     public int Id { get; set; }

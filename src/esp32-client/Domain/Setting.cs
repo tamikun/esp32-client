@@ -5,7 +5,7 @@ namespace esp32_client.Domain
 {
     public class Setting : BaseEntity
     {
-#nullable disable
+
         public string Name { get; set; }
         public string Value { get; set; }
         public bool EnableEditing { get; set; }

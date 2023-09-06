@@ -23,7 +23,7 @@ public partial class ProcessService : IProcessService
         _settings = settings;
     }
 
-    public async Task<Process?> GetById(int id)
+    public async Task<Process> GetById(int id)
     {
         var process = await _linq2db.Entity<Process>().Where(s => s.Id == id).FirstOrDefaultAsync();
         return process;
@@ -35,7 +35,7 @@ public partial class ProcessService : IProcessService
         return process;
     }
 
-    public async Task<Process?> GetByProcessName(string name)
+    public async Task<Process> GetByProcessName(string name)
     {
         var process = await _linq2db.Entity<Process>().Where(s => s.ProcessName == name).FirstOrDefaultAsync();
         return process;

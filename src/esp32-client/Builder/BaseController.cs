@@ -7,7 +7,6 @@ namespace esp32_client.Controllers
 {
     public class BaseController : Controller
     {
-#nullable disable
         protected LinqToDb _linq2db;
 
         protected async Task<IActionResult> HandleActionAsync(Func<Task> action, IActionResult redirect)

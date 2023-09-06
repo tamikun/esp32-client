@@ -5,7 +5,7 @@ namespace esp32_client.Services
 {
     public interface IUserRightService
     {
-        Task<UserRight?> GetById(int id);
+        Task<UserRight> GetById(int id);
 
         Task<List<UserRight>> GetAll();
 

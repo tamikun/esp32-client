@@ -5,7 +5,7 @@ namespace esp32_client.Services
 {
     public interface IUserSessionService
     {
-        Task<UserSession?> GetById(int id);
+        Task<UserSession> GetById(int id);
 
         Task<List<UserSession>> GetByUserId(int userId);
 

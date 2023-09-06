@@ -28,7 +28,7 @@ public partial class MachineService : IMachineService
         _logService = logService;
     }
 
-    public async Task<Machine?> GetById(int id)
+    public async Task<Machine> GetById(int id)
     {
         var machine = await _linq2db.Entity<Machine>().Where(s => s.Id == id).FirstOrDefaultAsync();
         return machine;
@@ -454,7 +454,7 @@ public partial class MachineService : IMachineService
         return fileDataList;
     }
 
-    public async Task<(bool Success, string ResponseBody)> Post(string? requestBody, string apiUrl)
+    public async Task<(bool Success, string ResponseBody)> Post(string requestBody, string apiUrl)
     {
         using (HttpClient httpClient = new HttpClient())
         {
@@ -514,7 +514,7 @@ public partial class MachineService : IMachineService
         return await GetListFile(GetListFileUrl(machineIp, isEndWithSlash: true));
     }
 
-    public async Task<(bool Success, string ResponseBody)> DeleteFile(string ipAddress, string? fileName)
+    public async Task<(bool Success, string ResponseBody)> DeleteFile(string ipAddress, string fileName)
     {
         if (fileName is null) return (true, "");
 

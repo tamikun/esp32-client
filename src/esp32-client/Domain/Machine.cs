@@ -5,7 +5,6 @@ namespace esp32_client.Domain
 {
     public class Machine : BaseEntity
     {
-#nullable disable
         public string MachineNo { get; set; }
         public string MachineName { get; set; }
         public string IpAddress { get; set; }

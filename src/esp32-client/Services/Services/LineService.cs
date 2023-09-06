@@ -25,7 +25,7 @@ public partial class LineService : ILineService
         _stationService = stationService;
     }
 
-    public async Task<Line?> GetById(int id)
+    public async Task<Line> GetById(int id)
     {
         var line = await _linq2db.Entity<Line>().Where(s => s.Id == id).FirstOrDefaultAsync();
         return line;
@@ -64,7 +64,7 @@ public partial class LineService : ILineService
         return result;
     }
 
-    public async Task<Line?> GetByLineNo(string lineNo, int factoryId)
+    public async Task<Line> GetByLineNo(string lineNo, int factoryId)
     {
         var line = await _linq2db.Entity<Line>().Where(s => s.LineNo == lineNo && s.FactoryId == factoryId).FirstOrDefaultAsync();
         return line;
@@ -198,7 +198,7 @@ public partial class LineService : ILineService
         return result;
     }
 
-    public async Task<List<GetProcessAndMachineOfLineModel>> GetProcessAndMachineOfLine(int factoryId, List<int>? listLineId = null,
+    public async Task<List<GetProcessAndMachineOfLineModel>> GetProcessAndMachineOfLine(int factoryId, List<int> listLineId = null,
                                                                 bool cncMachine = false, bool hasProduct = false, bool hasMachine = false)
     {
         var lineQuery = _linq2db.Entity<Line>().Where(s => s.FactoryId == factoryId);

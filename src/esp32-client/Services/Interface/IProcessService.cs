@@ -5,11 +5,11 @@ namespace esp32_client.Services
 {
     public interface IProcessService
     {
-        Task<Process?> GetById(int id);
+        Task<Process> GetById(int id);
 
         Task<List<Process>> GetByProductId(int id);
 
-        Task<Process?> GetByProcessName(string name);
+        Task<Process> GetByProcessName(string name);
 
         Task<List<Process>> GetAll();
 

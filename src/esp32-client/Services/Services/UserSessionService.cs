@@ -17,7 +17,7 @@ public partial class UserSessionService : IUserSessionService
         _settings = settings;
     }
 
-    public async Task<UserSession?> GetById(int id)
+    public async Task<UserSession> GetById(int id)
     {
         var userSession = await _linq2db.Entity<UserSession>().Where(s => s.Id == id).FirstOrDefaultAsync();
         return userSession;

@@ -10,7 +10,6 @@ namespace esp32_client.Builder
     {
         public class User
         {
-#nullable disable
             public int UserId { get; set; }
             public string UserName { get; set; }
             public string LoginName { get; set; }

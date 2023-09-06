@@ -28,9 +28,8 @@ public static class LinqToDbExtension
         var temp = await _linq2db.BulkCopyAsync<T>(copyOptions, source);
     }
 
-    public static async Task<T?> Update<T>(this LinqToDb _linq2db, T source) where T : BaseEntity
+    public static async Task<T> Update<T>(this LinqToDb _linq2db, T source) where T : BaseEntity
     {
-#nullable disable
         if (source is null) return null;
 
         var propertyInfos = typeof(T).GetProperties();

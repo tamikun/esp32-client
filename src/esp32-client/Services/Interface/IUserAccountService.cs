@@ -5,9 +5,9 @@ namespace esp32_client.Services
 {
     public interface IUserAccountService
     {
-        Task<UserAccount?> GetById(int id);
+        Task<UserAccount> GetById(int id);
 
-        Task<UserAccount?> GetByLoginName(string loginName);
+        Task<UserAccount> GetByLoginName(string loginName);
 
         Task<bool> IsValidUser(UserAccount userAcount, string password);
 
@@ -19,8 +19,8 @@ namespace esp32_client.Services
 
         Task Delete(int id);
 
-        Task<bool> CheckUserRight(string? loginName, string? controllerName, string? actionName);
+        Task<bool> CheckUserRight(string loginName, string controllerName, string actionName);
 
-        Task<List<UserRight>> GetUserRight(string? loginName);
+        Task<List<UserRight>> GetUserRight(string loginName);
     }
 }

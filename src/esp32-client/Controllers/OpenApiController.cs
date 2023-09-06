@@ -65,7 +65,6 @@ public class OpenApiController : ControllerBase
 
     public class SaveProductDataModel
     {
-#nullable disable
         [JsonProperty("IPAddress")]
         [JsonPropertyName("IPAddress")]
         public string IPAddress { get; set; }

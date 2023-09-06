@@ -5,7 +5,6 @@ namespace esp32_client.Domain
 {
     public class Process : BaseEntity
     {
-#nullable disable
         public int ProductId { get; set; }
         public string ProcessName { get; set; } = string.Empty;
         public string ProcessNo { get; set; } = string.Empty;

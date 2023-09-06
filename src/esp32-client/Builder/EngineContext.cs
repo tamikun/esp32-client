@@ -1,7 +1,6 @@
 
 public static class EngineContext
 {
-#nullable disable
     private static IServiceProvider serviceProvider;
 
     public static void SetServiceProvider(IServiceProvider provider)

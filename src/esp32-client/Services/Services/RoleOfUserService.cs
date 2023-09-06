@@ -18,7 +18,7 @@ public partial class RoleOfUserService : IRoleOfUserService
         _mapper = mapper;
     }
 
-    public async Task<RoleOfUser?> GetById(int id)
+    public async Task<RoleOfUser> GetById(int id)
     {
         var RoleOfUser = await _linq2db.Entity<RoleOfUser>().Where(s => s.Id == id).FirstOrDefaultAsync();
         return RoleOfUser;

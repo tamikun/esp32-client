@@ -17,7 +17,7 @@ public partial class UserRoleService : IUserRoleService
         _mapper = mapper;
     }
 
-    public async Task<UserRole?> GetById(int id)
+    public async Task<UserRole> GetById(int id)
     {
         var userRole = await _linq2db.Entity<UserRole>().Where(s => s.Id == id).FirstOrDefaultAsync();
         return userRole;
