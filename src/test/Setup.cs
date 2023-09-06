@@ -28,14 +28,15 @@ public class BaseTest
             .ConfigureRunner(rb => rb
                 .AddSQLite()
                 .WithGlobalConnectionString(connectionString)
-                .ScanIn(Assembly.GetExecutingAssembly()).For.Migrations())
-            ;
+                .ScanIn(Assembly.GetExecutingAssembly()).For.Migrations()
+        );
 
         builder.Services.AddLinqToDBContext<LinqToDb>((provider, options)   // Configure LinqToDB
             => options
                 .UseSQLite(connectionString)
-            , ServiceLifetime.Scoped);
-        
+            , ServiceLifetime.Scoped
+        );
+
         builder.Services.AddDbContext<Context>(options =>     // Configure EntityFramework
             options.UseSqlite(connectionString)
         );
@@ -60,7 +61,6 @@ public class BaseTest
             // Drop the table by executing raw SQL
             linq2Db.Execute($"DROP TABLE IF EXISTS {table.TableName}");
         }
-
     }
 
     public void InitData()
@@ -90,6 +90,13 @@ public class BaseTest
             System.Console.WriteLine("[ERROR]: cannot get " + typeof(T).FullName + ex.ToString());
             throw;
         }
+    }
+
+    public static async Task Truncate<T>() where T : BaseEntity
+    {
+        var linq2Db = GetService<LinqToDb>();
+        await linq2Db.ExecuteAsync($"DELETE FROM {typeof(T).Name};");
+        await linq2Db.ExecuteAsync($"DELETE FROM sqlite_sequence WHERE name = '{typeof(T).Name}';");
     }
 }
 

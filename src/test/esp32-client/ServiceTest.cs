@@ -5,7 +5,6 @@ using esp32_client.Models.Singleton;
 using esp32_client.Services;
 using FluentMigrator.Runner;
 using LinqToDB;
-using LinqToDB.Data;
 
 namespace test;
 
@@ -101,10 +100,8 @@ public class ServiceTest
     [Order(3)]
     public async Task ShouldCreateLine()
     {
-        _linq2db.Execute($"DELETE FROM {nameof(Line)};");
-        _linq2db.Execute($"DELETE FROM sqlite_sequence WHERE name = '{nameof(Line)}';");
-        _linq2db.Execute($"DELETE FROM {nameof(Station)};");
-        _linq2db.Execute($"DELETE FROM sqlite_sequence WHERE name = '{nameof(Station)}';");
+        await BaseTest.Truncate<Line>();
+        await BaseTest.Truncate<Station>();
 
         var model = new LineCreateModel
         {
