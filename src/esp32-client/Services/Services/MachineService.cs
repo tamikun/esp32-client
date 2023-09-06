@@ -62,7 +62,7 @@ public partial class MachineService : IMachineService
                                   LineName = line.LineName,
                                   ProcessName = process.ProcessName,
                                   COPartNo = machine.COPartNo,
-                                  IoTMachine = machine.IoTMachine,
+                                  CncMachine = machine.CncMachine,
                               }
                             ).ToListAsync();
         return response;
@@ -130,7 +130,7 @@ public partial class MachineService : IMachineService
         machine.MachineName = model.MachineName;
         machine.IpAddress = model.IpAddress;
         machine.FactoryId = model.FactoryId;
-        machine.IoTMachine = model.IoTMachine;
+        machine.CncMachine = model.CncMachine;
 
         string formattedNumber = model.MachineNo.ToString($"D{_settings.MinCharMachineFormat}");
         machine.MachineNo = string.Format(_settings.MachineFormat, formattedNumber);
@@ -152,7 +152,7 @@ public partial class MachineService : IMachineService
             machine.IpAddress = model.IpAddress;
         }
 
-        machine.IoTMachine = model.IoTMachine;
+        machine.CncMachine = model.CncMachine;
 
         await _linq2db.Update(machine);
         return machine;

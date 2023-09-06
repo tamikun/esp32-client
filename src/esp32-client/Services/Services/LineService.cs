@@ -199,7 +199,7 @@ public partial class LineService : ILineService
     }
 
     public async Task<List<GetProcessAndMachineOfLineModel>> GetProcessAndMachineOfLine(int factoryId, List<int>? listLineId = null,
-                                                                bool iotMachine = false, bool hasProduct = false, bool hasMachine = false)
+                                                                bool cncMachine = false, bool hasProduct = false, bool hasMachine = false)
     {
         var lineQuery = _linq2db.Entity<Line>().Where(s => s.FactoryId == factoryId);
 
@@ -236,11 +236,11 @@ public partial class LineService : ILineService
                          MachineIp = machine.IpAddress,
                          MachineName = machine.MachineName,
                          MachineNo = machine.MachineNo,
-                         IoTMachine = machine.IoTMachine,
+                         CncMachine = machine.CncMachine,
                      });
 
         if (hasMachine) query = query.Where(s => s.MachineId != 0);
-        if (iotMachine) query = query.Where(s => s.IoTMachine == true);
+        if (cncMachine) query = query.Where(s => s.CncMachine == true);
 
         query = query.OrderBy(s => s.LineId).ThenBy(s => s.StationId);
 

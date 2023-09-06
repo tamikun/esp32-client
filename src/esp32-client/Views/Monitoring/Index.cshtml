@@ -10,7 +10,7 @@
 
     var lines = await _lineService.GetAll(pageIndex, pageSize);
     
-    var data = await _lineService.GetProcessAndMachineOfLine(factoryId, lines.Data.Select(s => s.Id).ToList(), Model.IoTMachine, Model.HasProduct, Model.HasMachine);
+    var data = await _lineService.GetProcessAndMachineOfLine(factoryId, lines.Data.Select(s => s.Id).ToList(), Model.CncMachine, Model.HasProduct, Model.HasMachine);
 
     var factories = await _factoryService.GetAll();
 
@@ -54,7 +54,7 @@
                     }
                 }
             </select>
-            @Html.HiddenFor(s => s.IoTMachine);
+            @Html.HiddenFor(s => s.CncMachine);
             @Html.HiddenFor(s => s.HasProduct);
             @Html.HiddenFor(s => s.HasMachine);
         }
@@ -65,7 +65,7 @@
         {
             int previousPage= pageIndex - 1;
             <a href='@Url.Action("Index", "Monitoring", new {factoryId =  @factoryId, pageIndex = @previousPage, pageSize = @pageSize, 
-                iotMachine = @Model.IoTMachine, hasProduct = @Model.HasProduct, 
+                cncMachine = @Model.CncMachine, hasProduct = @Model.HasProduct, 
                 hasMachine = @Model.HasMachine})'>&laquo;</a>
         }
 
@@ -75,7 +75,7 @@
                 <a class="active" href="">@pageDisplay</a>
             }else{
                 <a href='@Url.Action("Index", "Monitoring", new {factoryId =  @factoryId, pageIndex = @i, pageSize = @pageSize, 
-                    iotMachine = @Model.IoTMachine, hasProduct = @Model.HasProduct, 
+                    cncMachine = @Model.CncMachine, hasProduct = @Model.HasProduct, 
                     hasMachine = @Model.HasMachine})'>@pageDisplay</a>
             }
         }
@@ -85,7 +85,7 @@
             int nextPage = pageIndex + 1;
             <a href='@Url.Action("Index", "Monitoring", 
                 new {factoryId =  @factoryId, pageIndex = @nextPage, pageSize = @pageSize, 
-                iotMachine = @Model.IoTMachine, hasProduct = @Model.HasProduct, 
+                cncMachine = @Model.CncMachine, hasProduct = @Model.HasProduct, 
                 hasMachine = @Model.HasMachine})'>&raquo;</a>
         }
     </div>
@@ -100,8 +100,8 @@
      <div class="m-3">
         <label for="emptyMachine" class="form-label">Has Machine</label>
         @Html.CheckBoxFor(s => s.HasMachine, new {@onchange="submitById('filter')"})
-        <label for="iotMachine" class="form-label">IoT Machine</label>
-        @Html.CheckBoxFor(s => s.IoTMachine, new {@onchange="submitById('filter')"})
+        <label for="cncMachine" class="form-label">Cnc Machine</label>
+        @Html.CheckBoxFor(s => s.CncMachine, new {@onchange="submitById('filter')"})
         <label for="normalMachine" class="form-label">Has Product</label>
         @Html.CheckBoxFor(s => s.HasProduct, new {@onchange="submitById('filter')"})
         <input type="number" class="form-control" id="pageSize" name="pageSize" style="display: none;" value='@pageSize'>

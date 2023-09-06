@@ -76,7 +76,7 @@
             <th>Machine name</th>
             <th>Machine No</th>
             <th>IP Address</th>
-            <th>IoT Machine</th>
+            <th>Cnc Machine</th>
             <th>CO part No</th>
             <th></th>
         </tr>
@@ -88,7 +88,7 @@
                 <td>@item.MachineName</td>
                 <td>@item.MachineNo</td>
                 <td>@item.IpAddress</td>
-                <td>@Html.CheckBox(nameof(item.IoTMachine),item.IoTMachine, new {@disabled  = "true"})</td>
+                <td>@Html.CheckBox(nameof(item.CncMachine),item.CncMachine, new {@disabled  = "true"})</td>
                 <td>@item.COPartNo</td>
                 <td>
                     <div style="display: flex; justify-content: space-around; align-items: center;">
@@ -142,8 +142,8 @@
                     <input type="number" class="form-control" id="MachineNo" name="MachineNo">
                 </div>
                 <div class="mb-3">
-                    <label for="IoTMachine" class="form-label">IoT Machine:</label>
-                    <td>@Html.CheckBox("IoTMachine", false, new{@id = "IoTMachine"})</td>
+                    <label for="CncMachine" class="form-label">Cnc Machine:</label>
+                    <td>@Html.CheckBox("CncMachine", false, new{@id = "CncMachine"})</td>
                 </div>
                 <div class="d-grid">
                     <input type="submit" class="btn btn-primary" value="Save">
@@ -174,8 +174,8 @@
                     <input type="text" class="form-control" id="IpAddress" name="IpAddress">
                 </div>
                 <div class="mb-3">
-                    <label for="IoTMachine" class="form-label">IoT Machine:</label>
-                    <td>@Html.CheckBox("IoTMachine", false, new{@id = "IoTMachine"})</td>
+                    <label for="CncMachine" class="form-label">Cnc Machine:</label>
+                    <td>@Html.CheckBox("CncMachine", false, new{@id = "CncMachine"})</td>
                 </div>
                 <div class="d-grid">
                     <input type="submit" class="btn btn-primary" value="Save">
@@ -239,17 +239,17 @@
             var pMachineId = document.querySelector('[id=updateMachine] [id=MachineId]');
             var pMachineName = document.querySelector('[id=updateMachine] [id=MachineName]');
             var pIpAddress = document.querySelector('[id=updateMachine] [id=IpAddress]');
-            var pIoT = document.querySelector('[id=updateMachine] [id=IoTMachine]');
+            var pCnc = document.querySelector('[id=updateMachine] [id=CncMachine]');
 
             // Set the values using the properties from the param object
             pMachineId.value = param.MachineId;
             pMachineName.value = param.MachineName;
             pIpAddress.value = param.IpAddress;
 
-            if(param.IoTMachine){
-                pIoT.setAttribute("checked", true)
+            if(param.CncMachine){
+                pCnc.setAttribute("checked", true)
             }else{
-                pIoT.removeAttribute("checked", true)
+                pCnc.removeAttribute("checked", true)
             }
 
             if(param.LineId !== 0 || param.StationId !== 0){

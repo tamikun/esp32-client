@@ -19,10 +19,10 @@ public class MonitoringController : BaseController
 
 
     public async Task<IActionResult> Index(int factoryId = 0, int pageIndex = 0, int pageSize = 5,
-        bool iotMachine = false, bool hasProduct = false, bool hasMachine = false)
+        bool cncMachine = false, bool hasProduct = false, bool hasMachine = false)
     {
         var filterModel = new MonitoringFilterModel();
-        filterModel.IoTMachine = iotMachine;
+        filterModel.CncMachine = cncMachine;
         filterModel.HasProduct = hasProduct;
         filterModel.HasMachine = hasMachine;
 
@@ -52,7 +52,7 @@ public class MonitoringController : BaseController
 
     public class MonitoringFilterModel
     {
-        public bool IoTMachine { get; set; }
+        public bool CncMachine { get; set; }
         public bool HasProduct { get; set; }
         public bool HasMachine { get; set; }
     }

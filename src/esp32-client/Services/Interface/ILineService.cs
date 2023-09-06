@@ -25,7 +25,7 @@ namespace esp32_client.Services
         Task<List<GetStationAndProcessModel>> GetStationAndProcess(int lineId);
 
         Task<List<GetProcessAndMachineOfLineModel>> GetProcessAndMachineOfLine(int factoryId, List<int>? listLineId = null,
-            bool iotMachine = false, bool hasProduct = false, bool hasMachine = false);
+            bool cncMachine = false, bool hasProduct = false, bool hasMachine = false);
 
         Task Delete(int lineId);
 

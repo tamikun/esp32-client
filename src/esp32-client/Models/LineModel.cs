@@ -46,7 +46,7 @@ public class GetProcessAndMachineOfLineModel
     public string MachineIp { get; set; }
     public string MachineName { get; set; }
     public string MachineNo { get; set; }
-    public bool IoTMachine { get; set; }
+    public bool CncMachine { get; set; }
 }
 
 public class GetInfoProductLineModel

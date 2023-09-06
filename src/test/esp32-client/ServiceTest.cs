@@ -166,9 +166,9 @@ public class ServiceTest
 
         await _lineService.Create(new LineCreateModel { FactoryId = 1, LineName = "line 2", LineNo = 1, NumberOfStation = 3, });
 
-        var machine1 = await _machineService.Create(new MachineCreateModel { FactoryId = 1, IoTMachine = true, IpAddress = "1", MachineNo = 1, MachineName = "Machine1" });
-        var machine2 = await _machineService.Create(new MachineCreateModel { FactoryId = 1, IoTMachine = true, IpAddress = "2", MachineNo = 2, MachineName = "Machine2" });
-        var machine3 = await _machineService.Create(new MachineCreateModel { FactoryId = 1, IoTMachine = true, IpAddress = "3", MachineNo = 3, MachineName = "Machine3" });
+        var machine1 = await _machineService.Create(new MachineCreateModel { FactoryId = 1, CncMachine = true, IpAddress = "1", MachineNo = 1, MachineName = "Machine1" });
+        var machine2 = await _machineService.Create(new MachineCreateModel { FactoryId = 1, CncMachine = true, IpAddress = "2", MachineNo = 2, MachineName = "Machine2" });
+        var machine3 = await _machineService.Create(new MachineCreateModel { FactoryId = 1, CncMachine = true, IpAddress = "3", MachineNo = 3, MachineName = "Machine3" });
 
         machine1.StationId = 1;
         machine1.LineId = 1;
@@ -219,7 +219,7 @@ public class ServiceTest
                                 MachineId = machine.Id,
                                 MachineName = machine.MachineName,
                                 MachineNo = machine.MachineNo,
-                                IoTMachine = machine.IoTMachine,
+                                CncMachine = machine.CncMachine,
                             }).OrderBy(s => s.LineId).ThenBy(s => s.StationId).ToListAsync();
 
         var listLine = result.Select(s => s.LineId).Distinct();
@@ -238,9 +238,9 @@ public class ServiceTest
 
         await _lineService.Create(new LineCreateModel { FactoryId = 1, LineName = "line 2", LineNo = 1, NumberOfStation = 3, });
 
-        var machine1 = await _machineService.Create(new MachineCreateModel { FactoryId = 1, IoTMachine = true, IpAddress = "1", MachineNo = 1, MachineName = "Machine1" });
-        var machine2 = await _machineService.Create(new MachineCreateModel { FactoryId = 1, IoTMachine = false, IpAddress = "2", MachineNo = 2, MachineName = "Machine2" });
-        var machine3 = await _machineService.Create(new MachineCreateModel { FactoryId = 1, IoTMachine = true, IpAddress = "3", MachineNo = 3, MachineName = "Machine3" });
+        var machine1 = await _machineService.Create(new MachineCreateModel { FactoryId = 1, CncMachine = true, IpAddress = "1", MachineNo = 1, MachineName = "Machine1" });
+        var machine2 = await _machineService.Create(new MachineCreateModel { FactoryId = 1, CncMachine = false, IpAddress = "2", MachineNo = 2, MachineName = "Machine2" });
+        var machine3 = await _machineService.Create(new MachineCreateModel { FactoryId = 1, CncMachine = true, IpAddress = "3", MachineNo = 3, MachineName = "Machine3" });
 
         machine1.StationId = 1;
         machine1.LineId = 1;
@@ -251,14 +251,14 @@ public class ServiceTest
         // await _linq2db.Update(machine2);
 
         // Advanced Search
-        bool iotMachine = false;
+        bool cncMachine = false;
         bool hasProduct = false;
         bool hasMachine = false;
 
         int factoryId = 1;
         var listLineId = new List<int>() { 1, 2 };
 
-        var data = await _lineService.GetProcessAndMachineOfLine(factoryId, listLineId, iotMachine, hasProduct, hasMachine);
+        var data = await _lineService.GetProcessAndMachineOfLine(factoryId, listLineId, cncMachine, hasProduct, hasMachine);
 
         await _linq2db.Entity<Machine>().AsQueryable().DeleteQuery();
     }

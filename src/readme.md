@@ -18,7 +18,7 @@ Or
   - [x] Sửa thứ tự hiển thị các cột trong setting
   - [x] Thêm nhãn cho mỗi trang
   - [x] Load test cho web (500 request / 1s; 1000 request / 5s)
-  - [x] Thêm param IoT cho Machine
+  - [x] Thêm param Cnc cho Machine
   - [x] Thêm chức năng filter cho trang monitoring
   - [x] Render riêng các số liệu product cho trang monitoring
   - [x] Thêm setting screen

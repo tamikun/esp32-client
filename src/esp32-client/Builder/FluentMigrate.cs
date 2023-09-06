@@ -86,7 +86,7 @@ public class AddTable : Migration
                 .WithColumn(nameof(Machine.LineId)).AsInt32()
                 .WithColumn(nameof(Machine.StationId)).AsInt32()
                 .WithColumn(nameof(Machine.COPartNo)).AsString()
-                .WithColumn(nameof(Machine.IoTMachine)).AsBoolean().NotNullable()
+                .WithColumn(nameof(Machine.CncMachine)).AsBoolean().NotNullable()
             ;
 
             Create.UniqueConstraint("UC_Machine").OnTable(nameof(Machine)).Columns(nameof(Machine.FactoryId), nameof(Machine.MachineNo));
@@ -209,8 +209,6 @@ public class AddInitData : AutoReversingMigration
     }
     public override void Up()
     {
-        #region initialize data
-        
         var department = new List<Factory>{
             new Factory { FactoryName = "Juki", FactoryNo = "Factory 001"},
         };
@@ -241,8 +239,6 @@ public class AddInitData : AutoReversingMigration
             new UserRight{RoleId = 3, ControllerName = "*", ActionName = "Index"},
         };
         _linq2Db.BulkInsert(userRight).Wait();
-
-        #endregion
 
         var settings = new List<Setting>{
             new Setting{Name = "GetApiTimeOut", Value = "1000", EnableEditing = true},
@@ -313,27 +309,3 @@ public class AddTimeOutSetting : AutoReversingMigration
         _linq2Db.BulkInsert(settings).Wait();
     }
 }
-
-// [Migration(20230819111100)]
-// public class AddColunm : AutoReversingMigration
-// {
-//     public override void Up()
-//     {
-
-//         if (!Schema.Table(nameof(Machine)).Column(nameof(Machine.IoTMachine)).Exists())
-//         {
-//             Alter
-//             .Table(nameof(Machine))
-//                 .AddColumn(nameof(Machine.IoTMachine)).AsBoolean().NotNullable()
-//             ;
-//         }
-//         if (!Schema.Table(nameof(Setting)).Column(nameof(Setting.EnableEditing)).Exists())
-//         {
-//             Alter
-//             .Table(nameof(Setting))
-//                 .AddColumn(nameof(Setting.EnableEditing)).AsBoolean().NotNullable()
-//             ;
-//         }
-//     }
-// }
-
