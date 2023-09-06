@@ -73,8 +73,8 @@
     </thead>
     <thead>
         <tr>
-            <th>Machine name</th>
             <th>Machine No</th>
+            <th>Machine name</th>
             <th>IP Address</th>
             <th>Cnc Machine</th>
             <th>CO part No</th>
@@ -85,8 +85,8 @@
         @foreach (var item in machineData)
         {
             <tr>
-                <td>@item.MachineName</td>
                 <td>@item.MachineNo</td>
+                <td>@item.MachineName</td>
                 <td>@item.IpAddress</td>
                 <td>@Html.CheckBox(nameof(item.CncMachine),item.CncMachine, new {@disabled  = "true"})</td>
                 <td>@item.COPartNo</td>
