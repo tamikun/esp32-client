@@ -5,6 +5,7 @@ using esp32_client.Models.Singleton;
 using esp32_client.Services;
 using FluentMigrator.Runner;
 using LinqToDB;
+using LinqToDB.Data;
 
 namespace test;
 
@@ -100,6 +101,11 @@ public class Tests
     [Order(3)]
     public async Task ShouldCreateLine()
     {
+        _linq2db.Execute($"DELETE FROM {nameof(Line)};");
+        _linq2db.Execute($"DELETE FROM sqlite_sequence WHERE name = '{nameof(Line)}';");
+        _linq2db.Execute($"DELETE FROM {nameof(Station)};");
+        _linq2db.Execute($"DELETE FROM sqlite_sequence WHERE name = '{nameof(Station)}';");
+
         var model = new LineCreateModel
         {
             FactoryId = 1,
@@ -219,11 +225,7 @@ public class Tests
                                 IoTMachine = machine.IoTMachine,
                             }).OrderBy(s => s.LineId).ThenBy(s => s.StationId).ToListAsync();
 
-        System.Console.WriteLine("==== result: " + Newtonsoft.Json.JsonConvert.SerializeObject(result));
-
         var listLine = result.Select(s => s.LineId).Distinct();
-
-        System.Console.WriteLine("==== listLine: " + Newtonsoft.Json.JsonConvert.SerializeObject(listLine));
 
         await _linq2db.Entity<Machine>().AsQueryable().DeleteQuery();
     }
@@ -260,7 +262,6 @@ public class Tests
         var listLineId = new List<int>() { 1, 2 };
 
         var data = await _lineService.GetProcessAndMachineOfLine(factoryId, listLineId, iotMachine, hasProduct, hasMachine);
-        System.Console.WriteLine("==== data: " + Newtonsoft.Json.JsonConvert.SerializeObject(data));
 
         await _linq2db.Entity<Machine>().AsQueryable().DeleteQuery();
     }
