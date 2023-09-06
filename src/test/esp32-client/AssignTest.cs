@@ -1,22 +1,18 @@
 using esp32_client.Builder;
-using esp32_client.Domain;
 using esp32_client.Models;
-using esp32_client.Models.Singleton;
 using esp32_client.Services;
-using FluentMigrator.Runner;
-using LinqToDB;
 
 namespace test;
 
 [TestFixture]
-public class AssignMachineTest
+public class AssignTest
 {
     private IMachineService _machineService;
     private ILineService _lineService;
     private IProductService _productService;
     private LinqToDb _linq2db;
 
-    public AssignMachineTest()
+    public AssignTest()
     {
         _machineService = BaseTest.GetService<IMachineService>();
         _linq2db = BaseTest.GetService<LinqToDb>();
@@ -108,7 +104,6 @@ public class AssignMachineTest
         Assert.That(m3.StationId, Is.EqualTo(1));
         Assert.That(m2.StationId, Is.EqualTo(2));
         Assert.That(m1.StationId, Is.EqualTo(0));
-
     }
 
 }

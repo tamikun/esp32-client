@@ -10,7 +10,7 @@ using LinqToDB.Data;
 namespace test;
 
 [TestFixture]
-public class Tests
+public class ServiceTest
 {
     private Settings _setting;
     private ISettingService _settingService;
@@ -19,7 +19,7 @@ public class Tests
     private ILineService _lineService;
     private LinqToDb _linq2db;
 
-    public Tests()
+    public ServiceTest()
     {
         _setting = BaseTest.GetService<Settings>();
         _settingService = BaseTest.GetService<ISettingService>();
