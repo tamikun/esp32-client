@@ -307,7 +307,7 @@ public class AddTimeOutSetting : AutoReversingMigration
     {
         var settings = new List<Setting>{
             new Setting{Name = "JwtTokenSecret", Value = "Secret at least 128 bit for HmacSha256 SecurityAlgorithms", EnableEditing = false},
-            new Setting{Name = "SessionExpiredTimeInSecond", Value = "3600", EnableEditing = true},
+            new Setting{Name = "SessionExpiredTimeInSecond", Value = "36000", EnableEditing = true},
         };
 
         _linq2Db.BulkInsert(settings).Wait();
