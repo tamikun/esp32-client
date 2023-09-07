@@ -32,7 +32,7 @@ public class OpenApiController : ControllerBase
     }
 
     [HttpGet]
-    [Route("file_server.bin")]
+    [Route("operate_app.bin")]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> GetFirmwareMachine()
@@ -40,7 +40,7 @@ public class OpenApiController : ControllerBase
         if (System.IO.File.Exists(_settings.MachineFirmwareFilePath))
         {
             var fileBytes = await System.IO.File.ReadAllBytesAsync(_settings.MachineFirmwareFilePath);
-            return File(fileBytes, contentType: "application/octet-stream", fileDownloadName: "file_server.bin");
+            return File(fileBytes, contentType: "application/octet-stream", fileDownloadName: "operate_app.bin");
         }
         await Task.CompletedTask;
         return NotFound();
