@@ -31,20 +31,12 @@ namespace esp32_client.Models.Singleton
             }
         }
 
-
-        public string Subnet { get; set; }
-        public string Port { get; set; }
-        public long ConnectionTimeOut { get; set; }
         public long GetApiTimeOut { get; set; }
         public long GetApiProductNumberTimeOut { get; set; }
         public long PostFileTimeOut { get; set; }
         public long PostApiTimeOut { get; set; }
         public string FileDataDirectory { get; set; }
-        public string ListServer { get; set; }
-        public string NodeServerName { get; set; }
-        public string ServerNamePath { get; set; }
         public string NodeListEspFile { get; set; }
-        public string NodeServerState { get; set; }
         public string UploadFileFormat { get; set; }
         public string ChangeMachineStateFormat { get; set; }
         public string ChangeServerStateFormat { get; set; }

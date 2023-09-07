@@ -246,7 +246,6 @@ public class AddInitData : AutoReversingMigration
             new Setting{Name = "PostApiTimeOut", Value = "1000", EnableEditing = true},
             new Setting{Name = "FileDataDirectory", Value = "/app/FileData/", EnableEditing = true},
             new Setting{Name = "NodeListEspFile", Value = "//table[@class='fixed']/tbody/tr", EnableEditing = true},
-            new Setting{Name = "NodeServerState", Value = "//p[@id='result']", EnableEditing = true},
             new Setting{Name = "UploadFileFormat", Value = "http://{0}/upload/VDATA/{1}", EnableEditing = true},
             new Setting{Name = "ChangeMachineStateFormat", Value = "http://{0}/selectedMachine", EnableEditing = true},
             new Setting{Name = "ChangeServerStateFormat", Value = "http://{0}/selectedServer", EnableEditing = true},
