@@ -14,7 +14,7 @@ public class LinqToDb : DataConnection
         CommandTimeout = 10; // Timeout in seconds
     }
 
-    public ITable<T> Entity<T>() where T:BaseEntity
+    public ITable<T> Entity<T>() where T : BaseEntity
     {
         return this.GetTable<T>();
     }
@@ -94,6 +94,11 @@ public static class LinqToDbExtension
     public static async Task UpdateQuery<T>(this IUpdatable<T> query) where T : BaseEntity
     {
         await query.UpdateAsync();
+    }
+
+    public static async Task Truncate<T>(this LinqToDb _linq2db) where T : BaseEntity
+    {
+        await _linq2db.ExecuteAsync($"TRUNCATE TABLE {typeof(T).Name};");
     }
 
 }

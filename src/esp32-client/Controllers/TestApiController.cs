@@ -4,6 +4,7 @@ using esp32_client.Models.Singleton;
 using esp32_client.Builder;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
+using esp32_client.Domain;
 
 namespace esp32_client.Controllers;
 
@@ -15,13 +16,15 @@ public class TestApiController : ControllerBase
     private readonly Settings _settings;
     private readonly IMachineService _machineService;
     private readonly Context _context;
+    private readonly LinqToDb _linq2db;
 
-    public TestApiController(ILogger<HomeController> logger, Settings settings, IMachineService machineService, Context context)
+    public TestApiController(ILogger<HomeController> logger, Settings settings, IMachineService machineService, Context context, LinqToDb linq2db)
     {
         _logger = logger;
         _settings = settings;
         _machineService = machineService;
         _context = context;
+        _linq2db = linq2db;
     }
 
     [HttpPost]
@@ -115,5 +118,14 @@ public class TestApiController : ControllerBase
         var factories = await _context.Factory.ToListAsync();
 
         return Ok(factories);
+    }
+
+    [HttpGet]
+    [ProducesResponseType(StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> TruncateSessionTable()
+    {
+        await _linq2db.Truncate<UserSession>();
+        return Ok();
     }
 }
