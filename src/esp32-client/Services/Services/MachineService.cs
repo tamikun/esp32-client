@@ -557,6 +557,9 @@ public partial class MachineService : IMachineService
 
     public async Task<(bool Success, string ResponseBody)> SystemReset(string ipAddress)
     {
+        if (await _linq2db.Entity<Machine>().AnyAsync(s => s.IpAddress == _settings.DefaultNewMachineIp))
+            throw new Exception($"A default machine with address {_settings.DefaultNewMachineIp} exites");
+
         var result = await Get($"http://{ipAddress}/system_reset");
 
         if (result.Success)
@@ -615,9 +618,10 @@ public partial class MachineService : IMachineService
     public async Task<(bool Success, string ResponseBody)> UpdateAddress(string currentIpAddress, string newIpAddress)
     {
         if (currentIpAddress != _settings.DefaultNewMachineIp)
-        {
             throw new Exception("Please reset machine system before updating ip address!");
-        }
+
+        if (await _linq2db.Entity<Machine>().AnyAsync(s => s.IpAddress == newIpAddress))
+            throw new Exception("New ip address has aldready exited!");
 
         var machine = await GetByIpAddress(currentIpAddress);
         if (!machine.UpdateFirmwareSucess)
