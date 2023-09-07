@@ -69,6 +69,7 @@ public partial class MachineService : IMachineService
                                   ProcessName = process.ProcessName,
                                   COPartNo = machine.COPartNo,
                                   CncMachine = machine.CncMachine,
+                                  UpdateFirmwareSucess = machine.UpdateFirmwareSucess,
                               }
                             ).ToListAsync();
         return response;
@@ -578,18 +579,22 @@ public partial class MachineService : IMachineService
     /// <returns></returns>
     public async Task<(bool Success, string ResponseBody)> UpdateFirmware(string ipAddress)
     {
-        if (System.IO.File.Exists(_settings.MachineFirmwareFilePath))
+        if (!System.IO.File.Exists(_settings.MachineFirmwareFilePath))
             throw new Exception("Firmware is not found");
 
         if (ipAddress != _settings.DefaultNewMachineIp)
             throw new Exception("Please reset machine system before updating firmware!");
+
+        var machine = await GetByIpAddress(ipAddress);
+
+        if (!machine.UpdateFirmwareSucess)
+            throw new Exception("Please wait for updating firmware process success!");
 
         var updateFw = await Get($"http://{ipAddress}/update_fw");
 
         // Request success, waiting for writing new firmware on board => UpdateFirmwareSucess = false
         if (updateFw.Success)
         {
-            var machine = await GetByIpAddress(ipAddress);
             machine.UpdateFirmwareSucess = false;
             await _linq2db.Update(machine);
         }

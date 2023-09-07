@@ -42,4 +42,5 @@ public class MachineResponseModel
     public string ProcessName { get; set; }
     public string COPartNo { get; set; }
     public bool CncMachine { get; set; }
+    public bool UpdateFirmwareSucess { get; set; }
 }

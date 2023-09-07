@@ -44,15 +44,6 @@
                     <select data-val="true" data-val-required="The Number field is required." id="factoryId"
                         name="factoryId" onchange="submitById('searchByFactoryId')">
 
-                        @* @if (factoryId == 0)
-                        {
-                            <option value='' selected="selected">Choose factory</option>
-                        }
-                        else
-                        {
-                            <option value=''>Choose factory</option>
-                        } *@
-
                         @foreach (var item in factories)
                         {
                             @if (factoryId == item.Id)
@@ -79,6 +70,7 @@
             <th>Cnc Machine</th>
             <th>CO part No</th>
             <th></th>
+            <th></th>
         </tr>
     </thead>
     <tbody>
@@ -92,16 +84,9 @@
                 <td>@item.COPartNo</td>
                 <td>
                     <div style="display: flex; justify-content: space-around; align-items: center;">
-                        <div id="reset">
-                            <button type="button" class="btn btn-warning btn-sm"
-                                onclick="openResetPopup('resetMachine', '@item.MachineId', '@item.MachineName')">
-                                <i class="fa fa-broom"></i>
-                                Reset product
-                            </button>
-                        </div>
                         <div id="update">
                             <button type="button" class="btn btn-info btn-sm" style="color: white;"
-                                onclick="openUpdatePopup('updateMachine', @JsonConvert.SerializeObject(item))">
+                                onclick="openUpdateMachineNamePopup('updateMachineName', @JsonConvert.SerializeObject(item))">
                                 <i class="fa fa-light fa-pen-to-square" style="color: rgb(0, 73, 128);"></i>
                                 Edit
                             </button>
@@ -111,6 +96,32 @@
                                 onclick="openDeletePopup('deleteMachine', '@item.MachineId', '@item.MachineName')">
                                 <i class="fa fa-light fa-trash" style="color: white;"></i>
                                 Delete
+                            </button>
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    <div style="display: flex; justify-content: space-around; align-items: center;">
+                        <div>
+                            <button type="button" class="btn btn-warning btn-sm"
+                                onclick="openResetProductPopup('resetProductMachine', '@item.MachineId', '@item.MachineName')">
+                                <i class="fa fa-broom"></i>
+                                Reset product
+                            </button>
+                        </div>
+                        <div>
+                            @{string isDisabled = @item.UpdateFirmwareSucess ? "" : "disabled";}
+                            <button type="button" class="btn btn-sm btn-primary" @isDisabled
+                                onclick="openUpdateFirmwarePopup('updateFirmware', '@item.IpAddress', '@item.MachineName')">
+                                <i class="fa fa-gears" style="color: black;"></i>
+                                Update firmware
+                            </button>
+                        </div>
+                        <div>
+                            <button type="button" class="btn btn-info btn-sm btn-info" @isDisabled
+                                onclick="openUpdateAddressPopup('updateAddress', '@item.IpAddress', '@item.MachineName')">
+                                <i class="fa fa-network-wired"></i>
+                                Update address
                             </button>
                         </div>
                     </div>
@@ -149,10 +160,10 @@
     </div>
 </div>
 
-<div class="popup-container" id="updateMachine">
+<div class="popup-container" id="updateMachineName">
     <div class="popup-dialog">
         <div class="popup-content">
-            <span class="close-button" onclick="closePopup('updateMachine')">&times;</span>
+            <span class="close-button" onclick="closePopup('updateMachineName')">&times;</span>
             <h2>Update machine</h2>
             @using (Html.BeginForm("UpdateMachineName", "Setting", FormMethod.Post, new
             {
@@ -170,7 +181,7 @@
                     <td>@Html.CheckBox("CncMachine", false, new{@id = "CncMachine"})</td>
                 </div>
                 <div class="d-grid">
-                    <input type="submit" class="btn btn-primary" value="Save">
+                    <input type="submit" class="btn btn-info" value="Save">
                 </div>
             }
         </div>
@@ -200,10 +211,10 @@
     </div>
 </div>
 
-<div class="popup-container" id="resetMachine">
+<div class="popup-container" id="resetProductMachine">
     <div class="popup-dialog">
         <div class="popup-content">
-            <span class="close-button" onclick="closePopup('resetMachine')">&times;</span>
+            <span class="close-button" onclick="closePopup('resetProductMachine')">&times;</span>
             <h2>Reset machine</h2>
             @using (Html.BeginForm("ResetProductMachine", "Setting", FormMethod.Post, new
             {
@@ -223,31 +234,73 @@
     </div>
 </div>
 
+<div class="popup-container" id="updateFirmware">
+    <div class="popup-dialog">
+        <div class="popup-content">
+            <span class="close-button" onclick="closePopup('updateFirmware')">&times;</span>
+            <h2>Update firmware</h2>
+            @using (Html.BeginForm("UpdateFirmwareMachine", "Setting", FormMethod.Post, new
+            {
+                @enctype = "multipart/form-data"
+            }))
+            {
+                <div class="mb-3">
+                    <label for="ipAddress" class="form-label">Do you want to update firmware of machine: <strong></strong>?</label>
+                    <input type="text" class="form-control" id="ipAddress" name="ipAddress" style="display: none;">
+                    <input type="number" class="form-control" id="factoryId" name="factoryId" style="display: none;" value='@factoryId'>
+                </div>
+                <div class="d-grid">
+                    <input type="submit" class="btn btn-primary" value="Update firmware">
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<div class="popup-container" id="updateAddress">
+    <div class="popup-dialog">
+        <div class="popup-content">
+            <span class="close-button" onclick="closePopup('updateAddress')">&times;</span>
+            <h2>Update address</h2>
+            @using (Html.BeginForm("UpdateAddressMachine", "Setting", FormMethod.Post, new
+            {
+                @enctype = "multipart/form-data"
+            }))
+            {
+                <div class="mb-3">
+                    <label class="form-label">Machine name: <strong></strong></label>
+                </div>
+                <div class="mb-3">
+                    <label for="newIpAddress" class="form-label">New address</label>
+                    <input type="text" class="form-control" id="newIpAddress" name="newIpAddress">
+                    <input type="text" class="form-control" id="currentIpAddress" name="currentIpAddress" style="display: none;">
+                    <input type="number" class="form-control" id="factoryId" name="factoryId" style="display: none;" value='@factoryId'>
+                </div>
+                <div class="d-grid">
+                    <input type="submit" class="btn btn-info" value="Update firmware">
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
 @section Scripts{
     <script>
-        function openUpdatePopup(id, param) {
+        function openUpdateMachineNamePopup(id, param) {
 
             // Access elements within the form using document.getElementById()
-            var pMachineId = document.querySelector('[id=updateMachine] [id=MachineId]');
-            var pMachineName = document.querySelector('[id=updateMachine] [id=MachineName]');
-            var pIpAddress = document.querySelector('[id=updateMachine] [id=IpAddress]');
-            var pCnc = document.querySelector('[id=updateMachine] [id=CncMachine]');
+            var pMachineId = document.querySelector('[id=updateMachineName] [id=MachineId]');
+            var pMachineName = document.querySelector('[id=updateMachineName] [id=MachineName]');
+            var pCnc = document.querySelector('[id=updateMachineName] [id=CncMachine]');
 
             // Set the values using the properties from the param object
             pMachineId.value = param.MachineId;
             pMachineName.value = param.MachineName;
-            pIpAddress.value = param.IpAddress;
 
             if(param.CncMachine){
                 pCnc.setAttribute("checked", true)
             }else{
                 pCnc.removeAttribute("checked", true)
-            }
-
-            if(param.LineId !== 0 || param.StationId !== 0){
-                pIpAddress.setAttribute("disabled", true);
-            }else{
-                pIpAddress.removeAttribute("disabled");
             }
 
             document.getElementById(id).style.display = "block";
@@ -263,12 +316,32 @@
             document.getElementById(id).style.display = "block";
         }
         
-        function openResetPopup(id, machineId, machineName) {
-            var machineNameElement = document.querySelector('[id=resetMachine] label strong');
+        function openResetProductPopup(id, machineId, machineName) {
+            var machineNameElement = document.querySelector('[id=resetProductMachine] label strong');
             machineNameElement.innerText = `${machineName}`;
 
-            var pMachineId = document.querySelector('[id=resetMachine] [id=machineId]');
+            var pMachineId = document.querySelector('[id=resetProductMachine] [id=machineId]');
             pMachineId.value = machineId;
+
+            document.getElementById(id).style.display = "block";
+        }
+       
+        function openUpdateFirmwarePopup(id, machineIp, machineName) {
+            var machineNameElement = document.querySelector('[id=updateFirmware] label strong');
+            machineNameElement.innerText = `${machineName}`;
+
+            var pIpAddress = document.querySelector('[id=updateFirmware] [id=ipAddress]');
+            pIpAddress.value = machineIp;
+
+            document.getElementById(id).style.display = "block";
+        }
+        
+        function openUpdateAddressPopup(id, machineIp, machineName) {
+            var machineNameElement = document.querySelector('[id=updateAddress] label strong');
+            machineNameElement.innerText = `${machineName}`;
+
+            var pIpAddress = document.querySelector('[id=updateAddress] [id=currentIpAddress]');
+            pIpAddress.value = machineIp;
 
             document.getElementById(id).style.display = "block";
         }
