@@ -34,7 +34,7 @@ public class SettingController : BaseController
         return View();
     }
 
-    public async Task<ActionResult> Factory()
+    public async Task<IActionResult> Factory()
     {
         await Task.CompletedTask;
         return View();
@@ -67,7 +67,7 @@ public class SettingController : BaseController
         }, RedirectToAction("Factory"));
     }
 
-    public async Task<ActionResult> Machine(int factoryId = 0)
+    public async Task<IActionResult> Machine(int factoryId = 0)
     {
         ViewBag.FactoryId = factoryId;
         await Task.CompletedTask;
@@ -129,14 +129,14 @@ public class SettingController : BaseController
         return RedirectToAction("Machine", new { factoryId = factoryId });
     }
 
-    public async Task<ActionResult> Line(int factoryId = 0)
+    public async Task<IActionResult> Line(int factoryId = 0)
     {
         ViewBag.FactoryId = factoryId;
         await Task.CompletedTask;
         return View();
     }
 
-    public async Task<ActionResult> LineDetail(int factoryId = 0, int lineId = 0, bool edit = false)
+    public async Task<IActionResult> LineDetail(int factoryId = 0, int lineId = 0, bool edit = false)
     {
         ViewBag.FactoryId = factoryId;
         ViewBag.LineId = lineId;
@@ -187,14 +187,14 @@ public class SettingController : BaseController
     }
 
 
-    public async Task<ActionResult> Product(int factoryId = 0)
+    public async Task<IActionResult> Product(int factoryId = 0)
     {
         ViewBag.FactoryId = factoryId;
         await Task.CompletedTask;
         return View();
     }
 
-    public async Task<ActionResult> ProductDetail(int factoryId = 0, int productId = 0, bool edit = false)
+    public async Task<IActionResult> ProductDetail(int factoryId = 0, int productId = 0, bool edit = false)
     {
         ViewBag.FactoryId = factoryId;
         ViewBag.ProductId = productId;
