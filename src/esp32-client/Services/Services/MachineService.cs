@@ -122,13 +122,11 @@ public partial class MachineService : IMachineService
             throw new Exception("Invalid factory");
         if (model.MachineNo <= 0)
             throw new Exception("Machine No should be greater than 0");
-        if (String.IsNullOrEmpty(model.IpAddress))
-            throw new Exception("Ip Address is required");
         #endregion
 
         var machine = new Machine();
         machine.MachineName = model.MachineName;
-        machine.IpAddress = model.IpAddress;
+        machine.IpAddress = _settings.DefaultNewMachineIp;
         machine.FactoryId = model.FactoryId;
         machine.CncMachine = model.CncMachine;
 

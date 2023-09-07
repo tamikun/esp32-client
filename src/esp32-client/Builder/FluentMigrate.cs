@@ -272,6 +272,7 @@ public class AddInitData : AutoReversingMigration
             new Setting{Name = "ReloadMonitoringBatchSize", Value = "20", EnableEditing = true},
             new Setting{Name = "EnableLog", Value = "false", EnableEditing = true},
             new Setting{Name = "MachineFirmwareFilePath", Value = "/app/FileData/operate_app.bin", EnableEditing = true},
+            new Setting{Name = "DefaultNewMachineIp", Value = "192.168.1.99", EnableEditing = true},
         };
 
         _linq2Db.BulkInsert(settings).Wait();

@@ -1,4 +1,5 @@
 using esp32_client.Builder;
+using esp32_client.Domain;
 using esp32_client.Models;
 using esp32_client.Services;
 
@@ -45,24 +46,24 @@ public class AssignTest
             NumberOfProcess = 3,
         });
 
-        var m1 = await _machineService.Create(new MachineCreateModel
+        var m1 = await _linq2db.Insert(new Machine
         {
             MachineName = "M1",
-            MachineNo = 1,
+            MachineNo = "Machine 001",
             IpAddress = "192.168.1.101",
             FactoryId = 1,
         });
-        var m2 = await _machineService.Create(new MachineCreateModel
+        var m2 = await _linq2db.Insert(new Machine
         {
             MachineName = "M2",
-            MachineNo = 1,
+            MachineNo = "Machine 001",
             IpAddress = "192.168.1.102",
             FactoryId = 1,
         });
-        var m3 = await _machineService.Create(new MachineCreateModel
+        var m3 = await _linq2db.Insert(new Machine
         {
             MachineName = "M3",
-            MachineNo = 1,
+            MachineNo = "Machine 001",
             IpAddress = "192.168.1.103",
             FactoryId = 1,
         });

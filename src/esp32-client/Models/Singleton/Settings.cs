@@ -64,5 +64,6 @@ namespace esp32_client.Models.Singleton
         public string JwtTokenSecret { get; set; }
         public int SessionExpiredTimeInSecond { get; set; }
         public string MachineFirmwareFilePath { get; set; }
+        public string DefaultNewMachineIp { get; set; }
     }
 }

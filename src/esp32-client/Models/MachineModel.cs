@@ -5,7 +5,6 @@ public class MachineCreateModel
 
     public string MachineName { get; set; }
     public int MachineNo { get; set; }
-    public string IpAddress { get; set; }
     public int FactoryId { get; set; }
     public bool CncMachine { get; set; }
 }
