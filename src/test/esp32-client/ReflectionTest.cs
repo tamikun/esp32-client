@@ -1,6 +1,9 @@
 using System.Reflection;
 using esp32_client.Controllers;
+using esp32_client.Domain;
+using esp32_client.Utils;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 
 namespace test;
 
@@ -15,7 +18,7 @@ public class ReflectionTest
     { }
 
     [Test]
-    public async Task ShouldGetControllerMethods()
+    public async Task GetControllerMethods()
     {
         string assemblyName = "esp32-client";
         var assembly = Assembly.LoadFrom($"{assemblyName}.dll");
@@ -38,7 +41,23 @@ public class ReflectionTest
         });
 
         await Task.WhenAll(tasks);
+    }
 
-        System.Console.WriteLine("==== dict: " + Newtonsoft.Json.JsonConvert.SerializeObject(dict));
+    [Test]
+    public async Task ShouldGetControllerMethods()
+    {
+        var data = await Utils.GetControllerMethods();
+        var userRight = new List<UserRight>();
+
+        foreach (var controller in data)
+        {
+            var strMethods = JsonConvert.SerializeObject(controller.Value);
+            var listMethods = JsonConvert.DeserializeObject<List<string>>(strMethods);
+            foreach (var method in listMethods)
+            {
+                userRight.Add(new UserRight { RoleId = 1, ControllerName = controller.Key, ActionName = method });
+            }
+        }
+        Assert.That(userRight.Count, Is.GreaterThan(0));
     }
 }

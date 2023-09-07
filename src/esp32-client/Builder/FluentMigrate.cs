@@ -1,5 +1,6 @@
 using esp32_client.Domain;
 using FluentMigrator;
+using Newtonsoft.Json;
 
 namespace esp32_client.Builder;
 
@@ -229,17 +230,8 @@ public class AddInitData : AutoReversingMigration
 
         var roleOfUser = new List<RoleOfUser>{
             new RoleOfUser{UserId = 1, RoleId = 1},
-            new RoleOfUser{UserId = 1, RoleId = 2},
-            new RoleOfUser{UserId = 1, RoleId = 3},
         };
         _linq2Db.BulkInsert(roleOfUser).Wait();
-
-        var userRight = new List<UserRight>{
-            new UserRight{RoleId = 1, ControllerName = "*", ActionName = "*"},
-            new UserRight{RoleId = 2, ControllerName = "*", ActionName = "Index"},
-            new UserRight{RoleId = 3, ControllerName = "*", ActionName = "Index"},
-        };
-        _linq2Db.BulkInsert(userRight).Wait();
 
         var settings = new List<Setting>{
             new Setting{Name = "GetApiTimeOut", Value = "1000", EnableEditing = true},
@@ -308,5 +300,44 @@ public class AddTimeOutSetting : AutoReversingMigration
         };
 
         _linq2Db.BulkInsert(settings).Wait();
+    }
+}
+
+[Migration(20230907154103)]
+public class AddUserRight : AutoReversingMigration
+{
+    private readonly LinqToDb _linq2Db;
+    public AddUserRight(LinqToDb linq2Db)
+    {
+        _linq2Db = linq2Db;
+    }
+    public override void Up()
+    {
+        _linq2Db.Truncate<UserRight>().Wait();
+
+        var userRightAdmin = new List<UserRight>{
+            new UserRight{RoleId = 1, ControllerName = "*", ActionName = "*"},
+        };
+        _linq2Db.BulkInsert(userRightAdmin).Wait();
+
+        var userRight = new List<UserRight>();
+        var controllerMethods = Utils.Utils.GetControllerMethods().Result;
+
+        foreach (var controller in controllerMethods)
+        {
+            var strMethods = JsonConvert.SerializeObject(controller.Value);
+            var listMethods = JsonConvert.DeserializeObject<List<string>>(strMethods);
+            foreach (var method in listMethods.Distinct())
+            {
+                var controllerIndex = controller.Key.IndexOf("Controller");
+                var controllerName = controller.Key.Remove(controllerIndex);
+                userRight.Add(new UserRight { RoleId = 2, ControllerName = controllerName, ActionName = method });
+            }
+        }
+        _linq2Db.BulkInsert(userRight).Wait();
+
+        // Insert RoleId 2
+        userRight.ForEach(s => s.RoleId = 3);
+        _linq2Db.BulkInsert(userRight).Wait();
     }
 }

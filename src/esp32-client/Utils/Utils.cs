@@ -1,3 +1,6 @@
+using System.Reflection;
+using esp32_client.Controllers;
+using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
 namespace esp32_client.Utils
@@ -129,6 +132,31 @@ namespace esp32_client.Utils
                 File.Delete(directoryPath);
             }
             await Task.CompletedTask;
+        }
+
+        public static async Task<Dictionary<string, object>> GetControllerMethods()
+        {
+            var assembly = Assembly.GetExecutingAssembly();
+
+            var controllerTypes = assembly.GetTypes()
+             .Where(type => typeof(ControllerBase).IsAssignableFrom(type) && !type.IsAbstract)
+             .Where(s => s != typeof(BaseController) && s != typeof(TestApiController));
+
+            var dict = new Dictionary<string, object>();
+
+            var tasks = controllerTypes.Select(async controllerType =>
+            {
+                var data = controllerType.GetMethods(BindingFlags.Public | BindingFlags.Instance)
+                    .Where(s => s.ReturnType == typeof(Task<IActionResult>))
+                    .Select(s => s.Name)
+                    .ToList();
+
+                dict.Add(controllerType.Name, data);
+                await Task.CompletedTask;
+            });
+
+            await Task.WhenAll(tasks);
+            return dict;
         }
     }
 }
