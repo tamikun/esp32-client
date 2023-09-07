@@ -40,7 +40,7 @@ namespace esp32_client.Models.Singleton
         public string UploadFileFormat { get; set; }
         public string ChangeMachineStateFormat { get; set; }
         public string ChangeServerStateFormat { get; set; }
-        public string ResetMachineFormat { get; set; }
+        public string ResetProductMachineFormat { get; set; }
         public int ChangeStateDelay { get; set; }
         public string DeleteFileFormat { get; set; }
         public string PostFileFormat { get; set; }

@@ -84,11 +84,11 @@ public class SettingController : BaseController
     }
 
     [HttpPost]
-    public async Task<IActionResult> UpdateMachine(MachineUpdateModel model)
+    public async Task<IActionResult> UpdateMachineName(MachineNameUpdateModel model)
     {
         return await HandleActionAsync(async () =>
         {
-            var machine = await _machineService.Update(model);
+            var machine = await _machineService.UpdateMachineName(model);
         }, RedirectToAction("Machine", new { factoryId = model.FactoryId }));
     }
 
@@ -102,13 +102,31 @@ public class SettingController : BaseController
     }
 
     [HttpPost]
-    public async Task<IActionResult> ResetMachine(int machineId, int factoryId)
+    public async Task<IActionResult> UpdateFirmwareMachine(string ipAddress, int factoryId)
+    {
+        return await HandleActionAsync(async () =>
+        {
+            await _machineService.UpdateFirmware(ipAddress);
+        }, RedirectToAction("Machine", new { factoryId = factoryId }));
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> UpdateAddressMachine(string currentIpAddress, string newIpAddress, int factoryId)
+    {
+        return await HandleActionAsync(async () =>
+        {
+            await _machineService.UpdateAddress(currentIpAddress, newIpAddress);
+        }, RedirectToAction("Machine", new { factoryId = factoryId }));
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> ResetProductMachine(int machineId, int factoryId)
     {
         var listAlert = new List<AlertModel>();
         try
         {
             var machine = await _machineService.GetById(machineId) ?? new Domain.Machine();
-            var result = await _machineService.ResetMachine(machine.IpAddress);
+            var result = await _machineService.ResetProductMachine(machine.IpAddress);
 
             if (result.Success)
             {

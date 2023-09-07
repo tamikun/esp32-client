@@ -143,18 +143,18 @@ public partial class MachineService : IMachineService
         return machine;
     }
 
-    public async Task<Machine> Update(MachineUpdateModel model)
+    public async Task<Machine> UpdateMachineName(MachineNameUpdateModel model)
     {
         var machine = await GetById(model.MachineId);
         if (machine is null) throw new Exception("Machine is not found");
 
         machine.MachineName = model.MachineName;
 
-        // Allow change ip when machine is not in use
-        if (machine.LineId == 0 && machine.StationId == 0)
-        {
-            machine.IpAddress = model.IpAddress;
-        }
+        // // Allow change ip when machine is not in use
+        // if (machine.LineId == 0 && machine.StationId == 0)
+        // {
+        //     machine.IpAddress = model.IpAddress;
+        // }
 
         machine.CncMachine = model.CncMachine;
 
@@ -369,9 +369,9 @@ public partial class MachineService : IMachineService
         if (isEndWithSlash) rs = rs + '/';
         return rs;
     }
-    private string GetResetMachineUrl(string machineIp, bool isEndWithSlash = false)
+    private string GetResetProductMachineUrl(string machineIp, bool isEndWithSlash = false)
     {
-        string rs = string.Format(_settings.ResetMachineFormat, machineIp);
+        string rs = string.Format(_settings.ResetProductMachineFormat, machineIp);
         if (isEndWithSlash) rs = rs + '/';
         return rs;
     }
@@ -488,9 +488,9 @@ public partial class MachineService : IMachineService
         }
     }
 
-    public async Task<(bool Success, string ResponseBody)> ResetMachine(string machinIp)
+    public async Task<(bool Success, string ResponseBody)> ResetProductMachine(string machinIp)
     {
-        var url = GetResetMachineUrl(machinIp);
+        var url = GetResetProductMachineUrl(machinIp);
 
         System.Console.WriteLine("==== resetMachineUrl: " + url);
 
@@ -578,10 +578,12 @@ public partial class MachineService : IMachineService
     /// <returns></returns>
     public async Task<(bool Success, string ResponseBody)> UpdateFirmware(string ipAddress)
     {
+        if (System.IO.File.Exists(_settings.MachineFirmwareFilePath))
+            throw new Exception("Firmware is not found");
+
         if (ipAddress != _settings.DefaultNewMachineIp)
-        {
             throw new Exception("Please reset machine system before updating firmware!");
-        }
+
         var updateFw = await Get($"http://{ipAddress}/update_fw");
 
         // Request success, waiting for writing new firmware on board => UpdateFirmwareSucess = false

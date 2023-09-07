@@ -9,11 +9,10 @@ public class MachineCreateModel
     public bool CncMachine { get; set; }
 }
 
-public class MachineUpdateModel
+public class MachineNameUpdateModel
 {
     public int MachineId { get; set; }
     public string MachineName { get; set; }
-    public string IpAddress { get; set; }
     public int FactoryId { get; set; }
     public bool CncMachine { get; set; }
 }

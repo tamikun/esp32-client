@@ -55,14 +55,14 @@ public class ServiceTest
 
         await _linq2db.Insert(machineAdd);
 
-        var model = new MachineUpdateModel
+        var model = new MachineNameUpdateModel
         {
             MachineId = 1,
             MachineName = "Machine update",
-            IpAddress = "1",
+            // IpAddress = "1",
         };
 
-        await _machineService.Update(model);
+        await _machineService.UpdateMachineName(model);
 
         var machineUpdate = await _machineService.GetById(1);
 

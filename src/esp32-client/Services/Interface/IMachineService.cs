@@ -14,7 +14,7 @@ namespace esp32_client.Services
         Task<List<Machine>> GetAvalableMachine(int lineId);
         Task<List<Machine>> UpdateMachineLineByProduct(int lineId, int productId);
         Task<Machine> Create(MachineCreateModel model);
-        Task<Machine> Update(MachineUpdateModel model);
+        Task<Machine> UpdateMachineName(MachineNameUpdateModel model);
         Task DeleteById(int id);
         Task<Dictionary<string, string>> AssignMachineLine(ListAssignMachineLineModel model);
         Task UpdateById(int id, int departmentId, int lineId, int processId);
@@ -22,6 +22,8 @@ namespace esp32_client.Services
         Task<Dictionary<string, string>> AssignPatternMachine(IEnumerable<int> machineId);
         Task<List<EspFileModel>> GetDefaultListFile(string machineIp);
         Task<(bool Success, int Data)> GetProductNumberMachine(string ipAddress);
-        Task<(bool Success, string ResponseBody)> ResetMachine(string machinIp);
+        Task<(bool Success, string ResponseBody)> ResetProductMachine(string machinIp);
+        Task<(bool Success, string ResponseBody)> UpdateFirmware(string ipAddress);
+        Task<(bool Success, string ResponseBody)> UpdateAddress(string currentIpAddress, string newIpAddress);
     }
 }

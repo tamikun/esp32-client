@@ -154,7 +154,7 @@
         <div class="popup-content">
             <span class="close-button" onclick="closePopup('updateMachine')">&times;</span>
             <h2>Update machine</h2>
-            @using (Html.BeginForm("UpdateMachine", "Setting", FormMethod.Post, new
+            @using (Html.BeginForm("UpdateMachineName", "Setting", FormMethod.Post, new
             {
                 @enctype = "multipart/form-data"
             }))
@@ -164,10 +164,6 @@
                     <input type="text" class="form-control" id="MachineName" name="MachineName">
                     <input type="number" class="form-control" id="FactoryId" name="FactoryId" style="display: none;" value='@factoryId'>
                     <input type="number" class="form-control" id="MachineId" name="MachineId" style="display: none;" value=''>
-                </div>
-                <div class="mb-3">
-                    <label for="IpAddress" class="form-label">Ip address:</label>
-                    <input type="text" class="form-control" id="IpAddress" name="IpAddress">
                 </div>
                 <div class="mb-3">
                     <label for="CncMachine" class="form-label">Cnc Machine:</label>
@@ -209,7 +205,7 @@
         <div class="popup-content">
             <span class="close-button" onclick="closePopup('resetMachine')">&times;</span>
             <h2>Reset machine</h2>
-            @using (Html.BeginForm("ResetMachine", "Setting", FormMethod.Post, new
+            @using (Html.BeginForm("ResetProductMachine", "Setting", FormMethod.Post, new
             {
                 @enctype = "multipart/form-data"
             }))

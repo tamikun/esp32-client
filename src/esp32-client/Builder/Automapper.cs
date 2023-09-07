@@ -11,8 +11,8 @@ namespace esp32_client.Builder
             CreateMap<UserAccountCreateModel, UserAccount>();
 
             CreateMap<MachineCreateModel, Machine>();
-            CreateMap<MachineUpdateModel, Machine>();
-            CreateMap<Machine, MachineUpdateModel>();
+            CreateMap<MachineNameUpdateModel, Machine>();
+            CreateMap<Machine, MachineNameUpdateModel>();
 
             CreateMap<Product, ProductUpdateModel>();
         }
