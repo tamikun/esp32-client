@@ -1,4 +1,5 @@
 ﻿using System.Text.Json.Serialization;
+using esp32_client.Builder;
 using esp32_client.Models.Singleton;
 using esp32_client.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -10,15 +11,17 @@ namespace esp32_client.Controllers;
 // [Route("api/[controller]/[action]")]
 public class OpenApiController : ControllerBase
 {
-    private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly IDataReportService _dataReportService;
+    private readonly IMachineService _machineService;
+    private readonly LinqToDb _linq2db;
     private readonly Settings _settings;
 
-    public OpenApiController(IHttpContextAccessor httpContextAccessor, IDataReportService dataReportService, Settings settings)
+    public OpenApiController(IDataReportService dataReportService, Settings settings, IMachineService machineService, LinqToDb linq2db)
     {
-        _httpContextAccessor = httpContextAccessor;
         _dataReportService = dataReportService;
         _settings = settings;
+        _machineService = machineService;
+        _linq2db = linq2db;
     }
 
     [HttpPost]
@@ -46,6 +49,22 @@ public class OpenApiController : ControllerBase
         return NotFound();
     }
 
+    [HttpPost]
+    [Route("update_status")]
+    [ProducesResponseType(StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> UpdateStatus([FromBody] UpdateStatusModel model)
+    {
+        System.Console.WriteLine($"==== model.UpdateFW: {model.UpdateFW}");
+        if (model.UpdateFW.StartsWith("Finish!") && model.UpdateFW.EndsWith("Successfully."))
+        {
+            var newMachine = await _machineService.GetByIpAddress(_settings.DefaultNewMachineIp);
+            newMachine.UpdateFirmwareSucess = true;
+            await _linq2db.Update(newMachine);
+        }
+        return Ok();
+    }
+
     [HttpGet]
     [Route("api/OpenApi/GetProductNumber/{id}")]
     [Authentication]
@@ -71,5 +90,12 @@ public class OpenApiController : ControllerBase
         [JsonProperty("ProductNumber")]
         [JsonPropertyName("ProductNumber")]
         public int ProductNumber { get; set; }
+    }
+
+    public class UpdateStatusModel
+    {
+        [JsonProperty("UpdateFW")]
+        [JsonPropertyName("UpdateFW")]
+        public string UpdateFW { get; set; }
     }
 }

@@ -34,6 +34,12 @@ public partial class MachineService : IMachineService
         return machine;
     }
 
+    public async Task<Machine> GetByIpAddress(string ipAddress)
+    {
+        var machine = await _linq2db.Entity<Machine>().Where(s => s.IpAddress == ipAddress).FirstOrDefaultAsync();
+        return machine;
+    }
+
     public async Task<List<Machine>> GetByLineId(int lineId)
     {
         return await _linq2db.Entity<Machine>().Where(s => s.LineId == lineId).ToListAsync();
@@ -546,5 +552,97 @@ public partial class MachineService : IMachineService
             responseBody = await response.Content.ReadAsStringAsync();
             return (true, responseBody);
         }
+    }
+
+    public async Task<(bool Success, string ResponseBody)> SystemReset(string ipAddress)
+    {
+        var result = await Get($"http://{ipAddress}/system_reset");
+
+        if (result.Success)
+        {
+            var machine = await GetByIpAddress(ipAddress);
+            machine.IpAddress = _settings.DefaultNewMachineIp;
+            await _linq2db.Update(machine);
+        }
+
+        return result;
+    }
+
+    /// <summary>
+    /// If IP != DefaultNewMachineIp => throw Exception
+    /// If request update firmware sucess => set status of machine: UpdateFirmwareSucess = false
+    /// UpdateFirmwareSucess will be true when machine call to OpenApiController.UpdateStatus with success string
+    /// </summary>
+    /// <param name="Success"></param>
+    /// <param name="ipAddress"></param>
+    /// <returns></returns>
+    public async Task<(bool Success, string ResponseBody)> UpdateFirmware(string ipAddress)
+    {
+        if (ipAddress != _settings.DefaultNewMachineIp)
+        {
+            throw new Exception("Please reset machine system before updating firmware!");
+        }
+        var updateFw = await Get($"http://{ipAddress}/update_fw");
+
+        // Request success, waiting for writing new firmware on board => UpdateFirmwareSucess = false
+        if (updateFw.Success)
+        {
+            var machine = await GetByIpAddress(ipAddress);
+            machine.UpdateFirmwareSucess = false;
+            await _linq2db.Update(machine);
+        }
+        return updateFw;
+    }
+
+    /// <summary>
+    /// Add new machine with DefaultNewMachineIp
+    /// Update firmware at first
+    /// Waiting for process complete UpdateFirmwareSucess = true
+    /// Allow change IPAddress from DefaultNewMachineIp
+    /// Restart machine after changing ip address
+    /// </summary>
+    /// <param name="Success"></param>
+    /// <param name="currentIpAddress"></param>
+    /// <param name="newIpAddress"></param>
+    /// <returns></returns>
+    public async Task<(bool Success, string ResponseBody)> UpdateAddress(string currentIpAddress, string newIpAddress)
+    {
+        if (currentIpAddress != _settings.DefaultNewMachineIp)
+        {
+            throw new Exception("Please reset machine system before updating ip address!");
+        }
+
+        var machine = await GetByIpAddress(currentIpAddress);
+        if (!machine.UpdateFirmwareSucess)
+        {
+            throw new Exception("Please wait for updating firmware process success!");
+        }
+
+        var changeIp = await Post(requestBody: newIpAddress, apiUrl: $"http://{currentIpAddress}/ip_address");
+
+        if (!changeIp.Success)
+            return changeIp;
+
+        var restartMachine = await RestartMachine(currentIpAddress);
+
+        if (!restartMachine.Success)
+            return restartMachine;
+
+        machine.IpAddress = newIpAddress;
+        await _linq2db.Update(machine);
+
+        return restartMachine;
+    }
+
+    public async Task<(bool Success, string ResponseBody)> RestartMachine(string ipAddress)
+    {
+        if (ipAddress != _settings.DefaultNewMachineIp)
+        {
+            throw new Exception("Please reset machine system before restarting!");
+        }
+
+        var result = await Get($"http://{ipAddress}/restart");
+
+        return result;
     }
 }
