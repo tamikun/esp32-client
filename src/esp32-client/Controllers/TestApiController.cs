@@ -109,7 +109,7 @@ public class TestApiController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> EF()
     {
-        var factories = await _context.Factory.ToListAsync();
+        var factories = await _context.Entity<Factory>().ToListAsync();
 
         return Ok(factories);
     }

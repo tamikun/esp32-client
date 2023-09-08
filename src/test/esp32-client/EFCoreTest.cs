@@ -1,4 +1,5 @@
 using esp32_client.Builder;
+using esp32_client.Domain;
 using LinqToDB;
 using Microsoft.EntityFrameworkCore;
 
@@ -22,8 +23,8 @@ public class EFCore
     [Test]
     public async Task ShouldUseEF()
     {
-        var data = await _context.Factory.OrderBy(s => s.Id).LastOrDefaultAsync();
-        System.Console.WriteLine("==== data: " + Newtonsoft.Json.JsonConvert.SerializeObject(data));
+        var data = await _context.Entity<Factory>().OrderBy(s => s.Id).LastOrDefaultAsync();
+        System.Console.WriteLine("==== ShouldUseEF Factory: " + Newtonsoft.Json.JsonConvert.SerializeObject(data));
     }
 
 
