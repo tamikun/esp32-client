@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using esp32_client.Models.Singleton;
 using esp32_client.Builder;
 using Microsoft.EntityFrameworkCore;
-using System.Reflection;
 using esp32_client.Domain;
 
 namespace esp32_client.Controllers;
@@ -12,17 +11,13 @@ namespace esp32_client.Controllers;
 [Route("api/[controller]/[action]")]
 public class TestApiController : ControllerBase
 {
-    private readonly ILogger<HomeController> _logger;
     private readonly Settings _settings;
-    private readonly IMachineService _machineService;
     private readonly Context _context;
     private readonly LinqToDb _linq2db;
 
-    public TestApiController(ILogger<HomeController> logger, Settings settings, IMachineService machineService, Context context, LinqToDb linq2db)
+    public TestApiController(Settings settings, Context context, LinqToDb linq2db)
     {
-        _logger = logger;
         _settings = settings;
-        _machineService = machineService;
         _context = context;
         _linq2db = linq2db;
     }
@@ -102,7 +97,6 @@ public class TestApiController : ControllerBase
         if (!string.IsNullOrEmpty(auth) && auth.StartsWith("Bearer "))
         {
             token = auth.Substring("Bearer ".Length);
-            // Now you have the token value without the "Bearer" prefix
         }
 
         await Task.CompletedTask;
