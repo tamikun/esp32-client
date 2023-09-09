@@ -88,7 +88,7 @@ public class AddTable : Migration
                 .WithColumn(nameof(Machine.StationId)).AsInt32()
                 .WithColumn(nameof(Machine.COPartNo)).AsString()
                 .WithColumn(nameof(Machine.CncMachine)).AsBoolean().NotNullable()
-                .WithColumn(nameof(Machine.UpdateFirmwareSucess)).AsBoolean().NotNullable()
+                // .WithColumn(nameof(Machine.UpdateFirmwareSucess)).AsBoolean().NotNullable()
             ;
 
             Create.UniqueConstraint("UC_Machine").OnTable(nameof(Machine)).Columns(nameof(Machine.FactoryId), nameof(Machine.MachineNo));

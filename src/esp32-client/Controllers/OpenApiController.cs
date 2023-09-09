@@ -58,12 +58,13 @@ public class OpenApiController : ControllerBase
         System.Console.WriteLine($"==== model.UpdateFW: {model.UpdateFW}");
         var RequestKeys = Request.Form.Keys.ToList();
         System.Console.WriteLine("==== RequestKeys: " + Newtonsoft.Json.JsonConvert.SerializeObject(RequestKeys));
-        if (model.UpdateFW.StartsWith("Finish!") && model.UpdateFW.EndsWith("Successfully."))
-        {
-            var newMachine = await _machineService.GetByIpAddress(_settings.DefaultNewMachineIp);
-            newMachine.UpdateFirmwareSucess = true;
-            await _linq2db.Update(newMachine);
-        }
+        // if (model.UpdateFW.StartsWith("Finish!") && model.UpdateFW.EndsWith("Successfully."))
+        // {
+        //     var newMachine = await _machineService.GetByIpAddress(_settings.DefaultNewMachineIp);
+        //     newMachine.UpdateFirmwareSucess = true;
+        //     await _linq2db.Update(newMachine);
+        // }
+        await Task.CompletedTask;
         return Ok();
     }
 

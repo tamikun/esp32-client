@@ -69,7 +69,7 @@ public partial class MachineService : IMachineService
                                   ProcessName = process.ProcessName,
                                   COPartNo = machine.COPartNo,
                                   CncMachine = machine.CncMachine,
-                                  UpdateFirmwareSucess = machine.UpdateFirmwareSucess,
+                                //   UpdateFirmwareSucess = machine.UpdateFirmwareSucess,
                               }
                             ).ToListAsync();
         return response;
@@ -588,19 +588,19 @@ public partial class MachineService : IMachineService
         if (ipAddress != _settings.DefaultNewMachineIp)
             throw new Exception("Please reset machine system before updating firmware!");
 
-        var machine = await GetByIpAddress(ipAddress);
+        // var machine = await GetByIpAddress(ipAddress);
 
-        if (!machine.UpdateFirmwareSucess)
-            throw new Exception("Please wait for updating firmware process success!");
+        // if (!machine.UpdateFirmwareSucess)
+        //     throw new Exception("Please wait for updating firmware process success!");
 
         var updateFw = await Get($"http://{ipAddress}/update_fw");
 
-        // Request success, waiting for writing new firmware on board => UpdateFirmwareSucess = false
-        if (updateFw.Success)
-        {
-            machine.UpdateFirmwareSucess = false;
-            await _linq2db.Update(machine);
-        }
+        // // Request success, waiting for writing new firmware on board => UpdateFirmwareSucess = false
+        // if (updateFw.Success)
+        // {
+        //     machine.UpdateFirmwareSucess = false;
+        //     await _linq2db.Update(machine);
+        // }
         return updateFw;
     }
 
@@ -624,10 +624,10 @@ public partial class MachineService : IMachineService
             throw new Exception("New ip address has aldready exited!");
 
         var machine = await GetByIpAddress(currentIpAddress);
-        if (!machine.UpdateFirmwareSucess)
-        {
-            throw new Exception("Please wait for updating firmware process success!");
-        }
+        // if (!machine.UpdateFirmwareSucess)
+        // {
+        //     throw new Exception("Please wait for updating firmware process success!");
+        // }
 
         var changeIp = await Post(requestBody: newIpAddress, apiUrl: $"http://{currentIpAddress}/ip_address");
 
