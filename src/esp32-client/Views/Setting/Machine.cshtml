@@ -283,7 +283,7 @@
                     <input type="number" class="form-control" id="factoryId" name="factoryId" style="display: none;" value='@factoryId'>
                 </div>
                 <div class="d-grid">
-                    <input type="submit" class="btn btn-info" value="Update firmware">
+                    <input type="submit" class="btn btn-info" value="Save">
                 </div>
             }
         </div>
@@ -294,7 +294,7 @@
     <div class="popup-dialog">
         <div class="popup-content">
             <span class="close-button" onclick="closePopup('systemReset')">&times;</span>
-            <h2>Update firmware</h2>
+            <h2>Reset system</h2>
             @using (Html.BeginForm("SystemResetMachine", "Setting", FormMethod.Post, new
             {
                 @enctype = "multipart/form-data"
@@ -306,7 +306,7 @@
                     <input type="number" class="form-control" id="factoryId" name="factoryId" style="display: none;" value='@factoryId'>
                 </div>
                 <div class="d-grid">
-                    <input type="submit" class="btn btn-danger" value="Update firmware">
+                    <input type="submit" class="btn btn-danger" value="Reset">
                 </div>
             }
         </div>
