@@ -617,8 +617,8 @@ public partial class MachineService : IMachineService
     /// <returns></returns>
     public async Task<(bool Success, string ResponseBody)> UpdateAddress(string currentIpAddress, string newIpAddress)
     {
-        if (currentIpAddress != _settings.DefaultNewMachineIp)
-            throw new Exception("Please reset machine system before updating ip address!");
+        // if (currentIpAddress != _settings.DefaultNewMachineIp)
+        //     throw new Exception("Please reset machine system before updating ip address!");
 
         if (await _linq2db.Entity<Machine>().AnyAsync(s => s.IpAddress == newIpAddress))
             throw new Exception("New ip address has aldready exited!");
