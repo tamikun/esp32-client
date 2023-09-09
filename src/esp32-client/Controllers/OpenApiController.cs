@@ -30,6 +30,7 @@ public class OpenApiController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> SaveproductData([FromBody] SaveProductDataModel model)
     {
+        System.Console.WriteLine("==== SaveproductData: " + Newtonsoft.Json.JsonConvert.SerializeObject(model));
         await _dataReportService.Create(model.IPAddress, model.ProductNumber);
         return Ok(model);
     }
