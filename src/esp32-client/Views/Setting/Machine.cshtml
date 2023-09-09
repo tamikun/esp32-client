@@ -110,18 +110,24 @@
                             </button>
                         </div>
                         <div>
-                            @{string isDisabled = @item.UpdateFirmwareSucess ? "" : "disabled";}
-                            <button type="button" class="btn btn-sm btn-primary" @isDisabled
+                            <button type="button" class="btn btn-sm btn-primary"
                                 onclick="openUpdateFirmwarePopup('updateFirmware', '@item.IpAddress', '@item.MachineName')">
                                 <i class="fa fa-gears" style="color: black;"></i>
                                 Update firmware
                             </button>
                         </div>
                         <div>
-                            <button type="button" class="btn btn-info btn-sm btn-info" @isDisabled
+                            <button type="button" class="btn btn-info btn-sm btn-info"
                                 onclick="openUpdateAddressPopup('updateAddress', '@item.IpAddress', '@item.MachineName')">
                                 <i class="fa fa-network-wired"></i>
                                 Update address
+                            </button>
+                        </div>
+                        <div>
+                            <button type="button" class="btn btn-info btn-sm btn-danger"
+                                onclick="openSystemResetPopup('systemReset', '@item.IpAddress', '@item.MachineName')">
+                                <i class="fa fa-eraser" style="color: black;"></i>
+                                Reset system
                             </button>
                         </div>
                     </div>
@@ -284,6 +290,29 @@
     </div>
 </div>
 
+<div class="popup-container" id="systemReset">
+    <div class="popup-dialog">
+        <div class="popup-content">
+            <span class="close-button" onclick="closePopup('systemReset')">&times;</span>
+            <h2>Update firmware</h2>
+            @using (Html.BeginForm("SystemResetMachine", "Setting", FormMethod.Post, new
+            {
+                @enctype = "multipart/form-data"
+            }))
+            {
+                <div class="mb-3">
+                    <label for="ipAddress" class="form-label">Do you want to reset system of machine: <strong></strong>?</label>
+                    <input type="text" class="form-control" id="ipAddress" name="ipAddress" style="display: none;">
+                    <input type="number" class="form-control" id="factoryId" name="factoryId" style="display: none;" value='@factoryId'>
+                </div>
+                <div class="d-grid">
+                    <input type="submit" class="btn btn-danger" value="Update firmware">
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
 @section Scripts{
     <script>
         function openUpdateMachineNamePopup(id, param) {
@@ -346,5 +375,14 @@
             document.getElementById(id).style.display = "block";
         }
 
+        function openSystemResetPopup(id, machineIp, machineName) {
+            var machineNameElement = document.querySelector('[id=systemReset] label strong');
+            machineNameElement.innerText = `${machineName}`;
+
+            var pIpAddress = document.querySelector('[id=systemReset] [id=ipAddress]');
+            pIpAddress.value = machineIp;
+
+            document.getElementById(id).style.display = "block";
+        }
     </script>
 }

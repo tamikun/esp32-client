@@ -25,5 +25,6 @@ namespace esp32_client.Services
         Task<(bool Success, string ResponseBody)> ResetProductMachine(string machinIp);
         Task<(bool Success, string ResponseBody)> UpdateFirmware(string ipAddress);
         Task<(bool Success, string ResponseBody)> UpdateAddress(string currentIpAddress, string newIpAddress);
+        Task<(bool Success, string ResponseBody)> SystemReset(string ipAddress);
     }
 }

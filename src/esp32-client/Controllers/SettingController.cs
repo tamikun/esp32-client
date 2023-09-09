@@ -118,6 +118,15 @@ public class SettingController : BaseController
             await _machineService.UpdateAddress(currentIpAddress, newIpAddress);
         }, RedirectToAction("Machine", new { factoryId = factoryId }));
     }
+   
+    [HttpPost]
+    public async Task<IActionResult> SystemResetMachine(string ipAddress, int factoryId)
+    {
+        return await HandleActionAsync(async () =>
+        {
+            await _machineService.SystemReset(ipAddress);
+        }, RedirectToAction("Machine", new { factoryId = factoryId }));
+    }
 
     [HttpPost]
     public async Task<IActionResult> ResetProductMachine(int machineId, int factoryId)
