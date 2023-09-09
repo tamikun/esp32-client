@@ -6,7 +6,6 @@ EXPOSE 443
 
 COPY esp32-client/https/esp32.pfx /app/esp32.pfx
 COPY esp32-client/certificates/ /app/Certificates/
-# COPY esp32-client/certificates/ /etc/ssl/certs/
 
 # Set the environment variables for HTTPS configuration
 ENV ASPNETCORE_URLS=https://+:443;http://+:80
@@ -23,7 +22,6 @@ FROM base AS final
 
 # add globalization support
 RUN apk add --no-cache icu-libs
-# RUN update-ca-certificates
 ENV DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=false
 
 COPY ["esp32-client/publish", "."]
