@@ -493,8 +493,6 @@ public partial class MachineService : IMachineService
     {
         var url = GetResetProductMachineUrl(machinIp);
 
-        System.Console.WriteLine("==== resetMachineUrl: " + url);
-
         var result = await Get(url);
         return result;
     }
@@ -587,8 +585,8 @@ public partial class MachineService : IMachineService
         if (!System.IO.File.Exists(_settings.MachineFirmwareFilePath))
             throw new Exception("Firmware is not found");
 
-        if (ipAddress != _settings.DefaultNewMachineIp)
-            throw new Exception("Please reset machine system before updating firmware!");
+        // if (ipAddress != _settings.DefaultNewMachineIp)
+        //     throw new Exception("Please reset machine system before updating firmware!");
 
         // var machine = await GetByIpAddress(ipAddress);
 

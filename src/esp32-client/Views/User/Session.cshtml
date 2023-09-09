@@ -10,9 +10,6 @@
 
     var currSession = userSession.Where(s => s.Token == token).FirstOrDefault();
     var displayCurrToken = new string(currSession?.Token.ToCharArray().TakeLast(50).ToArray());
-
-    System.Console.WriteLine("==== token: " + Newtonsoft.Json.JsonConvert.SerializeObject(token));
-    System.Console.WriteLine("==== currSession: " + Newtonsoft.Json.JsonConvert.SerializeObject(currSession));
 } 
 
 <h4 class="setting-header">User session</h4>
