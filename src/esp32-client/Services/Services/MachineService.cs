@@ -69,7 +69,7 @@ public partial class MachineService : IMachineService
                                   ProcessName = process.ProcessName,
                                   COPartNo = machine.COPartNo,
                                   CncMachine = machine.CncMachine,
-                                //   UpdateFirmwareSucess = machine.UpdateFirmwareSucess,
+                                  //   UpdateFirmwareSucess = machine.UpdateFirmwareSucess,
                               }
                             ).ToListAsync();
         return response;
@@ -634,26 +634,27 @@ public partial class MachineService : IMachineService
         if (!changeIp.Success)
             return changeIp;
 
-        var restartMachine = await RestartMachine(currentIpAddress);
-
-        if (!restartMachine.Success)
-            return restartMachine;
+        await RestartMachine(currentIpAddress);
 
         machine.IpAddress = newIpAddress;
         await _linq2db.Update(machine);
 
-        return restartMachine;
+        return changeIp;
     }
 
-    public async Task<(bool Success, string ResponseBody)> RestartMachine(string ipAddress)
+    public async Task RestartMachine(string ipAddress)
     {
         if (ipAddress != _settings.DefaultNewMachineIp)
         {
             throw new Exception("Please reset machine system before restarting!");
         }
 
-        var result = await Get($"http://{ipAddress}/restart");
-
-        return result;
+        try
+        {
+            // Restart machine => Ip change => Do not receive response from board => Exception
+            await Get($"http://{ipAddress}/restart");
+        }
+        catch
+        { }
     }
 }
