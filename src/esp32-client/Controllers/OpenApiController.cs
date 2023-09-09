@@ -30,7 +30,6 @@ public class OpenApiController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> SaveproductData([FromBody] SaveProductDataModel model)
     {
-        System.Console.WriteLine("==== SaveproductData: " + Newtonsoft.Json.JsonConvert.SerializeObject(model));
         await _dataReportService.Create(model.IPAddress, model.ProductNumber);
         return Ok(model);
     }
@@ -57,9 +56,8 @@ public class OpenApiController : ControllerBase
     public async Task<IActionResult> UpdateStatus([FromBody] UpdateStatusModel model)
     {
         System.Console.WriteLine($"==== model.UpdateFW: {model.UpdateFW}");
-        var RequestKeys = Request.Form.Keys.ToList();
-        System.Console.WriteLine("==== RequestKeys: " + Newtonsoft.Json.JsonConvert.SerializeObject(RequestKeys));
-        // if (model.UpdateFW.StartsWith("Finish!") && model.UpdateFW.EndsWith("Successfully."))
+
+        // if (model.UpdateFW.StartsWith("Finish!") && model.UpdateFW.EndsWith("successfully."))
         // {
         //     var newMachine = await _machineService.GetByIpAddress(_settings.DefaultNewMachineIp);
         //     newMachine.UpdateFirmwareSucess = true;

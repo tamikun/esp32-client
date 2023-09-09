@@ -110,14 +110,15 @@
                             </button>
                         </div>
                         <div>
-                            <button type="button" class="btn btn-sm btn-primary"
+                            @{string isDisabled = @item.UpdateFirmwareSucess ? "" : "disabled";}
+                            <button type="button" class="btn btn-sm btn-primary" @isDisabled
                                 onclick="openUpdateFirmwarePopup('updateFirmware', '@item.IpAddress', '@item.MachineName')">
                                 <i class="fa fa-gears" style="color: black;"></i>
                                 Update firmware
                             </button>
                         </div>
                         <div>
-                            <button type="button" class="btn btn-info btn-sm btn-info"
+                            <button type="button" class="btn btn-info btn-sm btn-info" @isDisabled
                                 onclick="openUpdateAddressPopup('updateAddress', '@item.IpAddress', '@item.MachineName')">
                                 <i class="fa fa-network-wired"></i>
                                 Update address
