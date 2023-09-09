@@ -555,21 +555,23 @@ public partial class MachineService : IMachineService
         }
     }
 
-    public async Task<(bool Success, string ResponseBody)> SystemReset(string ipAddress)
+    public async Task SystemReset(string ipAddress)
     {
         if (await _linq2db.Entity<Machine>().AnyAsync(s => s.IpAddress == _settings.DefaultNewMachineIp))
             throw new Exception($"A default machine with address {_settings.DefaultNewMachineIp} exites");
 
-        var result = await Get($"http://{ipAddress}/system_reset");
-
-        if (result.Success)
+        try
         {
-            var machine = await GetByIpAddress(ipAddress);
-            machine.IpAddress = _settings.DefaultNewMachineIp;
-            await _linq2db.Update(machine);
+            await Get($"http://{ipAddress}/system_reset");
+        }
+        catch
+        {
+
         }
 
-        return result;
+        var machine = await GetByIpAddress(ipAddress);
+        machine.IpAddress = _settings.DefaultNewMachineIp;
+        await _linq2db.Update(machine);
     }
 
     /// <summary>
