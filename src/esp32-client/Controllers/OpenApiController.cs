@@ -57,13 +57,12 @@ public class OpenApiController : ControllerBase
     {
         System.Console.WriteLine($"==== model.UpdateFW: {model.UpdateFW}");
 
-        // if (model.UpdateFW.StartsWith("Finish!") && model.UpdateFW.EndsWith("successfully."))
-        // {
-        //     var newMachine = await _machineService.GetByIpAddress(_settings.DefaultNewMachineIp);
-        //     newMachine.UpdateFirmwareSucess = true;
-        //     await _linq2db.Update(newMachine);
-        // }
-        await Task.CompletedTask;
+        if (model.UpdateFW.StartsWith("Finish!") && model.UpdateFW.EndsWith("successfully."))
+        {
+            var newMachine = await _machineService.GetByIpAddress(_settings.DefaultNewMachineIp);
+            newMachine.UpdateFirmwareSucess = true;
+            await _linq2db.Update(newMachine);
+        }
         return Ok();
     }
 
